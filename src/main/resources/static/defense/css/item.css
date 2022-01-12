@@ -1,0 +1,344 @@
+#item_title {
+	left: 4px;
+	top: -35px;
+	width: 556px;
+	height: 55px;
+	font-weight: 800;
+	font-size: 36px;
+}
+
+#item_title>div>p>span {
+	width: 1150px;
+}
+
+#item_title>.common_text>p>span {
+	color: #333; 
+}
+
+#item_img, #item_img_dark_overlay {
+    left: 144px;
+    top: 41px;
+    width: 656px;
+    height: 370px;
+}
+
+.detail_dark_overlay_img {
+	width: 100%;
+	height: 100%;
+	background-image: url(/defense/images/detail_dark_overlay.svg);
+	background-size: 100% 100%;
+}
+
+#item_img>img, #item_img_dark_overlay>img {
+  	width: 656px;
+    height: 370px;
+}
+
+#item_img_dark_overlay {
+	z-index: 5;
+}
+
+#item_minus {
+    left: 827px;
+    top: 138px;
+	width: 37px;
+	height: 37px;
+	color: #fff;
+	text-align: center;
+	cursor: pointer;
+	font-weight: 800;
+    color: #4F3000;
+}
+
+#item_plus {
+	left: 956px;
+    top: 138px;
+	width: 37px;
+	height: 37px;
+	color: #fff;
+	text-align: center;
+	cursor: pointer;
+	font-weight: 800;
+    color: #4F3000;
+}
+
+#item_minus>.common_text>p, #item_plus>.common_text>p {
+	margin-top: 9px;
+}
+
+.item_requisition_button {
+    width: 37px;
+    height: 37px;
+    background-color: rgba(251, 232, 202, 1);
+    box-sizing: border-box;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(121, 73, 0, 1);
+    border-radius: 1px;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 1);
+    font-weight: 800;
+    color: #4F3000;
+}
+
+#item_number {
+	left: 871px;
+    top: 138px;
+	width: 79px;
+	height: 37px;
+	font-size: 14px;
+	text-align: center;
+    color: #20200A;
+}
+
+#item_number_div {
+	width: 79px;
+	height: 37px;
+	background-color: rgba(255, 255, 255, 0.4);
+	box-sizing: border-box;
+	border-width: 1px;
+	border-style: solid;
+	border-color: rgba(47, 47, 22, 1);
+	border-radius: 0px;
+	box-shadow: none;
+	font-size: 14px;
+	color: #20200A;
+	text-align: center;
+}
+
+#item_number_input {
+	width: 79px;
+	height: 37px;
+	padding: 2px 2px 2px 2px;
+	font-size: 14px;
+	letter-spacing: normal;
+	color: #20200A;
+	text-align: center;
+	text-transform: none;
+	background-color: transparent;
+	border-color: transparent;
+}
+
+#item_to_requisition {
+    left: 827px;
+    top: 184px;
+    width: 166px;
+    height: 40px;
+    font-weight: 800;
+    color: #4F3000;
+    cursor: pointer;
+    text-align: center;
+	font-size: 13px;
+}
+
+.detail_btn {
+    width: 166px;
+    height: 40px;
+    background-color: rgba(255, 153, 0, 1);
+    box-sizing: border-box;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(121, 73, 0, 1);
+    border-radius: 1px;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 1);
+    font-weight: 800;
+    color: #4F3000;
+    font-size: 12px;
+}
+
+#item_to_requisition>.common_text>p {
+	margin-top: 12px;
+}
+
+#item_available {
+    left: 810px;
+    top: 234px;
+    width: 230px;
+    height: 26px;
+    font-weight: 800;
+    font-size: 16px;
+    color: #2F2F16;
+    text-align: center;
+}
+
+.in_stock {
+	position: relative;
+    left: -10px;
+}
+
+#item_available>.common_text {
+	color: #2F2F16;
+}
+
+#item_description {
+    left: 144px;
+    top: 438px;
+    width: 849px;
+    height: 168px;
+    font-family: 'NewYorkExtraLarge-Regular', 'New York Extra Large', sans-serif;
+    font-size: 16px;
+    color: #2F2F16;
+    line-height: 24px;
+}
+
+#item_description_div {
+	width: 762px;
+    height: 168px;
+    font-family: 'NewYorkExtraLarge-Regular', 'New York Extra Large', sans-serif;
+    font-size: 16px;
+    color: #2F2F16;
+    line-height: 24px;
+}
+
+.related_item_box {
+    top: 802px;
+    width: 265px;
+    height: 318px;
+}
+
+.related_item_box_div {
+    width: 265px;
+    height: 318px;
+    background-color: rgba(249, 249, 227, 1);
+    box-sizing: border-box;
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgba(71, 72, 30, 1);
+    border-radius: 0px;
+    box-shadow: 0px 0px 4px rgba(47, 47, 22, 0.345098039215686);
+}
+
+.related_item_img, .related_dark_overlay {
+    top: 818px;
+    width: 235px;
+    height: 133px;
+}
+
+.related_item_title {
+    left: 45px;
+    top: 966px;
+    width: 235px;
+    height: 22px;
+    font-weight: 800;
+	font-size: 24px;
+	text-align: left;
+}
+
+.related_item_description>.common_text {
+   color: #2F2F16;
+}
+
+.related_item_description {
+    top: 1010px;
+    width: 235px;
+    height: 56px;
+    font-size: 14px;
+}
+
+.related_item_button {
+    top: 1080px;
+    width: 182px;
+    height: 30px;
+    font-weight: 800;
+    color: #4F3000;
+    text-align: center;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.related_item_button_div {
+    width: 182px;
+    height: 30px;
+    background-color: rgba(251, 232, 202, 1);
+    box-sizing: border-box;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(121, 73, 0, 1);
+    border-radius: 1px;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 1);
+    font-weight: 800;
+    color: #4F3000;
+}
+
+.related_item_button>.common_text>p {
+	margin-top: 6px;
+}
+
+#footer {
+	top: 874px;
+}
+
+#related_title {
+    left: 34px;
+    top: 762px;
+    width: 324px;
+    height: 38px;
+    font-size: 20px;
+    color: #333;
+}
+
+.related_item_line1_box {
+	left: 30px;
+}
+
+.related_item_line1_title, .related_item_line1_img,
+	.related_item_line1_dark_overlay, .related_item_line1_description {
+	left: 45px;
+}
+
+.related_item_line1_button {
+	left: 72px;
+}
+
+.related_item_line2_box {
+	left: 325px;
+}
+
+.related_item_line2_title, .related_item_line2_img,
+	.related_item_line2_dark_overlay, .related_item_line2_description {
+	left: 340px;
+}
+
+.related_item_line2_button {
+	left: 367px;
+}
+
+.related_item_line3_box {
+	left: 620px;
+}
+
+.related_item_line3_title, .related_item_line3_img,
+	.related_item_line3_dark_overlay, .related_item_line3_description {
+	left: 635px;
+}
+
+.related_item_line3_button {
+	left: 662px;
+}
+
+.loading {
+    left: 106px;
+}
+
+#item_detail_breadcrumb {
+    left: 6px;
+    top: -79px;
+    width: 1000px;
+    height: 22px;
+    font-size: 14px;
+    text-align: left;
+}
+
+#middle {
+    top: 170px;
+}
+
+.item_description_detail {
+	color: #2F2F16;
+	line-height: 24px;
+}
+
+.items_empty_content_message{
+	width:1200px;
+	left:0;
+	top: 300px;
+}

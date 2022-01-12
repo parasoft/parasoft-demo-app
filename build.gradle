@@ -1,0 +1,169 @@
+plugins {
+	id 'org.springframework.boot' version '2.3.1.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+	id 'java'
+	id 'war'
+	id 'maven-publish'
+}
+
+def pdaSnapshotsRepoUrl = project.hasProperty("pdaSnapshotsRepoUrl") ? pdaSnapshotsRepoUrl : "http://nexus.parasoft.com.cn:8081/nexus/content/repositories/pda-snapshots/"
+// Need to specify the Nexus repository user name and password in the Gradle build command.
+def repoUsername = project.hasProperty("repoUsername") ? repoUsername : ""
+def repoPassword = project.hasProperty("repoPassword") ? repoPassword : ""
+
+group = 'com.parasoft.demoapp'
+version = '1.1.0'
+sourceCompatibility = '1.8'
+
+def buildMetadata = ''
+if (project.hasProperty("jenkinsBuildNumber")) {
+	buildMetadata += new Date().format('yyyyMMdd') + 'B' + jenkinsBuildNumber
+} else {
+	buildMetadata += new Date().format('yyyyMMddHHmmss')
+}
+if (project.hasProperty("gitCommitHash")) {
+	buildMetadata += '.' + gitCommitHash
+}
+def buildVersion = version + '_' + buildMetadata
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-activemq'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-zuul'
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	runtimeOnly 'org.hsqldb:hsqldb'
+	annotationProcessor 'org.projectlombok:lombok'
+	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+	testImplementation('org.springframework.boot:spring-boot-starter-test')
+	testImplementation 'org.springframework.security:spring-security-test'
+	implementation 'org.springdoc:springdoc-openapi-webmvc-core:1.4.3'
+	implementation 'org.springdoc:springdoc-openapi-ui:1.4.3'
+	implementation 'com.google.code.gson:gson:2.8.6'
+	implementation 'org.springdoc:springdoc-openapi-data-rest:1.4.3'
+	implementation 'org.apache.activemq:activemq-stomp:5.15.12'
+	// Exclude `jetty-all` dependency, but keep other necessary jetty dependencies.
+	// See the following URLs for details:
+	// https://stackoverflow.com/questions/59286348/spring-boot-2-2-activemq-jetty-conflict
+	// https://issues.apache.org/jira/browse/AMQ-7364
+	implementation 'org.springframework.boot:spring-boot-starter-jetty'
+	implementation ('org.apache.activemq:activemq-http:5.15.12') {
+	  exclude group: "org.eclipse.jetty.aggregate", module:"jetty-all"
+	}
+
+	//implementation 'org.apache.activemq:activemq-kahadb-store:5.15.12'
+	implementation 'org.apache.activemq:activemq-spring:5.15.12'
+
+	implementation fileTree(dir:'lib',includes:['*jar'])
+
+	// Jtest
+	testImplementation 'org.apiguardian:apiguardian-api:1.1.0'
+	testImplementation 'org.javassist:javassist:3.24.0-GA'
+	testImplementation 'net.bytebuddy:byte-buddy:1.10.0'
+	testImplementation 'net.bytebuddy:byte-buddy-agent:1.10.0'
+	testImplementation 'org.hamcrest:hamcrest:2.1'
+
+	testImplementation 'org.objenesis:objenesis:3.0.1'
+	testImplementation 'junit:junit:4.13'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.1'
+	testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.5.1'
+	testImplementation 'org.junit.jupiter:junit-jupiter-migrationsupport:5.5.1'
+	testImplementation 'org.junit.jupiter:junit-jupiter-params:5.5.1'
+
+	testImplementation 'org.junit.platform:junit-platform-commons:1.5.1'
+	testImplementation 'org.junit.platform:junit-platform-engine:1.5.1'
+	testImplementation 'org.junit.platform:junit-platform-launcher:1.5.1'
+	testImplementation 'org.junit.platform:junit-platform-runner:1.5.1'
+	testImplementation 'org.junit.platform:junit-platform-suite-api:1.5.1'
+	testImplementation 'org.junit.vintage:junit-vintage-engine:5.5.1'
+	testImplementation 'pl.pragmatists:JUnitParams:1.1.1'
+	testImplementation 'org.mockito:mockito-core:2.28.2'
+	testImplementation 'org.mockito:mockito-junit-jupiter:2.28.2'
+
+	testImplementation 'org.powermock:powermock-api-support:2.0.2'
+	testImplementation 'org.powermock:powermock-core:2.0.2'
+	testImplementation 'org.powermock:powermock-api-mockito2:2.0.2'
+	testImplementation 'org.powermock:powermock-module-junit4:2.0.2'
+	testImplementation 'org.powermock:powermock-module-junit4-common:2.0.2'
+	testImplementation 'org.powermock:powermock-reflect:2.0.2'
+}
+
+test {
+	useJUnitPlatform()
+}
+
+ext {
+	set('log4j2.version', '2.17.1')
+	set('springCloudVersion', "Hoxton.SR8")
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+// Generate META-INF/build-info.properties for build information.
+springBoot {
+	buildInfo {
+		// Workaround for failing to inject BuildProperties when started with
+		// SpringBootApplication main method or STS Boot Dashboard.
+		//
+		// How-to:
+		// When PDA failed to start in the IDE with the following description:
+		// Field buildProperties in com.parasoft.demoapp.service.BuildInfoService required a bean of type
+		// 'org.springframework.boot.info.BuildProperties' that could not be found.
+		//
+		// Steps required:
+		// 1. Run bootBuildInfo Gradle task in the Gradle Tasks build group.
+		// 2. Refresh the project.(Right click on the project, Refresh in STS.)
+		// 3. Start PDA.
+		destinationDir = file('src/main/resources/META-INF')
+		properties {
+			additional = [
+					'id': buildMetadata
+			]
+		}
+	}
+}
+
+publishing {
+	publications {
+		DemoApp(MavenPublication) {
+			groupId = 'com.parasoft.demoapp'
+			artifactId = 'com.parasoft.demoapp'
+			version = buildVersion
+			artifact bootWar
+		}
+	}
+
+	repositories {
+		maven {
+			name = 'Snapshots'
+			if (project.hasProperty('localPublishTest')) {
+				url = "$buildDir/repos/snapshots"
+			} else {
+				url = pdaSnapshotsRepoUrl
+				credentials {
+					username repoUsername
+					password repoPassword
+				}
+			}
+		}
+	}
+}

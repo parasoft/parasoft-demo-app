@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:ng="http://angularjs.org" xmlns:th="http://www.thymeleaf.org" ng-app="orderWizardPageApp">
+<head>
+    <meta charset="UTF-8">
+    <title translate="PROJECT_NAME"></title>
+    
+    <link rel="icon" href="/common/images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="/lib/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/lib/swiper/swiper.min.css">
+    <link rel="stylesheet" type="text/css" href="/lib/toastr/toastr.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/common/css/common.css">
+    <link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/style.css'">
+    <link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/orderWizard.css'">
+</head>
+<body>
+	<input type="hidden" id="current_username" th:value="${#authentication.principal.username}">
+	<input type="hidden" id="current_rolename" th:value="${#authentication.principal.role.name}">
+	<div ng-include="'/common/pages/header.html'" ng-controller="headerController"></div>
+	<div ng-include="'/common/pages/requisitionBar.html'" ng-controller="requisitionBarController as requisition"></div>
+	<div ng-controller="orderWizardController as orderWizard">
+		<div id="return_to_home" class="common_industry industry_font">
+			<div id="return_to_home_div" class="common_div industry_font"></div>
+			<div class="common_text">
+				<p><a href="/"><span class="font_color1" translate="RETURN_TO_HOME"></span></a></p>
+			</div>
+		</div>
+		<div id="order_title" class="common_industry industry_font">
+			<div id="order_title_div" class="common_div industry_font"></div>
+			<div class="common_text">
+				<p><span translate="ORDER_REQUEST"></span></p>
+			</div>
+		</div>
+		<div id="order_wizard" class="common_industry">
+			<div id="order_process">
+				<div ng-show="orderWizard.isSubmitted" class="industry_font submit_status_color">
+					<div id="submit_status">
+						<span translate="ORDER"></span>
+						<span class="font_bold"> {{orderWizard.orderNumber}} </span>
+						<span translate="SUBMITTED"></span>
+					</div>
+					<div>
+						<span translate="ALLOW"></span>
+						<span class="font_bold"> 24-48 </span>
+						<span class="font_bold"  translate="HOURS"></span>
+						<span translate="FOR_TO_BE_REVIEWED"></span>
+					</div>
+				</div>
+				<div ng-show="!orderWizard.isSubmitted" id="order_process">
+					<ol class="breadcrumb industry_font">
+					  <li ng-class="orderWizard.isActive(orderWizard.isDelopmentLocation,orderWizard.isDevelopmentClickable)" 
+					  		ng-click="orderWizard.switchProcess('Deployment Location',orderWizard.isDevelopmentClickable)"
+					  		translate="DEPLOYMENT_STEP_IN_WIZARD"></li>
+					  <li ng-class="orderWizard.isActive(orderWizard.isAssignCampaign,orderWizard.isCampaignClickable)" 
+					  		ng-click="orderWizard.switchProcess('Assign Campaign',orderWizard.isCampaignClickable)"
+					  		translate="ASSIGNMENT_STEP_IN_WIZARD"></li>
+					  <li ng-class="orderWizard.isReview ? 'active' : 'non-active'" translate="REVIEW_STEP_IN_WIZARD"></li>
+					</ol>
+				</div>
+				<div ng-show="orderWizard.isDelopmentLocation">
+					<div id="assign_to_campaign" class="wizard_btn_position common_industry industry_font">
+						<div class="common_div industry_font"></div>
+						<button class="btn wizard_btn" type="button" 
+								ng-click="orderWizard.nextProcess('Deployment Location')"
+								ng-disabled="orderWizard.isAreaInfoNotReady">
+							<span translate="ASSIGNMENT_BUTTON"><span>:</span></span>
+						</button>
+					</div>
+					<div class="wizard_title common_industry industry_font">
+						<div class="common_div industry_font"></div>
+						<div class="common_text">
+							<p><span translate="DEPLOY_ASSETS_TO"></span><span>: </span></p>
+						</div>
+					</div>
+					<div id="region" class="common_industry industry_font">
+						<p><span translate="LOCATION_OPTIONS"></span><span>:</span></p>
+					</div>
+					<select id="region_select" class="common_industry industry_font form-control"
+							ng-model="selectedArea" ng-change="orderWizard.changeArea(selectedArea,positionId)"
+							ng-options="area | translate for area in orderWizard.regions">
+							<option value="">-</option>
+					</select>
+					<div id="platoon_id" class="common_industry industry_font">
+						<p><span translate="RECEIVER_NAME"></span><span>:</span></p>
+					</div>
+					<input id="platoon_id_input" type="text" class="common_industry industry_font form-control" 
+							ng-model="positionId" ng-change="orderWizard.checkAreaInfo(selectedArea,positionId,orderWizard.getPositionInfo)">
+					<div id="get_location" class="common_industry industry_font" ng-click="orderWizard.showPosition(positionId)">
+						<div class="common_div industry_font"></div>
+						<button class="btn wizard_btn" type="button" translate="GET_LOCATION"
+						ng-disabled = "orderWizard.getLocationButton"></button>
+					</div>
+					<div id="position_info" class="common_industry industry_font" ng-show="orderWizard.getPositionInfo">
+						<div class="common_text">
+							<p><span ng-bind="orderWizard.locationInfo"></span></p>
+						</div>
+					</div>
+					<div id="map" class="common_industry" >
+						<img ng-src="/{{industry}}/images/world_map.jpg" ng-show="!orderWizard.positionInfo">
+						<img ng-src="{{orderWizard.locationImage}}" class="common_div" ng-show="orderWizard.positionInfo">
+					</div>
+				</div>
+				<div ng-show="orderWizard.isAssignCampaign">
+					<div id="go_to_review" class="wizard_btn_position common_industry industry_font">
+						<div class="common_div industry_font"></div>
+						<button class="btn wizard_btn" type="button" ng-click="orderWizard.nextProcess('Assign Campaign')" 
+							translate="GO_TO_REVIEW" ng-disabled="orderWizard.isAssignCampaignInfoNotReady"></button>
+					</div>
+					<div class="wizard_title common_industry industry_font">
+						<div class="common_div industry_font"></div>
+						<div class="common_text">
+							<p><span translate="ASSIGNMENT_STEP_IN_WIZARD"></span><span>:</span></p>
+						</div>
+					</div>
+					<div id="campaign_id" class="common_industry industry_font">
+						<p><span translate="INVOICE_NUMBER"></span><span>:</span></p>
+					</div>
+					<input id="campaign_id_input" type="text" class="common_industry industry_font form-control" 
+							ng-model="campaignID" ng-change="orderWizard.checkCampaignInfo(campaignID,campaignNumber)">
+					<div id="service_number" class="common_industry industry_font">
+						<p><span translate="UNIQUE_NUMBER"></span><span>:</span></p>
+					</div>
+					<input id="service_number_input" type="text" class="common_industry industry_font form-control" 
+							ng-model="campaignNumber" ng-change="orderWizard.checkCampaignInfo(campaignID,campaignNumber)">
+				</div>
+				<div ng-show="orderWizard.isReview">
+					<div id="submit_for_approval" class="wizard_btn_position common_industry industry_font">
+						<div class="common_div industry_font"></div>
+							<button ng-show="!orderWizard.isSubmitted" class="btn wizard_btn" type="button" 
+							translate="SUBMIT_FOR_APPROVAL" ng-click=orderWizard.submitForApproval(orderWizard.region,orderWizard.locationInfo,orderWizard.platoonId,campaignID,campaignNumber)></button>
+					</div>
+					<div class="wizard_title common_industry industry_font">
+						<div class="common_div industry_font"></div>
+						<div class="common_text">
+							<p><span translate="REQUESTED_ASSETS"></span><span>: </span><span ng-bind="orderWizard.totalAmount"></span></p>
+						</div>
+					</div>
+					<div id="items">
+						<div ng-repeat="cartItem in orderWizard.cartItems track by $index" ng-style="orderWizard.loadStyles($index)">
+							<div class="item_img item_img{{$index}} common_industry">
+								<img ng-src="{{cartItem.image}}">
+							</div>
+							<div class="item_img item_img{{$index}} common_industry">
+								<img ng-src="/{{industry}}/images/category_dark_overlay.svg">
+							</div>
+							<div class="item_title item_title{{$index}} common_industry industry_font">
+								<div class="common_div"></div>
+								<div class="common_text" title="{{cartItem.name}}">
+									<p><span class="retract_format" ng-bind="cartItem.name"></span></p>
+								</div>
+							</div>
+							<div class="wizard_item_description item_description{{$index}} common_industry industry_font">
+								<div class="common_div"></div>
+								<div class="common_text" title="{{cartItem.description}}">
+									<p><span class="orderContent" ng-bind="cartItem.description" ></span></p>
+								</div>
+							</div>
+							<div class="item_quantity item_quantity{{$index}} common_industry industry_font">
+								<div class="common_div"></div>
+								<div class="common_text">
+									<p><span>x </span><span ng-bind="cartItem.quantity"></span></p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="summaries" class="common_industry industry_font">
+						<div id="summary_content" class="common_industry industry_font">
+							<div style="position: relative;">
+								<div id="region_summary"><span translate="DEPLOY_ASSETS_TO"></span><span>: </span></div>
+								<div class="orderInfoFormat summary_title1"><span translate="LOCATION_OPTIONS"></span><span>: </span></div>
+								<div class="orderInfoFormat orderInfoContentFormat1 regionFamily orderContent" 
+										ng-bind="selectedArea | translate"></div>
+								<div class="orderInfoFormat summary_title2"><span translate="RECEIVER_NAME"></span><span>: </span></div>
+								<div class="orderInfoFormat orderInfoContentFormat2 orderContent" 
+										ng-bind="positionId == null ? '-' : positionId"></div>
+								<div class="orderInfoFormat summary_title3"><span translate="GPS_COORDINATES"></span><span>: </span></div>
+								<div class="orderInfoFormat orderInfoContentFormat3 orderContent" ng-bind="orderWizard.locationInfo"></div>
+								<div id="assigned_campaign_summary">
+									<span translate="ASSIGNMENT_STEP_IN_WIZARD"></span><span>:</span>
+								</div>
+								<div class="orderInfoFormat summary_title1"><span translate="UNIQUE_NUMBER"></span><span>: </span></div>
+								<div class="orderInfoFormat orderInfoContentFormat4 orderContent" 
+										ng-bind="campaignNumber == null ? '-' : campaignNumber"></div>
+								<div class="orderInfoFormat summary_title2"><span translate="INVOICE_NUMBER"></span><span>: </span></div>
+								<div class="orderInfoFormat orderInfoContentFormat5 orderContent"
+									 ng-bind="campaignID == null ? '-' : campaignID"></div>
+							</div>
+						</div>
+						<div id="summary_map" class="common_industry">
+							<img ng-src="{{orderWizard.locationImage}}">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div ng-include="'/common/pages/footer.html'"></div>
+    
+	<script type="text/javascript" src="/lib/jquery/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript" src="/lib/swiper/swiper.min.js"></script>
+	<script type="text/javascript" src="/lib/bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/lib/angularjs/angular.min.js"></script>
+	<script type="text/javascript" src="/lib/angularjs/angular-translate.min.js"></script>
+	<script type="text/javascript" src="/lib/angularjs/angular-translate-loader-url.min.js"></script>
+	<script type="text/javascript" src="/lib/toastr/toastr.min.js"></script>
+	<script type="text/javascript" src="/lib/stomp/stomp.min.js"></script>
+	<script type="text/javascript" src="/common/js/common.js"></script>
+	<script type="text/javascript" src="/common/js/orderWizard.js"></script>
+</body>
+</html>

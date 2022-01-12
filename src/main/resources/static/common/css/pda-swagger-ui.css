@@ -1,0 +1,3 @@
+.topbar-wrapper img[alt="Swagger UI"] {
+    content:url('/lib/swaggerui/images/swagger-bg.svg');
+}

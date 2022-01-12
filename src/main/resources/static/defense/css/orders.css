@@ -1,0 +1,373 @@
+#req_title {
+	left: 30px;
+	top: 137px;
+	width: 80%;
+	height: 55px;
+	font-size: 36px;
+	font-weight: 800;
+}
+
+.table {
+	left: 156px;
+	top: 217px;
+	width: 870px;
+	text-align: center;
+}
+
+.table-bordered>tbody>tr>td, .table-bordered>tbody>tr>th {
+	border-color: #ccc;
+	text-align: center;
+}
+
+.table-bordered>tbody>tr>th>a {
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.status {
+	width: 135px;
+}
+
+.requisition_number {
+	width: 153px;
+}
+
+.submission_date {
+	width: 143px;
+}
+
+.approver_reply_date {
+	width: 158px;
+}
+
+.assets {
+	width: 280px;
+}
+
+#cross_btn {
+	left: 956px;
+	top: 13px;
+	width: 9px;
+	height: 18px;
+	font-weight: 700;
+	font-size: 13px;
+	cursor: pointer;
+}
+
+.order_detail {
+	z-index: 1002;
+	left: 50%;
+	position: absolute;
+	margin-left: -492px;
+	top: 0;
+	margin-top: 85px;
+	width: 983px;
+	height: 598px;
+}
+
+#order_detail_box {
+	width: 983px;
+	height: 598px;
+	left: 0px;
+	top: 0px;
+}
+
+#order_detail_box>img {
+	left: -4px;
+	top: -4px;
+	width: 991px;
+	height: 660px;
+}
+
+#order_detail_title {
+	top: 13px;
+	width: 948px;
+	height: 25px;
+	font-weight: 800;
+	font-size: 20px;
+	color: #2F2F16;
+	text-align: center;
+}
+
+.requested_assets {
+	left: 31px;
+    top: 75px;
+    width: 270px;
+    height: 23px;
+    font-size: 20px;
+    color: #2F2F16;
+    font-weight: 800;
+}
+
+#order_items {
+	left: 36px;
+    top: 125px;
+    width: 465px;
+    height: 168px;
+    overflow-y: scroll;
+}
+
+#order_detail_map {
+    left: 510px;
+    top: 75px;
+    width: 445px;
+    height: 266px;
+}
+
+#order_detail_map>img {
+    width: 100%;
+    height: 100%;
+    border: 4px solid #47481e;
+}
+
+#order_detail_assigned_campaign {
+	left: 36px;
+    top: 357px;
+    width: 450px;
+    height: 23px;
+    font-size: 20px;
+    color: #2F2F16;
+    font-weight: 800;
+}
+
+#order_detail_assigned_campaign_summary {
+	left: 36px;
+    top: 399px;
+   	display: block;
+}
+
+#order_rejected_reason {
+	left: 36px;
+    top: 497px;
+    width: 223px;
+    height: 23px;
+    font-size: 20px;
+    color: #2F2F16;
+    font-weight: 800;
+}
+
+#order_rejected_reason_content {
+	top: 37px;
+    display: block;
+    width: 465px;
+    height: 40px;
+    overflow-y: scroll;
+    white-space:normal;
+    word-break:break-word;
+    font-size: 16px;
+}
+
+/*Define the scroll-bar style*/
+#order_rejected_reason_content::-webkit-scrollbar {
+    width: 3px;
+    background: transparent;
+}
+
+/* Define the scroll-bar's track style */
+#order_rejected_reason_content::-webkit-scrollbar-track {
+    border-radius: 3px;
+}
+
+/* Define the scroll-bar's slider style */
+#order_rejected_reason_content::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    height: 30px;
+    background-color: #333;
+}
+
+#order_detail_region {
+	left: 510px;
+    top: 357px;
+    width: 450px;
+    height: 23px;
+    font-size: 20px;
+    color: #2F2F16;
+    font-weight: 800;
+}
+
+#order_detail_region_summary {
+	left: 510px;
+    top: 399px;
+    width: 300px;
+    position: relative;
+    display: block;
+}
+
+.order_detail_summary_title_and_content {
+    width: 450px;
+    margin-bottom: 25px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.order_detail_summary_title {
+    font-size: 16px;
+    color: #2F2F16;
+}
+
+.order_detail_summary_content {
+    font-size: 16px;
+    color: #2F2F16;
+}
+
+#close_btn {
+    left: 417px;
+    top: 595px;
+    width: 150px;
+    height: 40px;
+    font-weight: 800;
+    color: #4F3000;
+}
+
+#close_btn>button {
+    width: 150px;
+    height: 40px;
+    background: inherit;
+    background-color: rgba(255, 153, 0, 1);
+    border: none;
+    border-radius: 1px;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 1);
+    font-weight: 800;
+    color: #4F3000;
+    font-size: 13px;
+}
+
+.order_item_quantity {
+	left: 390px;
+	top: 6px;
+}
+
+.order_content {
+	background: #fff;
+}
+
+.order_title {
+	background: #f9f9e3;
+}
+
+.orderDetailShadow {
+	position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 10000px;
+    height: 10000px;
+    background-color: rgb(0, 0, 0);
+    opacity: 0.607843;
+    z-index: 1001;
+}
+
+/*Define the scroll-bar style*/
+#order_items::-webkit-scrollbar {
+    width: 3px;
+    background: transparent;
+}
+
+/*Define the scroll-bar's track style*/
+#order_items::-webkit-scrollbar-track {
+    border-radius: 3px;
+}
+
+/*Define the scroll-bar's slider style*/
+#order_items::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    height: 100px;
+    background-color: #333;
+}
+
+.new_label {
+    width: 37px;
+    height: 23px;
+    background-color: rgba(255, 153, 0, 1);
+    border: none;
+    border-radius: 12px;
+    box-shadow: none;
+    font-size: 11px;
+    color: #FFFFFF;
+    text-align: center;
+    position: relative;
+    left: -20px;
+    top: -2px;
+    display: inline-block;
+    padding-top: 4px;
+}
+
+.assets_content {
+	width: 250px;
+	height: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+}
+
+.quantity {
+	font-weight: 700;
+}
+
+.ellipsis {
+	position: relative;
+    left: -15px;
+    font-weight: 700;
+}
+
+.order_status {
+	position: relative;
+    left: -20px;
+}
+
+.order_item_description {
+	left: 125px;
+    width: 260px;
+    font-size: 12px;
+    top: 28px;
+}
+
+.order_item_title {
+    width: 234px;
+    left: 125px;
+}
+
+.item_title>div>p>span {
+	width: 234px;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.order_item_description>div>p>span {
+	word-break: break-word;
+}
+
+#footer {
+	top: 874px;
+}
+
+#order_buttons {
+	top: 680px;
+	left: 480px;
+	width: 190px;
+}
+
+#page_number {
+    top: 690px;
+    left: 517px;
+    font-size: 16px;
+	width: 116px;
+    height: 21px;
+    display: flex;
+    text-align: center;
+}
+
+.pre_btn.active, .pre_btn:active, .next_btn.active, .next_btn:active {
+	box-shadow: none;
+}
+
+.next_btn {
+	margin-left: 89px;
+}
+
+#page_number>p {
+	width: 100%;
+}

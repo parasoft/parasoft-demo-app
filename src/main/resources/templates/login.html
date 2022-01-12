@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:ng="http://angularjs.org" xmlns:th="http://www.thymeleaf.org" ng-app="loginApp">
+<head>
+	<meta charset="UTF-8">
+	<title translate="PROJECT_NAME"></title>
+	<link rel="icon" href="/common/images/favicon.ico" type="image/x-icon">
+	<link rel="stylesheet" type="text/css" href="/lib/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="/common/css/common.css">
+	<link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/style.css'">
+	<link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/login.css'">
+</head>
+
+<body>
+	<div ng-include="'/common/pages/header.html'" ng-controller="headerController"></div>
+	<div class="content" ng-controller="loginController as login">
+		<div id="login_box" class="common_industry">
+			<div id="login_box_div" class="common_div"></div>
+		</div>
+		<div id="login_border" class="common_industry">
+			<div id="login_border_img" class="common_div"></div>
+		</div>
+		<div id="login_title" class="common_industry login_text industry_font">
+			<div class="common_div"></div>
+				<p><span translate="SIGN_IN"></span></p>
+			</div> 
+		<form class="form-signin industry_font" method="POST" novalidate="novalidate" action="/login" ng-submit="login.onSubmit()">
+			<div ng-if="login.isError" id="error_message" class="common_industry">
+				<font class="login_text" color='red'><b translate="LOGIN_ERROR_TEXT"></b></font>
+			</div>
+			<div id="username" class="common_industry login_text">
+				<p><span translate="USER_NAME"></span>:</p>
+			</div>
+			<div id="username_input" class="common_industry login_text">
+				<input type="text" class="login_text input_text self-format" ng-model="login.credentials.username" name="username">
+			</div>
+			<div id="password" class="common_industry login_text">
+				<p><span translate="USER_PASSWORD"></span>:</p>
+			</div>
+			<div id="password_input" class="common_industry login_text">
+				<input type="password" class="login_text input_text self-format" ng-model="login.credentials.password"
+					name="password">
+			</div>
+			<div id="submit_button"  class="common_industry industry_font"> 
+				<button class="btn common_div industry_font" type="submit" translate="SIGN_IN"></button>
+			</div>
+		</form>
+	</div>
+	<div ng-include="'common/pages/footer.html'"></div>
+	
+	<script type="text/javascript" src="/lib/jquery/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript" src="/lib/bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/lib/angularjs/angular.min.js"></script>
+	<script type="text/javascript" src="/lib/angularjs/angular-translate.min.js"></script>
+	<script type="text/javascript" src="/lib/angularjs/angular-translate-loader-url.min.js"></script>
+	<script type="text/javascript" src="/lib/toastr/toastr.min.js"></script>
+	<script type="text/javascript" src="/common/js/common.js"></script>
+	<script type="text/javascript" src="/common/js/login.js"></script>
+</body>
+</html>

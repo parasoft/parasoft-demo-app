@@ -1,0 +1,319 @@
+#order_title {
+	left: 30px;
+	top: 135px;
+	width: 684px;
+	height: 55px;
+	display: flex;
+	font-size: 36px;
+	font-weight: 700;
+	color: #33424D;
+}
+
+#order_wizard {
+	left: 210px;
+	top: 223px;
+}
+
+#submit_status{
+	font-size: 20px;
+}
+
+.font_bold{
+	font-weight: bold;
+}
+
+.breadcrumb {
+	background-color: #f5f5f500;
+	font-size: 20px;
+	padding-left: 0px;
+}
+
+.breadcrumb>.active {
+	color: #333;
+}
+
+.breadcrumb>.non-active {
+	color: #7772726b;
+}
+
+.breadcrumb>li+li:before {
+	content: "\003E";
+	color: #7772726b;
+}
+
+.clickable {
+	cursor: pointer;
+}
+
+.wizard_title {
+	left: 0px;
+	top: 137px;
+	width: 80%;
+	height: 23px;
+	font-size: 20px;
+}
+
+.wizard_btn_position {
+	left: 0px;
+	top: 67px;
+	width: 160px;
+	min-height: 40px;
+}
+
+.wizard_btn {
+	background-color: rgba(255, 153, 0, 1);
+	border: 1px solid;
+	min-height: 40px;
+	box-sizing: border-box;
+	border-width: 1px;
+	border-style: solid;
+	border-color: rgba(121, 73, 0, 1);
+	border-radius: 1px;
+	box-shadow: 1px 1px 1px rgba(0, 0, 0, 1);
+	font-weight: 400;
+	font-style: normal;
+	color: #4F3000;
+	font-size: 13px;
+	border-radius: 6px;
+}
+
+#region, #campaign_id {
+	left: 20px;
+	top: 185px;
+    width: 300px;
+	height: 32px;
+	font-size: 14px;
+}
+
+#region_select, #campaign_id_input {
+	left: 20px;
+	top: 203px;
+	width: 300px;
+	height: 37px;
+	color: #333333;
+	border: 1px solid #333;
+	font-size: 14px;
+}
+
+#platoon_id, #service_number {
+	left: 20px;
+	top: 265px;
+	width: 300px;
+	height: 32px;
+	font-size: 14px;
+}
+
+#platoon_id_input, #service_number_input {
+	left: 20px;
+	top: 282px;
+	width: 300px;
+	height: 37px;
+	color: #333;
+	border: 1px solid #333;
+}
+
+#get_location {
+	left: 20px;
+	top: 341px;
+	min-height: 40px;
+}
+
+#position_info {
+    left: 170px;
+    top: 354px;
+    width: 227px;
+    height: 19px;
+    font-size: 16px;
+}
+
+#map {
+	left: 363px;
+	top: 103px;
+	width: 446px;
+	height: 326px;
+}
+
+#map>img {
+	width: 100%;
+	height: 100%;
+	border: 4px solid #47481e;
+}
+
+#get_location>button, #get_location>button[disabled]:hover{
+	background-color: rgba(251, 243, 227, 1);
+}
+
+#assign_to_campaign, #assign_to_campaign>button, #submit_for_approval, #submit_for_approval>button {
+	width: 236px;
+    text-align: center;
+    border-radius: 6px;
+}
+
+#review_summary {
+	width: 1000px;
+	height: 1000px;
+	display: flex;
+	font-size: 20px;
+}
+
+.orderInfoFormat {
+    position: relative;
+}
+
+.orderInfoContentFormat1 {
+	top: -10px;
+	left: 205px;
+    width: 200px;
+}
+
+.orderInfoContentFormat2 {
+	top: -20px;
+	left: 205px;
+    width: 200px;
+}
+
+.orderInfoContentFormat3 {
+	top: -26px;
+	left: 205px;
+    width: 200px;
+}
+
+.orderInfoContentFormat4 {
+    top: -10px;
+	left: 205px;
+    width: 200px;
+}
+
+.orderInfoContentFormat5 {
+	top: -21px;
+	left: 205px;
+    width: 200px;
+}
+
+.summary_title1, .summary_title2, .summary_title3 {
+	font-size: 15px;
+	width: 200px;
+}
+
+.summary_title1 {
+	top: 10px;
+}
+
+.summary_title2 {
+	top: 0px;
+}
+
+.summary_title3 {
+	top: -6px;
+}
+
+#region_summary {
+	font-size: 20px;
+	left: -20px;
+    position: relative;
+}
+
+#summary_content {
+	left: 20px;
+	width: 400px;
+}
+
+#assigned_campaign_summary {
+	margin-top: 15px;
+	margin-left: -20px;
+	font-size: 20px
+}
+
+#assigned_campaign_summary_content {
+	left: 20px;
+	top: 223px;
+	width: 250px;
+}
+
+#summary_map {
+	left: 430px;
+	top: 2px;
+	width: 442px;
+	height: 326px;
+}
+
+#summary_map>img{
+	width: 100%;
+    height: 100%;
+    border: 4px solid #47481e;
+}
+
+#go_to_review, #go_to_review>button {
+	width:160px;
+}
+
+#summaries {
+	top: 450px;
+    left: 0px;
+    width: 300px;
+}
+
+#items {
+	top: 163px;
+    position: absolute;
+    width: 733px;
+    left: 0;
+    height: 245px;
+    overflow-y: scroll;
+}
+
+.wizard_item_description {
+	left: 125px;
+    width: 260px;
+    font-size: 12px;
+}
+
+#requisition_order {
+	left: 1079px;
+}
+
+#requisition_order_amount {
+	left: 1100px;
+}
+
+#to_demo_admin_button {
+	left: 1030px;
+}
+
+.wizard_item_description>div>p>span {
+	word-break: break-word;
+}
+
+.item_title {
+	width: 234px;
+}
+
+.item_title>div>p>span {
+	width: 234px;
+}
+
+#return_to_home {
+    left: 30px;
+}
+
+#footer {
+	top: 874px;
+}
+
+/*Define the scroll-bar style*/
+#items::-webkit-scrollbar {
+    width: 3px;
+    background: rgb(240 240 230);
+}
+
+/*Define the scroll-bar's track style*/
+#items::-webkit-scrollbar-track {
+    border-radius: 3px;
+}
+
+/*Define the scroll-bar's slider style*/
+#items::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    height: 100px;
+    background-color: #333;
+}

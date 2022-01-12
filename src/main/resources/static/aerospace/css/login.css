@@ -1,0 +1,124 @@
+body {
+	color: #C2EAFB;
+}
+
+#login_border {
+	left: 373px;
+	top: 264px;
+	width: 455px;
+	height: 341px;
+}
+
+#login_border_img {
+	width: 455px;
+	height: 341px;
+	background-image: url(/aerospace/images/login_border.svg);
+}
+
+#footer {
+	top: 874px;
+}
+
+#submit_button {
+	left: 540px;
+	top: 494px;
+	width: 120px;
+	height: 40px;
+	font-weight: 700;
+	font-size: 16px;
+	color: #333333;
+}
+
+#submit_button>button {
+	width: 120px;
+	height: 40px;
+	background-color: rgba(204, 136, 55, 1);
+	border-radius: 20px;
+	box-shadow: 1px 1px 1px rgba(0, 0, 0, 1);
+	font-weight: 700;
+	font-size: 16px;
+	color: #333333;
+}
+
+.login_text {
+	font-size: 14px;
+}
+
+#username {
+	left: 463px;
+}
+
+#username_input>input, #password_input>input {
+	color: #20200A;
+}
+
+#password {
+	left: 463px;
+}
+
+#error_message {
+	top: 315px;
+	left: 463px;
+}
+
+#error_message>font {
+	color: red;
+}
+
+#password_input>input {
+	font-size: 25px;
+}
+
+.modal-dialog{
+	top: 175px;
+}
+
+.modal-title {
+	text-align: center;
+	font-size: 20px;
+	font-weight: 800;
+}
+
+.modal-header {
+	border-bottom: none;
+}
+
+.modal-content {
+	width: 684px;
+	background: #333;
+	border: 1px solid;
+	top: 65px;
+}
+
+.modal-footer {
+	text-align: center;
+	border-top: none;
+}
+
+.modal_ok_btn {
+	border-radius: 20px;
+	box-shadow: 1px 1px 1px rgba(0, 0, 0, 1);
+	font-weight: 700;
+	font-size: 14px;
+	color: #333333;
+	width: 94px;
+}
+
+.modal_ok_btn:hover, .modal_ok_btn:active, .modal_ok_btn:focus,
+	.modal_ok_btn:active:focus {
+	background: #fff;
+	color: #333;
+}
+
+.table_title {
+	background: #c2eafb45;
+}
+
+.table{
+	width: 70%;
+	margin: auto;
+}
+
+th{
+	text-align: center;
+}

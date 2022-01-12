@@ -1,0 +1,442 @@
+body {
+	background-color: rgba(0, 0, 0, 1);
+}
+
+#background_img {
+	background-image: url(/aerospace/images/background.svg);
+}
+
+.assets_category_box_img {
+	background-image: url(/aerospace/images/category_box.svg);
+}
+
+.category_dark_overlay {
+	background-image: url(/aerospace/images/category_dark_overlay.svg);
+}
+
+.industry_font {
+	font-family: 'Orbitron-Bold', 'Orbitron Bold', 'Orbitron', sans-serif;
+}
+
+#right_side_title, #right_side_content1_text, #right_side_content2_text,
+#right_side_content3_text, #assets_title, .dropdown-item, #asset_type, 
+.font_color2 {
+	color: #C2EAFB;
+}
+
+.font_color1 {
+	color: #E7FFA1;
+}
+
+.unClickable_color1 {
+	color: #e7ffa178;
+}
+
+@font-face {
+	font-family: 'Orbitron Bold';
+	font-style: normal;
+	font-weight: 700;
+	src: local('Orbitron Bold'), local('Orbitron-Bold'),
+		url(https://fonts.gstatic.com/s/orbitron/v11/yMJWMIlzdpvBhQQL_QIAUjh2qtU.ttf)
+		format('truetype');
+}
+
+@font-face {
+	font-family: 'Roboto';
+	font-style: normal;
+	font-weight: 400;
+	src: local('Roboto'), local('Roboto-Regular'),
+		url(https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu4mxP.ttf)
+		format('truetype');
+}
+
+#top_side_div {
+	background: linear-gradient(180deg, rgba(3, 57, 81, 1) 14%,
+		rgba(0, 0, 0, 1) 100%);
+}
+
+#requisitions {
+	left: 915px;
+	top: 65px;
+	width: 105px;
+	height: 19px;
+	font-size: 16px;
+}
+
+#background {
+	border-width: 0px;
+	position: absolute;
+	left: 0px;
+	top: 95px;
+	width: 1200px;
+	height: 720px;
+	display: flex;
+}
+
+#footer {
+	top: 1427px;
+}
+
+#footer_div {
+	background: linear-gradient(0deg, rgba(51, 32, 10, 1) 47%,
+		rgba(0, 0, 0, 1) 100%);
+}
+
+#background_img {
+	border-width: 0px;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 1200px;
+	height: 720px;
+}
+
+.self-format {
+	background-color: rgba(255, 255, 255, 1);
+	box-sizing: border-box;
+	border-width: 1px;
+	border-style: solid;
+	border-color: rgba(182, 221, 238, 1);
+	border-radius: 16px;
+	box-shadow: none;
+	font-family: 'Orbitron-Bold', 'Orbitron Bold', 'Orbitron', sans-serif;
+	font-weight: 700;
+	font-style: normal;
+	font-size: 14px;
+	color: #20200A;
+}
+
+.dropdown-menu {
+	background-color: rgba(3, 57, 81, 1);
+}
+
+#search_button_btn {
+	background-color: rgba(204, 136, 55, 1);
+	border-radius: 20px;
+	font-weight: 700;
+}
+
+#search_button_div {
+    width: 140px;
+    height: 40px;
+    background-color: rgba(204, 136, 55, 1);
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 1);
+    font-weight: 700;
+    font-size: 16px;
+    color: #333333;
+    border-radius: 20px;
+}
+
+.assets_category_description, .assets_category_description_div {
+	width: 235px;
+	height: 94px;
+	font-family: 'Ubuntu-Regular', 'Ubuntu', sans-serif;
+	color: #C2EAFB;
+	font-size: 12px;
+	font-weight: 700;
+}
+
+#advertisement_button_div, #advertisement_button_text {
+	width: 140px;
+	height: 40px;
+	background: inherit;
+	background-color: rgba(204, 136, 55, 1);
+	border: none;
+	border-radius: 20px;
+	box-shadow: 1px 1px 1px rgba(0, 0, 0, 1);
+	font-weight: 700;
+	font-style: normal;
+	font-size: 16px;
+	color: #333333;
+}
+
+.assets_category_title {
+	font-size: 20px;
+	width: 130px;
+}
+
+#requisition_box_div {
+    background-color: rgba(51, 51, 51, 1);
+    box-sizing: border-box;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(182, 221, 238, 1);
+    border-radius: 0px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.349019607843137);
+}
+
+#requisition_title{
+    font-weight: 700;
+    color: #C2EAFB;
+}
+
+#assets_to_deploy {
+	font-family: 'Ubuntu-Regular', 'Ubuntu', sans-serif;
+    font-size: 20px;
+    line-height: 15px;
+    color: #C2EAFB;
+}
+
+#requisition_cross {
+	font-weight: 700;
+	font-size: 24px;
+}
+
+.requisition_item_title {
+	font-weight: 700;
+}
+
+.requisition_item_title>div>p>a>span {
+	width: 370px;
+}
+
+.content_text {
+	background-color: rgba(0,0,0,0);
+    font-family: 'Ubuntu-Regular', 'Ubuntu', sans-serif;
+    font-size: 12px;
+    color: #C2EAFB;
+    line-height: 15px;
+}
+
+.requisition_item_number_input {
+    padding: 2px 2px 2px 2px;
+    background-color: rgba(255, 255, 255, 1);
+    box-sizing: border-box;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(182, 221, 238, 1);
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 14px;
+    color: #20200A;
+    text-align: center;
+}
+
+.requisition_button {
+    background-color: rgba(204, 136, 55, 1);
+    border-radius: 20px;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 1);
+    font-family: 'Orbitron-Bold', 'Orbitron Bold', 'Orbitron', sans-serif;
+    font-weight: 700;
+    font-style: normal;
+    color: #fff;
+}
+
+.requisition_remove {
+    left: 565px;
+    width: 64px;
+    height: 20px;
+    font-size: 12px;
+    color: #117563;
+    text-align: center;
+}
+
+.requisition_remove_row1 {
+	top: 252px;
+}
+
+.requisition_remove_row2 {
+	top: 377px;
+}
+
+.related_button {
+	font-weight: 700;
+	font-size: 12px;
+	padding-top: 7px;
+	color: #C2EAFB;
+}
+
+.related_button_div {
+    width: 157px;
+    height: 30px;
+    background-color: rgba(122, 141, 149, 1);
+    border-radius: 20px;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 1);
+    font-weight: 700;
+    color: #B6DDEE;
+}
+
+#related_asset_box_img {
+	top: 566px;
+    width: 187px;
+    height: 262px;
+    display: flex;
+}
+
+#related_asset_title {
+    font-weight: 800;
+    font-size: 16px;
+}
+
+#related_asset_description {
+	color: #C2EAFB;
+	font-family: 'Ubuntu-Bold', 'Ubuntu Bold', 'Ubuntu', sans-serif;
+    line-height: 15px;
+}
+
+#related_asset_available {
+    font-family: 'Ubuntu-Bold', 'Ubuntu Bold', 'Ubuntu', sans-serif;
+    font-weight: 700;
+    color: #C2EAFB;
+    line-height: 15px;
+}
+
+#requsition_detail_box_div {
+    width: 390px;
+    height: 365px;
+    background-color: rgba(51, 51, 51, 1);
+    box-sizing: border-box;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(182, 221, 238, 1);
+    border-radius: 0px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.349019607843137);
+}
+
+#requsition_detail_title, #requsition_detail_available {
+	font-weight: 700;
+	color: #C2EAFB;
+}
+
+.submit_button_text, #detail_button {
+    width: 241px;
+    height: 40px;
+    background-color: rgba(204, 136, 55, 1);
+    border: none;
+    border-radius: 20px;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 1);
+    font-weight: 700;
+    color: #20200A;
+}
+
+#detail_button {
+	font-size: 13px;
+}
+
+#related_asset {
+	color: #C2EAFB;
+}
+
+#requsition_detail_description {
+	color: #C2EAFB;
+	font-family: 'Ubuntu-Regular', 'Ubuntu', sans-serif;
+}
+
+#requsition_detail_input {
+	left: 142px;
+    width: 107px;
+    height: 37px;
+}
+
+.requsition_detail_input_number {
+    width: 107px;
+    height: 37px;
+    background-color: rgba(255, 255, 255, 1);
+    box-sizing: border-box;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(182, 221, 238, 1);
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 14px;
+    color: #20200A;
+    text-align: center;
+}
+
+#requsition_detail_minus {
+	left: 98px;
+    width: 37px;
+    height: 37px;
+}
+
+#requsition_detail_plus {
+	left: 256px;
+    width: 37px;
+    height: 37px;
+}
+
+#confirm_button {
+	left: 98px;
+}
+
+#detail_button {
+	width: 195px;
+    height: 40px;
+}
+
+#requsition_detail_available {
+	color: #C2EAFB;
+	font-family: 'Ubuntu-Regular', 'Ubuntu', sans-serif;
+	width: 210px;
+	left: -3px;
+}
+
+#shopping_cart {
+    width: 688px;
+}
+
+.in_stock {
+	left: -8px;
+    position: relative;
+}
+
+/* loading animation */
+.sp-3balls, .sp-3balls:before, .sp-3balls:after {
+  border-radius: 50%;
+  background-color: #C2EAFB;
+  width: 8px;
+  height: 8px;
+  transform-origin: center center;
+  display: inline-block;
+}
+
+.amount_text {
+    padding-left: 1px;
+    padding-top: 1px;
+    font-size: 8px;
+}
+
+.unreviewedNum {
+	padding-right: 2px;
+    padding-top: 2px;
+}
+
+.requisition_detail_button {
+    width: 37px;
+    height: 37px;
+}
+
+#right_navigation_bar {
+	top: 80px;
+}
+
+.retract_format{
+	display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.breadcrumb {
+    background-color: #f5f5f500;
+    padding-left: 0px;
+}
+
+.breadcrumb>li+li:before {
+    content: "\003E";
+    color: #E7FFA1;
+}
+
+#return_to_home {
+	left: 30px;
+	top: 102px;
+	width: 143px;
+	height: 22px;
+	font-weight: 400;
+	font-size: 14px;
+	text-align: left;
+}
+
+.logout:hover {
+	color: #C2EAFB
+}

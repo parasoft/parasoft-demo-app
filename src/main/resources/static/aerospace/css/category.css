@@ -1,0 +1,227 @@
+#return_to_home {
+ 	left: 6px;
+    top: -35px;
+    width: 165px;
+    height: 22px;
+	font-size: 18px;
+	font-weight: 700;
+}
+
+#return_to_home_div {
+	width: 165px;
+	height: 22px;
+	font-size: 18px;
+}
+
+#search {
+	top: 2px;
+	left: 556px;
+}
+
+#search_text, #search_text_input {
+	width: 333px;
+}
+
+#search_text_div {
+    width: 333px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 1);
+    box-sizing: border-box;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(182, 221, 238, 1);
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 16px;
+    color: #20200A;
+}
+
+#search_button {
+    top: 10px;
+    left: 303px;
+    cursor: pointer;
+}
+
+#asset_type {
+	left: 4px;
+	width: 235px;
+	height: 22px;
+	font-weight: 800;
+	font-size: 36px;
+}
+
+#asset_type_div {
+	width: 235px;
+	height: 22px;
+	font-weight: 800;
+	font-size: 28px;
+}
+
+#availability_region {
+	left: 0px;
+	top: 123px;
+	width: 264px;
+	height: 318px;
+}
+
+#availability_region_box {
+	position: absolute;
+	left: 15px;
+    top: 140px;
+}
+
+.region_box_img {
+	width: 100%;
+	height: 100%;
+	background-image: url(/aerospace/images/region_box.svg);
+}
+
+#availability_region_title {
+    left: 15px;
+    top: 140px;
+    width: 239px;
+    font-weight: 700;
+    font-size: 18px;
+    color: #C2EAFB;
+    margin-bottom: 5px;
+}
+
+#availability_region_title_div {
+	width: 249px;
+	height: 22px;
+	font-weight: 800;
+	font-size: 20px;
+	color: #C2EAFB;
+}
+
+.region_label {
+	display: block;
+	font-weight: bold;
+}
+
+.regions {
+	font-size: 15px;
+	color: #C2EAFB;
+	font-family: 'Ubuntu';
+	font-weight:700;
+}
+
+#item_select {
+    left: 1018px;
+    top: 80px;
+    width: 123px;
+    height: 30px;
+    display: flex;
+    font-size: 14px;
+    color: #2F2F16;
+}
+
+#item_select_div {
+    width: 119px;
+    height: 30px;
+    background-color: rgba(255, 255, 255, 1);
+    box-sizing: border-box;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(182, 221, 238, 1);
+    border-radius: 20px;
+    font-size: 14px;
+    color: #20200A;
+}
+
+.item_filter {
+    width: 119px;
+    height: 30px;
+    padding: 2px 10px 2px 10px;
+    font-family: 'Ubuntu-Regular', 'Ubuntu', sans-serif;
+    font-size: 14px;
+    color: #20200A;
+    text-align: left;
+    text-transform: none;
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.add_to_requisition {
+    width: 181px;
+    font-weight: 700;
+    color: #C2EAFB;
+}
+
+#add_to_requisition_btn {
+    width: 181px;
+    background: inherit;
+    background-color: rgba(122, 141, 149, 1);
+    box-sizing: border-box;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(182, 221, 238, 1);
+    border-radius: 20px;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 1);
+    font-weight: 700;
+    color: #C2EAFB;
+}
+
+#add_to_requisition_text {
+	position: absolute;
+    align-self: center;
+    box-sizing: border-box;
+    width: 100%;
+    text-align: center;
+    padding-bottom: 5px;
+}
+
+.add_to_requisition_color {
+	color: #C2EAFB;
+}
+
+#requisition_amount {
+	color: #20200A;
+}
+
+.assets_category_content, .assets_category_content_div {
+    font-weight: 700;
+}
+
+input:checked::before {
+    content: "";
+    display: inline-block;
+    position: absolute;
+    width: 12.8px;
+    height: 12.8px;
+    left: 0;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background-color: #fff;
+}
+
+input:checked::after {
+    content: "";
+    position: absolute;
+    left: 3px;
+    width: 6px;
+    height: 12px;
+    border-right: 3px solid #333;
+    border-bottom: 3px solid #333;
+    transform: rotate(45deg);
+}
+
+#items_breadcrumb {
+	left: 6px;
+    top: -48px;
+    width: 500px;
+    height: 22px;
+}
+
+.orderContent {
+    -webkit-line-clamp: 2;
+    white-space: normal;
+}
+
+#footer {
+	top: 874px;
+}
+
+.requisition_dark_overlay {
+	background-image: url(/aerospace/images/requisition_dark_overlay.svg);
+}
