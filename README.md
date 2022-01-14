@@ -29,6 +29,11 @@ Or as a .war file with Java (after building):
 ```
 java -jar build/libs/parasoft-demo-app-1.1.0.war
 ```
+#### Changing server port
+When launching the app, you can specify the port to use with a command like the following:
+```
+./gradlew bootRun -Pport=8888'
+```
 ## Using the Demo Application
 Once started, you can access the application at [http://localhost:8080](http://localhost:8080).
 
