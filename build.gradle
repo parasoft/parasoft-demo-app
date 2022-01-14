@@ -6,11 +6,6 @@ plugins {
 	id 'maven-publish'
 }
 
-def pdaSnapshotsRepoUrl = project.hasProperty("pdaSnapshotsRepoUrl") ? pdaSnapshotsRepoUrl : "http://nexus.parasoft.com.cn:8081/nexus/content/repositories/pda-snapshots/"
-// Need to specify the Nexus repository user name and password in the Gradle build command.
-def repoUsername = project.hasProperty("repoUsername") ? repoUsername : ""
-def repoPassword = project.hasProperty("repoPassword") ? repoPassword : ""
-
 group = 'com.parasoft.demoapp'
 version = '1.1.0'
 sourceCompatibility = '1.8'
@@ -25,6 +20,12 @@ if (project.hasProperty("gitCommitHash")) {
 	buildMetadata += '.' + gitCommitHash
 }
 def buildVersion = version + '_' + buildMetadata
+if(!project.hasProperty("port"))
+    project.ext.set("port", 8080)
+
+bootRun {
+    args += ["--server.port=${project.port}"]
+}
 
 configurations {
 	compileOnly {
@@ -138,32 +139,6 @@ springBoot {
 			additional = [
 					'id': buildMetadata
 			]
-		}
-	}
-}
-
-publishing {
-	publications {
-		DemoApp(MavenPublication) {
-			groupId = 'com.parasoft.demoapp'
-			artifactId = 'com.parasoft.demoapp'
-			version = buildVersion
-			artifact bootWar
-		}
-	}
-
-	repositories {
-		maven {
-			name = 'Snapshots'
-			if (project.hasProperty('localPublishTest')) {
-				url = "$buildDir/repos/snapshots"
-			} else {
-				url = pdaSnapshotsRepoUrl
-				credentials {
-					username repoUsername
-					password repoPassword
-				}
-			}
 		}
 	}
 }
