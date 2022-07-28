@@ -31,12 +31,9 @@ out/
 .vscode/
 
 ### PDA ###
-/config/application.properties
 /bin/**
 application.pid
 /config/
 /pda-db/
-/pda-db.properties
-/pda-db.script
-**/pda-db/**
-**/pda-files/uploaded_images/**
+/pda-files/
+/src/main/resources/META-INF/
