@@ -50,14 +50,15 @@ public class ParasoftJDBCProxyServiceSpringTest {
 		// Given
 		// Switch to proxy first time
 		String parasoftVirtualizeServerUrl = "server url";
-		String parasoftVirtualizeServerPath = "/myVirtualDB";
+		String parasoftVirtualizeServerPath = "myVirtualDB";
+		String parasoftVirtualizeServerPathStartWithBackSlash = "/" + parasoftVirtualizeServerPath;
 		String parasoftVirtualizeGroupId = "pda-group";
 
 		String currentIndustry = IndustryRoutingDataSource.currentIndustry.getValue();
 		IndustryRoutingDataSource.useParasoftJDBCProxy = true;
 		IndustryRoutingDataSource.isParasoftVirtualizeServerUrlConnected = true;
 		IndustryRoutingDataSource.parasoftVirtualizeServerUrl = parasoftVirtualizeServerUrl;
-		IndustryRoutingDataSource.parasoftVirtualizeServerPath = parasoftVirtualizeServerPath;
+		IndustryRoutingDataSource.parasoftVirtualizeServerPath = parasoftVirtualizeServerPathStartWithBackSlash;
 		IndustryRoutingDataSource.parasoftVirtualizeGroupId = parasoftVirtualizeGroupId;
 
 		// When
