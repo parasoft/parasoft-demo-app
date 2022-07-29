@@ -68,7 +68,7 @@ public class ParasoftJDBCProxyService {
 
         // PDA-952 virtualizeServerPath should not start with "/"
         String serverPath = IndustryRoutingDataSource.parasoftVirtualizeServerPath;
-        if("/".equals(serverPath.substring(0, 1))) {
+        if (serverPath.indexOf("/") == 0) {
             serverPath = serverPath.substring(1);
         }
 
