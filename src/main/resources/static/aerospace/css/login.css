@@ -122,3 +122,15 @@ body {
 th{
 	text-align: center;
 }
+
+#forgotPasswordModal .dismiss-btn{
+	border-radius: 20px;
+}
+
+#forgot_password a {
+	color: #E7FFA1;
+}
+
+.table-header {
+	background-color: #596469;
+}

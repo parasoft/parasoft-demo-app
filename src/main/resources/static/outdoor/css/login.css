@@ -95,7 +95,7 @@
 
 .modal-content {
 	width: 684px;
-	background: rgba(249, 249, 227, 1);
+	background: rgba(249, 249, 249, 1);
 	top: 65px;
 }
 
@@ -126,4 +126,8 @@
 
 th{
 	text-align: center;
+}
+
+#forgot_password a {
+	color: #0366AE;
 }

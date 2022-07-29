@@ -2003,3 +2003,40 @@ label {
 .error_message_block {
 	word-wrap:break-word
 }
+
+.password-table {
+	margin: auto;
+	font-size: 20px;
+}
+
+.password-table td {
+	width: 200px;
+	text-align: center;
+	border: 1px solid lightgrey;
+	padding: 5px;
+}
+
+.password-table tr span{
+	font-weight: bold;
+}
+
+#forgotPasswordModal .modal-content {
+	width: 600px;
+}
+
+#forgotPasswordModal .dismiss-btn{
+	border-color: rgba(55, 67, 76, 1);
+	border-radius: 6px;
+	width: 140px;
+	height: 40px;
+}
+
+#forgot_password {
+    top: 555px;
+    width: 100%;
+    justify-content: center;
+}
+
+#forgot_password a {
+	cursor: pointer;
+}
