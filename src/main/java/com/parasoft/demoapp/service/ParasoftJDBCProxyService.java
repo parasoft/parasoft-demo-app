@@ -66,9 +66,15 @@ public class ParasoftJDBCProxyService {
             }
         }
 
+        // PDA-952 virtualizeServerPath should not start with "/"
+        String serverPath = IndustryRoutingDataSource.parasoftVirtualizeServerPath;
+        if (serverPath.indexOf("/") == 0) {
+            serverPath = serverPath.substring(1);
+        }
+
         // overwrite the default value
         System.setProperty(PARASOFT_JDBC_PROXY_VIRTUALIZE_SERVER_URL_KEY, IndustryRoutingDataSource.parasoftVirtualizeServerUrl);
-        System.setProperty(PARASOFT_JDBC_PROXY_VIRTUALIZE_SERVER_PATH_KEY, IndustryRoutingDataSource.parasoftVirtualizeServerPath);
+        System.setProperty(PARASOFT_JDBC_PROXY_VIRTUALIZE_SERVER_PATH_KEY, serverPath);
         System.setProperty(PARASOFT_JDBC_PROXY_VIRTUALIZE_GROUP_ID_KEY, IndustryRoutingDataSource.parasoftVirtualizeGroupId);
     }
 
