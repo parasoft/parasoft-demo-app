@@ -2,8 +2,8 @@ var DEFENSE = "defense";
 var AEROSPACE = "aerospace";
 var ROLE_APPROVER = "ROLE_APPROVER";
 var ROLE_PURCHASER = "ROLE_PURCHASER";
-var CURRENT_ROLE = CURRENT_ROLE = angular.element("#current_rolename").val();
-
+var CURRENT_ROLE = angular.element("#current_rolename").val();
+var CURRENT_USERNAME = angular.element("#current_username").val();
 function symbol(s, e){
     return s + 'dmi' + e;
 }
@@ -111,6 +111,7 @@ function initHeaderController(app){
 		//Get current role name
 		$rootScope.isPurchaser = angular.equals(CURRENT_ROLE, ROLE_PURCHASER);
 		$rootScope.isApprover = angular.equals(CURRENT_ROLE, ROLE_APPROVER);
+		$rootScope.username = CURRENT_USERNAME;
 
 		$rootScope.isShowAccount = true;
 		$rootScope.isShowOtherButtons = true;
