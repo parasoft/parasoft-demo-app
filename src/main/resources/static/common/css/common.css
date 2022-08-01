@@ -2007,6 +2007,7 @@ label {
 .password-table {
 	margin: auto;
 	font-size: 20px;
+    width: fit-content;
 }
 
 .password-table td {
@@ -2029,6 +2030,14 @@ label {
 	border-radius: 6px;
 	width: 140px;
 	height: 40px;
+}
+
+#forgotPasswordModal .modal-dialog {
+    width: fit-content;
+}
+
+#forgotPasswordModal .modal-content {
+    width: fit-content;
 }
 
 #forgot_password {

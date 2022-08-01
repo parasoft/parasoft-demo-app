@@ -44,40 +44,39 @@
 				<button class="btn common_div industry_font" type="submit" translate="SIGN_IN"></button>
 			</div>
 			<div id="forgot_password" class="common_industry login_text">
-				<a translate="FORGOT_PASSWORD" data-toggle="modal" data-target="#forgotPasswordModal"></a>
+				<a translate="FORGOT_PASSWORD" data-toggle="modal" href="#forgotPasswordModal"></a>
 			</div>
 		</form>
-	</div>
-	<div ng-include="'common/pages/footer.html'"></div>
-	<div class="modal fade industry_font" id="forgotPasswordModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close font_color1 green_text" data-dismiss="modal">×</button>
-					<h4 class="modal-title"><span translate="USER_INFORMATION"></span></h4>
-				</div>
-				<div class="modal-body">
-					<table class="password-table">
-						<tr class="table-header">
-							<td><span translate="USER_NAME"></span></td>
-							<td><span translate="USER_PASSWORD"></span></td>
-						</tr>
-						<tr>
-							<td>purchaser</td>
-							<td>password</td>
-						</tr>
-						<tr>
-							<td>approver</td>
-							<td>password</td>
-						</tr>
-					</table>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default dismiss-btn" data-dismiss="modal" translate="CLOSE"></button>
+		<div class="modal fade industry_font" id="forgotPasswordModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close font_color1 green_text" data-dismiss="modal">×</button>
+						<h4 class="modal-title"><span translate="USER_INFORMATION"></span></h4>
+					</div>
+					<div class="modal-body">
+						<table class="password-table">
+							<tr class="table-header">
+								<td><span translate="ROLE_NAME"></span></td>
+								<td><span translate="USER_NAME"></span></td>
+								<td><span translate="USER_PASSWORD"></span></td>
+							</tr>
+							<tr ng-repeat="userInfo in ::login.primaryUsersInformation">
+								<td >{{ userInfo.roleName === 'ROLE_PURCHASER' ? 'PURCHASER_TITLE' : 'APPROVER_TITLE' | translate }}</td>
+								<td ng-if="::userInfo.hasPrimaryUser">{{ ::userInfo.primaryUserInfo.userName }}</td>
+								<td ng-if="::userInfo.hasPrimaryUser">{{ ::userInfo.primaryUserInfo.password }}</td>
+								<td colspan="2" ng-if="::!userInfo.hasPrimaryUser" translate="NO_USER_WITH_THIS_ROLE"></td>
+							</tr>
+						</table>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default dismiss-btn" data-dismiss="modal" translate="CLOSE"></button>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+	<div ng-include="'common/pages/footer.html'"></div>
 
 	<script type="text/javascript" src="/lib/jquery/jquery-3.3.1.min.js"></script>
 	<script type="text/javascript" src="/lib/bootstrap/js/bootstrap.min.js"></script>

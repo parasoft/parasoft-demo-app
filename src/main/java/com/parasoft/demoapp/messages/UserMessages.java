@@ -11,6 +11,7 @@ public class UserMessages extends Messages {
 	public static final String USER_ID_CANNOT_NULL = "User ID should not be null.";
 	public static final String ROLE_NAME_EXISTS_ALREADY = "Role name {0} already exists.";
 	public static final String ROLE_NAME_NOT_FOUND = "Role with name {0} is not found.";
+	public static final String USER_ROLE_NOT_FOUND = "User with role {0} is not found";
 
 	public UserMessages() {
 		super("i18n/messages");
