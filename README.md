@@ -46,16 +46,16 @@ Login with one of these users:
 - Username `approver` password `password`
 
 ## HSQLDB JDBC configuration
-There are four databases in parasoft-demo-app, which are corresponding to `global`, `outdoor`, `defense` and `aerospace`.
+There are four databases in parasoft-demo-app, which are corresponding to **global**, **outdoor**, **defense** and **aerospace**.
 
-| Database  | Description                                         |
-|-----------|-----------------------------------------------------|
-| global    | Use to store the user, role and configuration data. |
-| outdoor   | Use to store the data about outdoor.                |
-| defense   | Use to store the data about defense.                |
-| aerospace | Use to store the data about aerospace.              |
+| Database  | Description                                          |
+|-----------|------------------------------------------------------|
+| global    | Used to store the user, role and configuration data. |
+| outdoor   | Used to store the data about outdoor.                |
+| defense   | Used to store the data about defense.                |
+| aerospace | Used to store the data about aerospace.              |
 
-When using parasoft-demo-app in IDE, there are databases' configuration files (only need to configure one of them):
+When using parasoft-demo-app in IDE, there are two configuration files can be used to configure databases(only need to configure one of them):
 - /src/main/resources/application.properties
 - /config/application.properties (Users can create the path and file by themselves)
 
@@ -88,10 +88,10 @@ industry.datasource.configurations.aerospace.username=SA
 industry.datasource.configurations.aerospace.password=
 industry.datasource.configurations.aerospace.driver-class-name=org.hsqldb.jdbcDriver
 ```
->Hint：When the parasoft-demo-app has started, then we can not use third-party tools to connect these databases. Also, when third-party tools has connected these databases, then the parasoft-demo-app can not been started.
+>Hint: Once parasoft-demo-app has been started up, we can not use third-party tools to connect these databases. Also, when third-party tools has connected these databases, the parasoft-demo-app can not been started up.
 
 ### HSQLDB Server configuration
-Start the HSQLDB Server first, and the server must contain the databases corresponding to global, outdoor, defense and aerospace.
+Start up the HSQLDB Server first, and the server must contain the databases corresponding to global, outdoor, defense and aerospace.
 Add the following code to application.properties file (would be enabled when restart the parasoft-demo-app):
 ```
 global.datasource.configuration.driver-class-name=org.hsqldb.jdbcDriver
@@ -116,10 +116,34 @@ industry.datasource.configurations.aerospace.password=
 ```
 
 ## Using Parasoft JDBC Proxy
-1. Find the `ParasoftJDBCDriver.jar` in `{SOAtest & Virtualize installation directory}/{version}/proxies`.
-2. Copy it to `{root of parasoft-demo-app}/lib`. If there is no lib folder, then create one.
-3. Go to `SOATest & Virtualize`, open `JDBC Drivers` preferences(parasoft -> preferences -> JDBC Drivers), and add the path of ParasoftJDBCDriver.jar.
-4. Start the server in `Virtualize Server` view.
-5. Enable the `PARASOFT JDBC PROXY` in PDA `Demo Admin` page, modify `started server's URL`, `Parasoft Virtualize Server path` and `Parasoft Virtualize group ID` if necessary.
-6. Go to `SOATest & Virtualize`, refresh the Server, if the `Parasoft JDBC Proxy` is enabled successfully, then there is a controller which has the same name of group ID under `JDBC Controllers`.
+1. Find the **ParasoftJDBCDriver.jar** in **{SOAtest & Virtualize installation directory}/{version}/proxies**.
+2. Copy it to **{root of parasoft-demo-app}/lib**. If there is no lib folder, then create one.
+3. Go to **SOATest & Virtualize**, open **JDBC Drivers** preferences(parasoft -> preferences -> JDBC Drivers), and add the path of ParasoftJDBCDriver.jar.
+4. Start the server in **Virtualize Server** view.
+5. Enable the **PARASOFT JDBC PROXY** in PDA **Demo Admin** page, modify **started server's URL**, **Parasoft Virtualize Server path** and **Parasoft Virtualize group ID** if necessary.
+6. Go to **SOATest & Virtualize**, refresh the Server, if the **Parasoft JDBC Proxy** is enabled successfully, then there is a controller which has the same name of group ID under **JDBC Controllers**.
 7. Change the settings of the controller to use.
+
+## Using SOAtest DB Tool
+1. Open **SOATest & Virtualize**, open **JDBC Drivers** preferences(parasoft -> preferences -> JDBC Drivers), and add the path of hsqldb driver.
+2. Create a tst file with **DB Tool** test.
+3. Open the **DB Tool** test, fill in correct information in **Connection** tab.
+   - If select the **File** option, then browse for the connection configuration file in your file system or workspace.
+   - If select the **Local** option, then specify the **Driver**, **URL**, **Username**, and **Password** of the database to be queried.
+
+| Option   | Value                                                                                                                                                                                                                                      |
+|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Driver   | `org.hsqldb.jdbcDriver`                                                                                                                                                                                                                    |
+| URL      | Should be the same as the configuration of [HSQLDB JDBC configuration](#hsqldb-jdbc-configuration) section. <br/>If you use embedded database, the URL should be <br/>`jdbc:hsqldb:file:{absoulte_path_to_database_dir}/{database_alias}`. |
+| Username | Should be the same as the configuration of [HSQLDB JDBC configuration](#hsqldb-jdbc-configuration) section. <br/>The default value is `SA` if the username is not changed.                                                                 |
+| Password | Should be the same as the configuration of [HSQLDB JDBC configuration](#hsqldb-jdbc-configuration) section. <br/>The default value is `''` if the password is not changed.                                                                 |
+
+>Hint1: You can't connect to database if parasoft-demo-app project is started base on embedded database since database files are locked.
+
+>Hint2: Click the **Export Configuration Settings** button can export the configuration Settings as a properties file, and this file can be used in **File** option.
+
+>Hint3: You can also enable the **Close connection** option to close the connection if you are querying the database once and do not need to wait for another command. 
+> Do not enable this option when you plan to connect multiple DB tools to the same DB so that all tools can share a connection. 
+> Sharing the connection improves resource efficiency, as opposed to using resources on a new connection for each DB tool.
+
+4. Write SQL statement in **SQL Query** tab, and run the test, the query results will be showed in **Traffic Object**.
