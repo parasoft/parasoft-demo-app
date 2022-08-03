@@ -5,7 +5,7 @@ setLocale(loginApp);
 initHeaderController(loginApp);
 initProductBuildInfo(loginApp);
 
-loginApp.controller('loginController', function($rootScope, $location, $window){
+loginApp.controller('loginController', function($rootScope, $location, $window, $http){
 	var login = this;
 	login.credentials = {};
 	login.onSubmit = onSubmit;
@@ -19,6 +19,16 @@ loginApp.controller('loginController', function($rootScope, $location, $window){
 	$rootScope.isShowOtherButtons = false;
 	login.isError = $location.absUrl().indexOf('error') != -1;
 	localStorage.setItem("removeRegionFilterInCookie",true);
+
+    $http({
+        method: 'GET',
+        url: '/forgotPassword'
+    }).then(function(result) {
+        login.primaryUsersInformation = result.data.data;
+    }).catch(function(error) {
+        // can not reach here
+        angular.noop();
+    });
 	
 	//To avoid displaying page without styles due to the slow loading of CSS files
 	setTimeout(function(){ $("body").css("visibility","visible") }, 500);

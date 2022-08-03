@@ -117,3 +117,7 @@
 th{
 	text-align: center;
 }
+
+#forgot_password a {
+	color: #117563;
+}

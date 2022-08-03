@@ -73,5 +73,13 @@ public class UserService {
         }
         userRepository.deleteById(id);
     }
-    
+
+    public UserEntity getFirstUserByRoleName(String name) throws UserNotFoundException {
+        UserEntity user = userRepository.getFirstByRole_Name(name);
+        if (user == null) {
+            throw new UserNotFoundException(MessageFormat.format(UserMessages.USER_ROLE_NOT_FOUND, name));
+        }
+
+        return user;
+    }
 }

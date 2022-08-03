@@ -8,4 +8,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     UserEntity findByUsername(String username);
 
     boolean existsByUsername(String username);
+
+    UserEntity getFirstByRole_Name(String roleName);
 }
