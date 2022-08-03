@@ -139,7 +139,7 @@ public class ParasoftJDBCProxyService {
             e.printStackTrace();
             throw new VirtualizeServerUrlException(
                     MessageFormat.format(GlobalPreferencesMessages.INVALIDATE_PARASOFT_VIRTUALIZE_SERVER_URL,
-                                            virtualizeServerUrl,  e.getMessage()));
+                                            virtualizeServerUrl,  e.getMessage()), e);
         }
     }
 

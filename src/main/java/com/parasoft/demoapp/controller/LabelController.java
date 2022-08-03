@@ -60,7 +60,7 @@ public class LabelController {
         labelsResponseDTO.setLabelsOverrided(globalPreferencesEntity.isLabelsOverrided());
 
         response.setData(labelsResponseDTO);
-        
+
         return response;
     }
 

@@ -9,6 +9,6 @@ public class BuildInfoDTO {
 
     private String buildId;
 
-    private long buildTime;
+    private Long buildTime;
 
 }
