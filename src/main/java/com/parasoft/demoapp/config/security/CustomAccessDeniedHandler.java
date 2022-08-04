@@ -18,7 +18,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest req, HttpServletResponse resp, AccessDeniedException accessDeniedException) throws IOException, ServletException {
         if(!UrlUtil.isRestfulApiRequest(req)){
-            resp.sendRedirect("/loginPage");
+            resp.sendRedirect("/accessDenied");
         }else{
             HttpServletResponseUtil.returnJsonErrorResponse(resp, HttpStatus.FORBIDDEN.value(),
                     ResponseResult.STATUS_ERR, ConfigMessages.USER_HAS_NO_PERMISSION, accessDeniedException.getMessage());

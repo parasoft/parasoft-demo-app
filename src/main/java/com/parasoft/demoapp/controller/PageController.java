@@ -127,4 +127,10 @@ public class PageController {
 
 		return "swaggerUIIndex";
 	}
+
+	@GetMapping("/accessDenied")
+	public String showAccessDeniedPage() {
+
+		return "error/403";
+	}
 }
