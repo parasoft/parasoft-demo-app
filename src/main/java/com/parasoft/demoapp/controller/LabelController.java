@@ -41,7 +41,7 @@ public class LabelController {
     @ApiResponse(responseCode = "200", description = "Labels updated successfully.")
     @ApiResponse(responseCode = "400", description = "Invalid request payload.",
             content = {@Content(schema = @Schema(hidden = true))})
-    @ApiResponse(responseCode = "403", description = "The user does not have permission to update the item.",
+    @ApiResponse(responseCode = "401", description = "You are not authorized to update the item.",
             content = {@Content(schema = @Schema(hidden = true)) })
     @PutMapping("/v1/labels")
     @ResponseBody
