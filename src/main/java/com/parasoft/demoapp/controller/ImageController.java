@@ -29,7 +29,7 @@ public class ImageController {
 	@ApiResponse(responseCode = "200", description = "Image uploaded successfully.")
     @ApiResponse(responseCode = "400", description = "Invalid request payload.",
     content = {@Content(schema = @Schema(hidden = true))})
-	@ApiResponse(responseCode = "403", description = "You do not have permission to add a new item.",
+	@ApiResponse(responseCode = "401", description = "You are not authorized to add a new item.",
 				 content = {@Content(schema = @Schema(hidden = true)) })
 	@PostMapping(value = "/v1/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	@ResponseBody
@@ -48,7 +48,7 @@ public class ImageController {
 	@ApiResponse(responseCode = "200", description = "Image deleted successfully.")
 	@ApiResponse(responseCode = "400", description = "Invalid request payload.",
 			content = {@Content(schema = @Schema(hidden = true))})
-	@ApiResponse(responseCode = "403", description = "You do not have permission to add a new item.",
+	@ApiResponse(responseCode = "401", description = "You are not authorized to add a new item.",
 			content = {@Content(schema = @Schema(hidden = true)) })
 	@DeleteMapping(value = "/v1/images")
 	@ResponseBody

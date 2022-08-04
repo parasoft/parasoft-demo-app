@@ -23,8 +23,9 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
             if(!isRestfulApiRequest(req)){
                 resp.sendRedirect("/loginPage");
             }else{
-                HttpServletResponseUtil.returnJsonErrorResponse(resp, HttpStatus.FORBIDDEN.value(),
-                        ResponseResult.STATUS_ERR, ConfigMessages.USER_HAS_NO_PERMISSION, authException.getMessage());
+                resp.setHeader("WWW-Authenticate", "Basic");
+                HttpServletResponseUtil.returnJsonErrorResponse(resp, HttpStatus.UNAUTHORIZED.value(),
+                        ResponseResult.STATUS_ERR, ConfigMessages.USER_IS_NOT_AUTHORIZED, authException.getMessage());
             }
         }
     }

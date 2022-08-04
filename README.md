@@ -57,10 +57,10 @@ There are four databases in parasoft-demo-app, which are **global**, **outdoor**
 
 When running parasoft-demo-app from source, one of the following files should be configured for databases:
 - /src/main/resources/application.properties
-- /config/application.properties (Create the folder and file if it does not already exist)
+- /config/application.properties (Create the folder and file if not already exists)
 
 When running parasoft-demo-app with WAR file, the following file should be configured for databases:
-- {parent directory of .war package}/config/application.properties (Create the folder and file if it does not already exist)
+- {parent directory of .war package}/config/application.properties (Create the folder and file if not already exists)
 
 ### HSQLDB Embedded configuration
 
@@ -116,10 +116,10 @@ industry.datasource.configurations.aerospace.password=
 
 ## Using Parasoft JDBC Proxy
 1. Find the **ParasoftJDBCDriver.jar** in **{SOAtest & Virtualize installation directory}/{version}/proxies**.
-2. Copy it to **{root directory of parasoft-demo-app}/lib**. (Create the folder if it does not already exist)
+2. Copy it to **{root directory of parasoft-demo-app}/lib**. (Create the folder if not already exists)
 3. Open **SOAtest & Virtualize** desktop, add the **ParasoftJDBCDriver.jar** to **Parasoft -> Preferences -> JDBC Drivers**.
 4. Start Virtualize server in **Virtualize Server** view.
-5. Enable the **PARASOFT JDBC PROXY** in PDA **Demo Admin** page, modify started server's **URL**, **Parasoft Virtualize Server path** and **Parasoft Virtualize group ID** if necessary.
+5. Enable the **PARASOFT JDBC PROXY** in PDA **Demo Admin** page, modify **started server's URL**, **Parasoft Virtualize Server path** and **Parasoft Virtualize group ID** if necessary.
 6. Go to **SOAtest & Virtualize** desktop and refresh the Server. If the **Parasoft JDBC Proxy** is enabled successfully, there will be a controller which has the same name as group ID under **JDBC Controllers**.
 7. Change the settings of the controller.
 

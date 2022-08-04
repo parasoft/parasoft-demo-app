@@ -69,7 +69,9 @@ public class SecurityConfig {
                     .csrf()
                         .disable();
 
-            http.exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint());
+            http.exceptionHandling()
+                    .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+                    .accessDeniedHandler((new CustomAccessDeniedHandler()));
         }
     }
 
@@ -109,7 +111,9 @@ public class SecurityConfig {
                     .csrf()
                         .disable();
 
-            http.exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint());
+            http.exceptionHandling()
+                    .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+                    .accessDeniedHandler(new CustomAccessDeniedHandler());
         }
     }
 
