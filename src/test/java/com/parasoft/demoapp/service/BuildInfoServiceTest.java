@@ -40,7 +40,7 @@ public class BuildInfoServiceTest {
         String buildId = "20200731163332";
         Instant buildTime = Instant.parse("2020-07-31T08:33:33.146Z"); // 1596184413146
         // buildTime Epoch timestamp in milliseconds get by access REST API endpoint: http://localhost:8080/v1/build-info
-        long buildTimeEpochMilli = 1596184413146L;
+        Long buildTimeEpochMilli = 1596184413146L;
 
         when(buildProperties.getVersion()).thenReturn(buildVersion);
         when(buildProperties.get("id")).thenReturn(buildId);

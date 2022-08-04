@@ -125,12 +125,12 @@ public class GlobalPreferencesService {
         GlobalPreferencesEntity globalPreferencesEntity = null;
         try {
             globalPreferencesEntity = getCurrentGlobalPreferences();
+            globalPreferencesEntity.setLabelsOverrided(labelsOverrided);
         } catch (GlobalPreferencesNotFoundException | GlobalPreferencesMoreThanOneException e) {
             // Generally, can not reach here.
             e.printStackTrace();
         }
 
-        globalPreferencesEntity.setLabelsOverrided(labelsOverrided);
         return updateGlobalPreferences(globalPreferencesEntity);
     }
 
@@ -316,7 +316,7 @@ public class GlobalPreferencesService {
         }
         return currentIndustries.get(0);
     }
-    
+
     public IndustryType getCurrentIndustry()
             throws GlobalPreferencesNotFoundException, GlobalPreferencesMoreThanOneException {
 

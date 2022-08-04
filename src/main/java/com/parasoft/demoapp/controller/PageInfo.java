@@ -11,15 +11,15 @@ import java.util.List;
 public class PageInfo<T>  {
 
 	@Schema(description = "The total amount of elements.")
-    private long totalElements;
+    private Long totalElements;
 	@Schema(description = "The number of total pages.")
-    private long totalPages;
+    private int totalPages;
 	@Schema(description = "The size of the slice.")
-    private long size;
+    private int size;
 	@Schema(description = "The number of the current slice.")
-    private long number;
+    private int number;
 	@Schema(description = "The number of elements currently on this slice.")
-    private long numberOfElements;
+    private int numberOfElements;
 	@Schema(description = "The sorting parameters for the slice.")
     private String sort;
 	@Schema(description = "The page content as list.")
