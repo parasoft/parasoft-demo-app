@@ -45,11 +45,11 @@ public class OrderEntity implements Cloneable{
     @Setter
     @Column(name = "reviewed_by_apv")
     private Boolean reviewedByAPV;
-    
+
     @Setter
     @Column(name = "reviewed_by_prch")
     private Boolean reviewedByPRCH;
-    
+
     @Setter
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "order")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
@@ -100,7 +100,7 @@ public class OrderEntity implements Cloneable{
         this.eventNumber = eventNumber;
     }
 
-    public OrderEntity clone(){
+    public OrderEntity copy(){
         OrderEntity newOrder = new OrderEntity();
 
         newOrder.id = this.id;

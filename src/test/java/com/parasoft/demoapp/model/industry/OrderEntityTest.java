@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.parasoft.demoapp.model.industry;
 
@@ -22,12 +22,12 @@ import org.junit.Test;
 public class OrderEntityTest {
 
 	/**
-	 * Test for clone()
+	 * Test for copy()
 	 *
-	 * @see com.parasoft.demoapp.model.industry.OrderEntity#clone()
+	 * @see com.parasoft.demoapp.model.industry.OrderEntity#copy()
 	 */
 	@Test
-	public void testClone() throws Throwable {
+	public void testCopy() throws Throwable {
 		// Given
 		Long id = 1L;
 	    String orderNumber = "234-567-001";
@@ -45,7 +45,7 @@ public class OrderEntityTest {
 	    String comments = "reason string";
 	    Date submissionDate = new Date();
 		Date approverReplyDate = new Date();
-		
+
 		// When
 		OrderEntity originalOrder = new OrderEntity();
 		originalOrder.setId(id);
@@ -65,8 +65,8 @@ public class OrderEntityTest {
 		originalOrder.setApproverReplyDate(approverReplyDate);
 		originalOrder.setComments(comments);
 
-		OrderEntity newOrder = originalOrder.clone();
-		
+		OrderEntity newOrder = originalOrder.copy();
+
 		boolean invokedByJtest = false;
 		for(Field field : originalOrder.getClass().getDeclaredFields()) {
 			if(field.getName().contains("__")) { // invoked by Jtest(with some additional fields, name start with __)

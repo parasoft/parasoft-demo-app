@@ -85,12 +85,12 @@ public class OrderService {
         	orderItem.setOrder(order);
         	}
         order.setOrderItems(orderItemEntities);
-        
+
         order = orderRepository.save(order);
         order.setOrderNumber(generateOrderNumberAccordingToId(order.getId()));
         order = orderRepository.save(order);
         shoppingCartService.clearShoppingCart(userId);
-        
+
         return order;
     }
 
@@ -161,19 +161,19 @@ public class OrderService {
                                                                 Boolean reviewedByPRCH, Boolean reviewedByAPV,
                                                                 String comments, boolean publicToMQ)
             throws ParameterException, OrderNotFoundException, NoPermissionException, IncorrectOperationException {
-       
+
     	ParameterValidator.requireNonNull(newStatus, OrderMessages.STATUS_CANNOT_BE_NULL);
         ParameterValidator.requireNonBlank(orderNumber, OrderMessages.ORDER_NUMBER_CANNOT_BE_BLANK);
         ParameterValidator.requireNonBlank(userRoleName, OrderMessages.USER_ROLE_NAME_CANNOT_BE_BLANK);
-        
+
         OrderEntity originalOrder = getOrderByOrderNumber(orderNumber);
-        OrderEntity newOrder = originalOrder.clone();
+        OrderEntity newOrder = originalOrder.copy();
 
         if(RoleType.ROLE_PURCHASER.toString().equals(userRoleName)){
             checkOrderStatusChangedByPurchaser(originalOrder, newStatus);
             ParameterValidator.requireNonNull(reviewedByPRCH,
                     OrderMessages.ORDER_REVIEW_STATUS_OF_PURCHASER_SHOULD_NOT_BE_NULL);
-            if(originalOrder.getReviewedByPRCH() != reviewedByPRCH) {
+            if(!reviewedByPRCH.equals(originalOrder.getReviewedByPRCH())) {
                 checkOrderIsAlreadyReviewed(userRoleName, originalOrder);
                 newOrder.setReviewedByPRCH(true);
             }
@@ -186,7 +186,7 @@ public class OrderService {
             }else {
                 ParameterValidator.requireNonNull(reviewedByAPV,
                         OrderMessages.ORDER_REVIEW_STATUS_OF_APPROVER_SHOULD_NOT_BE_NULL);
-                if(originalOrder.getReviewedByAPV() != reviewedByAPV) {
+                if(!reviewedByAPV.equals(originalOrder.getReviewedByAPV())) {
                     checkOrderIsAlreadyReviewed(userRoleName, originalOrder);
                     newOrder.setReviewedByAPV(true);
                 }
@@ -227,7 +227,7 @@ public class OrderService {
 
         return newOrder;
     }
-    
+
     private void checkOrderIsAlreadyReviewed(String userRoleName, OrderEntity order) throws IncorrectOperationException {
     	if(RoleType.ROLE_PURCHASER.toString().equals(userRoleName)){
     		if(order.getReviewedByPRCH()) {
