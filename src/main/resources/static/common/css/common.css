@@ -2015,10 +2015,12 @@ label {
 	text-align: center;
 	border: 1px solid lightgrey;
 	padding: 5px;
+	font-size: 15px;
 }
 
 .password-table tr span{
 	font-weight: bold;
+	font-size: 16px;
 }
 
 #forgotPasswordModal .modal-content {
@@ -2049,3 +2051,5 @@ label {
 #forgot_password a {
 	cursor: pointer;
 }
+
+.
