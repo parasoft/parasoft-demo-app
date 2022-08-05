@@ -49,5 +49,13 @@ public class DataSourceConfigurationProperties {
             builder.password(password);
             return builder.build();
         }
+
+        public String getDatabasePath() {
+            return url.replaceAll("jdbc:hsqldb:", "");
+        }
+
+        public String getDatabaseName() {
+            return url.substring(url.lastIndexOf("/") + 1);
+        }
     }
 }
