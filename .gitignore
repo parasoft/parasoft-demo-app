@@ -37,3 +37,4 @@ application.pid
 /pda-db/
 /pda-files/
 /src/main/resources/META-INF/
+/lib/*.jar

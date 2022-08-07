@@ -1,9 +1,8 @@
 plugins {
-	id 'org.springframework.boot' version '2.3.1.RELEASE'
-	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+	id 'org.springframework.boot' version '2.3.12.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.12.RELEASE'
 	id 'java'
 	id 'war'
-	id 'maven-publish'
 }
 
 group = 'com.parasoft.demoapp'
@@ -19,7 +18,7 @@ if (project.hasProperty("jenkinsBuildNumber")) {
 if (project.hasProperty("gitCommitHash")) {
 	buildMetadata += '.' + gitCommitHash
 }
-def buildVersion = version + '_' + buildMetadata
+
 if(!project.hasProperty("port"))
     project.ext.set("port", 8080)
 
@@ -51,26 +50,26 @@ dependencies {
 	implementation 'org.hsqldb:hsqldb'
 	annotationProcessor 'org.projectlombok:lombok'
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
-	testImplementation('org.springframework.boot:spring-boot-starter-test')
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
-	implementation 'org.springdoc:springdoc-openapi-webmvc-core:1.4.3'
-	implementation 'org.springdoc:springdoc-openapi-ui:1.4.3'
-	implementation 'com.google.code.gson:gson:2.8.6'
-	implementation 'org.springdoc:springdoc-openapi-data-rest:1.4.3'
-	implementation 'org.apache.activemq:activemq-stomp:5.15.12'
+
+	implementation 'org.apache.activemq:activemq-stomp'
 	// Exclude `jetty-all` dependency, but keep other necessary jetty dependencies.
 	// See the following URLs for details:
 	// https://stackoverflow.com/questions/59286348/spring-boot-2-2-activemq-jetty-conflict
 	// https://issues.apache.org/jira/browse/AMQ-7364
 	implementation 'org.springframework.boot:spring-boot-starter-jetty'
-	implementation ('org.apache.activemq:activemq-http:5.15.12') {
-	  exclude group: "org.eclipse.jetty.aggregate", module:"jetty-all"
+	implementation ('org.apache.activemq:activemq-http') {
+		exclude group: "org.eclipse.jetty.aggregate", module:"jetty-all"
 	}
+	implementation 'org.apache.activemq:activemq-spring'
+	implementation 'com.google.code.gson:gson'
 
-	//implementation 'org.apache.activemq:activemq-kahadb-store:5.15.12'
-	implementation 'org.apache.activemq:activemq-spring:5.15.12'
+	implementation "org.springdoc:springdoc-openapi-webmvc-core:1.4.3"
+	implementation "org.springdoc:springdoc-openapi-ui:1.4.3"
+	implementation "org.springdoc:springdoc-openapi-data-rest:1.4.3"
 
-	implementation fileTree(dir:'lib',includes:['*jar'])
+	developmentOnly fileTree(dir:'lib',includes:['*jar'])
 
 	// Jtest
 	testImplementation 'org.apiguardian:apiguardian-api:1.1.0'
@@ -109,8 +108,9 @@ test {
 }
 
 ext {
+	set('spring-framework.version', "5.2.22.RELEASE")
 	set('log4j2.version', '2.17.1')
-	set('springCloudVersion', "Hoxton.SR8")
+	set('springCloudVersion', "Hoxton.SR12")
 }
 
 dependencyManagement {
@@ -140,5 +140,14 @@ springBoot {
 					'id': buildMetadata
 			]
 		}
+	}
+}
+
+bootWar {
+	manifest {
+		attributes(
+			'Main-Class': 'org.springframework.boot.loader.PropertiesLauncher',
+			'Loader-Path': 'WEB-INF/lib-provided,WEB-INF/lib,WEB-INF/classes,file:lib/'
+		)
 	}
 }
