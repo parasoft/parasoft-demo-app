@@ -1,5 +1,6 @@
 package com.parasoft.demoapp.defaultdata;
 
+import com.parasoft.demoapp.config.datasource.IndustryDataSourceConfig;
 import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
 import com.parasoft.demoapp.exception.VirtualizeServerUrlException;
 import com.parasoft.demoapp.messages.DatabaseOperationMessages;
@@ -33,18 +34,26 @@ public class InitializationEntrance {
 
     private ParasoftJDBCProxyService parasoftJDBCProxyService;
 
+    private IndustryRoutingDataSource industryRoutingDataSource;
+
+    private IndustryDataSourceConfig industryDataSourceConfig;
+
     private DatabaseOperationMessages databaseOperationMessages = new DatabaseOperationMessages();
 
     public InitializationEntrance(DatabaseInitResultRepository databaseInitResultRepository,
                                   List<AbstractTablesCreator> tablesCreators,
                                   List<AbstractDataCreator> dataCreators,
                                   GlobalPreferencesService globalPreferencesService,
+                                  IndustryRoutingDataSource industryRoutingDataSource,
+                                  IndustryDataSourceConfig industryDataSourceConfig,
                                   ParasoftJDBCProxyService parasoftJDBCProxyService) {
 
         this.databaseInitResultRepository = databaseInitResultRepository;
         this.tablesCreators = tablesCreators;
         this.dataCreators = dataCreators;
         this.globalPreferencesService = globalPreferencesService;
+        this.industryRoutingDataSource =industryRoutingDataSource;
+        this.industryDataSourceConfig = industryDataSourceConfig;
         this.parasoftJDBCProxyService = parasoftJDBCProxyService;
     }
 
@@ -89,6 +98,8 @@ public class InitializationEntrance {
 
         GlobalPreferencesEntity globalPreferences = globalPreferencesService.getCurrentGlobalPreferences();
         IndustryRoutingDataSource.currentIndustry = globalPreferences.getIndustryType();
+        industryRoutingDataSource.setDefaultTargetDataSource(
+                industryDataSourceConfig.getIndustryDataSources().get(IndustryRoutingDataSource.currentIndustry.getValue()));
 
 
         Boolean useParasoftJDBCProxy = globalPreferences.getUseParasoftJDBCProxy();

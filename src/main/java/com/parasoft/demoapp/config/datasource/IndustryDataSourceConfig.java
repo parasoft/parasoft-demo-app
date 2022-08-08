@@ -43,9 +43,10 @@ public class IndustryDataSourceConfig {
     }
 
     @Bean(name = "industryEntityManager")
-    public LocalContainerEntityManagerFactoryBean industryEntityManagerFactory(EntityManagerFactoryBuilder builder) {
+    public LocalContainerEntityManagerFactoryBean industryEntityManagerFactory(EntityManagerFactoryBuilder builder,
+                                                                               @Qualifier("industryDataSource") DataSource industryDataSource) {
         return builder
-                .dataSource(getIndustryDataSource())
+                .dataSource(industryDataSource)
                 .packages("com.parasoft.demoapp.model.industry")
                 .persistenceUnit("industry_PU")
                 .build();

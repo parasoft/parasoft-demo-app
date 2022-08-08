@@ -1,5 +1,7 @@
 package com.parasoft.demoapp.defaultdata;
 
+import com.parasoft.demoapp.config.datasource.IndustryDataSourceConfig;
+import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
 import com.parasoft.demoapp.repository.global.DatabaseInitResultRepository;
 import com.parasoft.demoapp.service.GlobalPreferencesService;
 import com.parasoft.demoapp.service.ParasoftJDBCProxyService;
@@ -19,9 +21,12 @@ public class DefaultDataConfig {
                                                         List<AbstractTablesCreator> tablesCreators,
                                                         List<AbstractDataCreator> dataCreators,
                                                         GlobalPreferencesService globalPreferencesService,
+                                                        IndustryRoutingDataSource industryRoutingDataSource,
+                                                        IndustryDataSourceConfig industryDataSourceConfig,
                                                         ParasoftJDBCProxyService parasoftJDBCProxyService){
 
         return new InitializationEntrance(databaseInitResultRepository, tablesCreators, dataCreators,
-                                            globalPreferencesService, parasoftJDBCProxyService);
+                                          globalPreferencesService, industryRoutingDataSource, industryDataSourceConfig,
+                                          parasoftJDBCProxyService);
     }
 }
