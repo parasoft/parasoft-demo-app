@@ -145,7 +145,8 @@ public class CustomAuthenticationEntryPointTest {
 		AuthenticationException authException = new InsufficientAuthenticationException("exception message.");
 		underTest.commence(req, resp, authException);
 		
-		assertEquals(HttpStatus.FORBIDDEN.value(), resp.getStatus());
+		assertEquals(HttpStatus.UNAUTHORIZED.value(), resp.getStatus());
+		assertEquals("Basic", resp.getHeader("WWW-Authenticate"));
 		assertEquals(CHARSET_UTF8, resp.getCharacterEncoding());
 		assertEquals(CONTENT_TYPE_JSON, resp.getContentType());
 	}

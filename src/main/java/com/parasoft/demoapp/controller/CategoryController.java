@@ -91,8 +91,8 @@ public class CategoryController {
     @ApiResponse(responseCode = "200", description = "New category successfully created.")
     @ApiResponse(responseCode = "400", description = "Invalid request payload.",
                  content = {@Content(schema = @Schema(hidden = true))})
-    @ApiResponse(responseCode = "403",
-                 description = "You do not have permission to add a new category.",
+    @ApiResponse(responseCode = "401",
+                 description = "You are not authorized to add a new category.",
                  content = {@Content(schema = @Schema(hidden = true))})
     @PostMapping("/categories")
     @ResponseBody
@@ -112,8 +112,8 @@ public class CategoryController {
     @ApiResponse(responseCode = "200", description = "Update successful.")
     @ApiResponse(responseCode = "400", description = "Invalid request payload.",
                  content = {@Content(schema = @Schema(hidden = true))})
-    @ApiResponse(responseCode = "403",
-                 description = "You do not have permission to update the category.",
+    @ApiResponse(responseCode = "401",
+                 description = "You are not authorized to update the category.",
                  content = {@Content(schema = @Schema(hidden = true))})
     @ApiResponse(responseCode = "404", description = "No category with corresponding id.",
                  content = {@Content(schema = @Schema(hidden = true))})
@@ -136,8 +136,8 @@ public class CategoryController {
     @ApiResponse(responseCode = "200", description = "Category with the corresponding id successfully deleted.")
     @ApiResponse(responseCode = "400", description = "Invalid request parameter.",
                  content = {@Content(schema = @Schema(hidden = true))})
-    @ApiResponse(responseCode = "403",
-                 description = "You do not have permission to delete the category.",
+    @ApiResponse(responseCode = "401",
+                 description = "You are not authorized to delete the category.",
                  content = {@Content(schema = @Schema(hidden = true))})
     @ApiResponse(responseCode = "404", description = "No category with corresponding id.",
                  content = {@Content(schema = @Schema(hidden = true))})

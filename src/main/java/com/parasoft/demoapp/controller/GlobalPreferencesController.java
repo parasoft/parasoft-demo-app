@@ -42,8 +42,8 @@ public class GlobalPreferencesController {
 	@ApiResponse(responseCode = "200", description = "Preferences have been updated.")
 	@ApiResponse(responseCode = "400", description = "Invalid request parameter.",
 				content = {@Content(schema = @Schema(hidden = true))})
-	@ApiResponse(responseCode = "403",
-				description = "You do not have permission to update current preferences.",
+	@ApiResponse(responseCode = "401",
+				description = "You are not authorized to update current preferences.",
 				content = {@Content(schema = @Schema(hidden = true))})
 	@ApiResponse(responseCode = "404", description = "No preferences are currently configured and cannot be updated.",
 				content = {@Content(schema = @Schema(hidden = true))})
@@ -118,8 +118,8 @@ public class GlobalPreferencesController {
 
 	@Operation(description = "Reset databases for all industries.")
 	@ApiResponse(responseCode = "200", description = "Databases for all industries has been reset.")
-	@ApiResponse(responseCode = "403",
-			description = "You do not have permission to reset databases for all industries.",
+	@ApiResponse(responseCode = "401",
+			description = "You are not authorized to reset databases for all industries.",
 			content = {@Content(schema = @Schema(hidden = true))})
 	@PutMapping("/v1/demoAdmin/databaseReset")
 	@ResponseBody
@@ -134,8 +134,8 @@ public class GlobalPreferencesController {
 	
 	@Operation(description = "Clear current industry database.")
 	@ApiResponse(responseCode = "200", description = "Current industry database has been reset.")
-	@ApiResponse(responseCode = "403",
-			description = "You do not have permission to clear current industry database.",
+	@ApiResponse(responseCode = "401",
+			description = "You are not authorized to clear current industry database.",
 			content = {@Content(schema = @Schema(hidden = true))})
 	@PutMapping("/v1/demoAdmin/databaseClear")
 	@ResponseBody

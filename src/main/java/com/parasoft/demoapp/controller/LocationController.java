@@ -30,7 +30,7 @@ public class LocationController {
     @Operation(description = "Obtain location information.")
     @ApiResponse(responseCode = "200",
                  description = "Location information under current conditions was returned.")
-    @ApiResponse(responseCode = "403", description = "You do not have permission.",
+    @ApiResponse(responseCode = "401", description = "You are not authorized.",
 	 			 content = {@Content(schema = @Schema(hidden = true)) })
     @ApiResponse(responseCode = "404", description = "Location information not found.",
                  content = {@Content(schema = @Schema(hidden = true)) })
@@ -53,7 +53,7 @@ public class LocationController {
     @ApiResponse(responseCode = "400",
             description = "Unsupported request.",
             content = {@Content(schema = @Schema(hidden = true))})
-    @ApiResponse(responseCode = "403", description = "You do not have permission.",
+    @ApiResponse(responseCode = "401", description = "You are not authorized.",
             content = {@Content(schema = @Schema(hidden = true)) })
     @GetMapping("/regions")
     @ResponseBody
