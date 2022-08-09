@@ -20,15 +20,17 @@ loginApp.controller('loginController', function($rootScope, $location, $window, 
 	login.isError = $location.absUrl().indexOf('error') != -1;
 	localStorage.setItem("removeRegionFilterInCookie",true);
 
-    $http({
-        method: 'GET',
-        url: '/forgotPassword'
-    }).then(function(result) {
-        login.primaryUsersInformation = result.data.data;
-    }).catch(function(error) {
-        // can not reach here
-        angular.noop();
-    });
+    login.forgotPassword = () => {
+        $http({
+            method: 'GET',
+            url: '/forgotPassword'
+        }).then(function(result) {
+            login.primaryUsersInformation = result.data.data;
+        }).catch(function(error) {
+            // can not reach here
+            angular.noop();
+        });
+    };
 	
 	//To avoid displaying page without styles due to the slow loading of CSS files
 	setTimeout(function(){ $("body").css("visibility","visible") }, 500);
