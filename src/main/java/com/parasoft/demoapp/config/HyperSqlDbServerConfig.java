@@ -20,6 +20,10 @@ public class HyperSqlDbServerConfig implements SmartLifecycle {
     private Server server;
     private boolean running = false;
 
+    public HyperSqlDbServerConfig() {
+        this.properties = null;
+    }
+
     @Autowired
     public HyperSqlDbServerConfig(DataSourceConfigurationProperties.Global global,
                                   DataSourceConfigurationProperties.Industry industry) {
@@ -49,7 +53,7 @@ public class HyperSqlDbServerConfig implements SmartLifecycle {
     }
 
     @Override
-    public void start() {
+    public synchronized void start() {
         if(server == null) {
             log.info("Starting HSQL server...");
             ServerConfiguration.translateDefaultDatabaseProperty(properties);
