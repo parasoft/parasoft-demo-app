@@ -47,6 +47,8 @@ public class OrderController {
 	@ApiResponse(responseCode = "200", description = "New order submitted successfully.")
 	@ApiResponse(responseCode = "400", description = "Invalid request payload.",
 				content = {@Content(schema = @Schema(hidden = true))})
+	@ApiResponse(responseCode = "401", description = "You are not authorized to submit a new order.",
+			content = {@Content(schema = @Schema(hidden = true)) })
 	@ApiResponse(responseCode = "403", description = "You do not have permission to submit a new order.",
 			content = {@Content(schema = @Schema(hidden = true)) })
 	@ApiResponse(responseCode = "404", description = "There is no cart item or item to create a new order.",
@@ -75,7 +77,7 @@ public class OrderController {
 	@ApiResponse(responseCode = "200", description = "Order with corresponding order number was returned.")
 	@ApiResponse(responseCode = "400", description = "Invalid request parameter.",
 				content = {@Content(schema = @Schema(hidden = true))})
-	@ApiResponse(responseCode = "403",description = "You do not have permission to get an order by order number.",
+	@ApiResponse(responseCode = "401",description = "You are not authorized to get an order by order number.",
 				content = {@Content(schema = @Schema(hidden = true)) })
 	@ApiResponse(responseCode = "404", description = "No order with corresponding order number.",
 				content = {@Content(schema = @Schema(hidden = true))})
@@ -99,6 +101,8 @@ public class OrderController {
 	@Operation(description = "Update status of order by order number.")
 	@ApiResponse(responseCode = "200", description = "Modified order with corresponding order number was returned.")
 	@ApiResponse(responseCode = "400", description = "Invalid request parameter.",
+			content = {@Content(schema = @Schema(hidden = true))})
+	@ApiResponse(responseCode = "401",description = "You are not authorized to change status.",
 			content = {@Content(schema = @Schema(hidden = true))})
 	@ApiResponse(responseCode = "403",description = "You do not have permission to change status.",
 			content = {@Content(schema = @Schema(hidden = true))})
@@ -146,8 +150,8 @@ public class OrderController {
 	@ApiResponses({
 			@ApiResponse(responseCode = "200",
 					description = "All orders under current identity got successfully."),
-			@ApiResponse(responseCode = "403",
-					description = "You do not have permission to get all orders.",
+			@ApiResponse(responseCode = "401",
+					description = "You are not authorized to get all orders.",
 					content = {@Content(schema = @Schema(hidden = true)) }),
 	})
 	@GetMapping

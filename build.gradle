@@ -70,6 +70,7 @@ dependencies {
 	implementation "org.springdoc:springdoc-openapi-data-rest:1.4.3"
 
 	developmentOnly fileTree(dir:'lib',includes:['*jar'])
+	testRuntimeOnly fileTree(dir:'lib',includes:['*jar'])
 
 	// Jtest
 	testImplementation 'org.apiguardian:apiguardian-api:1.1.0'

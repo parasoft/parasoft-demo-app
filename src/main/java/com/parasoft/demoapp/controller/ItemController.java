@@ -101,7 +101,7 @@ public class ItemController {
 	@ApiResponse(responseCode = "200", description = "New item successfully created in this category.")
     @ApiResponse(responseCode = "400", description = "Invalid request payload.",
     content = {@Content(schema = @Schema(hidden = true))})
-	@ApiResponse(responseCode = "403", description = "You do not have permission to add a new item.",
+	@ApiResponse(responseCode = "401", description = "You are not authorized to add a new item.",
 				 content = {@Content(schema = @Schema(hidden = true)) })
 	@ApiResponse(responseCode = "404", description = "No category with corresponding category id.",
 				 content = {@Content(schema = @Schema(hidden = true)) })
@@ -125,7 +125,7 @@ public class ItemController {
 	@ApiResponse(responseCode = "200", description = "Item updated successfully.")
     @ApiResponse(responseCode = "400", description = "Invalid request payload.",
     content = {@Content(schema = @Schema(hidden = true))})
-	@ApiResponse(responseCode = "403", description = "You do not have permission to update the item.",
+	@ApiResponse(responseCode = "401", description = "You are not authorized to update the item.",
 				 content = {@Content(schema = @Schema(hidden = true)) })
 	@ApiResponse(responseCode = "404", description = "No item with corresponding item or category id.",
 				 content = {@Content(schema = @Schema(hidden = true)) })
@@ -148,7 +148,7 @@ public class ItemController {
 	@ApiResponse(responseCode = "200", description = "Item updated successfully.")
 	@ApiResponse(responseCode = "400", description = "Invalid request payload.",
 			content = {@Content(schema = @Schema(hidden = true))})
-	@ApiResponse(responseCode = "403", description = "You do not have permission to update the item.",
+	@ApiResponse(responseCode = "401", description = "You are not authorized to update the item.",
 			content = {@Content(schema = @Schema(hidden = true)) })
 	@ApiResponse(responseCode = "404", description = "No item with corresponding item or category id.",
 			content = {@Content(schema = @Schema(hidden = true)) })
@@ -168,7 +168,7 @@ public class ItemController {
 	@ApiResponse(responseCode = "200", description = "Item with corresponding id successfully deleted.")
     @ApiResponse(responseCode = "400", description = "Invalid request parameter.",
     content = {@Content(schema = @Schema(hidden = true))})
-	@ApiResponse(responseCode = "403", description = "You do not have permission to delete the item.",
+	@ApiResponse(responseCode = "401", description = "You are not authorized to delete the item.",
 				 content = {@Content(schema = @Schema(hidden = true)) })
 	@ApiResponse(responseCode = "404", description = "No item with corresponding item id.",
 				 content = {@Content(schema = @Schema(hidden = true)) })
@@ -189,7 +189,7 @@ public class ItemController {
 	@ApiResponse(responseCode = "200", description = "Item with corresponding name successfully deleted.")
 	@ApiResponse(responseCode = "400", description = "Invalid request parameter.",
 			content = {@Content(schema = @Schema(hidden = true))})
-	@ApiResponse(responseCode = "403", description = "You do not have permission to delete the item.",
+	@ApiResponse(responseCode = "401", description = "You are not authorized to delete the item.",
 			content = {@Content(schema = @Schema(hidden = true)) })
 	@ApiResponse(responseCode = "404", description = "No item with corresponding item name.",
 			content = {@Content(schema = @Schema(hidden = true)) })

@@ -2024,7 +2024,8 @@ label {
 }
 
 #forgotPasswordModal .modal-content {
-	width: 600px;
+    min-width: 600px;
+    width: fit-content;
 }
 
 #forgotPasswordModal .dismiss-btn{
@@ -2038,10 +2039,6 @@ label {
     width: fit-content;
 }
 
-#forgotPasswordModal .modal-content {
-    width: fit-content;
-}
-
 #forgot_password {
     top: 555px;
     width: 100%;
@@ -2050,4 +2047,10 @@ label {
 
 #forgot_password a {
 	cursor: pointer;
+}
+
+.load-spinner {
+    margin: auto;
+    width: fit-content;
+    color: lightgrey;
 }

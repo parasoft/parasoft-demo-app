@@ -45,74 +45,36 @@ Login with one of these users:
 - Username `purchaser` password `password`
 - Username `approver` password `password`
 
-## HSQLDB JDBC configuration
-There are four databases in parasoft-demo-app, which are **global**, **outdoor**, **defense** and **aerospace**.
+## Connect to embedded HSQLDB server instance
+There are four databases (one for global and three for industries) in Parasoft Demo Application, which are **global**, **outdoor**, **defense** and **aerospace**.
 
-| Database  | Description                                          |
-|-----------|------------------------------------------------------|
-| global    | Used to store the user, role and configuration data. |
-| outdoor   | Used to store the data about outdoor.                |
-| defense   | Used to store the data about defense.                |
-| aerospace | Used to store the data about aerospace.              |
+| Database name | Description                                          |
+|---------------|------------------------------------------------------|
+| global        | Used to store the user, role and configuration data. |
+| outdoor       | Used to store the data about outdoor industry.       |
+| defense       | Used to store the data about defense industry.       |
+| aerospace     | Used to store the data about aerospace industry.     |
 
-When running parasoft-demo-app from source, one of the following files should be configured for databases:
-- /src/main/resources/application.properties
-- /config/application.properties (Create the folder and file if it does not already exist)
+### Connection configuration
+Parasoft Demo Application exposes port 9001 for user to connect to the HSQLDB database remotely.
 
-When running parasoft-demo-app with WAR file, the following file should be configured for databases:
-- {parent directory of .war package}/config/application.properties (Create the folder and file if it does not already exist)
+- Global database
 
-### HSQLDB Embedded configuration
+| Option   | Value                                      |
+|----------|--------------------------------------------|
+| Driver   | `org.hsqldb.jdbcDriver`                    |
+| URL      | `jdbc:hsqldb:hsql://localhost:9001/global` |
+| Username | `SA`                                       |
+| Password | `''`                                       |
 
-Configure **application.properties** with your databases information as below and restart the application. 
-The database directory can be either absolute path and relative path. Please note that if no databases specified, parasoft-demo-app will create the databases with default value as commented when the application started.
-```
-global.datasource.configuration.url=jdbc:hsqldb:file:{path_to_database_dir}/{database_alias}    // Default as jdbc:hsqldb:file:./pda-db/global
-global.datasource.configuration.driver-class-name=org.hsqldb.jdbcDriver
-global.datasource.configuration.username=SA
-global.datasource.configuration.password=
+- Industry database
 
-industry.datasource.configurations.outdoor.url=jdbc:hsqldb:file:{path_to_database_dir}/{database_alias}     // Default as jdbc:hsqldb:file:./pda-db/outdoor
-industry.datasource.configurations.outdoor.driver-class-name=org.hsqldb.jdbcDriver
-industry.datasource.configurations.outdoor.username=SA
-industry.datasource.configurations.outdoor.password=
-
-industry.datasource.configurations.defense.url=jdbc:hsqldb:file:{path_to_database_dir}/{database_alias}     // Default as jdbc:hsqldb:file:./pda-db/defense
-industry.datasource.configurations.defense.driver-class-name=org.hsqldb.jdbcDriver
-industry.datasource.configurations.defense.username=SA
-industry.datasource.configurations.defense.password=
-
-industry.datasource.configurations.aerospace.url=jdbc:hsqldb:file:{path_to_database_dir}/{database_alias}     // Default as jdbc:hsqldb:file:./pda-db/aerospace
-industry.datasource.configurations.aerospace.username=SA
-industry.datasource.configurations.aerospace.password=
-industry.datasource.configurations.aerospace.driver-class-name=org.hsqldb.jdbcDriver
-```
->Hint: Once application started (and connected to these databases), third-party tools will not be able to connect and access (and vice versa).
-
-### HSQLDB Server configuration
-The HSQLDB Server should be started first, which should have **global**, **outdoor**, **defense** and **aerospace** databases exist already.
-Then configure **application.properties** with your databases information as below and restart the application:
-```
-global.datasource.configuration.driver-class-name=org.hsqldb.jdbcDriver
-global.datasource.configuration.url=jdbc:hsqldb:hsql://{url_to_server}/{database_alias}  // example: jdbc:hsqldb:hsql://localhost:9001/global
-global.datasource.configuration.username=SA
-global.datasource.configuration.password=
-
-industry.datasource.configurations.outdoor.driver-class-name=org.hsqldb.jdbcDriver
-industry.datasource.configurations.outdoor.url=jdbc:hsqldb:hsql://{url_to_server}/{database_alias}   // example: jdbc:hsqldb:hsql://localhost:9001/outdoor
-industry.datasource.configurations.outdoor.username=SA
-industry.datasource.configurations.outdoor.password=
-
-industry.datasource.configurations.defense.driver-class-name=org.hsqldb.jdbcDriver
-industry.datasource.configurations.defense.url=jdbc:hsqldb:hsql://{url_to_server}/{database_alias}   // example: jdbc:hsqldb:hsql://localhost:9001/defense
-industry.datasource.configurations.defense.username=SA
-industry.datasource.configurations.defense.password=
-
-industry.datasource.configurations.aerospace.driver-class-name=org.hsqldb.jdbcDriver
-industry.datasource.configurations.aerospace.url=jdbc:hsqldb:hsql://{url_to_server}/{database_alias}   // example: jdbc:hsqldb:hsql://localhost:9001/aerospace
-industry.datasource.configurations.aerospace.username=SA
-industry.datasource.configurations.aerospace.password=
-```
+| Option   | Value                                               |
+|----------|-----------------------------------------------------|
+| Driver   | `org.hsqldb.jdbcDriver`                             |
+| URL      | `jdbc:hsqldb:hsql://localhost:9001/{database name}` |
+| Username | `SA`                                                |
+| Password | `''`                                                |
 
 ## Using Parasoft JDBC Proxy
 1. Find the **ParasoftJDBCDriver.jar** in **{SOAtest & Virtualize installation directory}/{version}/proxies**.
@@ -128,21 +90,14 @@ industry.datasource.configurations.aerospace.password=
 2. Create a tst file with **DB Tool**.
 3. Open the **DB Tool** and open **Connection** tab.
    - If **File** is selected, a configuration file with connection details need to be specified.
-   - If **Local** is selected, **Driver**, **URL**, **Username**, and **Password** for the database need to be specified.
+   - If **Local** is selected, **Driver**, **URL**, **Username**, and **Password** for the database need to be specified. Configuration here can be exported as a properties file (click **Export Configuration Settings** button) and used as a **Input file** for **File** option.
+   - If **Close connection** is enabled, connection will be closed right after the query finished. Best practice for running multiple DB tools with same configuration is to disable this option. In that way the connection will be shared to improve efficiency.
 
-| Option   | Value                                                                                                                                                                                                                                      |
-|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Driver   | `org.hsqldb.jdbcDriver`                                                                                                                                                                                                                    |
-| URL      | Should be the same as the configuration of [HSQLDB JDBC configuration](#hsqldb-jdbc-configuration) section. <br/>If you use embedded database, the URL should be <br/>`jdbc:hsqldb:file:{absoulte_path_to_database_dir}/{database_alias}`. |
-| Username | Should be the same as the configuration of [HSQLDB JDBC configuration](#hsqldb-jdbc-configuration) section. <br/>The default value is `SA` if the username is not changed.                                                                 |
-| Password | Should be the same as the configuration of [HSQLDB JDBC configuration](#hsqldb-jdbc-configuration) section. <br/>The default value is `''` if the password is not changed.                                                                 |
-
->Hint1: Database cannot be connected if parasoft-demo-app started with embedded database since database files are locked.
-
->Hint2: Configuration settings specified in **Local** section can be exported as a properties file by clicking the **Export Configuration Settings** button. This file can be used as **Input file** for **File** option.
-
->Hint3: If **Close connection** is enabled, connection will be closed right after the query is finished for current DB Tool. 
-> Best practice for running multiple DB tools with same configuration is to disable this option. In that way the connection will be shared to improve efficiency.
-
+| Option   | Value                                               |
+|----------|-----------------------------------------------------|
+| Driver   | `org.hsqldb.jdbcDriver`                             |
+| URL      | `jdbc:hsqldb:hsql://localhost:9001/{database name}` |
+| Username | `SA`                                                |
+| Password | `''`                                                |
 
 4. Write SQL statement in **SQL Query** tab, and run the test, the query results will be showed in **Traffic Object**.
