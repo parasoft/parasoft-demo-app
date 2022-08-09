@@ -159,7 +159,7 @@ body {
 .buildInfo {
 	margin-top: 45px;
     list-style: none;
-    font-size: 12px;	
+    font-size: 12px;
 }
 
 a:hover, a:focus {
@@ -411,7 +411,7 @@ p {
 #demo_bugs_checkbox {
     left: 20px;
     top: 51px;
-	width: 400px;
+	width: 850px;
 	height: 17px;
 	font-size: 14px;
 }
@@ -422,7 +422,7 @@ p {
 
 #design {
 	left: 74px;
-	top: 1410px;
+	top: 1435px;
 	width: 324px;
 	height: 38px;
 	font-size: 20px;
@@ -1475,7 +1475,7 @@ label {
 }
 
 @keyframes collapseIn {
-	from { 
+	from {
 		left:513px;
 		width: 688px;
 		height: auto;
@@ -1487,7 +1487,7 @@ label {
 }
 
 @keyframes collapseOut {
-	from { 
+	from {
 		left:100%;
 		width: 0px;
 		height: auto;
@@ -1840,7 +1840,7 @@ label {
 }
 
 .reset_btn{
-	margin-right: 100px;	
+	margin-right: 100px;
 }
 
 #database_reset_confirm_modal .modal-content {
@@ -1987,7 +1987,7 @@ label {
 }
 
 #advertising_and_news {
-	top: 1455px;
+	top: 1480px;
 	left: 94px;
 	width: 500px;
 }
@@ -2051,5 +2051,3 @@ label {
 #forgot_password a {
 	cursor: pointer;
 }
-
-.

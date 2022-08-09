@@ -1,12 +1,12 @@
 package com.parasoft.demoapp.defaultdata;
 
-import com.parasoft.demoapp.config.datasource.IndustryDataSourceConfig;
 import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
 import com.parasoft.demoapp.exception.VirtualizeServerUrlException;
 import com.parasoft.demoapp.messages.DatabaseOperationMessages;
 import com.parasoft.demoapp.model.global.DatabaseInitResultEntity;
 import com.parasoft.demoapp.model.global.preferences.GlobalPreferencesEntity;
 import com.parasoft.demoapp.repository.global.DatabaseInitResultRepository;
+import com.parasoft.demoapp.service.DemoBugService;
 import com.parasoft.demoapp.service.GlobalPreferencesService;
 import com.parasoft.demoapp.service.ParasoftJDBCProxyService;
 import lombok.extern.slf4j.Slf4j;
@@ -34,9 +34,7 @@ public class InitializationEntrance {
 
     private ParasoftJDBCProxyService parasoftJDBCProxyService;
 
-    private IndustryRoutingDataSource industryRoutingDataSource;
-
-    private IndustryDataSourceConfig industryDataSourceConfig;
+    private DemoBugService demoBugService;
 
     private DatabaseOperationMessages databaseOperationMessages = new DatabaseOperationMessages();
 
@@ -44,17 +42,15 @@ public class InitializationEntrance {
                                   List<AbstractTablesCreator> tablesCreators,
                                   List<AbstractDataCreator> dataCreators,
                                   GlobalPreferencesService globalPreferencesService,
-                                  IndustryRoutingDataSource industryRoutingDataSource,
-                                  IndustryDataSourceConfig industryDataSourceConfig,
-                                  ParasoftJDBCProxyService parasoftJDBCProxyService) {
+                                  ParasoftJDBCProxyService parasoftJDBCProxyService,
+                                  DemoBugService demoBugService) {
 
         this.databaseInitResultRepository = databaseInitResultRepository;
         this.tablesCreators = tablesCreators;
         this.dataCreators = dataCreators;
         this.globalPreferencesService = globalPreferencesService;
-        this.industryRoutingDataSource =industryRoutingDataSource;
-        this.industryDataSourceConfig = industryDataSourceConfig;
         this.parasoftJDBCProxyService = parasoftJDBCProxyService;
+        this.demoBugService = demoBugService;
     }
 
     /**
@@ -98,9 +94,7 @@ public class InitializationEntrance {
 
         GlobalPreferencesEntity globalPreferences = globalPreferencesService.getCurrentGlobalPreferences();
         IndustryRoutingDataSource.currentIndustry = globalPreferences.getIndustryType();
-        industryRoutingDataSource.setDefaultTargetDataSource(
-                industryDataSourceConfig.getIndustryDataSources().get(IndustryRoutingDataSource.currentIndustry.getValue()));
-
+        demoBugService.introduceBugWithCannotDetermineTargetDatasourceIfNeeded(globalPreferences);
 
         Boolean useParasoftJDBCProxy = globalPreferences.getUseParasoftJDBCProxy();
         String parasoftVirtualizeServerUrl = globalPreferences.getParasoftVirtualizeServerUrl();

@@ -159,7 +159,8 @@ public class GlobalPreferencesService {
         return preferences;
     }
 
-    private void afterUpdateGlobalPreferences(GlobalPreferencesEntity preferences) {
+    private void afterUpdateGlobalPreferences(GlobalPreferencesEntity preferences) throws GlobalPreferencesNotFoundException,
+                                                                                          GlobalPreferencesMoreThanOneException {
         switchIndustry(preferences);
 
         restEndpointService.refreshEndpoint();
@@ -298,10 +299,10 @@ public class GlobalPreferencesService {
         currentPreferences.setRestEndPoints(endpoints);
     }
 
-    private void switchIndustry(GlobalPreferencesEntity currentPreferences) {
+    private void switchIndustry(GlobalPreferencesEntity currentPreferences) throws GlobalPreferencesNotFoundException,
+                                                                                   GlobalPreferencesMoreThanOneException {
     	IndustryRoutingDataSource.currentIndustry = currentPreferences.getIndustryType();
-        industryRoutingDataSource.setDefaultTargetDataSource(
-                industryDataSourceConfig.getIndustryDataSources().get(currentPreferences.getIndustryType().getValue()));
+        demoBugService.introduceBugWithCannotDetermineTargetDatasourceIfNeeded(currentPreferences);
     }
 
     public IndustryType getDefaultIndustry() {
