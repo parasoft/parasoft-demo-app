@@ -1,6 +1,7 @@
 package com.parasoft.demoapp.service;
 
 import com.parasoft.demoapp.config.ImplementedIndustries;
+import com.parasoft.demoapp.config.datasource.IndustryDataSourceConfig;
 import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
 import com.parasoft.demoapp.defaultdata.ClearEntrance;
 import com.parasoft.demoapp.defaultdata.ResetEntrance;
@@ -55,6 +56,12 @@ public class GlobalPreferencesService {
 
     @Autowired
     private GlobalPreferencesDefaultSettingsService defaultGlobalPreferencesSettingsService;
+
+    @Autowired
+    private IndustryRoutingDataSource industryRoutingDataSource;
+
+    @Autowired
+    private IndustryDataSourceConfig industryDataSourceConfig;
 
     public GlobalPreferencesEntity addNewGlobalPreferences(DataAccessMode dataAccessMode, String soapEndPoint,
                                                            Set<RestEndpointEntity> restEndpoints,
@@ -293,6 +300,8 @@ public class GlobalPreferencesService {
 
     private void switchIndustry(GlobalPreferencesEntity currentPreferences) {
     	IndustryRoutingDataSource.currentIndustry = currentPreferences.getIndustryType();
+        industryRoutingDataSource.setDefaultTargetDataSource(
+                industryDataSourceConfig.getIndustryDataSources().get(currentPreferences.getIndustryType().getValue()));
     }
 
     public IndustryType getDefaultIndustry() {
