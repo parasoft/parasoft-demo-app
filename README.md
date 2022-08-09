@@ -46,7 +46,7 @@ Login with one of these users:
 - Username `approver` password `password`
 
 ## Connect to embedded HSQLDB server instance
-There are four databases(one for global and three for industries) in Parasoft Demo Application, which are **global**, **outdoor**, **defense** and **aerospace**.
+There are four databases (one for global and three for industries) in Parasoft Demo Application, which are **global**, **outdoor**, **defense** and **aerospace**.
 
 | Database name | Description                                          |
 |---------------|------------------------------------------------------|
@@ -90,7 +90,8 @@ Parasoft Demo Application exposes port 9001 for user to connect to the HSQLDB da
 2. Create a tst file with **DB Tool**.
 3. Open the **DB Tool** and open **Connection** tab.
    - If **File** is selected, a configuration file with connection details need to be specified.
-   - If **Local** is selected, **Driver**, **URL**, **Username**, and **Password** for the database need to be specified.
+   - If **Local** is selected, **Driver**, **URL**, **Username**, and **Password** for the database need to be specified. Configuration here can be exported as a properties file (click **Export Configuration Settings** button) and used as a **Input file** for **File** option.
+   - If **Close connection** is enabled, connection will be closed right after the query finished. Best practice for running multiple DB tools with same configuration is to disable this option. In that way the connection will be shared to improve efficiency.
 
 | Option   | Value                                               |
 |----------|-----------------------------------------------------|
@@ -98,11 +99,5 @@ Parasoft Demo Application exposes port 9001 for user to connect to the HSQLDB da
 | URL      | `jdbc:hsqldb:hsql://localhost:9001/{database name}` |
 | Username | `SA`                                                |
 | Password | `''`                                                |
-
->Hint1: Configuration settings specified in **Local** section can be exported as a properties file by clicking the **Export Configuration Settings** button. This file can be used as **Input file** for **File** option.
-
->Hint2: If **Close connection** is enabled, connection will be closed right after the query is finished for current DB Tool.
-> Best practice for running multiple DB tools with same configuration is to disable this option. In that way the connection will be shared to improve efficiency.
-
 
 4. Write SQL statement in **SQL Query** tab, and run the test, the query results will be showed in **Traffic Object**.
