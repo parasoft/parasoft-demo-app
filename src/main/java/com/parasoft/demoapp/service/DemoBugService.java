@@ -1,13 +1,10 @@
 package com.parasoft.demoapp.service;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
+import com.parasoft.demoapp.config.datasource.IndustryDataSourceConfig;
+import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -41,6 +38,12 @@ public class DemoBugService {
 
     @Autowired
     private LocationService locationService;
+
+    @Autowired
+    IndustryRoutingDataSource industryRoutingDataSource;
+
+    @Autowired
+    IndustryDataSourceConfig industryDataSourceConfig;
 
     public void removeByGlobalPreferencesId(Long id) {
         Objects.requireNonNull(id, GlobalPreferencesMessages.GLOBAL_PREFERENCES_ID_CANNOT_BE_NULL);
@@ -115,18 +118,18 @@ public class DemoBugService {
         order.setRegion(incorrectLocation.getRegion());
     }
 
-    public Pageable introduceBugWithReverseOrdersIfNeeded(Pageable pageable) 
+    public Pageable introduceBugWithReverseOrdersIfNeeded(Pageable pageable)
     		throws GlobalPreferencesNotFoundException, GlobalPreferencesMoreThanOneException {
-    	
+
          GlobalPreferencesEntity globalPreferencesEntity = globalPreferencesService.getCurrentGlobalPreferences();
          Set<DemoBugEntity> demoBugs = globalPreferencesEntity.getDemoBugs();
          Sort sort = pageable.getSort();
-         
+
          for(DemoBugEntity demoBugEntity : demoBugs){
              if(demoBugEntity.getDemoBugsType() == DemoBugsType.REVERSE_ORDER_OF_ORDERS){
             	Iterator<Sort.Order> iterator = sort.iterator();
-            	List<Sort.Order> orders = new ArrayList<>(); 
-            	
+            	List<Sort.Order> orders = new ArrayList<>();
+
             	while(iterator.hasNext()) {
             		Sort.Order originOrder = iterator.next();
             		String property = originOrder.getProperty();
@@ -138,15 +141,15 @@ public class DemoBugService {
             		}
             		orders.add(newOrder);
             	}
-            	
+
             	Sort newSort = Sort.by(orders);
                 return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), newSort);
              }
          }
-         
+
         return pageable;
     }
-    
+
     public void introduceBugWithIncorrectLocationForApprovedOrdersIfNeeded(Collection<OrderEntity> orders)
             throws GlobalPreferencesMoreThanOneException, GlobalPreferencesNotFoundException,
                     DemoBugsIntroduceFailedException {
@@ -158,5 +161,28 @@ public class DemoBugService {
         for(OrderEntity order : orders){
             introduceBugWithIncorrectLocationForApprovedOrdersIfNeeded(order);
         }
+    }
+
+    public void introduceBugWithCannotDetermineTargetDatasourceIfNeeded(GlobalPreferencesEntity currentPreferences)
+                                                                        throws GlobalPreferencesNotFoundException,
+                                                                               GlobalPreferencesMoreThanOneException {
+        Set<DemoBugEntity> demoBugs = currentPreferences.getDemoBugs();
+
+        if(!needBug(DemoBugsType.CANNOT_DETERMINE_TARGET_DATASOURCE_FOR_LOAD_TEST, demoBugs)){
+            industryRoutingDataSource.setDefaultTargetDataSource(
+                    industryDataSourceConfig.getIndustryDataSources().get(IndustryRoutingDataSource.currentIndustry.getValue()));
+        }
+    }
+
+    private boolean needBug(DemoBugsType bugType, Set<DemoBugEntity> demoBugs) throws GlobalPreferencesNotFoundException, GlobalPreferencesMoreThanOneException {
+        boolean needBug = false;
+        for(DemoBugEntity demoBugEntity : demoBugs){
+            if(demoBugEntity.getDemoBugsType() == bugType){
+                needBug = true;
+                break;
+            }
+        }
+
+        return needBug;
     }
 }

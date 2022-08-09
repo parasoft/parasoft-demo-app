@@ -16,6 +16,7 @@ var bug_missingProvider_value = "PURCHASER_WEBSITE_IS_MISSING_ONE_OF_THE_EXTERNA
 var bug_Incorrect_location_value = "INCORRECT_LOCATION_FOR_APPROVED_ORDERS";
 var bug_Incorrect_number_value = "INCORRECT_NUMBER_OF_ITEMS_IN_SUMMARY_OF_PENDING_ORDER";
 var bug_Reverse_orders_value = "REVERSE_ORDER_OF_ORDERS";
+var bug_Cannot_determine_target_datasource = "CANNOT_DETERMINE_TARGET_DATASOURCE_FOR_LOAD_TEST";
 
 mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $filter, $window, $timeout) {
 	var demo = this;
@@ -24,7 +25,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 	demo.end_point_for_cartItems = "/proxy/v1/cartItems/**";
 	demo.end_point_for_orders = "/proxy/v1/orders/**";
 	demo.end_point_for_locations = "/proxy/v1/locations/**";
-	
+
 	$rootScope.isShowOtherButtons = false;
     var flag = localStorage.getItem("status");
     var databaseResetFlag = localStorage.getItem("databaseResetStatus");
@@ -79,7 +80,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
             demo.GENERAL = "";
             demo.LABELS = "active";
             demo.isShowImgModal = false;
-            
+
             //Get all overrided labels
             getOverridedLabels();
             //Get all default labels
@@ -164,7 +165,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
             displayLoadError(result,$rootScope,$filter,$http,true,'locations');
         });
     }
-    
+
     function getOverridedLabels(){
     	$http({
     		method: 'GET',
@@ -241,7 +242,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 
     	return regUrl.test(url);
     }
-    
+
     clearMessage = function(type) {
         switch(type) {
         case "categories":
@@ -262,11 +263,11 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
         default:
         }
     }
-    
+
     demo.validateVirtualizeServerUrl = function(url){
     	demo.clearVirtualizeServerUrlTestMessage();
     	demo.isVirtualizeServerUrlTesting = true;
-    	
+
     	$http({
             method: 'GET',
             url: '/v1/demoAdmin/parasoftVirtualizeServerUrlValidation',
@@ -282,7 +283,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
             console.info(result);
         });
     }
-    
+
     demo.clearVirtualizeServerUrlTestMessage = function() {
     	demo.isVirtualizeServerUrlTesting = false;
     	demo.invalidVirtualizeServerUrl = false;
@@ -300,9 +301,9 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
     		demo.invalidVirtualizeServerUrl = true;
     	}
     }
-    
+
     validatePathWellForm = function(virtualizeServerPath){
-    	
+
     	if(virtualizeServerPath === null || virtualizeServerPath === ""){
     		return true;
     	}
@@ -311,21 +312,21 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 
     	return reg.test(virtualizeServerPath);
     }
-    
+
     demo.clearVirtualizeServerPathTestMessage = function(){
     	demo.invalidVirtualizeServerPath = false;
     }
-    
+
     demo.validateVirtualizeServerPathWellForm = function(virtualizeServerPath){
     	demo.clearVirtualizeServerPathTestMessage();
-    	
+
     	if(!validatePathWellForm(virtualizeServerPath)){
     		demo.invalidVirtualizeServerPath = true;
     	}
     }
-    
+
     validateGroupIdWellForm = function(virtualizegroupId){
-    	
+
     	if(virtualizegroupId === null || virtualizegroupId === ""){
     		return true;
     	}
@@ -334,14 +335,14 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 
     	return reg.test(virtualizegroupId);
     }
-    
+
     demo.clearVirtualizeGroupIdTestMessage = function(){
     	demo.invalidVirtualizeGroupId = false;
     }
-    
+
     demo.validateVirtualizeGroupIdWellForm = function(virtualizegroupId){
     	demo.clearVirtualizeGroupIdTestMessage();
-    	
+
     	if(!validateGroupIdWellForm(virtualizegroupId)){
     		demo.invalidVirtualizeGroupId = true;
     	}
@@ -358,7 +359,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
     		demo.clearVirtualizeGroupIdTestMessage();
     	}
     }
-    
+
     demo.disableSaveChangesButton = function() {
     	if(demo.endpointError_categories || demo.endpointError_categories || demo.endpointError_items ||
     		demo.endpointError_cart || demo.endpointError_orders || demo.endpointError_locations ||
@@ -383,7 +384,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
             $('#saving_modal').modal('hide');
         }, function error(response) {
         	console.info(response);
-        	
+
         	var responseMessage = response.data.message.toLowerCase();
             var errorMessage;
             if(responseMessage.indexOf("invalid categories url") > -1) {
@@ -403,7 +404,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
             } else if(responseMessage.indexOf('Invalid virtualize group id') > -1){
             	errorMessage =  $filter('translate')('INVALID_PARASOFT_VIRTUALIZE_GROUP_ID');
             }
-            
+
             $('#saving_modal').modal('hide');
             localStorage.setItem("status", "false");
             toastr.error($filter('translate')('SAVING_FAILS') + '<br/>' + errorMessage);
@@ -411,9 +412,9 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
             console.info(result);
         });
     };
-    
+
     $rootScope.lang = getDefaultLang();
-    
+
     demo.saveOverridedLabels = function() {
     	$http({
     		method: 'PUT',
@@ -466,7 +467,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
             console.info(result);
         });
     };
-    
+
     demo.showDatabaseOperationConfirmModal = function(operation){
     	if(operation === "reset"){
     		demo.currentDatabaseOperation = "reset";
@@ -474,7 +475,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
     		demo.currentDatabaseOperation = "clear";
     	}
     }
-    
+
     demo.showImgModal = function(index,imageUrl){
     	if(demo.isShowImgModal !== true){
     		demo.isShowImgModal = true;
@@ -966,7 +967,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 	    	var currentValue = demo.categoryModal.form.currentValue;
 	    	var defaultValue = demo.categoryModal.form.defaultValue;
 	    	var isFormChanged = angular.equals(currentValue, defaultValue);
-	
+
 	    	if(isFormChanged){
 	    		demo.categoryModal.disableSaveButton = true;
 	    	}else{
@@ -1168,19 +1169,19 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
 
         options.industryType = data.industryType;
         options.advertisingEnabled = data.advertisingEnabled;
-        
+
         options.useParasoftJDBCProxy = data.useParasoftJDBCProxy;
         options.parasoftVirtualizeServerUrl = data.parasoftVirtualizeServerUrl;
         options.parasoftVirtualizeServerPath = data.parasoftVirtualizeServerPath;
         options.parasoftVirtualizeGroupId = data.parasoftVirtualizeGroupId;
-        
+
     }).catch(function(result) {
         toastr.error($filter('translate')('LOADING_DATA_FAILS'));
         console.log(result);
     });
 
 	options.resetEndpoint = function(endpoint){
-		
+
 		resetValuesTemplate(function(defaultOptions){
 			var restDefaultEndpoints = defaultOptions.restEndPoints;
 
@@ -1214,25 +1215,25 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
 	       }
 		});
 	}
-	
+
 	options.resetVirtualizeServerUrl = function(){
 		resetValuesTemplate(function(defaultOptions){
 			options.parasoftVirtualizeServerUrl = defaultOptions.parasoftVirtualizeServerUrl;
 		});
 	}
-	
+
 	options.resetVirtualizeServerPath = function(){
 		resetValuesTemplate(function(defaultOptions){
 			options.parasoftVirtualizeServerPath = defaultOptions.parasoftVirtualizeServerPath;
 		});
 	}
-	
+
 	options.resetVirtualizeGroupId = function(){
 		resetValuesTemplate(function(defaultOptions){
 			options.parasoftVirtualizeGroupId = defaultOptions.parasoftVirtualizeGroupId;
 		});
 	}
-	
+
 	function resetValuesTemplate(doResetFunction){
 		if(options.defaultOptions === undefined){
 			$http({
@@ -1248,14 +1249,14 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
 			doResetFunction(options.defaultOptions);
 		}
 	}
-	
+
 	options.fullfilPath = function(){
 		var path = options.parasoftVirtualizeServerPath;
-		
+
 		if(path === null || path === ""){
-			return 
+			return
 		}
-		
+
 		if(path.substring(0, 1) !== '/'){
 			options.parasoftVirtualizeServerPath = '/' + options.parasoftVirtualizeServerPath;
 		}
@@ -1316,6 +1317,9 @@ function handleDemoBugsFromServer(demoBugs){
                 case bug_Reverse_orders_value:
                 	checkedBugs.reverse_order_of_orders = true;
                 	break;
+				case bug_Cannot_determine_target_datasource:
+					checkedBugs.cannot_determine_target_datasource = true;
+					break;
                 default:
                     checkedBugs.unkonwn = true;
             }

@@ -17,7 +17,7 @@
 	<input type="hidden" id="current_username" th:value="${#authentication.principal.username}">
 	<input type="hidden" id="current_rolename" th:value="${#authentication.principal.role.name}">
 	<div ng-include="'/common/pages/header.html'" ng-controller="headerController"></div>
-	
+
 	<div ng-controller="demo_admin_controller as demo">
 		<div id="return_to_home" class="common_industry industry_font">
 			<div id="return_to_home_div" class="common_div industry_font"></div>
@@ -31,7 +31,7 @@
 	 			<p><span translate="TITLE_DEMO_ADMIN"></span><span>: </span><span ng-bind="INDUSTRY"></span></p>
 	 		</div>
 	 	</div>
-	 	
+
 	 	<ul class="nav nav-tabs industry_font">
 			<li role="presentation" ng-class="demo.GENERAL" ng-click="demo.changeToGeneral()">
 				<a type="button" translate="GENERAL_ADMIN"></a>
@@ -46,7 +46,7 @@
 				<a type="button" translate="LABELS_ADMIN"></a>
 			</li>
 		</ul>
-	 	
+
 	 	<div ng-if="demo.GENERAL">
 			<div id="industry_save_button" class="demo_admin">
 				<div id="industry_save_button_div" class="demo_admin_div"></div>
@@ -214,12 +214,12 @@
 						<div class="form-group">
 							<label>
 								<input type="checkbox" name="useParasoftJDBCProxy" ng-model="options.useParasoftJDBCProxy" value="true"
-										ng-change="demo.triggerParasoftJdbcProxy(options.useParasoftJDBCProxy, options.parasoftVirtualizeServerUrl, 
+										ng-change="demo.triggerParasoftJdbcProxy(options.useParasoftJDBCProxy, options.parasoftVirtualizeServerUrl,
 																				options.parasoftVirtualizeServerPath, options.parasoftVirtualizeGroupId)"/>
 								<span class="selection_content" translate="ENABLE"></span>
 							</label>
 						</div>
-						
+
 						<div class="form-group">
 							<label for="parasoft_virtualize_server_url" class="virtualize_server_url_label" translate="PARASOFT_VIRTUALIZE_SERVER_URL"></label>
 							<input type="hidden" name="parasoftVirtualizeServerUrl" ng-value="options.parasoftVirtualizeServerUrl">
@@ -268,7 +268,7 @@
 									ng-click="options.resetVirtualizeGroupId();demo.clearVirtualizeGroupIdTestMessage();"
 									ng-disabled="!options.useParasoftJDBCProxy"></button>
 						</div>
-						
+
 					</div>
 				</div>
 				<div id="demo_bugs" class="demo_admin">
@@ -276,7 +276,7 @@
 					<div class="demo_admin_text industry_font">
 						<p><span translate="DEMO_BUGS"></span></p>
 					</div>
-								
+
 					<div id="demo_bugs_checkbox" class="demo_admin industry_font">
 						<div class="demo_admin_text">
 							<p>
@@ -288,22 +288,29 @@
 							</p>
 							<p>
 								<label>
-									<input type="checkbox" name="demoBugs[]" value="INCORRECT_LOCATION_FOR_APPROVED_ORDERS" 
+									<input type="checkbox" name="demoBugs[]" value="INCORRECT_LOCATION_FOR_APPROVED_ORDERS"
 											ng-checked="options.demoBugs.incorrect_location">
 									<span class="selection_content" translate="INCORRECT_LOCATION_FOR_APPROVED_ORDERS"></span>
 								</label>
 							</p>
 							<p>
 								<label>
-									<input type="checkbox" name="demoBugs[]" value="REVERSE_ORDER_OF_ORDERS" 
+									<input type="checkbox" name="demoBugs[]" value="REVERSE_ORDER_OF_ORDERS"
 											ng-checked="options.demoBugs.reverse_order_of_orders">
 									<span class="selection_content" translate="INCONSISTENT_ORDER_OF_ORDERS"></span>
+								</label>
+							</p>
+							<p>
+								<label>
+									<input type="checkbox" name="demoBugs[]" value="CANNOT_DETERMINE_TARGET_DATASOURCE_FOR_LOAD_TEST"
+										   ng-checked="options.demoBugs.cannot_determine_target_datasource">
+									<span class="selection_content" translate="CANNOT_DETERMINE_TARGET_DATASOURCE_FOR_LOAD_TEST"></span>
 								</label>
 							</p>
 						</div>
 					</div>
 				</div>
-						
+
 				<div id="design" class="demo_admin">
 					<div id="design_div" class="demo_admin_div"></div>
 					<div class="industry_font demo_admin_text">
@@ -311,7 +318,7 @@
 							<span translate="INDUSTRY_DESIGN"></span>
 						</p>
 					</div>
-					
+
 					<div id="design_radio" class="demo_admin">
 						<div class="industry_font demo_admin_text">
 							<p>
@@ -332,7 +339,7 @@
 						</div>
 					</div>
 				</div>
-	
+
 				<div id="advertising_and_news" class="common_industry industry_font">
 					<p><label>
 						<input type="checkbox" name="advertisingEnabled" ng-checked="options.advertisingEnabled" value="true">
@@ -442,7 +449,7 @@
 		</div>
 		<div ng-if="demo.ITEMS">
 			<div id="add_btn" class="common_industry industry_font" ng-click="demo.showItemModal()">
-				<button class="btn industry_button function_btn" data-toggle="modal" data-target="#item_modal" 
+				<button class="btn industry_button function_btn" data-toggle="modal" data-target="#item_modal"
 						translate="ADD_NEW_ITEM"></button>
 			</div>
 			<table class="table table-bordered common_industry industry_font" >
@@ -468,7 +475,7 @@
 						<td title="{{item.inStock}}"><span class="table_item_quantity retract_format" ng-bind="item.inStock"></span></td>
 						<td><img ng-src="{{item.image}}" ng-click="demo.showImgModal($index,item.image)"></td>
 						<td>
-							<img class="edit_icon" ng-src="/{{industry}}/images/edit.svg" data-toggle="modal" 
+							<img class="edit_icon" ng-src="/{{industry}}/images/edit.svg" data-toggle="modal"
 									data-target="#item_modal" ng-click="demo.showItemModal(item)" >
 							<img class="delete_icon" ng-src="/{{industry}}/images/delete.svg" data-toggle="modal"
 									data-target="#remove_confirm_modal" ng-click="demo.showRemoveConfirmModal(item)" >

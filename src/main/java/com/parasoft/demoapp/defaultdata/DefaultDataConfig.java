@@ -1,8 +1,7 @@
 package com.parasoft.demoapp.defaultdata;
 
-import com.parasoft.demoapp.config.datasource.IndustryDataSourceConfig;
-import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
 import com.parasoft.demoapp.repository.global.DatabaseInitResultRepository;
+import com.parasoft.demoapp.service.DemoBugService;
 import com.parasoft.demoapp.service.GlobalPreferencesService;
 import com.parasoft.demoapp.service.ParasoftJDBCProxyService;
 import org.springframework.context.annotation.Bean;
@@ -18,15 +17,13 @@ public class DefaultDataConfig {
 
     @Bean(initMethod = "init")
     public InitializationEntrance defaultDataInitialization(DatabaseInitResultRepository databaseInitResultRepository,
-                                                        List<AbstractTablesCreator> tablesCreators,
-                                                        List<AbstractDataCreator> dataCreators,
-                                                        GlobalPreferencesService globalPreferencesService,
-                                                        IndustryRoutingDataSource industryRoutingDataSource,
-                                                        IndustryDataSourceConfig industryDataSourceConfig,
-                                                        ParasoftJDBCProxyService parasoftJDBCProxyService){
+                                                            List<AbstractTablesCreator> tablesCreators,
+                                                            List<AbstractDataCreator> dataCreators,
+                                                            GlobalPreferencesService globalPreferencesService,
+                                                            ParasoftJDBCProxyService parasoftJDBCProxyService,
+                                                            DemoBugService demoBugService){
 
         return new InitializationEntrance(databaseInitResultRepository, tablesCreators, dataCreators,
-                                          globalPreferencesService, industryRoutingDataSource, industryDataSourceConfig,
-                                          parasoftJDBCProxyService);
+                                          globalPreferencesService, parasoftJDBCProxyService, demoBugService);
     }
 }
