@@ -199,7 +199,7 @@ body {
 }
 
 #demo_bugs_checkbox {
-	width: 500px;
+	width: 970px;
 }
 
 a:hover, a:focus {
@@ -459,7 +459,7 @@ button.close, button.close:hover {
 #saving_modal {
     top: 160px;
     left: 100px;
-    
+
 }
 
 .saving-modal-header {
