@@ -16,7 +16,7 @@ body {
 }
 
 #footer {
-	top: 874px;
+    top: min(max(calc(100vh - 95px), 815px), 900px);
 }
 
 #submit_button {

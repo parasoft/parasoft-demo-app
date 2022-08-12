@@ -211,7 +211,7 @@ p {
 }
 
 #footer {
-    top: 899px;
+    top: min(max(calc(100vh - 70px), 612px), 900px);
     height: 70px;
 }
 
