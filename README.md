@@ -65,7 +65,7 @@ Parasoft Demo Application exposes port 9001 for user to connect to the HSQLDB da
 | Driver   | `org.hsqldb.jdbcDriver`                    |
 | URL      | `jdbc:hsqldb:hsql://localhost:9001/global` |
 | Username | `SA`                                       |
-| Password | `''`                                       |
+| Password | `pass`                                       |
 
 - Industry database
 
@@ -74,7 +74,7 @@ Parasoft Demo Application exposes port 9001 for user to connect to the HSQLDB da
 | Driver   | `org.hsqldb.jdbcDriver`                             |
 | URL      | `jdbc:hsqldb:hsql://localhost:9001/{database name}` |
 | Username | `SA`                                                |
-| Password | `''`                                                |
+| Password | `pass`                                                |
 
 ## Using Parasoft JDBC Proxy
 1. Find the **ParasoftJDBCDriver.jar** in **{SOAtest & Virtualize installation directory}/{version}/proxies**.
@@ -98,6 +98,6 @@ Parasoft Demo Application exposes port 9001 for user to connect to the HSQLDB da
 | Driver   | `org.hsqldb.jdbcDriver`                             |
 | URL      | `jdbc:hsqldb:hsql://localhost:9001/{database name}` |
 | Username | `SA`                                                |
-| Password | `''`                                                |
+| Password | `pass`                                                |
 
 4. Write SQL statement in **SQL Query** tab, and run the test, the query results will be showed in **Traffic Object**.
