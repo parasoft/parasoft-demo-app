@@ -88,10 +88,7 @@ Parasoft Demo Application exposes port 9001 for user to connect to the HSQLDB da
 ## Using SOAtest DB Tool
 1. Open **SOAtest & Virtualize** desktop, add the hsqldb driver to **Parasoft -> Preferences -> JDBC Drivers**.
 2. Create a tst file with **DB Tool**.
-3. Open the **DB Tool** and open **Connection** tab.
-   - If **File** is selected, a configuration file with connection details need to be specified.
-   - If **Local** is selected, **Driver**, **URL**, **Username**, and **Password** for the database need to be specified. Configuration here can be exported as a properties file (click **Export Configuration Settings** button) and used as a **Input file** for **File** option.
-   - If **Close connection** is enabled, connection will be closed right after the query finished. Best practice for running multiple DB tools with same configuration is to disable this option. In that way the connection will be shared to improve efficiency.
+3. Open the **DB Tool** and open **Connection** tab. Select **Local** option and fill in **Driver**, **URL**, **Username** and **Password** for the database.
 
 | Option   | Value                                               |
 |----------|-----------------------------------------------------|
