@@ -3,9 +3,9 @@ package com.parasoft.demoapp.service;
 import java.text.MessageFormat;
 import java.util.*;
 
-import com.parasoft.demoapp.config.datasource.IndustryDataSourceConfig;
 import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -28,6 +28,7 @@ import com.parasoft.demoapp.model.industry.RegionType;
 import com.parasoft.demoapp.repository.global.DemoBugRepository;
 
 @Service
+@DependsOn("globalPreferencesService")
 public class DemoBugService {
 
     @Autowired
@@ -40,10 +41,7 @@ public class DemoBugService {
     private LocationService locationService;
 
     @Autowired
-    IndustryRoutingDataSource industryRoutingDataSource;
-
-    @Autowired
-    IndustryDataSourceConfig industryDataSourceConfig;
+    private IndustryRoutingDataSource industryRoutingDataSource;
 
     public void removeByGlobalPreferencesId(Long id) {
         Objects.requireNonNull(id, GlobalPreferencesMessages.GLOBAL_PREFERENCES_ID_CANNOT_BE_NULL);
@@ -163,24 +161,26 @@ public class DemoBugService {
         }
     }
 
-    public void introduceBugWithCannotDetermineTargetDatasourceIfNeeded(GlobalPreferencesEntity currentPreferences)
-                                                                        throws GlobalPreferencesNotFoundException,
-                                                                               GlobalPreferencesMoreThanOneException {
-        Set<DemoBugEntity> demoBugs = currentPreferences.getDemoBugs();
-
-        if(!needBug(DemoBugsType.CANNOT_DETERMINE_TARGET_DATASOURCE_FOR_LOAD_TEST, demoBugs)){
-            industryRoutingDataSource.setDefaultTargetDataSource(
-                    industryDataSourceConfig.getIndustryDataSources().get(IndustryRoutingDataSource.currentIndustry.getValue()));
+    public void introduceBugWithCannotDetermineTargetDatasourceIfNeeded() {
+        if(needBug(DemoBugsType.CANNOT_DETERMINE_TARGET_DATASOURCE_FOR_LOAD_TEST)) {
+            // Call afterPropertiesSet() method will case a concurrency problem
+            industryRoutingDataSource.afterPropertiesSet();
         }
     }
 
-    private boolean needBug(DemoBugsType bugType, Set<DemoBugEntity> demoBugs) throws GlobalPreferencesNotFoundException, GlobalPreferencesMoreThanOneException {
+    private boolean needBug(DemoBugsType bugType) {
         boolean needBug = false;
-        for(DemoBugEntity demoBugEntity : demoBugs){
-            if(demoBugEntity.getDemoBugsType() == bugType){
-                needBug = true;
-                break;
+        try {
+            GlobalPreferencesEntity globalPreferencesEntity = globalPreferencesService.getCurrentGlobalPreferences();
+            for(DemoBugEntity demoBugEntity : globalPreferencesEntity.getDemoBugs()){
+                if(demoBugEntity.getDemoBugsType() == bugType){
+                    needBug = true;
+                    break;
+                }
             }
+        } catch (GlobalPreferencesNotFoundException | GlobalPreferencesMoreThanOneException e) {
+            // Will not reach here if project is started up succesfully
+            throw new RuntimeException(e);
         }
 
         return needBug;

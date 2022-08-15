@@ -11,6 +11,7 @@ import com.parasoft.demoapp.util.UrlUtil;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
@@ -25,6 +26,7 @@ import static com.parasoft.demoapp.config.ParasoftJDBCProxyConfig.*;
 import static com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource.*;
 
 @Service
+@DependsOn("demoBugService")
 public class ParasoftJDBCProxyService {
 
     public static final String WELL_VIRTUALIZE_GROUP_ID_REGEX = "^[a-zA-Z0-9-_]+$";
@@ -41,6 +43,9 @@ public class ParasoftJDBCProxyService {
     private DataSourceConfigurationProperties.Industry industryDataSourceProperties;
 
     @Autowired
+    private DemoBugService demoBugService;
+
+    @Autowired
     @Qualifier("industryDataSource")
     private IndustryRoutingDataSource industryRoutingDataSource;
 
@@ -54,8 +59,7 @@ public class ParasoftJDBCProxyService {
             setSystemArguments();
             loadParasoftJDBCProxyDataSource();
         }
-
-        industryRoutingDataSource.afterPropertiesSet();
+        demoBugService.introduceBugWithCannotDetermineTargetDatasourceIfNeeded();
     }
 
     private void setSystemArguments(){
@@ -82,6 +86,7 @@ public class ParasoftJDBCProxyService {
         DataSource proxy = generateParasoftJDBCProxyDataSourceForCurrentIndustry();
         // Add Parasoft proxy data source into current data sources container.
         industryDataSourceConfig.getIndustryDataSources().put(getProxyKeyOfCurrentIndustry(), proxy);
+        industryRoutingDataSource.afterPropertiesSet();
     }
 
     private DataSource generateParasoftJDBCProxyDataSourceForCurrentIndustry(){
@@ -113,6 +118,7 @@ public class ParasoftJDBCProxyService {
             HikariDataSource dataSourceToClose = (HikariDataSource)industryDataSourceConfig.getIndustryDataSources().get(key);
             dataSourceToClose.close();
             industryDataSourceConfig.getIndustryDataSources().remove(key);
+            industryRoutingDataSource.afterPropertiesSet();
         }
     }
 
