@@ -1,5 +1,5 @@
 # Parasoft Demo Application
-The Parasoft Demo Application is an example Spring Boot project. The application is configurable and customizable, and is used to demonstrate functionality in a variery of Parasoft tools.
+The Parasoft Demo Application is an example Spring Boot project. The application is configurable and customizable, and is used to demonstrate functionality in a variety of Parasoft tools.
 
 ## Getting Started
 ### Building .war from sources
@@ -15,7 +15,7 @@ gradlew.bat bootWar
 ```
 The file parasoft-demo-app-1.1.0.war can be found in build/libs after building.
 ### Running
-You can run the application either directly from sources.
+You can run the application either directly from sources,
 
 In Linux / Cygwin:
 ```
@@ -32,11 +32,11 @@ java -jar build/libs/parasoft-demo-app-1.1.0.war
 ### Importing into your IDE
 If you want to import the project into your IDE, be sure to do the following:
 1. Import the project as a Gradle project. You may need to synchronize or refresh the project after importing.
-2. Install a Lombok plugin for your IDE, since the project uses Lombok.
+2. Install a Lombok plugin for your IDE since the project uses Lombok.
 #### Changing server port
 When launching the app, you can specify the port to use with a command like the following:
 ```
-./gradlew bootRun -Pport=8888'
+./gradlew bootRun -Pport=8888
 ```
 ## Using the Demo Application
 Once started, you can access the application at [http://localhost:8080](http://localhost:8080).
@@ -56,7 +56,7 @@ There are four databases (one for global and three for industries) in Parasoft D
 | aerospace     | Used to store the data about aerospace industry.     |
 
 ### Connection configuration
-Parasoft Demo Application exposes port 9001 for user to connect to the HSQLDB database remotely.
+Parasoft Demo Application exposes port 9001 for the user to connect to the HSQLDB database remotely.
 
 - Global database
 
@@ -65,7 +65,7 @@ Parasoft Demo Application exposes port 9001 for user to connect to the HSQLDB da
 | Driver   | `org.hsqldb.jdbcDriver`                    |
 | URL      | `jdbc:hsqldb:hsql://localhost:9001/global` |
 | Username | `SA`                                       |
-| Password | `pass`                                       |
+| Password | `pass`                                     |
 
 - Industry database
 
@@ -74,27 +74,27 @@ Parasoft Demo Application exposes port 9001 for user to connect to the HSQLDB da
 | Driver   | `org.hsqldb.jdbcDriver`                             |
 | URL      | `jdbc:hsqldb:hsql://localhost:9001/{database name}` |
 | Username | `SA`                                                |
-| Password | `pass`                                                |
+| Password | `pass`                                              |
 
 ## Using Parasoft JDBC Proxy
 1. Find the **ParasoftJDBCDriver.jar** in **{SOAtest & Virtualize installation directory}/{version}/proxies**.
-2. Copy it to **{root directory of parasoft-demo-app}/lib**. (Create the folder if it does not already exist)
-3. Open **SOAtest & Virtualize** desktop, add the **ParasoftJDBCDriver.jar** to **Parasoft -> Preferences -> JDBC Drivers**.
+2. Copy it to **{root directory of parasoft-demo-app}/lib**. (Create the folder if it does not already exist.)
+3. Open **SOAtest & Virtualize** desktop, add the **ParasoftJDBCDriver.jar** to **Parasoft > Preferences > JDBC Drivers**.
 4. Start Virtualize server in **Virtualize Server** view.
-5. Enable the **PARASOFT JDBC PROXY** in PDA **Demo Admin** page, modify started server's **URL**, **Parasoft Virtualize Server path** and **Parasoft Virtualize group ID** if necessary.
+5. Enable the **PARASOFT JDBC PROXY** in PDA **Demo Admin** page, modify started server's **URL**, **Parasoft Virtualize Server path**, and **Parasoft Virtualize group ID** if necessary.
 6. Go to **SOAtest & Virtualize** desktop and refresh the Server. If the **Parasoft JDBC Proxy** is enabled successfully, there will be a controller which has the same name as group ID under **JDBC Controllers**.
 7. Change the settings of the controller.
 
 ## Using SOAtest DB Tool
-1. Open **SOAtest & Virtualize** desktop, add the hsqldb driver to **Parasoft -> Preferences -> JDBC Drivers**.
+1. Open **SOAtest & Virtualize** desktop, add the hsqldb driver to **Parasoft > Preferences > JDBC Drivers**.
 2. Create a tst file with **DB Tool**.
-3. Open the **DB Tool** and open **Connection** tab. Select **Local** option and fill in **Driver**, **URL**, **Username** and **Password** for the database.
+3. Open the **DB Tool** and open the **Connection** tab. Select **Local** option and fill in **Driver**, **URL**, **Username**, and **Password** for the database.
 
 | Option   | Value                                               |
 |----------|-----------------------------------------------------|
 | Driver   | `org.hsqldb.jdbcDriver`                             |
 | URL      | `jdbc:hsqldb:hsql://localhost:9001/{database name}` |
 | Username | `SA`                                                |
-| Password | `pass`                                                |
+| Password | `pass`                                              |
 
-4. Write SQL statement in **SQL Query** tab, and run the test, the query results will be showed in **Traffic Object**.
+4. Write SQL statement in **SQL Query** tab and run the test. The query results will be shown in **Traffic Object**.
