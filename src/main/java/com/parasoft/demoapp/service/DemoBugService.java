@@ -162,7 +162,7 @@ public class DemoBugService {
     }
 
     public void introduceBugWithCannotDetermineTargetDatasourceIfNeeded() {
-        if(needBug(DemoBugsType.CANNOT_DETERMINE_TARGET_DATASOURCE_FOR_LOAD_TEST)) {
+        if(needBug(DemoBugsType.REINITIALIZE_DATASOURCE_FOR_EACH_HTTP_REQUEST)) {
             // Call afterPropertiesSet() method will case a concurrency problem
             industryRoutingDataSource.afterPropertiesSet();
         }

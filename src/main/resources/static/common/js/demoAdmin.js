@@ -16,7 +16,7 @@ var bug_missingProvider_value = "PURCHASER_WEBSITE_IS_MISSING_ONE_OF_THE_EXTERNA
 var bug_Incorrect_location_value = "INCORRECT_LOCATION_FOR_APPROVED_ORDERS";
 var bug_Incorrect_number_value = "INCORRECT_NUMBER_OF_ITEMS_IN_SUMMARY_OF_PENDING_ORDER";
 var bug_Reverse_orders_value = "REVERSE_ORDER_OF_ORDERS";
-var bug_Cannot_determine_target_datasource = "CANNOT_DETERMINE_TARGET_DATASOURCE_FOR_LOAD_TEST";
+var bug_Reinitialize_datasource_for_each_http_request_value = "REINITIALIZE_DATASOURCE_FOR_EACH_HTTP_REQUEST";
 
 mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $filter, $window, $timeout) {
 	var demo = this;
@@ -1317,8 +1317,8 @@ function handleDemoBugsFromServer(demoBugs){
                 case bug_Reverse_orders_value:
                 	checkedBugs.reverse_order_of_orders = true;
                 	break;
-				case bug_Cannot_determine_target_datasource:
-					checkedBugs.cannot_determine_target_datasource = true;
+				case bug_Reinitialize_datasource_for_each_http_request_value:
+					checkedBugs.reinitialize_datasource_for_each_http_request = true;
 					break;
                 default:
                     checkedBugs.unkonwn = true;

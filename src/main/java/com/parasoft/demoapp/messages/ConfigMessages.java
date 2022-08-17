@@ -8,7 +8,9 @@ public class ConfigMessages extends Messages {
 	public static final String MAP_RESOURCES_STATIC_PATTERN = "Map resources static pattern [{0}] with location [file:{1}].";
 	public static final String CAN_NOT_DEFINE_MULTIPART_TEMPORARY_LOCATION = "Unable to create multipart temporary directory with: {1}.";
 	public static final String MULTIPART_TEMPORARY_LOCATION = "Multipart upload temporary location is: {0}.";
-	
+	public static final String CANNOT_DETERMINE_DATASOURCE = "Target datasource [{0}] can not be found. The datasource is thread shared, it will be reinitialized during each http request in current implementation " +
+															 "but the initialize operation and access operation of datasource are not synchronized, so the operations are not thread-safe and there is a chance to get an " +
+															 "empty datasource when project is under high concurrency condition. To prevent this situation you can make the operations of datasource be synchronized or avoid reinitialize datasource during each http request.";
 	public static final String GENERAL_API_DESCRIPTION = "general.api.description";
 	public static final String REGULAR_API_DESCRIPTION = "regular.api.description";
 	public static final String GATEWAY_API_DESCRIPTION = "gateway.api.description";
