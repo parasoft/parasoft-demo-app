@@ -1,0 +1,60 @@
+body {
+    background-color: rgba(0, 0, 0, 1);
+}
+
+a, a:hover, a:focus {
+    text-decoration: none;
+}
+
+.industry_color_1 {
+    color: #E7FFA1;
+}
+
+.industry_color_2 {
+    color: #C2EAFB;
+}
+
+.industry_font {
+	font-family: 'Orbitron-Bold', 'Orbitron Bold', 'Orbitron', sans-serif;
+}
+
+@font-face {
+	font-family: 'Orbitron Bold';
+	font-style: normal;
+	font-weight: 700;
+	src: local('Orbitron Bold'), local('Orbitron-Bold'),
+		url(https://fonts.gstatic.com/s/orbitron/v11/yMJWMIlzdpvBhQQL_QIAUjh2qtU.ttf)
+		format('truetype');
+}
+
+@font-face {
+	font-family: 'Roboto';
+	font-style: normal;
+	font-weight: 400;
+	src: local('Roboto'), local('Roboto-Regular'),
+		url(https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu4mxP.ttf)
+		format('truetype');
+}
+
+.asset_summary_box {
+    background-image: url(/aerospace/images/category_box.svg);
+}
+
+.asset_summary_img_container {
+    height: 133px;
+    padding: 1px;
+}
+
+.asset_summary_img {
+    width: 233px;
+    height: 131px;
+}
+
+.asset_summary_description {
+    font-size: 12px;
+    font-weight: 700;
+    line-height: normal;
+    height: 70px;
+    margin-bottom: 32px;
+}
+

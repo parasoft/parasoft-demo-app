@@ -1,0 +1,29 @@
+body {
+    background-color: rgba(240, 240, 230, 1);
+}
+
+.industry_color_1 {
+    color: #117563;
+}
+
+.industry_front {
+	line-height: normal;
+	font-weight: 400;
+}
+
+.asset_summary_box {
+ 	background-color: rgba(249, 249, 227, 1);
+    box-shadow: 0px 0px 4px rgb(47 47 22 / 35%);
+}
+
+.asset_summary_box:hover {
+    box-shadow: 0px 0px 10px grey;
+}
+
+.asset_summary_title a span {
+    font-weight: 800;
+}
+
+.asset_summary_title a:hover, .asset_summary_view_all a:hover {
+	color: rgb(51,153,135);
+}

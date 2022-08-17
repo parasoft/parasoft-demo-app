@@ -1,0 +1,32 @@
+/*提取*/
+body {
+    width: 1200px;
+    margin: auto;
+}
+/**/
+
+body {
+    background-color: rgba(240, 240, 240, 1);
+}
+
+a, a:hover, a:focus {
+    text-decoration: none;
+}
+
+.industry_color_1 {
+    color: #0366AE;
+}
+
+.industry_front {
+	line-height: normal;
+	font-weight: 400;
+}
+
+.asset_summary_box {
+    background-color: rgba(255, 255, 255, 1);
+    box-shadow: 0px 0px 4px rgb(47 47 22 / 35%);
+}
+
+.asset_summary_box:hover {
+    box-shadow: 0px 0px 10px grey;
+}
