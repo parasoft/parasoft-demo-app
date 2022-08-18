@@ -20,21 +20,13 @@ a, a:hover, a:focus {
     justify-content: space-between;
 }
 
-.page-container {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
 .header-section {
     position: sticky;
     top: 0;
 }
 
 .page-content-section {
-    min-height: 540px;
-    margin-top: 50px;
+    padding-top: 50px;
     flex-grow: 1;
 }
 

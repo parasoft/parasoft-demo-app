@@ -32,6 +32,11 @@ body {
         format('truetype');
 }
 
+.page-content-section  {
+    background-image: url(/aerospace/images/background.svg);
+    background-repeat: no-repeat;
+}
+
 #header-container {
     background: linear-gradient(180deg, rgba(3, 57, 81, 1) 14%, rgba(0, 0, 0, 1) 100%);
 }
