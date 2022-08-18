@@ -1,4 +1,35 @@
-#login_box_div {
+body {
+	background-color: rgba(240, 240, 230, 1);
+}
+
+.background-img {
+	background-image: url(/defense/images/background.svg);
+}
+
+.header-section {
+	width: 1200px;
+}
+
+.page-content-section {
+	min-height: 540px;
+	display: flex;
+	align-items: center;
+	width: 1200px;
+}
+
+.page-content-section div {
+	text-align: center;
+}
+
+footer {
+	width: 1200px;
+}
+
+#footer {
+	margin: 0px;
+}
+
+.login-form-container {
 	background-color: rgba(249, 249, 227, 1);
 	border-width: 3px;
 	border-style: solid;
@@ -6,21 +37,7 @@
 	box-shadow: 0px 0px 8px rgba(47, 47, 22, 0.345098039215686);
 }
 
-#footer {
-	top: 874px;
-}
-
-#login_border {
-	display: none;
-}
-
-#login_border_img {
-	background-image: url(/defense/images/login_border.svg);
-}
-
-#submit_button {
-	left: 531px;
-	top: 494px;
+.submit-button {
 	width: 140px;
 	height: 40px; 
 	font-weight: 800;
@@ -28,7 +45,7 @@
 	color: #4F3000;
 }
 
-#submit_button>button {
+.submit-button>button {
 	width: 140px;
 	height: 40px;
 	background: inherit;
@@ -44,54 +61,15 @@
 	color: #4F3000;
 }
 
-.login_text {
-	font-size: 14px;
-	color: #2F2F16;
-}
-
-#username {
-	left: 451px;
-}
-
-#username_input>input, #password_input>input {
+.input-field>input {
 	border-width: 1px;
 	border-style: solid;
 	border-color: rgba(47, 47, 22, 1);
 	border-radius: 0px;
 }
 
-#password {
-	left: 451px;
-}
-
-#error_message {
-	top: 315px;
-	left: 451px;
-}
-
-.modal-dialog{
-	top: 175px;
-}
-
-.modal-title {
-	text-align: center;
-	font-size: 20px;
-	font-weight: 800;
-}
-
-.modal-header {
-	border-bottom: none;
-}
-
 .modal-content {
-	width: 684px;
 	background: rgba(249, 249, 227, 1);
-	top: 65px;
-}
-
-.modal-footer {
-	text-align: center;
-	border-top: none;
 }
 
 .btn-default {
@@ -101,23 +79,10 @@
 	color: #4F3000;
 }
 
-.modal_ok_btn {
-	width: 90px;
+.close-btn:hover {
+	color: rgb(51,153,135);
 }
 
-.table_title {
-	background: #f9f9e3;
-}
-
-.table{
-	width: 70%;
-	margin: auto;
-}
-
-th{
-	text-align: center;
-}
-
-#forgot_password a {
+.forgot-password a, .forgot-password a:hover {
 	color: #117563;
 }
