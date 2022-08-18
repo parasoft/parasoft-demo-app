@@ -1,0 +1,70 @@
+body {
+    background-color: rgba(0, 0, 0, 1);
+}
+
+a, a:hover, a:focus {
+    text-decoration: none;
+}
+
+.industry_color_1 {
+    color: #E7FFA1;
+}
+
+.industry_color_2 {
+    color: #C2EAFB;
+}
+
+.industry_font {
+    font-family: 'Orbitron-Bold', 'Orbitron Bold', 'Orbitron', sans-serif;
+}
+
+@font-face {
+    font-family: 'Orbitron Bold';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Orbitron Bold'), local('Orbitron-Bold'),
+        url(https://fonts.gstatic.com/s/orbitron/v11/yMJWMIlzdpvBhQQL_QIAUjh2qtU.ttf)
+        format('truetype');
+}
+
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Roboto'), local('Roboto-Regular'),
+        url(https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu4mxP.ttf)
+        format('truetype');
+}
+
+#header-container {
+    background: linear-gradient(180deg, rgba(3, 57, 81, 1) 14%, rgba(0, 0, 0, 1) 100%);
+}
+
+.header-title a {
+    color: #C2EAFB;
+    font-weight: 800;
+    font-size: 36px;
+}
+
+#setting-button a, .role-title {
+    color: #C2EAFB;
+}
+
+#username-button .dropdown-menu {
+    background-color: rgba(3, 57, 81, 1);
+}
+
+#username-button .dropdown-item a {
+    color: #C2EAFB;
+}
+
+#username-button .dropdown-item a:hover {
+    background-color: rgba(3, 57, 81, 1);
+}
+
+#footer {
+    background: linear-gradient(0deg, rgba(51, 32, 10, 1) 47%, rgba(0, 0, 0, 1) 100%);
+    color: #C2EAFB;
+}
+
+

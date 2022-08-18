@@ -1,0 +1,47 @@
+body {
+    background-color: rgba(240, 240, 230, 1);
+}
+
+.industry_color_1 {
+    color: #117563;
+}
+
+.industry_front {
+    line-height: normal;
+    font-weight: 400;
+}
+
+#header-container {
+    background-color: rgba(47, 47, 22, 1);
+}
+
+#header-container .button-body:hover {
+    background-color: rgba(247, 247, 217, 0.101960784313725);
+}
+
+.header-title a {
+    color: #F7F7D9;
+    font-weight: 800;
+    font-size: 36px;
+}
+
+#setting-button a, .role-title {
+    color: #F7F7D9;
+}
+
+#username-button .dropdown-menu {
+    background-color: #F7F7D9;
+}
+
+#username-button .dropdown-item a {
+    color: #117563;
+}
+
+#username-button .dropdown-item a:hover {
+    background-color: #F7F7D9;
+}
+
+#footer {
+    background-color: rgba(47, 47, 22, 1);
+    color: #F7F7D9;
+}
