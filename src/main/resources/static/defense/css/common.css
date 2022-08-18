@@ -49,11 +49,11 @@ body {
 
 .asset_summary_box {
     background-color: rgba(249, 249, 227, 1);
-    box-shadow: 0px 0px 4px rgb(47 47 22 / 35%);
+    box-shadow: 0 0 4px rgb(47 47 22 / 35%);
 }
 
 .asset_summary_box:hover {
-    box-shadow: 0px 0px 10px grey;
+    box-shadow: 0 0 10px grey;
 }
 
 .asset_summary_title a span {

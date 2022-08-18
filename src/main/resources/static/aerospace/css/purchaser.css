@@ -7,10 +7,10 @@
 }
 
 .advertisement_content_text {
-	line-height: normal;
+    line-height: normal;
     font-weight: 400;
 }
 
 .asset_summary_title a:hover, .asset_summary_view_all a:hover {
-	color: #E7FFA1;
+    color: #E7FFA1;
 }

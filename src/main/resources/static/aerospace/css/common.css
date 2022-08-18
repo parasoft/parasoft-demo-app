@@ -2,10 +2,6 @@ body {
     background-color: rgba(0, 0, 0, 1);
 }
 
-a, a:hover, a:focus {
-    text-decoration: none;
-}
-
 .industry_color_1 {
     color: #E7FFA1;
 }
