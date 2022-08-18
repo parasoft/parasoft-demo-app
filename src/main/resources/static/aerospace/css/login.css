@@ -1,33 +1,45 @@
-body {
-	color: #C2EAFB;
-}
-
-.header-section {
-	width: 1200px;
-}
-
-.page-content-section {
-	min-height: 540px;
-	display: flex;
-	align-items: center;
-	width: 1200px;
-}
-
-.page-content-section div {
-	text-align: center;
-}
-
-footer {
-	width: 1200px;
-}
-
-#footer {
-	margin: 0px;
-}
-
 .login-form-container {
 	background-image: url(/aerospace/images/login_border.svg);
 	padding-top: 4px;
+}
+
+.submit-button>button {
+	width: 120px;
+	background-color: rgba(204, 136, 55, 1);
+	border-radius: 20px;
+	font-weight: 700;
+	color: #333333;
+}
+
+.forgot-password a, .forgot-password a:hover {
+	color: #E7FFA1;
+}
+
+.input-field>input {
+	color: #20200A;
+}
+
+.submit-button {
+	width: 120px;
+	font-weight: 700;
+	color: #333333;
+}
+
+.input-label>span {
+	padding-left: 10px;
+}
+
+.modal-content {
+	background: #333;
+	border: 1px solid;
+}
+
+.table-header {
+	background-color: #596469;
+}
+
+#forgot-password-modal .dismiss-btn{
+	border-radius: 20px;
 }
 
 .self-format {
@@ -45,50 +57,6 @@ footer {
 	color: #20200A;
 }
 
-.submit-button {
-	width: 120px;
-	height: 40px;
-	font-weight: 700;
-	font-size: 16px;
-	color: #333333;
-}
-
-.submit-button>button {
-	width: 120px;
-	height: 40px;
-	background-color: rgba(204, 136, 55, 1);
-	border-radius: 20px;
-	box-shadow: 1px 1px 1px rgba(0, 0, 0, 1);
-	font-weight: 700;
-	font-size: 16px;
-	color: #333333;
-}
-
-.forgot-password a, .forgot-password a:hover {
-	color: #E7FFA1;
-}
-
-.input-field>input {
-	color: #20200A;
-}
-
-.input-label>span {
-	padding-left: 10px;
-}
-
 .password-field {
 	font-size: 25px;
-}
-
-.modal-content {
-	background: #333;
-	border: 1px solid;
-}
-
-.table-header {
-	background-color: #596469;
-}
-
-#forgotPasswordModal .dismiss-btn{
-	border-radius: 20px;
 }
