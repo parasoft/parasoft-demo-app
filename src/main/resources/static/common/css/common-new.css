@@ -1,11 +1,29 @@
+html {
+    height: 100%;
+}
+
 body {
     width: 1200px;
     margin: auto;
+    visibility: hidden;
+    height: 100%;
+}
+
+.page-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .header-section {
     position: sticky;
     top: 0px;
+}
+
+.page-content-section {
+    margin-top: 50px;
+    flex-grow: 1;
 }
 
 #footer {
