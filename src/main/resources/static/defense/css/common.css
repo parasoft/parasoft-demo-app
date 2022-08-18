@@ -63,3 +63,20 @@ body {
 .asset_summary_title a:hover, .asset_summary_view_all a:hover {
     color: rgb(51,153,135);
 }
+
+.background {
+    width: fit-content;
+    height: 0px;
+    margin: 0px;
+}
+
+.background-img {
+    background-image: url(/defense/images/background.svg);
+}
+
+.background-img {
+    height: 720px;
+    width: 1200px;
+    position: relative;
+    z-index: -1;
+}

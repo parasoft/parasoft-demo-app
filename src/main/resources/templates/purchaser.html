@@ -16,9 +16,11 @@
     <input type="hidden" id="current_username" th:value="${#authentication.principal.username}">
     <input type="hidden" id="current_rolename" th:value="${#authentication.principal.role.name}">
     <div ng-include="'/common/pages/requisitionBar.html'" ng-controller="requisitionBarController as requisition"></div>
-
     <div class="page-container">
         <div ng-include="'/common/pages/header.html'" class="header-section" ng-controller="headerController"></div>
+        <div class="background">
+            <div class="background-img"></div>
+        </div>
         <div class="page-content-section">
             <div id="assets_title">
                 <span translate="ASSETS_TITLE" class="industry_font"></span>

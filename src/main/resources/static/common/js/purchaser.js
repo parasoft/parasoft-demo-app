@@ -29,7 +29,7 @@ app.controller('homepageController', function($rootScope, $http, $filter) {
 	        }
 
 	    }).catch(function(result) {
-	    	/*console.info(result);*/
+	    	console.info(result);
 	    	displayLoadError(result,$rootScope,$filter,$http,false,'categories');
 	    	home.categoriesLoadError = true;
 	    });
