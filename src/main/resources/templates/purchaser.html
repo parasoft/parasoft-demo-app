@@ -3,85 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <title translate="PROJECT_NAME"></title>
-    
+
     <link rel="icon" href="/common/images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="/lib/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/lib/toastr/toastr.min.css"/>
-    <link rel="stylesheet" type="text/css" href="/common/css/common.css">
-    <link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/style.css'">
+    <link rel="stylesheet" type="text/css" th:href="'/common/css/common-new.css'">
+    <link rel="stylesheet" type="text/css" th:href="'/common/css/purchaser.css'">
+    <link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/common.css'">
     <link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/purchaser.css'">
 </head>
 <body>
-	<input type="hidden" id="current_username" th:value="${#authentication.principal.username}">
-	<input type="hidden" id="current_rolename" th:value="${#authentication.principal.role.name}">
-	<div ng-include="'/common/pages/header.html'" ng-controller="headerController"></div>
-	<div ng-include="'/common/pages/requisitionBar.html'" ng-controller="requisitionBarController as requisition"></div>
-	<div ng-controller="homepageController as home">
-		<div id="middle_side">
-			<div id="assets">
-				<div id="assets_title" class="common_industry industry_font">
-					<div id="assets_title_div" class="common_div industry_font"></div>
-					<div class="common_text"><p><span translate="ASSETS_TITLE"></span></p></div>
-				</div>
-				<div class="assets_categories">
-					<div class="category" ng-repeat="category in home.categories track by $index" ng-style="home.loadStyle($index)">
-						<div class="common_industry assets_category_box">
-							<div class="common_div assets_category_box_div"></div>
-							<div class="assets_category_box_img" alt="category_box"></div>
-						</div>
-						<div class="assets_category_img">
-							<img class="category_img_format" ng-alt="{{category.name}}" ng-src="{{category.image}}">
-						</div>
-						<div class="assets_category_dark_overlay">
-							<a ng-href="/categories/{{category.id}}">
-								<div class="category_dark_overlay"></div>
-							</a>
-						</div>
-						<div class="common_industry assets_category_title font_color1 industry_font">
-							<div class="common_text">
-								<p><a ng-href="/categories/{{category.id}}">
-										<span title="{{category.name}}" class="font_color1 category_item_title green_text" 
-											ng-bind="category.name"></span>
-									</a></p>	
-							</div>	
-						</div>
-						<div class="common_industry assets_category_description industry_font">
-							<div class="common_div assets_category_description_div"></div>	
-							<div class="common_text">
-								<p><span title="{{category.description}}" class="category_description" 
-									ng-bind="category.description"></span></p>
-							</div>
-						</div>
-						<div class="common_industry assets_category_viewall industry_font">
-							<div class="common_div assets_category_viewall_div"></div>
-							<div class="common_text">
-								<p class="view_all">
-									<a ng-href="/categories/{{category.id}}">
-										<span class="font_color1 green_text" translate="VIEW_ALL"></span>
-									</a>
-								</p>	
-							</div>	
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="categories_empty_content_message empty_error_message" ng-include="'/common/pages/emptyContentMessage.html'"
-			 ng-if="home.categoriesLoadError" ng-style="home.errorMessages"></div>
-		<div class="categories_empty_content_message empty_error_message" ng-include="'/common/pages/emptyContentMessage.html'"
-			 ng-if="home.emptyContentsMessage" ng-style="home.errorMessages"></div>
-	</div>
-	<div ng-include="'/common/pages/advertiseAndNews.html'" ng-if="isShowAdvertising"></div>
-	<div ng-include="'/common/pages/footer.html'"></div>
-    
-	<script type="text/javascript" src="/lib/jquery/jquery-3.3.1.min.js"></script>
-	<script type="text/javascript" src="/lib/bootstrap/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="/lib/angularjs/angular.min.js"></script>
-	<script type="text/javascript" src="/lib/angularjs/angular-translate.min.js"></script>
-	<script type="text/javascript" src="/lib/angularjs/angular-translate-loader-url.min.js"></script>
-	<script type="text/javascript" src="/lib/toastr/toastr.min.js"></script>
-	<script type="text/javascript" src="/lib/stomp/stomp.min.js"></script>
-	<script type="text/javascript" src="/common/js/common.js"></script>
-	<script type="text/javascript" src="/common/js/purchaser.js"></script>
+    <input type="hidden" id="current_username" th:value="${#authentication.principal.username}">
+    <input type="hidden" id="current_rolename" th:value="${#authentication.principal.role.name}">
+    <div ng-include="'/common/pages/requisitionBar.html'" ng-controller="requisitionBarController as requisition"></div>
+
+    <div class="page-container">
+        <div ng-include="'/common/pages/header.html'" class="header-section" ng-controller="headerController"></div>
+        <div class="page-content-section">
+            <div id="assets_title">
+                <span translate="ASSETS_TITLE" class="industry_font"></span>
+            </div>
+            <div class="content-container">
+                <div class="assets-container" ng-controller="homepageController as home">
+                    <div id="assets">
+                        <div class="assets_summary_boxes">
+                            <div class="asset_summary_box" ng-repeat="category in home.categories track by $index" ng-style="home.loadStyle($index)">
+                                <div class="asset_summary_container">
+                                    <div class="asset_summary_img_container">
+                                        <a ng-href="/categories/{{category.id}}">
+                                            <img class="asset_summary_img" ng-alt="{{category.name}}" ng-src="{{category.image}}">
+                                        </a>
+                                    </div>
+                                    <div class="asset_summary_title industry_color_1">
+                                        <a ng-href="/categories/{{category.id}}" class="asset_summary_title_link industry_font industry_color_1">
+                                            <span title="{{category.name}}" ng-bind="category.name"></span>
+                                        </a>
+                                    </div>
+                                    <p class="asset_summary_description industry_color_2" ng-bind="category.description"></p>
+                                    <div class="asset_summary_view_all">
+                                        <a ng-href="/categories/{{category.id}}" class="asset_summary_view_all_link industry_font industry_color_1">
+                                            <span translate="VIEW_ALL"></span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div ng-include="'/common/pages/emptyContentMessage.html'" ng-if="home.categoriesLoadError"></div>
+                    <div ng-include="'/common/pages/emptyContentMessage.html'" ng-if="home.emptyContentsMessage"></div>
+                </div>
+                <div class="advertising-container" ng-include="'/common/pages/advertiseAndNews.html'" ng-if="isShowAdvertising"></div>
+            </div>
+        </div>
+        <footer ng-include="'/common/pages/footer.html'"></footer>
+    </div>
+
+    <script type="text/javascript" src="/lib/jquery/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/lib/angularjs/angular.min.js"></script>
+    <script type="text/javascript" src="/lib/angularjs/angular-translate.min.js"></script>
+    <script type="text/javascript" src="/lib/angularjs/angular-translate-loader-url.min.js"></script>
+    <script type="text/javascript" src="/lib/toastr/toastr.min.js"></script>
+    <script type="text/javascript" src="/lib/stomp/stomp.min.js"></script>
+    <script type="text/javascript" src="/common/js/common.js"></script>
+    <script type="text/javascript" src="/common/js/purchaser.js"></script>
 </body>
 </html>

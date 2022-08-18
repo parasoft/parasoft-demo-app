@@ -2,22 +2,18 @@ body {
     background-color: rgba(240, 240, 240, 1);
 }
 
-a, a:hover, a:focus {
-    text-decoration: none;
-}
-
 .industry_color_1 {
     color: #0366AE;
 }
 
-.industry_front {
+.industry_font {
     line-height: normal;
     font-weight: 400;
 }
 
 #header-container {
     background-color: rgba(24, 60, 130, 1);
-    box-shadow: 0px 6px 9px rgb(0 0 0 / 40%);
+    box-shadow: 0 6px 9px rgb(0 0 0 / 40%);
 }
 
 #header-container .button-body:hover {
@@ -45,4 +41,13 @@ a, a:hover, a:focus {
 #footer {
     background-color: rgba(1, 20, 34, 1);
     color: white;
+}
+
+.asset_summary_box {
+    background-color: rgba(255, 255, 255, 1);
+    box-shadow: 0 0 4px rgb(47 47 22 / 35%);
+}
+
+.asset_summary_box:hover {
+    box-shadow: 0 0 10px grey;
 }

@@ -45,3 +45,21 @@ body {
     background-color: rgba(47, 47, 22, 1);
     color: #F7F7D9;
 }
+
+
+.asset_summary_box {
+    background-color: rgba(249, 249, 227, 1);
+    box-shadow: 0 0 4px rgb(47 47 22 / 35%);
+}
+
+.asset_summary_box:hover {
+    box-shadow: 0 0 10px grey;
+}
+
+.asset_summary_title a span {
+    font-weight: 800;
+}
+
+.asset_summary_title a:hover, .asset_summary_view_all a:hover {
+    color: rgb(51,153,135);
+}

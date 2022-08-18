@@ -1,14 +1,16 @@
-<div class="industry_font">
-	<div class="common_text">
-		<p ng-if="home.categoriesLoadError" class="error_message_block"><span ng-bind="categoriesErrorMessage"></span></p>
-		<p ng-if="history.ordersLoadError || approver.ordersLoadError" class="error_message_block"><span ng-bind="ordersErrorMessage"></span></p>
-		<p ng-if="category.itemsLoadError || itemDetail.itemDetailError" class="error_message_block"><span ng-bind="itemsErrorMessage"></span></p>
+<div class="error-message-container industry_font">
+	<div class="error-message">
+		<div>
+			<p ng-if="home.categoriesLoadError" class="error_message_block"><span ng-bind="categoriesErrorMessage"></span></p>
+			<p ng-if="history.ordersLoadError || approver.ordersLoadError" class="error_message_block"><span ng-bind="ordersErrorMessage"></span></p>
+			<p ng-if="category.itemsLoadError || itemDetail.itemDetailError" class="error_message_block"><span ng-bind="itemsErrorMessage"></span></p>
+		</div>
 	</div>
-</div>
-<div class="industry_font" ng-if="emptyContentError">
-	<div class="common_text">
-		<p ng-if="home.emptyContentsMessage" class="error_message_block"><span translate="CATEGORIES_EMPTY_CONTENTS_MESSAGE"></span></p>
-		<p ng-if="category.emptyContentsMessage" class="error_message_block"><span translate="ITEMS_EMPTY_CONTENTS_MESSAGE"></span></p>
-		<p ng-if="history.emptyContentsMessage || approver.emptyContentsMessage" class="error_message_block"><span translate="ORDERS_EMPTY_CONTENTS_MESSAGE"></span></p>
+	<div class="error-message" ng-if="emptyContentError">
+		<div>
+			<p ng-if="home.emptyContentsMessage" class="error_message_block"><span translate="CATEGORIES_EMPTY_CONTENTS_MESSAGE"></span></p>
+			<p ng-if="category.emptyContentsMessage" class="error_message_block"><span translate="ITEMS_EMPTY_CONTENTS_MESSAGE"></span></p>
+			<p ng-if="history.emptyContentsMessage || approver.emptyContentsMessage" class="error_message_block"><span translate="ORDERS_EMPTY_CONTENTS_MESSAGE"></span></p>
+		</div>
 	</div>
 </div>
