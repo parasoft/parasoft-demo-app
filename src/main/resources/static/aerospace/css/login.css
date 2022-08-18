@@ -1,136 +1,62 @@
-body {
-	color: #C2EAFB;
-}
-
-#login_border {
-	left: 373px;
-	top: 264px;
-	width: 455px;
-	height: 341px;
-}
-
-#login_border_img {
-	width: 455px;
-	height: 341px;
+.login-form-container {
 	background-image: url(/aerospace/images/login_border.svg);
+	padding-top: 4px;
 }
 
-#footer {
-	top: 874px;
-}
-
-#submit_button {
-	left: 540px;
-	top: 494px;
+.submit-button>button {
 	width: 120px;
-	height: 40px;
-	font-weight: 700;
-	font-size: 16px;
-	color: #333333;
-}
-
-#submit_button>button {
-	width: 120px;
-	height: 40px;
 	background-color: rgba(204, 136, 55, 1);
 	border-radius: 20px;
-	box-shadow: 1px 1px 1px rgba(0, 0, 0, 1);
 	font-weight: 700;
-	font-size: 16px;
 	color: #333333;
 }
 
-.login_text {
-	font-size: 14px;
+.forgot-password a, .forgot-password a:hover {
+	color: #E7FFA1;
 }
 
-#username {
-	left: 463px;
-}
-
-#username_input>input, #password_input>input {
+.input-field>input {
 	color: #20200A;
 }
 
-#password {
-	left: 463px;
+.submit-button {
+	width: 120px;
+	font-weight: 700;
+	color: #333333;
 }
 
-#error_message {
-	top: 315px;
-	left: 463px;
-}
-
-#error_message>font {
-	color: red;
-}
-
-#password_input>input {
-	font-size: 25px;
-}
-
-.modal-dialog{
-	top: 175px;
-}
-
-.modal-title {
-	text-align: center;
-	font-size: 20px;
-	font-weight: 800;
-}
-
-.modal-header {
-	border-bottom: none;
+.input-label>span {
+	padding-left: 10px;
 }
 
 .modal-content {
-	width: 684px;
 	background: #333;
 	border: 1px solid;
-	top: 65px;
-}
-
-.modal-footer {
-	text-align: center;
-	border-top: none;
-}
-
-.modal_ok_btn {
-	border-radius: 20px;
-	box-shadow: 1px 1px 1px rgba(0, 0, 0, 1);
-	font-weight: 700;
-	font-size: 14px;
-	color: #333333;
-	width: 94px;
-}
-
-.modal_ok_btn:hover, .modal_ok_btn:active, .modal_ok_btn:focus,
-	.modal_ok_btn:active:focus {
-	background: #fff;
-	color: #333;
-}
-
-.table_title {
-	background: #c2eafb45;
-}
-
-.table{
-	width: 70%;
-	margin: auto;
-}
-
-th{
-	text-align: center;
-}
-
-#forgotPasswordModal .dismiss-btn{
-	border-radius: 20px;
-}
-
-#forgot_password a {
-	color: #E7FFA1;
 }
 
 .table-header {
 	background-color: #596469;
+}
+
+#forgot-password-modal .dismiss-btn{
+	border-radius: 20px;
+}
+
+.self-format {
+	background-color: rgba(255, 255, 255, 1);
+	box-sizing: border-box;
+	border-width: 1px;
+	border-style: solid;
+	border-color: rgba(182, 221, 238, 1);
+	border-radius: 16px;
+	box-shadow: none;
+	font-family: 'Orbitron-Bold', 'Orbitron Bold', 'Orbitron', sans-serif;
+	font-weight: 700;
+	font-style: normal;
+	font-size: 14px;
+	color: #20200A;
+}
+
+.password-field {
+	font-size: 25px;
 }

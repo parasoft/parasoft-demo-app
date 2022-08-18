@@ -23,6 +23,7 @@ a, a:hover, a:focus {
 .header-section {
     position: sticky;
     top: 0;
+    z-index: 1;
 }
 
 .page-content-section {

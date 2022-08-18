@@ -1,0 +1,187 @@
+.page-container {
+	min-height: 600px;
+	max-height: 1000px;
+}
+
+.header-section {
+	width: 1200px;
+}
+
+.page-content-section div {
+	text-align: center;
+}
+
+footer {
+	width: 1200px;
+}
+
+#footer {
+	margin: 0px;
+}
+
+.page-content-section {
+	display: flex;
+	align-items: center;
+	width: 1200px;
+}
+
+.submit-button {
+	height: 40px;
+	font-size: 16px;
+	font-weight: 800;
+}
+
+.submit-button>button {
+	height: 40px;
+	box-shadow: 1px 1px 1px rgba(0, 0, 0, 1);
+	font-size: 16px;
+}
+
+
+.login-content {
+	margin: 10px auto;
+	position: relative;
+	top: -60px;
+}
+
+.btn-field {
+	margin-top: 30px;
+}
+
+.login-form-container {
+	width: 455px;
+	height: 341px;
+}
+
+.login-background {
+	height: 0px;
+}
+
+.form-title {
+	width: 235px;
+	height: 34px;
+	font-weight: 800;
+	font-size: 28px;
+	text-align: center;
+	display: block;
+	margin: 10px auto 5px auto;
+}
+
+.error-message {
+	height: 20px;
+}
+
+.error-message>span {
+	color: red;
+}
+
+.input-label {
+	width: 300px;
+	height: fit-content;
+	margin: 15px auto 0px auto;
+	display: flex;
+	font-size: 14px;
+}
+
+.input-field {
+	width: 300px;
+	height: 37px;
+	display: flex;
+	font-size: 14px;
+	color: #2F2F16;
+	margin: auto;
+}
+
+.input-label>span {
+	line-height: 20px;
+	text-align: center;
+	margin: 0px;
+}
+
+.input-field>input {
+	width: 300px;
+	height: 37px;
+	outline: none;
+	text-align: left;
+}
+
+.submit-button {
+	margin: auto;
+}
+
+.password-table {
+	margin: auto;
+	font-size: 20px;
+	width: fit-content;
+}
+
+.password-table td {
+	width: 200px;
+	text-align: center;
+	border: 1px solid lightgrey;
+	padding: 5px;
+	font-size: 15px;
+}
+
+.password-table tr span {
+	font-weight: bold;
+	font-size: 16px;
+}
+
+#forgot-password-modal .modal-header {
+	border-bottom: none;
+}
+
+#forgot-password-modal .modal-content {
+	min-width: 600px;
+	width: fit-content;
+}
+
+#forgot-password-modal .dismiss-btn{
+	border-color: rgba(55, 67, 76, 1);
+	border-radius: 6px;
+	width: 140px;
+	height: 40px;
+}
+
+#forgot-password-modal .modal-dialog {
+	top: min(calc(50vh - 260px), 200px);
+	width: fit-content;
+}
+
+#forgot-password-modal .modal-title {
+	text-align: center;
+	font-size: 20px;
+	font-weight: 800;
+}
+
+#forgot-password-modal .modal-footer {
+	text-align: center;
+	border-top: none;
+}
+
+.forgot-password {
+	margin-top: 10px;
+	width: 100%;
+	justify-content: center;
+}
+
+.forgot-password a {
+	cursor: pointer;
+	text-decoration: none;
+}
+
+.load-spinner {
+	margin: auto;
+	width: fit-content;
+	color: lightgrey;
+}
+
+.table {
+	width: 70%;
+	margin: auto;
+}
+
+th {
+	text-align: center;
+}

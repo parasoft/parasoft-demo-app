@@ -5,83 +5,88 @@
 	<title translate="PROJECT_NAME"></title>
 	<link rel="icon" href="/common/images/favicon.ico" type="image/x-icon">
 	<link rel="stylesheet" type="text/css" href="/lib/bootstrap/css/bootstrap.min.css">
-	<link rel="stylesheet" type="text/css" href="/common/css/common.css">
 	<link rel="stylesheet" type="text/css" href="/lib/fontawesome/font-awesome.min.css">
-	<link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/style.css'">
+	<link rel="stylesheet" type="text/css" href="/common/css/common-new.css">
+	<link rel="stylesheet" type="text/css" href="/common/css/login.css">
+	<link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/common.css'">
 	<link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/login.css'">
 </head>
-
 <body>
-	<div ng-include="'/common/pages/header.html'" ng-controller="headerController"></div>
-	<div class="content" ng-controller="loginController as login">
-		<div id="login_box" class="common_industry">
-			<div id="login_box_div" class="common_div"></div>
-		</div>
-		<div id="login_border" class="common_industry">
-			<div id="login_border_img" class="common_div"></div>
-		</div>
-		<div id="login_title" class="common_industry login_text industry_font">
-			<div class="common_div"></div>
-				<p><span translate="SIGN_IN"></span></p>
-			</div>
-		<form class="form-signin industry_font" method="POST" novalidate="novalidate" action="/login" ng-submit="login.onSubmit()">
-			<div ng-if="login.isError" id="error_message" class="common_industry">
-				<font class="login_text" color='red'><b translate="LOGIN_ERROR_TEXT"></b></font>
-			</div>
-			<div id="username" class="common_industry login_text">
-				<p><span translate="USER_NAME"></span>:</p>
-			</div>
-			<div id="username_input" class="common_industry login_text">
-				<input type="text" class="login_text input_text self-format" ng-model="login.credentials.username" name="username">
-			</div>
-			<div id="password" class="common_industry login_text">
-				<p><span translate="USER_PASSWORD"></span>:</p>
-			</div>
-			<div id="password_input" class="common_industry login_text">
-				<input type="password" class="login_text input_text self-format" ng-model="login.credentials.password"
-					name="password">
-			</div>
-			<div id="submit_button"  class="common_industry industry_font">
-				<button class="btn common_div industry_font" type="submit" translate="SIGN_IN"></button>
-			</div>
-			<div id="forgot_password" class="common_industry login_text">
-				<a translate="FORGOT_PASSWORD" data-toggle="modal" href="#forgotPasswordModal" ng-click="login.forgotPassword()"></a>
-			</div>
-		</form>
-		<div class="modal fade industry_font" id="forgotPasswordModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close font_color1 green_text" data-dismiss="modal">×</button>
-						<h4 class="modal-title"><span translate="USER_INFORMATION"></span></h4>
-					</div>
-					<div class="modal-body">
-						<div class="load-spinner" ng-if="!login.primaryUsersInformation">
-							<i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>
+	<div class="page-container">
+		<div class="header-section" ng-include="'/common/pages/header.html'" ng-controller="headerController"></div>
+		<div class="page-content-section" ng-controller="loginController as login">
+			<div class="login-content">
+				<div class="login-form-container industry_font ">
+					<div class="form-title">
+						<div>
+							<span class="industry_color_2" translate="SIGN_IN"></span>
 						</div>
-						<table class="password-table" ng-if="login.primaryUsersInformation">
-							<tr class="table-header">
-								<td><span translate="ROLE_NAME"></span></td>
-								<td><span translate="USER_NAME"></span></td>
-								<td><span translate="USER_PASSWORD"></span></td>
-							</tr>
-							<tr ng-repeat="userInfo in ::login.primaryUsersInformation">
-								<td >{{ userInfo.roleName === 'ROLE_PURCHASER' ? 'PURCHASER_TITLE' : 'APPROVER_TITLE' | translate }}</td>
-								<td ng-if="::userInfo.hasPrimaryUser">{{ ::userInfo.primaryUserInfo.userName }}</td>
-								<td ng-if="::userInfo.hasPrimaryUser">{{ ::userInfo.primaryUserInfo.password }}</td>
-								<td colspan="2" ng-if="::!userInfo.hasPrimaryUser" translate="NO_USER_WITH_THIS_ROLE"></td>
-							</tr>
-						</table>
 					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default dismiss-btn" data-dismiss="modal" translate="CLOSE"></button>
+					<div class="error-message industry_font">
+						<span ng-if="login.isError">
+							<b translate="LOGIN_ERROR_TEXT"></b>
+						</span>
+					</div>
+					<div class="login-form">
+						<form class="industry_font" method="POST" novalidate="novalidate" action="/login" ng-submit="login.onSubmit()">
+							<div class="input-label industry_color_2">
+								<span translate="USER_NAME"></span>:
+							</div>
+							<div class="input-field">
+								<input type="text" class="username-field input-text self-format" ng-model="login.credentials.username" name="username">
+							</div>
+							<div class="input-label industry_color_2">
+								<span translate="USER_PASSWORD"></span>:
+							</div>
+							<div class="input-field">
+								<input type="password" class="password-field input-text self-format" ng-model="login.credentials.password" name="password">
+							</div>
+							<div class="btn-field">
+								<div class="submit-button industry_font">
+									<button class="btn industry_font" type="submit" translate="SIGN_IN"></button>
+								</div>
+								<div class="forgot-password industry_font industry_color_1">
+									<a translate="FORGOT_PASSWORD" data-toggle="modal" href="#forgot-password-modal" ng-click="login.forgotPassword()"></a>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<div class="modal fade industry_font" id="forgot-password-modal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+				<div class="modal-dialog">
+					<div class="modal-content industry_color_2">
+						<div class="modal-header">
+							<button type="button" class="close industry_color_1 close-btn" data-dismiss="modal">×</button>
+							<h4 class="modal-title"><span translate="USER_INFORMATION"></span></h4>
+						</div>
+						<div class="modal-body">
+							<div class="load-spinner" ng-if="!login.primaryUsersInformation">
+								<i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>
+							</div>
+							<table class="password-table" ng-if="login.primaryUsersInformation">
+								<tr class="table-header">
+									<td><span translate="ROLE_NAME"></span></td>
+									<td><span translate="USER_NAME"></span></td>
+									<td><span translate="USER_PASSWORD"></span></td>
+								</tr>
+								<tr ng-repeat="userInfo in ::login.primaryUsersInformation">
+									<td >{{ userInfo.roleName === 'ROLE_PURCHASER' ? 'PURCHASER_TITLE' : 'APPROVER_TITLE' | translate }}</td>
+									<td ng-if="::userInfo.hasPrimaryUser">{{ ::userInfo.primaryUserInfo.userName }}</td>
+									<td ng-if="::userInfo.hasPrimaryUser">{{ ::userInfo.primaryUserInfo.password }}</td>
+									<td colspan="2" ng-if="::!userInfo.hasPrimaryUser" translate="NO_USER_WITH_THIS_ROLE"></td>
+								</tr>
+							</table>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default dismiss-btn" data-dismiss="modal" translate="CLOSE"></button>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+		<footer ng-include="'/common/pages/footer.html'"></footer>
 	</div>
-	<div ng-include="'common/pages/footer.html'"></div>
-
 	<script type="text/javascript" src="/lib/jquery/jquery-3.3.1.min.js"></script>
 	<script type="text/javascript" src="/lib/bootstrap/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="/lib/angularjs/angular.min.js"></script>
