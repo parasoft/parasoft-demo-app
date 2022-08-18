@@ -7,12 +7,48 @@ body {
 }
 
 .industry_front {
-	line-height: normal;
-	font-weight: 400;
+    line-height: normal;
+    font-weight: 400;
 }
 
+#header-container {
+    background-color: rgba(47, 47, 22, 1);
+}
+
+#header-container .button-body:hover {
+    background-color: rgba(247, 247, 217, 0.101960784313725);
+}
+
+.header-title a {
+    color: #F7F7D9;
+    font-weight: 800;
+    font-size: 36px;
+}
+
+#setting-button a, .role-title {
+    color: #F7F7D9;
+}
+
+#username-button .dropdown-menu {
+    background-color: #F7F7D9;
+}
+
+#username-button .dropdown-item a {
+    color: #117563;
+}
+
+#username-button .dropdown-item a:hover {
+    background-color: #F7F7D9;
+}
+
+#footer {
+    background-color: rgba(47, 47, 22, 1);
+    color: #F7F7D9;
+}
+
+
 .asset_summary_box {
- 	background-color: rgba(249, 249, 227, 1);
+    background-color: rgba(249, 249, 227, 1);
     box-shadow: 0px 0px 4px rgb(47 47 22 / 35%);
 }
 
@@ -25,5 +61,5 @@ body {
 }
 
 .asset_summary_title a:hover, .asset_summary_view_all a:hover {
-	color: rgb(51,153,135);
+    color: rgb(51,153,135);
 }

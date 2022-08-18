@@ -1,59 +1,51 @@
-<div id="top_side" ng-style="headerStyle">
-	<div id="top_side_div"></div>
-	<div id="title_text" class="industry_font">
-		<a href="/"><span class="font_color2" translate="PROJECT_NAME"></span></a>
-	</div>
-	<div ng-if="isShowOtherButtons">
-		<div id="to_demo_admin_button" class="common_industry">
-			<a href="/demoAdmin"> 
-				<span class="glyphicon glyphicon-cog font_color2 top_format" title="{{'HEADER_DEMO_ADMIN_TITLE'|translate}}"
-					aria-hidden="true"></span>
-			</a>
-		</div>
-		<div id="right_bar" class="common_industry top_format" ng-click="switchBar()" ng-if="isShowRequisitionButton"
-			data-toggle="collapse" data-target="#right_navigation_bar" title="{{'HEADER_CART_TITLE'|translate}}">
-			<img id="right_bar_img" class="common_div" ng-src="/{{industry}}/images/shopping_cart.svg">
-		</div>
-		<div id="requisition_amount" class="common_industry industry_font" ng-if="isShowRequisitionButton" ng-show="totalAmount !== 0">
-			<img ng-src="/{{industry}}/images/requisition_amount.svg">
-			<div class="amount_text common_text">
-				<p><span ng-bind="totalAmount"></span></p>
-			</div>
-		</div>
-		<div id="requisition_order" class="common_industry" title="{{'HEADER_ORDER_TITLE'|translate}}">
-			<a href="/orders" class="top_format">
-				<img id="requisition_order_img" ng-src="/{{industry}}/images/requisition.svg" class="common_div">
-			</a>
-		</div>
-		<div id="requisition_order_amount" class="common_industry industry_font" ng-if="isPurchaser" ng-show="unreviewedNumByPRCH !== 0">
-			<img ng-src="/{{industry}}/images/requisition_amount.svg">
-			<div class="amount_text common_text">
-				<p><span class="unreviewedNum" ng-bind="unreviewedNumByPRCH"></span></p>
-			</div>
-		</div>
-		<!-- <div id="requisition_order_amount" class="common_industry industry_font" ng-if="isApprover" ng-show="unreviewedNumByAPV !== 0">
-			<img ng-src="/{{industry}}/images/requisition_amount.svg">
-			<div class="amount_text common_text">
-				<p><span class="unreviewedNum" ng-bind="unreviewedNumByAPV"></span></p>
-			</div>
-		</div> -->
-	</div>
-	<div class="dropdown" ng-if="isShowAccount">
-		<div id="account" class="common_industry industry_font font_color2" data-toggle="dropdown">
-			<div class="common_text">
-				<!--need to change here, take different role into account-->
-				<p translate="PURCHASER_TITLE" class="account_text text-center" ng-if="isPurchaser"></p>
-				<p translate="APPROVER_TITLE" class="account_text text-center" ng-if="isApprover"></p>
-			</div>
-		</div>
-		<div class="dropdown-menu">
-			<div class="dropdown-item">{{ username }}</div>
-			<div class="divider"></div>
-			<a class="dropdown-item logout" href="/logout" translate="SIGN_OUT"></a>
-		</div>
-	</div>
+<div id="header-container">
+    <div class="header-title industry_font">
+        <a href="/"><span class="header_title_link" translate="PROJECT_NAME"></span></a>
+    </div>
+    <div class="header-menu">
+        <nav>
+            <ul ng-if="isShowOtherButtons">
+                <li id="setting-button">
+                    <a href="/demoAdmin" class="button-body full-fill-center" title="{{'HEADER_DEMO_ADMIN_TITLE'|translate}}">
+                        <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                    </a>
+                </li>
+                <li id="requisition-button">
+                    <a href="/orders" class="button-body full-fill-center"  title="{{'HEADER_ORDER_TITLE'|translate}}">
+                        <img class="button-img" ng-src="/{{industry}}/images/requisition.svg">
+                    </a>
+                    <div class="amount-container" ng-if="isPurchaser" ng-show="unreviewedNumByPRCH !== 0">
+                        <span class="amount-number" ng-bind="unreviewedNumByPRCH"></span>
+                    </div>
+                </li>
+                <li id="cart-button">
+                    <div class="button-body full-fill-center" ng-click="switchBar()" ng-if="isShowRequisitionButton"
+                         data-toggle="collapse" data-target="#right_navigation_bar" title="{{'HEADER_CART_TITLE'|translate}}">
+                        <img class="button-img" ng-src="/{{industry}}/images/shopping_cart.svg">
+                    </div>
+                    <div class="amount-container" ng-if="isShowRequisitionButton" ng-show="totalAmount !== 0">
+                        <span class="amount-number" ng-bind="totalAmount"></span>
+                    </div>
+                </li>
+                <li id="username-button">
+                    <div class="dropdown full-fill-center" ng-if="isShowAccount">
+                        <div class="button-body industry_font dropdown-toggle full-fill-center" data-toggle="dropdown">
+                            <div class="role-title industry_front">
+                                <span translate="PURCHASER_TITLE" class="account_text text-center" ng-if="isPurchaser"></span>
+                                <span translate="APPROVER_TITLE" class="account_text text-center" ng-if="isApprover"></span>
+                            </div>
+                        </div>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li class="dropdown-item"><a>{{ username }}</a></li>
+                            <li class="divider"></li>
+                            <li class="dropdown-item">
+                                <a class="logout" href="/logout" translate="SIGN_OUT"></a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </div>
 </div>
-
-<div id="background">
-	<div id="background_img"></div>
-</div>
+<div class="page-background-image"></div>
