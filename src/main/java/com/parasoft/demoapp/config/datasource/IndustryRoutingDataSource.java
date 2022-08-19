@@ -4,9 +4,14 @@ import static com.parasoft.demoapp.config.ParasoftJDBCProxyConfig.PARASOFT_JDBC_
 import static com.parasoft.demoapp.config.ParasoftJDBCProxyConfig.PARASOFT_JDBC_PROXY_VIRTUALIZE_SERVER_PATH_DEFAULT_VALUE;
 import static com.parasoft.demoapp.config.ParasoftJDBCProxyConfig.PARASOFT_JDBC_PROXY_VIRTUALIZE_SERVER_URL_DEFAULT_VALUE;
 
+import com.parasoft.demoapp.exception.CannotDetermineTargetDataSourceException;
+import com.parasoft.demoapp.messages.ConfigMessages;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
 import com.parasoft.demoapp.model.global.preferences.IndustryType;
+
+import javax.sql.DataSource;
+import java.text.MessageFormat;
 
 public class IndustryRoutingDataSource extends AbstractRoutingDataSource {
 
@@ -26,6 +31,16 @@ public class IndustryRoutingDataSource extends AbstractRoutingDataSource {
             return currentIndustry.getValue() + PARASOFT_JDBC_PROXY_DATA_SOURCE_SUFFIX;
         }else{
             return currentIndustry.getValue();
+        }
+    }
+
+    @Override
+    protected DataSource determineTargetDataSource() {
+        try {
+            return super.determineTargetDataSource();
+        } catch (IllegalStateException e) {
+            throw new CannotDetermineTargetDataSourceException(
+                    MessageFormat.format(ConfigMessages.CANNOT_DETERMINE_DATASOURCE, determineCurrentLookupKey()), e);
         }
     }
 }

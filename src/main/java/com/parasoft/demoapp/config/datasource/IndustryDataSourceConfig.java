@@ -1,5 +1,6 @@
 package com.parasoft.demoapp.config.datasource;
 
+import com.parasoft.demoapp.exception.CannotDetermineTargetDataSourceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -9,7 +10,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManagerFactory;
@@ -56,7 +59,20 @@ public class IndustryDataSourceConfig {
     public PlatformTransactionManager industryTransactionManager(
             @Qualifier("industryEntityManager") EntityManagerFactory entityManagerFactory) {
 
-        return new JpaTransactionManager(entityManagerFactory);
+        return new JpaTransactionManager(entityManagerFactory) {
+            @Override
+            protected void doBegin(Object transaction, TransactionDefinition definition) {
+                try {
+                    super.doBegin(transaction, definition);
+                } catch (CannotCreateTransactionException e) {
+                    if(e.getCause() instanceof CannotDetermineTargetDataSourceException) {
+                        throw new CannotCreateTransactionException(e.getCause().getMessage(), e);
+                    } else {
+                        throw e;
+                    }
+                }
+            };
+        };
     }
 
     public Map<Object, Object> getIndustryDataSources(){

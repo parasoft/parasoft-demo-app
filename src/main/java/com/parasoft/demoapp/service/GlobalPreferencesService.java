@@ -1,7 +1,6 @@
 package com.parasoft.demoapp.service;
 
 import com.parasoft.demoapp.config.ImplementedIndustries;
-import com.parasoft.demoapp.config.datasource.IndustryDataSourceConfig;
 import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
 import com.parasoft.demoapp.defaultdata.ClearEntrance;
 import com.parasoft.demoapp.defaultdata.ResetEntrance;
@@ -56,12 +55,6 @@ public class GlobalPreferencesService {
 
     @Autowired
     private GlobalPreferencesDefaultSettingsService defaultGlobalPreferencesSettingsService;
-
-    @Autowired
-    private IndustryRoutingDataSource industryRoutingDataSource;
-
-    @Autowired
-    private IndustryDataSourceConfig industryDataSourceConfig;
 
     public GlobalPreferencesEntity addNewGlobalPreferences(DataAccessMode dataAccessMode, String soapEndPoint,
                                                            Set<RestEndpointEntity> restEndpoints,
@@ -159,8 +152,7 @@ public class GlobalPreferencesService {
         return preferences;
     }
 
-    private void afterUpdateGlobalPreferences(GlobalPreferencesEntity preferences) throws GlobalPreferencesNotFoundException,
-                                                                                          GlobalPreferencesMoreThanOneException {
+    private void afterUpdateGlobalPreferences(GlobalPreferencesEntity preferences) {
         switchIndustry(preferences);
 
         restEndpointService.refreshEndpoint();
@@ -299,10 +291,8 @@ public class GlobalPreferencesService {
         currentPreferences.setRestEndPoints(endpoints);
     }
 
-    private void switchIndustry(GlobalPreferencesEntity currentPreferences) throws GlobalPreferencesNotFoundException,
-                                                                                   GlobalPreferencesMoreThanOneException {
+    private void switchIndustry(GlobalPreferencesEntity currentPreferences) {
     	IndustryRoutingDataSource.currentIndustry = currentPreferences.getIndustryType();
-        demoBugService.introduceBugWithCannotDetermineTargetDatasourceIfNeeded(currentPreferences);
     }
 
     public IndustryType getDefaultIndustry() {

@@ -6,7 +6,6 @@ import com.parasoft.demoapp.messages.DatabaseOperationMessages;
 import com.parasoft.demoapp.model.global.DatabaseInitResultEntity;
 import com.parasoft.demoapp.model.global.preferences.GlobalPreferencesEntity;
 import com.parasoft.demoapp.repository.global.DatabaseInitResultRepository;
-import com.parasoft.demoapp.service.DemoBugService;
 import com.parasoft.demoapp.service.GlobalPreferencesService;
 import com.parasoft.demoapp.service.ParasoftJDBCProxyService;
 import lombok.extern.slf4j.Slf4j;
@@ -34,23 +33,19 @@ public class InitializationEntrance {
 
     private ParasoftJDBCProxyService parasoftJDBCProxyService;
 
-    private DemoBugService demoBugService;
-
     private DatabaseOperationMessages databaseOperationMessages = new DatabaseOperationMessages();
 
     public InitializationEntrance(DatabaseInitResultRepository databaseInitResultRepository,
                                   List<AbstractTablesCreator> tablesCreators,
                                   List<AbstractDataCreator> dataCreators,
                                   GlobalPreferencesService globalPreferencesService,
-                                  ParasoftJDBCProxyService parasoftJDBCProxyService,
-                                  DemoBugService demoBugService) {
+                                  ParasoftJDBCProxyService parasoftJDBCProxyService) {
 
         this.databaseInitResultRepository = databaseInitResultRepository;
         this.tablesCreators = tablesCreators;
         this.dataCreators = dataCreators;
         this.globalPreferencesService = globalPreferencesService;
         this.parasoftJDBCProxyService = parasoftJDBCProxyService;
-        this.demoBugService = demoBugService;
     }
 
     /**
@@ -94,7 +89,6 @@ public class InitializationEntrance {
 
         GlobalPreferencesEntity globalPreferences = globalPreferencesService.getCurrentGlobalPreferences();
         IndustryRoutingDataSource.currentIndustry = globalPreferences.getIndustryType();
-        demoBugService.introduceBugWithCannotDetermineTargetDatasourceIfNeeded(globalPreferences);
 
         Boolean useParasoftJDBCProxy = globalPreferences.getUseParasoftJDBCProxy();
         String parasoftVirtualizeServerUrl = globalPreferences.getParasoftVirtualizeServerUrl();
