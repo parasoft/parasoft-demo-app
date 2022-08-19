@@ -1,340 +1,47 @@
-#return_to_category {
-	left: 6px;
-	top: -35px;
-	width: 250px;
-	height: 22px;
-	font-weight: 700;
-	font-size: 18px;
-	text-align: left;
+body {
+    background-color: rgba(0, 0, 0, 1);
 }
 
-#return_to_category_div {
-	width: 250px;
-	height: 22px;
-	font-weight: 700;
-	font-size: 18px;
-	text-align: left;
+.item_wrapper {
+    background-image: url("/aerospace/images/background.svg");
 }
 
-#item_title {
-	left: 4px;
-	top: -35px;
-	width: 556px;
-	height: 55px;
-	font-weight: 700;
-	font-size: 36px;
+.item_navigation_bar>li+li:before {
+    color: #E7FFA1;
 }
 
-#item_title>div>p>span {
-	width: 1150px;
+.item_navigation_bar .unClickable_color1 {
+    color: #e7ffa178;
 }
 
-#item_img, #item_img_dark_overlay {
-	left: 144px;
-    top: 41px;
-    width: 656px;
-    height: 370px;
+#item_img img{
+    border: 1px solid #C2EAFB;
 }
 
-.detail_dark_overlay_img {
-	width: 100%;
-	height: 100%;
-}
-
-#item_img_div {
-    top: -1px;
-    width: 658px;
-    height: 372px;
-	background-color: rgba(0, 0, 0, 1);
-	box-sizing: border-box;
-	border-width: 1px;
-	border-style: solid;
-	border-color: rgba(182, 221, 238, 1);
-	border-radius: 0px;
-}
-
-#item_img>img, #item_img_dark_overlay>img {
-	border-width: 0px;
-	position: absolute;
-  	width: 656px;
-    height: 370px;
-	display: flex;
-}
-
-#item_minus {
-    left: 827px;
-    top: 138px;
-	width: 37px;
-	height: 37px;
-	font-weight: 700;
-	font-size: 16px;
-	color: #fff;
-	text-align: center;
-	cursor: pointer;
-}
-
-#item_plus {
-	left: 976px;
-    top: 138px;
-	width: 37px;
-	height: 37px;
-	font-weight: 700;
-	font-size: 16px;
-	color: #fff;
-	text-align: center;
-	cursor: pointer;
-}
-
-#item_minus>.common_text>p, #item_plus>.common_text>p {
-	margin-top: 9px;
-}
-
-.item_requisition_button {
-	width: 37px;
-	height: 37px;
-	background-color: rgba(204, 136, 55, 1);
-	border-radius: 20px;
-	box-shadow: 1px 1px 1px rgba(0, 0, 0, 1);
-	font-weight: 700;
-	font-size: 16px;
-}
-
-#item_number {
-	left: 871px;
-    top: 138px;
-	width: 98px;
-	height: 37px;
-	font-weight: 700;
-	font-size: 14px;
-	color: #20200A;
-	text-align: center;
-}
-
-#item_number_div {
-	width: 98px;
-	height: 37px;
-	background-color: rgba(255, 255, 255, 1);
-	box-sizing: border-box;
-	border-width: 1px;
-	border-style: solid;
-	border-color: rgba(182, 221, 238, 1);
-	border-radius: 20px;
-	font-weight: 700;
-	font-size: 14px;
-	color: #20200A;
-	text-align: center;
+.requisition_button {
+    background-color: rgba(204, 136, 55, 1);
+    border-radius: 20px;
+    color: #fff;
 }
 
 #item_number_input {
-	width: 98px;
-	height: 37px;
-	padding: 2px 2px 2px 2px;
-	font-weight: 700;
-	font-size: 14px;
-	letter-spacing: normal;
-	color: #20200A;
-	vertical-align: none;
-	text-align: center;
-	text-transform: none;
-	background-color: transparent;
-	border-color: transparent;
+    background-color: rgba(255, 255, 255, 1);
+    border-color: rgba(182, 221, 238, 1);
+    border-radius: 20px;
+    color: #20200A;
 }
 
-#item_to_requisition {
-    left: 827px;
-    top: 184px;
-	width: 185px;
-	height: 40px;
-	font-weight: 700;
-	color: #20200A;
-	cursor: pointer;
-	text-align: center;
-	font-size: 13px;
-}
-
-#item_to_requisition_div {
-	width: 185px;
-	height: 40px;
-	background-color: rgba(204, 136, 55, 1);
-	border-radius: 20px;
-	box-shadow: 1px 1px 1px rgba(0, 0, 0, 1);
-	font-weight: 700;
-	color: #20200A;
-	cursor: pointer;
-	text-align: center;
-	font-size: 13px;
-}
-
-#item_to_requisition>.common_text>p {
-	margin-top: 12px;
-}
-
-#item_available {
-  	left: 835px;
-    top: 234px;
-	width: 185px;
-	height: 26px;
-	font-family: 'Ubuntu-Regular', 'Ubuntu', sans-serif;
-	font-size: 15px;
-	text-align: center;
-	line-height: 21px;
-	font-weight: 700;
-}
-
-#item_description {
-    left: 144px;
-    top: 438px;
-    width: 849px;
-    height: 157px;
-	font-family: 'Ubuntu-Regular', 'Ubuntu', sans-serif;
-	font-size: 16px;
-	line-height: 21px;
-}
-
-#item_description_div {
-	width: 635px;
-	height: 228px;
-	font-family: 'Ubuntu-Regular', 'Ubuntu', sans-serif;
-	font-size: 15px;
-	line-height: 21px;
-}
-
-.related_item_box {
-	top: 782px;
-	width: 265px;
-	height: 318px;
-}
-
-.related_item_img, .related_dark_overlay {
-	top: 798px;
-	width: 235px;
-	height: 133px;
-}
-
-.related_item_title {
-	top: 946px;
-	width: 235px;
-	height: 22px;
-	font-weight: 700;
-	font-size: 20px;
-	text-align: left;
-}
-
-.related_item_description {
-	top: 981px;
-	width: 235px;
-	height: 45px;
-	font-family: 'Ubuntu-Regular', 'Ubuntu', sans-serif;
-	font-weight: 400;
-	font-size: 12px;
-	line-height: 15px;
-}
-
-.related_item_button {
-	top: 1060px;
-	width: 181px;
-	height: 30px;
-	color: #B6DDEE;
-	font-size: 13px;
-	text-align: center;
-}
-
-.related_item_button_div {
-	width: 181px;
-	height: 30px;
-	background-color: rgba(122, 141, 149, 1);
-	border-width: 1px;
-	border-style: solid;
-	border-color: rgba(182, 221, 238, 1);
-	border-radius: 20px;
-	box-shadow: 1px 1px 1px rgba(0, 0, 0, 1);
-	font-weight: 700;
-	color: #B6DDEE;
-}
-
-.related_item_button>.common_text>p {
-	margin-top: 6px;
-}
-
-#footer {
-	top: 874px;
-}
-
-#related_title {
-	left: 34px;
-	top: 742px;
-	width: 324px;
-	height: 38px;
-	font-weight: 700;
-	font-size: 20px;
-}
-
-.related_item_line1_box {
-	left: 30px;
-}
-
-.related_item_line1_title, .related_item_line1_img,
-	.related_item_line1_dark_overlay, .related_item_line1_description {
-	left: 45px;
-}
-
-.related_item_line1_button {
-	left: 72px;
-}
-
-.related_item_line2_box {
-	left: 325px;
-}
-
-.related_item_line2_title, .related_item_line2_img,
-	.related_item_line2_dark_overlay, .related_item_line2_description {
-	left: 340px;
-}
-
-.related_item_line2_button {
-	left: 367px;
-}
-
-.related_item_line3_box {
-	left: 620px;
-}
-
-.related_item_line3_title, .related_item_line3_img,
-	.related_item_line3_dark_overlay, .related_item_line3_description {
-	left: 635px;
-}
-
-.related_item_line3_button {
-	left: 662px;
-}
-
-.detail_btn {
-	text-align: center;
-    position: relative;
-    width: 166px;
-    height: 40px;
+#item_add_to_cart_button button {
+    background-color: rgba(204, 136, 55, 1);
+    border-radius: 20px;
+    color: #20200A;
     font-size: 12px;
 }
 
-#item_detail_breadcrumb {
-    left: 6px;
-    top: -83px;
-    width: 1000px;
-    height: 22px;
-    font-size: 14px;
-    text-align: left;
+#item_description {
+    font-family: 'Ubuntu-Regular', 'Ubuntu', sans-serif;
 }
 
-#middle {
-    top: 170px;
-}
-
-.item_description_detail {
-	line-height: 24px;
-}
-
-.items_empty_content_message{
-	width:1200px;
-	left:0;
-	top: 300px;
+.sp-3balls, .sp-3balls:before, .sp-3balls:after {
+    background-color: #C2EAFB;
 }
