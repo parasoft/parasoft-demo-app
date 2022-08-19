@@ -137,3 +137,165 @@ a, a:hover, a:focus {
     color: red;
     z-index: 2;
 }
+
+#requisition_bar {
+	position: absolute;
+	top: 74px;
+	right: 350px;
+	z-index: 100;
+}
+
+#requisition_bar {
+    background-color: #333333;
+    border: 1px solid #C2EAFB;
+}
+
+#requisition_bar_content {
+    width: 688px;
+    height: 810px;
+    padding-left: 30px;
+}
+
+@keyframes collapseIn {
+    from {
+		right: 350px;
+		width: 688px;
+		height: auto;
+    } to {
+		right: 350px;
+		width: 0;
+		height: auto;
+	}
+}
+
+@keyframes collapseOut {
+	from {
+		right: 350px;
+		width: 0;
+		height: auto;
+    } to {
+		right: 350px;
+		width: 688px;
+		height: auto;
+	}
+}
+
+.collapse_in {
+    animation: collapseIn .35s;
+}
+
+.collapse_out {
+    animation: collapseOut .35s;
+}
+
+#requisition_close_button {
+    font-weight: 700;
+    font-size: 24px;
+    text-align: right;
+    margin: 5px 20px 0 0;
+}
+
+.requisition_item_img img {
+    width: 115px;
+    height: 65px;
+}
+
+#requisition_submit_button {
+    width: 241px;
+    height: 40px;
+    background-color: rgba(204, 136, 55, 1);
+    border: none;
+    border-radius: 20px;
+    box-shadow: 1px 1px 1px rgb(0 0 0);
+    font-weight: 700;
+    color: #20200A;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+#requisition_title {
+	font-size: 20px;
+}
+
+.item-content-container {
+    display: flex;
+}
+
+.requisition_item {
+	margin-bottom: 25px;
+}
+
+.requisition_item_title {
+    font-size: 18px;
+}
+
+.requisition_item_description  {
+    width: 270px;
+    height: 65px;
+    overflow-y: auto;
+    margin-left: 10px;
+    margin-right: 25px;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 15px;
+}
+
+.requisition-item-number-operations {
+	display: flex;
+    flex-direction: column;
+    margin-right: 15px;
+}
+
+
+.requisition_item_number_input {
+    width: 64px;
+    height: 30px;
+    padding: 2px 2px 2px 2px;
+    box-sizing: border-box;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #C2EAFB;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 14px;
+    color: #20200A;
+    text-align: center;
+}
+
+.requisition_item_extra {
+	display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    width: 145px;
+}
+
+.requisition_error {
+	font-size: 14px;
+    color: red;
+    font-weight: 700;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+.requisition_remove {
+	margin-bottom: 5px;
+}
+
+.requisition_buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+}
+
+.requisition_buttons button {
+    width: 30px;
+    height: 30px;
+    border-width: 0px;
+    background-color: rgba(204, 136, 55, 1);
+    border-radius: 20px;
+    box-shadow: 1px 1px 1px rgb(0 0 0);
+    font-family: 'Orbitron-Bold', 'Orbitron Bold', 'Orbitron', sans-serif;
+    font-weight: 700;
+    font-style: normal;
+    color: #fff;
+}
+
