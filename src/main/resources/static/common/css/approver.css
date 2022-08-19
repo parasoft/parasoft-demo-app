@@ -1,0 +1,481 @@
+body {
+    width: 1200px;
+    margin: 0 auto;
+    background-color: rgba(249, 250, 251, 1);
+    background-image: none;
+    background-size: cover;
+    visibility: hidden;
+}
+
+.common_industry {
+    border-width: 0px;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.header-title {
+    line-height: 80px;
+    font-size: 42px;
+    font-weight: 400;
+    color: #CBD7F0;
+    letter-spacing: 6.4px;
+    margin-left: 215px;
+    flex: 1;
+    text-align: center;
+}
+
+.configuration-icon {
+    font-size: 19px;
+    padding-top: 3px;
+    padding-right: 15px;
+}
+
+#username-button {
+    width: 108px;
+}
+
+.role-title {
+    font-family: 'Georgia', sans-serif;
+    font-style: normal;
+    font-size: 16px;
+    cursor: pointer;
+    overflow: hidden;
+    word-break: break-word;
+}
+
+.dropdown-menu {
+    top: 30px;
+    text-align: center;
+    min-width: 100px;
+    min-height: 29px;
+}
+
+.dropdown-item {
+    color: #333;
+}
+
+.content-title {
+    width: 100%;
+    height: 55px;
+    display: inline-block;
+    font-family: 'InputSerif-Regular', 'Input Serif', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 28px;
+    color: #001F55;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.page-content {
+    height: 727px;
+    display: flex;
+    justify-content: center;
+}
+
+.table {
+    width: 450px;
+    height: 330px;
+    text-align: center;
+    font-family: 'CourierNewPSMT', 'Courier New', sans-serif;
+}
+
+.table-bordered>tbody>tr>td, .table-bordered>thead>tr>th {
+    border: 1px solid #333;
+    padding: 4px;
+    text-align: center;
+}
+
+.table-bordered>thead>tr>th {
+    padding: 5px;
+}
+
+.new-status-label {
+    position: relative;
+    color: #BF051B;
+    font-weight: 700;
+    padding-right: 8px;
+    margin-left: -40px;
+}
+
+#map {
+    width: 446px;
+    height: 326px;
+    position: relative;
+    margin-left: 30px;
+}
+
+#map>img {
+    width: 100%;
+    height: 100%;
+    border: 4px solid #47481e;
+}
+
+.order_title {
+    color: #fff;
+}
+
+.order_content {
+    font-size: 13px;
+    height: 29.9px;
+}
+
+.order_content>td>a {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+#order_buttons {
+    display: flex;
+    justify-content: center;
+}
+
+.pre_btn, .next_btn {
+    padding: 0;
+    border: none;
+    border-radius: 0;
+}
+
+#page_number {
+    padding: 0 20px;
+    font-family: 'Courier', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    color: #000000;
+}
+
+p.page_number {
+    margin: 3px 10px;
+}
+
+.empty_error_message {
+    text-align: center;
+    font-size: 16px;
+    color: red;
+    z-index: 2;
+    margin-top: -262px;
+}
+
+.approver_empty_content_message {
+    width: 450px;
+}
+
+.order-detail-shadow {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: -webkit-fill-available;
+    height: -webkit-fill-available;
+    background-color: rgb(0, 0, 0);
+    opacity: 0.607843;
+    z-index: 1001;
+}
+
+.order-detail-section {
+    z-index: 1002;
+    left: 50%;
+    position: absolute;
+    margin-left: -432.5px;
+    width: 865px;
+    height: 599px;
+    top: 0;
+    margin-top: 85px;
+}
+
+#order_detail_box {
+    width: 862px;
+    height: 598px;
+    left: 1px;
+    top: 0px;
+}
+
+.industry_font {
+    font-family: 'Courier', sans-serif;
+}
+
+#close-btn {
+    text-align: right;
+    padding-right: 15px;
+    margin-top: -30px;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.approver_order_detail_box_img {
+    left: -4px;
+    top: -4px;
+    width: 862px;
+    height: 598px;
+}
+
+.dialog-title {
+    padding-top: 10px;
+    height: 30px;
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 18px;
+}
+
+.orders_empty_content_message {
+    top: 400px;
+    left: 156px;
+    width: 870px;
+}
+
+.order-detail {
+    display: flex;
+}
+
+.left-panel {
+    margin-left: 50px;
+    width: 44%;
+}
+
+.right-panel {
+    margin-left: 80px;
+    width: 40%;
+}
+
+.order_detail_right_panel {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.upper-panel {
+    align-self: flex-start;
+}
+
+.lower-panel {
+    align-self: flex-end;
+    margin-bottom: 20px;
+}
+
+#order_detail_region {
+    font-size: 18px;
+    color: #2F2F16;
+}
+
+.order_detail_summary_title_and_content {
+    font-size: 12px;
+    margin-bottom: 15px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#order_detail_assigned_campaign {
+    font-size: 18px;
+    color: #2F2F16;
+    margin-top: -10px;
+}
+
+.order_detail_label {
+    margin-bottom: 8px;
+}
+
+#order_detail_map {
+    left: 50px;
+    top: 261px;
+    width: 376px;
+    height: 275px;
+}
+
+#order_detail_map>img {
+    width: 100%;
+    height: 100%;
+}
+
+#order_items {
+    width: 340px;
+    height: 192px;
+    overflow-y: scroll;
+}
+
+/*Define the scroll-bar style*/
+#order_items::-webkit-scrollbar {
+    width: 3px;
+    background: rgb(249, 250, 251);
+}
+
+/*Define the scroll-bar's track style*/
+#order_items::-webkit-scrollbar-track {
+    border-radius: 3px;
+}
+
+/*Define the scroll-bar's slider style*/
+#order_items::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    height: 100px;
+    background-color: #333;
+}
+
+.order-items-section {
+    display: flex;
+    margin: 10px 0;
+}
+
+.order-items-left-panel {
+    width: 30%;
+    position: relative;
+}
+
+.order-items-middle-panel {
+    width: 50%;
+}
+
+.order-items-right-panel {
+    width: 20%;
+}
+
+.common_text {
+    align-self: flex-start;
+    padding: 0px 0px 0px 0px;
+    box-sizing: border-box;
+    width: 100%;
+    border-width: 0px;
+    text-transform: none;
+    line-height: normal;
+}
+
+.orderContent {
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.order_item_description {
+    top: 26px;
+    left: 90px;
+    width: 139px;
+    height: 22px;
+    font-size: 12px;
+}
+
+.item_title>div>p>span, .order_item_description>div>p>span {
+    width: 139px;
+}
+
+.item_img, .item_img>img {
+    width: 83px;
+    height: 47px;
+    position: absolute;
+}
+
+.requested_assets {
+    left: 510px;
+    top: 55px;
+    width: 270px;
+    height: 23px;
+    font-size: 18px;
+    color: #2F2F16;
+}
+
+#requisition_response {
+    height: 65px;
+}
+
+#response_title {
+    height: 20px;
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+#response_select {
+    width: 210px;
+    border: 1px solid #333;
+}
+
+#comments_title {
+    height: 20px;
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+#comments_content {
+    width: 312px;
+    height: 58px;
+    resize: none;
+    border: 1px solid #333;
+}
+
+.order-actions {
+    display: flex;
+}
+
+#cancel_btn {
+    width: 123px;
+    height: 30px;
+    margin: 8px 0;
+    font-size: 16px;
+    padding-top: 3px;
+    background-color: rgba(255, 255, 255, 1);
+    box-sizing: border-box;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(121, 121, 121, 1);
+    border-radius: 15px;
+    -moz-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.349019607843137);
+    -webkit-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.349019607843137);
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.349019607843137);
+}
+
+#save_btn {
+    color: #fff;
+    text-align: center;
+    width: 271px;
+    height: 30px;
+    margin: 8px 40px;
+    padding-top: 3px;
+    border-radius: 1px;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 1);
+    border-width: 0px;
+    font-size: 16px;
+    background-color: rgba(58, 89, 147, 1);
+    border: none;
+    border-radius: 15px;
+    -moz-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.349019607843137);
+    -webkit-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.349019607843137);
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.349019607843137);
+}
+
+#save_btn>span {
+    width:271px;
+}
+
+.operated_order {
+     display: inline-block;
+     position: relative;
+     width: 255px;
+ }
+
+.operated_order {
+     -webkit-line-clamp: 3;
+     -webkit-box-orient: vertical;
+     word-break: break-all;
+     overflow: hidden;
+     text-overflow: ellipsis;
+     display: -webkit-box;
+}
+
+.operated_order_DECLINED, .operated_order_DECLINED_WITH_REASON {
+     color: red;
+     font-weight: bold;
+}
+
+.operated_order_APPROVED {
+    color: GREEN;
+    font-weight: bold;
+}
+
+.operated_order.reject_reason {
+    color: #51A41D;
+}
+
+.orders_empty_content_message {
+    top: 325px;
+    left: 0;
+    width: 645px;
+}
