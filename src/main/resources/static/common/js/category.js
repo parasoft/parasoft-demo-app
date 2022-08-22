@@ -93,18 +93,6 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
 		}
 	}, 500);
 	
-	category.loadItemsStyle = function(index){
-		//The current number of rows and lines
-		var row = Math.ceil((index + 1) / 3) -1;
-		var column = index % 3;
-		
-		return{
-			"top": 348 * row + 123 +"px",
-			"left": 295 * (column + 1) + "px",
-			"position": "absolute"
-		};
-	}
-	
 	category.openRequisitionDetail = function(itemId){
 		var Class = ".requisitionDetail" + itemId;
 		angular.element(Class).css("visibility", "visible");
@@ -148,7 +136,7 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
 		closeRequisitionDetail(index);
 	}
 	
-	category.addItemToReqisition = function(id,itemNum,inventory,quantity){
+	category.addItemToRequisition = function(id,itemNum,inventory,quantity){
 		quantity = quantity === undefined ? 0 : quantity;
 		var total = Number(quantity) + Number(itemNum);
 		if(total > inventory){
@@ -216,7 +204,7 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
 		$http({
 			method: 'GET',
 			url: '/proxy/v1/assets/items',
-			params: angular.element('#categoryFilters').serializeJSON(),
+			params: angular.element('.category_container').serializeJSON(),
 		}).then(function(result) {
 			items = result.data.data.content;
 	    	category.items = items;

@@ -1,190 +1,50 @@
-#search {
-	top: 2px;
-	left: 556px;
+.industry_text_color, #asset_type, #availability_region_title, regions, .breadcrumb>li+li:before, #item_filter {
+    color: #2F2F16;
 }
 
-#search_text, #search_text_div, #search_text_input {
-	width: 333px;
-}
-
-#search_button {
-    top: 10px;
-    left: 303px;
-    cursor: pointer;
-}
-
-#asset_type {
-	width: 235px;
-	height: 22px;
-	font-weight: 800;
-	font-size: 36px;
-	color: #2F2F16;
-}
-
-#asset_type_div {
-	width: 235px;
-	height: 22px;
-	font-weight: 800;
-	font-size: 28px;
-	color: #2F2F16;
+#asset_type, #availability_region_title, #add_to_requisition_btn, .requisition_detail_stock_button > button,
+#confirm_button > button, .assets_category_title, .in_stock, #requisition_detail_title {
+    font-weight: 800;
 }
 
 #availability_region {
-	left: 0px;
-	top: 123px;
-	width: 264px;
-	height: 318px;
 	background-color: rgba(215, 215, 208, 1);
 }
 
-#availability_region_box {
-	position: absolute;
-	left: 15px;
-    top: 140px;
+.assets_category_box, #requisition_detail_box {
+    background-color: rgba(249, 249, 227, 1);
 }
 
-.region_box_img {
-	width: 100%;
-	height: 100%;
-	background-image: url(/defense/images/region_box.svg);
-}
-
-#availability_region_title {
-	left: 15px;
-	top: 140px;
-	width: 249px;
-	font-weight: 800;
-	font-size: 18px;
-	color: #2F2F16;
-	margin-bottom: 5px;
-}
-
-#availability_region_title_div {
-	width: 249px;
-	height: 22px;
-	font-weight: 800;
-	font-size: 20px;
-	color: #2F2F16;
-}
-
-label {
-	display: block;
-}
-
-.regions {
-	font-size: 16px;
-	color: #2F2F16;
-}
-
-.assets_category_box_div {
-	background-color: rgba(249, 249, 227, 1);
-    border: none;
-    border-radius: 8px;
-    -moz-box-shadow: 0px 0px 4px rgba(47, 47, 22, 0.345098039215686);
-    -webkit-box-shadow: 0px 0px 4px rgba(47, 47, 22, 0.345098039215686);
-    box-shadow: 0px 0px 4px rgba(47, 47, 22, 0.345098039215686);
-}
-
-.assets_category_box_img, .region_box_img {
-	display: none;
-}
-
-#item_select {
-    left: 1018px;
-    top: 80px;
-    width: 123px;
-    height: 30px;
-    display: flex;
-    font-size: 14px;
-    color: #2F2F16;
-}
-
-#item_select_div {
-    width: 123px;
-    height: 30px;
-    background-color: #fff;
-    box-sizing: border-box;
-    border-width: 1px;
-    border-style: solid;
-    border-color: rgba(47, 47, 22, 1);
-    border-radius: 0px;
-    font-size: 14px;
-    color: #2F2F16;
-}
-
-.item_filter {
-    width: 122px;
-    height: 30px;
-    padding: 3px 3px 3px 3px;
-    font-size: 14px;
-    letter-spacing: normal;
-    color: #2F2F16;
-    text-align: left;
-    text-transform: none;
-    background-color: transparent;
-    border-color: transparent;
-}
-
-.add_to_requisition>.common_text>a>span {
+#add_to_requisition_btn, .requisition_detail_stock_button > button, #confirm_button > button {
+    border-color: rgba(121, 73, 0, 1);
     color: #4F3000;
-    font-size: 13px;
+    border-radius: 1px;
 }
 
- input:checked::before {
-    content: "";
-    display: inline-block;
-    position: absolute;
-    width: 12.8px;
-    height: 12.8px;
-    left: 0;
-    border: 1px solid #333;
-    border-radius: 3px;
-    background-color: #fff;
+#add_to_requisition_btn {
+    background-color: rgba(251, 232, 202, 1);
 }
 
-input:checked::after {
-    content: "";
-    position: absolute;
-    left: 3px;
-    width: 6px;
-    height: 10px;
-    border-right: 2px solid #333;
-    border-bottom: 2px solid #333;
-    transform: rotate(45deg);
+#requisition_detail_box {
+    border-color: rgba(71, 72, 30, 1);
 }
 
-.category_title {
-	overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    display: inline-block;
+.requisition_detail_stock_button > button {
+    background-color: rgba(251, 243, 227, 1);
 }
 
-.item_description {
-	font-size: 15px;
+.assets_category_overlay_img {
+    background-image: url(/defense/images/category_dark_overlay.svg);
 }
 
-#items_breadcrumb {
-	left: 6px;
-    top: -44px;
-    width: 500px;
-    height: 22px;
-    font-size: 14px;
+.requisition_detail_overlay_img {
+    background-image: url(/defense/images/requisition_dark_overlay.svg);
 }
 
-.orderContent {
-    -webkit-line-clamp: 2;
-    white-space: normal;
+#availability_region_box {
+    align-items: flex-start;
 }
 
-.breadcrumb_unclickable_button {
-	width: 1095px;
-}
-
-#footer {
-	top: 874px;
-}
-
-.requisition_dark_overlay {
-	background-image: url(/defense/images/requisition_dark_overlay.svg);
+#requisition_detail_title {
+    width: 234px;
 }
