@@ -52,12 +52,12 @@ body {
 }
 
 
-.asset_summary_box {
+.asset_summary_box, .assets_category_box {
     background-color: rgba(249, 249, 227, 1);
     box-shadow: 0 0 4px rgb(47 47 22 / 35%);
 }
 
-.asset_summary_box:hover {
+.asset_summary_box:hover, .assets_category_box:hover {
     box-shadow: 0 0 10px grey;
 }
 
@@ -65,7 +65,7 @@ body {
     font-weight: 800;
 }
 
-.asset_summary_title a:hover, .asset_summary_view_all a:hover {
+.asset_summary_title a:hover, .asset_summary_view_all a:hover, .assets_category_title a span:hover {
     color: rgb(51,153,135);
 }
 

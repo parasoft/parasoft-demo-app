@@ -3,7 +3,7 @@
 }
 
 #asset_type, #availability_region_title, #add_to_requisition_btn, .requisition_detail_stock_button > button,
-#confirm_button > button, .assets_category_title, .in_stock, #requisition_detail_title {
+#confirm_button > button, .assets_category_title, .in_stock, #requisition_detail_title, .assets_category_title a span {
     font-weight: 800;
 }
 
@@ -11,7 +11,7 @@
 	background-color: rgba(215, 215, 208, 1);
 }
 
-.assets_category_box, #requisition_detail_box {
+#requisition_detail_box {
     background-color: rgba(249, 249, 227, 1);
 }
 
@@ -42,9 +42,19 @@
 }
 
 #availability_region_box {
-    align-items: flex-start;
+    flex-wrap: wrap;
+    align-content: center;
+    align-items: normal;
 }
 
 #requisition_detail_title {
     width: 234px;
+}
+
+#search_button {
+    margin-top: -36px
+}
+
+.assets_category_description {
+    margin-bottom: 10px;
 }

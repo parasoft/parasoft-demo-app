@@ -64,6 +64,10 @@ input:checked::after {
 #availability_region_box {
     align-items: flex-start;
     background-image: url(/aerospace/images/region_box.svg);
+    width: 264px;
+    height: 318px;
+    padding-left: 15px;
+    padding-top: 15px;
 }
 
 .assets_category_title {
@@ -89,6 +93,10 @@ input:checked::after {
     font-family: 'Ubuntu-Regular', 'Ubuntu', sans-serif;
 }
 
+#asset_type {
+    margin-left: 34px;
+}
+
 #item_filter {
     padding: 6px 6px 6px 10px;
 }
@@ -100,12 +108,17 @@ input:checked::after {
 	background-image: url(/aerospace/images/requisition_dark_overlay.svg);
 }
 
-.region_box_img {
-    background-image: url(/aerospace/images/region_box.svg);
+#search_button {
+    margin-top: -37px;
 }
 
-.assets_category_box_img {
-    background-image: url(/aerospace/images/category_box.svg);
+.assets_category_title a span {
+    font-size: 20px;
+}
+
+.assets_category_description {
+    -webkit-line-clamp: 5;
+    margin-bottom: 5px;
 }
 
 .assets_category_description, .item_description {
@@ -114,12 +127,6 @@ input:checked::after {
 
 .assets_category_img > img {
     height: 133px;
-}
-
-#availability_region_box {
-    width: 264px;
-    height: 318px;
-    padding-left: 15px;
 }
 
 .assets_category_box_img {
@@ -134,6 +141,10 @@ input:checked::after {
 
 #availability_region {
     margin-top: 13px;
+}
+
+.locations_error_message {
+    width: 240px;
 }
 
 #requisition_detail_input > input {
