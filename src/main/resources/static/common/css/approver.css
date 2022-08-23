@@ -1,7 +1,6 @@
 body {
     width: 1200px;
     margin: 0 auto;
-    background-color: rgba(249, 250, 251, 1);
     background-image: none;
     background-size: cover;
     visibility: hidden;
@@ -13,21 +12,20 @@ body {
     font-style: normal;
 }
 
+#header-container {
+    border: none;
+    border-radius: 0px;
+    background: inherit;
+}
+
 .header-title {
     line-height: 80px;
     font-size: 42px;
     font-weight: 400;
-    color: #CBD7F0;
     letter-spacing: 6.4px;
     margin-left: 215px;
     flex: 1;
     text-align: center;
-}
-
-.configuration-icon {
-    font-size: 19px;
-    padding-top: 3px;
-    padding-right: 15px;
 }
 
 #username-button {
@@ -35,7 +33,6 @@ body {
 }
 
 .role-title {
-    font-family: 'Georgia', sans-serif;
     font-style: normal;
     font-size: 16px;
     cursor: pointer;
@@ -48,10 +45,6 @@ body {
     text-align: center;
     min-width: 100px;
     min-height: 29px;
-}
-
-.dropdown-item {
-    color: #333;
 }
 
 .content-title {
@@ -67,8 +60,7 @@ body {
     margin-bottom: 10px;
 }
 
-.page-content {
-    height: 727px;
+.content-container {
     display: flex;
     justify-content: center;
 }
@@ -81,7 +73,6 @@ body {
 }
 
 .table-bordered>tbody>tr>td, .table-bordered>thead>tr>th {
-    border: 1px solid #333;
     padding: 4px;
     text-align: center;
 }
@@ -92,7 +83,6 @@ body {
 
 .new-status-label {
     position: relative;
-    color: #BF051B;
     font-weight: 700;
     padding-right: 8px;
     margin-left: -40px;
@@ -108,11 +98,6 @@ body {
 #map>img {
     width: 100%;
     height: 100%;
-    border: 4px solid #47481e;
-}
-
-.order_title {
-    color: #fff;
 }
 
 .order_content {
@@ -137,15 +122,7 @@ body {
 }
 
 #page_number {
-    padding: 0 20px;
-    font-family: 'Courier', sans-serif;
-    font-weight: 400;
-    font-style: normal;
-    color: #000000;
-}
-
-p.page_number {
-    margin: 3px 10px;
+    padding: 3px 20px;
 }
 
 .empty_error_message {
@@ -158,6 +135,10 @@ p.page_number {
 
 .approver_empty_content_message {
     width: 450px;
+}
+
+.order-detail {
+    display: flex;
 }
 
 .order-detail-shadow {
@@ -189,20 +170,6 @@ p.page_number {
     top: 0px;
 }
 
-.industry_font {
-    font-family: 'Courier', sans-serif;
-}
-
-#close-btn {
-    text-align: right;
-    padding-right: 15px;
-    margin-top: -30px;
-    font-weight: 700;
-    font-size: 16px;
-    cursor: pointer;
-    z-index: 1;
-}
-
 .approver_order_detail_box_img {
     left: -4px;
     top: -4px;
@@ -216,16 +183,6 @@ p.page_number {
     font-size: 24px;
     text-align: center;
     margin-bottom: 18px;
-}
-
-.orders_empty_content_message {
-    top: 400px;
-    left: 156px;
-    width: 870px;
-}
-
-.order-detail {
-    display: flex;
 }
 
 .left-panel {
@@ -249,12 +206,7 @@ p.page_number {
 
 .lower-panel {
     align-self: flex-end;
-    margin-bottom: 20px;
-}
-
-#order_detail_region {
-    font-size: 18px;
-    color: #2F2F16;
+    margin-bottom: 10px;
 }
 
 .order_detail_summary_title_and_content {
@@ -266,8 +218,6 @@ p.page_number {
 }
 
 #order_detail_assigned_campaign {
-    font-size: 18px;
-    color: #2F2F16;
     margin-top: -10px;
 }
 
@@ -289,14 +239,13 @@ p.page_number {
 
 #order_items {
     width: 340px;
-    height: 192px;
+    height: 188px;
     overflow-y: scroll;
 }
 
 /*Define the scroll-bar style*/
 #order_items::-webkit-scrollbar {
     width: 3px;
-    background: rgb(249, 250, 251);
 }
 
 /*Define the scroll-bar's track style*/
@@ -308,7 +257,6 @@ p.page_number {
 #order_items::-webkit-scrollbar-thumb {
     border-radius: 3px;
     height: 100px;
-    background-color: #333;
 }
 
 .order-items-section {
@@ -339,11 +287,12 @@ p.page_number {
     line-height: normal;
 }
 
-.orderContent {
+.order-content {
     display: inline-block;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    width: 100%;
 }
 
 .order_item_description {
@@ -359,8 +308,6 @@ p.page_number {
 }
 
 .item_img, .item_img>img {
-    width: 83px;
-    height: 47px;
     position: absolute;
 }
 
@@ -369,23 +316,25 @@ p.page_number {
     top: 55px;
     width: 270px;
     height: 23px;
-    font-size: 18px;
-    color: #2F2F16;
 }
 
 #requisition_response {
     height: 65px;
 }
 
-#response_title {
-    height: 20px;
-    font-size: 18px;
-    margin-bottom: 5px;
+#close-btn {
+    text-align: right;
+    padding-right: 15px;
+    margin-top: -30px;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    z-index: 1;
 }
 
-#response_select {
-    width: 210px;
-    border: 1px solid #333;
+#response_title {
+    height: 20px;
+    margin-bottom: 5px;
 }
 
 #comments_title {
@@ -396,26 +345,20 @@ p.page_number {
 
 #comments_content {
     width: 312px;
-    height: 58px;
     resize: none;
-    border: 1px solid #333;
 }
 
 .order-actions {
     display: flex;
+    justify-content: space-between;
 }
 
 #cancel_btn {
-    width: 123px;
-    height: 30px;
     margin: 8px 0;
-    font-size: 16px;
     padding-top: 3px;
-    background-color: rgba(255, 255, 255, 1);
+    font-size: 16px;
     box-sizing: border-box;
-    border-width: 1px;
     border-style: solid;
-    border-color: rgba(121, 121, 121, 1);
     border-radius: 15px;
     -moz-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.349019607843137);
     -webkit-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.349019607843137);
@@ -423,18 +366,9 @@ p.page_number {
 }
 
 #save_btn {
-    color: #fff;
-    text-align: center;
-    width: 271px;
-    height: 30px;
     margin: 8px 40px;
     padding-top: 3px;
-    border-radius: 1px;
-    box-shadow: 1px 1px 1px rgba(0, 0, 0, 1);
-    border-width: 0px;
     font-size: 16px;
-    background-color: rgba(58, 89, 147, 1);
-    border: none;
     border-radius: 15px;
     -moz-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.349019607843137);
     -webkit-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.349019607843137);
@@ -442,13 +376,14 @@ p.page_number {
 }
 
 #save_btn>span {
-    width:271px;
+    width: 271px;
 }
 
 .operated_order {
      display: inline-block;
      position: relative;
      width: 255px;
+     left: 20px;
  }
 
 .operated_order {
@@ -466,16 +401,5 @@ p.page_number {
 }
 
 .operated_order_APPROVED {
-    color: GREEN;
     font-weight: bold;
-}
-
-.operated_order.reject_reason {
-    color: #51A41D;
-}
-
-.orders_empty_content_message {
-    top: 325px;
-    left: 0;
-    width: 645px;
 }

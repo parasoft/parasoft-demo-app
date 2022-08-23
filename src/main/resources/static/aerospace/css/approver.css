@@ -2,8 +2,12 @@ body {
     background-color: rgba(0, 0, 0, 1);
 }
 
+.industry_font {
+    font-family: 'Courier-Bold', 'Courier Bold', 'Courier', sans-serif;
+}
+
 #header-container {
-	background: linear-gradient(180deg, rgba(77, 91, 69, 1) 2%, rgba(36, 42, 33, 1) 53%);
+    background: linear-gradient(180deg, rgba(77, 91, 69, 1) 2%, rgba(36, 42, 33, 1) 53%);
     -moz-box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.349019607843137);
     -webkit-box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.349019607843137);
     box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.349019607843137);
@@ -13,6 +17,7 @@ body {
     font-family: 'Ubuntu-Regular', 'Ubuntu', sans-serif;
     font-size: 18px;
     color: #A6D58A;
+    font-weight: 400;
 }
 
 .role-title {
@@ -21,11 +26,11 @@ body {
 }
 
 .dropdown-menu {
-	background: linear-gradient(180deg, rgba(77, 91, 69, 1) 2%, rgba(36, 42, 33, 1) 53%);
+    background: linear-gradient(180deg, rgba(77, 91, 69, 1) 2%, rgba(36, 42, 33, 1) 53%);
 }
 
 .dropdown-item {
-	color: #51A41D;
+    color: #51A41D;
 }
 
 .dropdown-menu>li>a {
@@ -37,13 +42,9 @@ body {
     color: #51A41D;
 }
 
-.table-bordered>tbody>tr>td, .table-bordered>thead>tr>th {
-	border: 1px solid #264d0e;
-}
-
 .order_title {
-	background: linear-gradient(180deg, #51A41D -85%, rgb(22 22 22) 53%) ! important;
-	color: #51A41D;
+    background: linear-gradient(180deg, #51A41D -85%, rgb(22 22 22) 53%);
+    color: #51A41D;
 }
 
 .order_content {
@@ -54,12 +55,8 @@ body {
     width: 143px;
 }
 
-#map>img {
-	border: 2px solid #51a41d;
-}
-
-#page_number {
-    color: #51A41D;
+.table-bordered>tbody>tr>td, .table-bordered>thead>tr>th {
+    border: 1px solid #264d0e;
 }
 
 .table-striped>tbody>tr:nth-of-type(odd) {
@@ -70,16 +67,29 @@ body {
     background-color: #000000;
 }
 
+.new-status-label {
+    color: #51A41D;
+}
+
+#map>img {
+    border: 2px solid #51a41d;
+}
+
+
+#page_number {
+    color: #51A41D;
+}
+
 .buildInfo>li {
-	color: #51A41D;
+    color: #51A41D;
 }
 
 .approver_order_detail_box_img {
-	background-image: url(/aerospace/images/approver_order_detail_box.svg);
+    background-image: url(/aerospace/images/approver_order_detail_box.svg);
 }
 
 .dialog-title {
-	color: #51A41D;
+    color: #51A41D;
 }
 
 .requested_assets {
@@ -96,13 +106,13 @@ body {
     border: 1px solid #51a41d;
 }
 
-#order_detail_assigned_campaign {
-    color: #51A41D;
-	font-weight: 700;
-}
-
 #order_detail_region {
     font-size: 16px;
+    color: #51A41D;
+    font-weight: 700;
+}
+
+#order_detail_assigned_campaign {
     color: #51A41D;
     font-weight: 700;
 }
@@ -120,7 +130,6 @@ body {
     font-family: 'Courier', sans-serif;
     font-weight: 400;
     font-style: normal;
-    font-size: 16px;
     color: #C7F2AD;
 }
 
@@ -128,19 +137,14 @@ body {
     width: 264px;
     height: 34px;
     background-color: rgba(19, 99, 157, 1);
-    box-sizing: border-box;
+    color: #D3ECFD;
     border-width: 2px;
+    box-sizing: border-box;
     border-style: solid;
     border-color: rgba(211, 236, 253, 1);
-    border-radius: 15px;
-    -moz-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.349019607843137);
-    -webkit-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.349019607843137);
-    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.349019607843137);
     font-family: 'Courier', sans-serif;
     font-weight: 400;
     font-style: normal;
-    font-size: 16px;
-    color: #D3ECFD;
 }
 
 /*Define the scroll-bar style*/
@@ -179,12 +183,12 @@ body {
 
 #response_select {
     width: 312px;
+    border: 1px solid rgba(81, 164, 29, 1);
     color: #51A41D;
-    text-transform: none;
-    letter-spacing: normal;
     background-color: rgba(43, 74, 24, 1);
     box-sizing: border-box;
-    border: 1px solid rgba(81, 164, 29, 1);
+    text-transform: none;
+    letter-spacing: normal;
 }
 
 #comments_title {
@@ -195,21 +199,12 @@ body {
 
 #comments_content {
     height: 60px;
-    resize: none;
     color: #51A41D;
+    background-color: rgba(43, 74, 24, 1);
     text-transform: none;
     letter-spacing: normal;
-    background-color: rgba(43, 74, 24, 1);
     box-sizing: border-box;
     border: 1px solid rgba(81, 164, 29, 1);
-}
-
-.industry_font {
-    font-family: 'Courier-Bold', 'Courier Bold', 'Courier', sans-serif;
-}
-
-.new-status-label {
-    color: #51A41D;
 }
 
 .glyphicon-cog {
@@ -218,14 +213,8 @@ body {
 
 .operated_order_APPROVED {
     color: #51A41D;
-    font-weight: bold;
 }
 
 .operated_order.reject_reason {
     color: #51A41D;
-}
-
-#footer {
-    background: linear-gradient(0deg, rgba(51, 32, 10, 1) 47%, rgba(0, 0, 0, 1) 100%);
-    color: #C2EAFB;
 }
