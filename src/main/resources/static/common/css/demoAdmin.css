@@ -1,0 +1,157 @@
+#page_title {
+    font-size: 36px;
+    font-weight: 800;
+}
+
+.page-content-section {
+	padding: 30px;
+}
+
+.page_main_content {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.page_main_right_content {
+    margin-top: 90px;
+}
+
+.operation_button {
+    height: 40px;
+    box-sizing: border-box;
+    border-width: 1px;
+    border-style: solid;
+    margin-right: 100px;
+}
+
+#support_docs_box {
+    width: 264px;
+    height: 318px;
+    padding: 10px;
+    background-repeat: no-repeat;
+}
+
+#support_doc_box_title {
+	margin-top: 0px;
+    margin-bottom: 10px;
+}
+
+.support_link_wrapper {
+	margin-top: 5px;
+}
+
+.nav-tabs {
+	margin: 30px 0 40px 0;
+    width: 802px;
+    height: 36px;
+}
+
+.nav-tabs>li {
+    width: 177px;
+    height: 36px;
+    text-align: center;
+    left: 20px;
+    border-right: none;
+    cursor: pointer;
+}
+
+.nav-tabs>li>a {
+	width: 177px;
+    height: 34px;
+    padding-top: 7px;
+    border-radius: 0;
+}
+
+.tab_content {
+	padding: 0 30px;
+}
+
+.section_container {
+	margin-top: 40px;
+}
+
+.section_title {
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+
+.section_body {
+	padding-left: 20px;
+}
+
+.input-wrapper .form-control {
+	display: inline-block;
+	width: 500px;
+    height: 37px;
+    margin-right: 20px;
+}
+
+.input-wrapper button {
+    height: 36px;
+    font-size: 10px;
+    box-sizing: border-box;
+    border-width: 1px;
+    border-style: solid;
+}
+
+.save_button {
+    height: 40px;
+    margin-top: 20px;
+}
+
+
+.labels_in_header {
+	margin-top: 10px;
+}
+
+.table {
+	margin-top: 30px;
+}
+
+.table td>img {
+	width: 41px;
+    height: 25px;
+    cursor: pointer;
+}
+
+.table .edit_icon, .table .delete_icon {
+    width: 17px;
+    height: 17px;
+    margin-right: 8px;
+}
+
+.table_category_description {
+	width: 500px;
+}
+
+.table_item_description {
+    width: 175px;
+}
+
+.table_category_image {
+	width: 59px;
+}
+
+.table_category_name, .table_item_name, .table_item_category {
+	width: 118px;
+}
+
+.table_item_region {
+	width: 98px;
+}
+
+.table_item_img {
+	width: 50px;
+}
+
+.table_item_quantity {
+	width: 54px;
+}
+
+.table .retract_format {
+	display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
