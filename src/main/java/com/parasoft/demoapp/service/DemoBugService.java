@@ -179,7 +179,7 @@ public class DemoBugService {
                 }
             }
         } catch (GlobalPreferencesNotFoundException | GlobalPreferencesMoreThanOneException e) {
-            // Will not reach here if project is started up succesfully
+            // Will not reach here if project is started up successfully
             throw new RuntimeException(e);
         }
 
