@@ -88,9 +88,7 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
     }, 500);
 
     category.openRequisitionDetail = function(itemId){
-        var Class = ".requisitionDetail" + itemId;
-        angular.element(Class).css("visibility", "visible");
-        // category.showRequisitionDetail = true;
+        category.showCategoryRequisitionDetail = true;
         category.loadingAnimation = true;
         category.showQuantity = false;
         category.remainingNumber = 1;
@@ -101,12 +99,16 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
             url: '/proxy/v1/cartItems/' + itemId
         }).then(function(result) {
             var cartItem = result.data.data;
-            var inventory = cartItem.realInStock;
-            var quantity = cartItem.quantity;
+            category.item = {
+                id: cartItem.itemId,
+                name: cartItem.name,
+                description: cartItem.description,
+                image: cartItem.image,
+                inStock: cartItem.realInStock,
+                inRequisition: cartItem.quantity
+            };
 
-            category.inRequisition = quantity;
-            category.inStock = inventory;
-            checkInventory(inventory,itemId,quantity);
+            checkInventory(cartItem.realInStock,itemId,cartItem.quantity);
             $interval(function(){category.loadingAnimation = false;category.showQuantity = true;},500,1);
         }).catch(function(result) {
             category.inRequisition = 0;
@@ -232,10 +234,7 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
     }
 
     function closeRequisitionDetail(index){
-        var Class = ".requisitionDetail" + index;
-        angular.element(Class).css("visibility","hidden");
-        // category.showRequisitionDetail = false;
-
+        category.showCategoryRequisitionDetail = false;
         category.remainingNumber = 1;
         clearPlusDisabled();
         setMinusDisabled();

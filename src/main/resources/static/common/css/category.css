@@ -48,7 +48,8 @@
     cursor: pointer;
     align-self: flex-end;
     text-align: left;
-    width: 311px;
+    width: 18px;
+    margin-right: 300px;
     margin-top: -31px;
 }
 
@@ -213,13 +214,15 @@
     height: 30px;
     width: 182px;
     box-shadow: 1px 1px 1px rgb(0 0 0);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 #requisition_detail {
     left: 37%;
-    top: 25%;
+    top: 26%;
     position: fixed;
-    visibility: hidden;
     z-index: 1002;
 }
 
@@ -233,7 +236,7 @@
     box-shadow: 0px 0px 4px rgb(47 47 22 / 35%);
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: space-evenly;
 }
 
 .requisition_title_and_close_button {
@@ -278,6 +281,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
+    line-height: normal;
 }
 
 #requisition_detail_available {
@@ -322,6 +326,8 @@
     width: 79px;
     height: 37px;
     text-align: center;
+    background-color: rgba(255, 255, 255, 0.4);
+    border: 1px solid #333;
 }
 
 .requisition_detail_stock_buttons {
@@ -367,7 +373,7 @@
     font-weight: 700;
     cursor: pointer;
     align-self: center;
-    margin-bottom: 10px;
+    margin-top: -35px;
 }
 
 #lightbox {
@@ -378,7 +384,6 @@
     height: 10000px;
     opacity: 0.607843;
     z-index: 1001;
-    visibility: hidden;
     background-color: rgb(0, 0, 0);
 }
 
