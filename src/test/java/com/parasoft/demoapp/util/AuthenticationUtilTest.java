@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.parasoft.demoapp.util;
 
@@ -35,14 +35,14 @@ public class AuthenticationUtilTest {
 		Long userId = 1L;
 		user.setId(userId);
 		Object principal = user;
-		
+
 		when(auth.getPrincipal()).thenReturn(principal);
 		Long result = AuthenticationUtil.getUserIdInAuthentication(auth);
 
 		// Then
 		assertEquals(userId, result);
 	}
-	
+
 	/**
 	 * Test for getUserIdInAuthentication(Authentication)
 	 *
@@ -57,7 +57,7 @@ public class AuthenticationUtilTest {
 		// Then
 		assertNull(result);
 	}
-	
+
 	/**
 	 * Test for getUserIdInAuthentication(Authentication)
 	 *
@@ -74,7 +74,7 @@ public class AuthenticationUtilTest {
 		// Then
 		assertNull(result);
 	}
-	
+
 	/**
 	 * Test for getUserRoleNameInAuthentication(Authentication)
 	 *
@@ -90,14 +90,14 @@ public class AuthenticationUtilTest {
 		roleEntity.setName(userRoleType);
 		user.setRole(roleEntity);
 		Object principal = user;
-		
+
 		when(auth.getPrincipal()).thenReturn(principal);
 		String result = AuthenticationUtil.getUserRoleNameInAuthentication(auth);
 
 		// Then
 		assertEquals(userRoleType, result);
 	}
-	
+
 	/**
 	 * Test for getUserRoleNameInAuthentication(Authentication)
 	 *
@@ -112,7 +112,7 @@ public class AuthenticationUtilTest {
 		// Then
 		assertNull(result);
 	}
-	
+
 	/**
 	 * Test for getUserRoleNameInAuthentication(Authentication)
 	 *
@@ -129,7 +129,7 @@ public class AuthenticationUtilTest {
 		// Then
 		assertNull(result);
 	}
-	
+
 	/**
 	 * Test for getUserRoleNameInAuthentication(Authentication)
 	 *
@@ -150,4 +150,60 @@ public class AuthenticationUtilTest {
 		assertNull(result);
 	}
 
+	/**
+	 * Test for getUsernameInAuthentication(Authentication)
+	 *
+	 * @see com.parasoft.demoapp.util.AuthenticationUtil#getUsernameInAuthentication(Authentication)
+	 */
+	@Test
+	public void testGetUsernameInAuthentication_normal() {
+		// Given
+		Authentication auth = mock(Authentication.class);
+		String username = "username";
+		UserEntity user = new UserEntity(username, "password");
+		Object principal = user;
+		when(auth.getPrincipal()).thenReturn(principal);
+
+		// When
+		String result = AuthenticationUtil.getUsernameInAuthentication(auth);
+
+		// Then
+		assertEquals(username, result);
+	}
+
+	/**
+	 * Test for getUsernameInAuthentication(Authentication)
+	 *
+	 * @see com.parasoft.demoapp.util.AuthenticationUtil#getUsernameInAuthentication(Authentication)
+	 */
+	@Test
+	public void testGetUsernameInAuthentication_nullAuthentication() {
+		// Given
+		Authentication auth = null; // test point
+
+		// When
+		String result = AuthenticationUtil.getUsernameInAuthentication(auth);
+
+		// Then
+		assertNull(result);
+	}
+
+	/**
+	 * Test for getUsernameInAuthentication(Authentication)
+	 *
+	 * @see com.parasoft.demoapp.util.AuthenticationUtil#getUsernameInAuthentication(Authentication)
+	 */
+	@Test
+	public void testGetUsernameInAuthentication_nullPrincipal() {
+		// Given
+		Authentication auth = mock(Authentication.class);
+		Object principal = null; // test point
+		when(auth.getPrincipal()).thenReturn(principal);
+
+		// When
+		String result = AuthenticationUtil.getUsernameInAuthentication(auth);
+
+		// Then
+		assertNull(result);
+	}
 }
