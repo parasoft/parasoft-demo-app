@@ -106,7 +106,7 @@
                                            title="{{item.description}}"
                                            ng-bind="item.description"></p>
                                         <div class="add_to_requisition industry_font"
-                                             ng-click="category.openRequisitionDetail(item.id)">
+                                             ng-click="category.openRequisitionDetail(item)">
                                             <button id="add_to_requisition_btn">
                                                 <span class="add_to_requisition_color" translate="ADD_TO_CART"></span>
                                             </button>
@@ -119,35 +119,35 @@
                                     <div id="requisition_detail_box">
                                         <div class="requisition_title_and_close_button">
                                             <div id="requisition_detail_title" class="industry_font">
-                                            <span title="{{category.item.name}}"
+                                            <span title="{{category.currentItem.name}}"
                                                   class="category_item_title"
-                                                  ng-bind="category.item.name">
+                                                  ng-bind="category.currentItem.name">
                                             </span>
                                             </div>
                                             <div id="requisition_detail_cross" class="industry_color_1"
-                                                 ng-click="category.closeRequisitionDetail(category.item.id)">
+                                                 ng-click="category.closeRequisitionDetail(category.currentItem.id)">
                                                 <span>X</span>
                                             </div>
                                         </div>
                                         <div class="requisition_img_and_description">
-                                            <img ng-src="{{category.item.image}}" class="requisition_detail_img">
+                                            <img ng-src="{{category.currentItem.image}}" class="requisition_detail_img">
                                             <div class="requisition_detail_overlay_img"></div>
                                             <div id="requisition_detail_description">
-                                            <span title="{{category.item.description}}"
-                                                  class="item_description"
-                                                  ng-bind="category.item.description">
-                                            </span>
+                                                <span title="{{category.currentItem.description}}"
+                                                      class="item_description"
+                                                      ng-bind="category.currentItem.description">
+                                                </span>
                                             </div>
                                         </div>
                                         <div id="requisition_detail_available">
                                             <div ng-show="category.showQuantity">
                                                 <p class="in_stock">
-                                                    <span ng-bind="category.item.inStock"></span>
+                                                    <span ng-bind="category.currentItem.inStock"></span>
                                                     <span translate="IN_STOCK"></span>
                                                 </p>
                                                 <p class="in_requisition_request"
-                                                   ng-show="category.item.inRequisition !== 0">
-                                                    (<span ng-bind="category.item.inRequisition"></span>
+                                                   ng-show="category.currentItem.inRequisition !== 0">
+                                                    (<span ng-bind="category.currentItem.inRequisition"></span>
                                                     <span translate="IN_CART"></span>)
                                                 </p>
                                             </div>
@@ -167,19 +167,19 @@
                                                     <input type="number"
                                                            onkeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
                                                            ng-model="category.remainingNumber"
-                                                           ng-blur="category.remainingNumber = category.calItemNum(category.remainingNumber, category.item.inStock, category.item.inRequisition)"
+                                                           ng-blur="category.remainingNumber = category.calItemNum(category.remainingNumber, category.currentItem.inStock, category.currentItem.inRequisition)"
                                                            ng-value="category.remainingNumber">
                                                 </div>
                                                 <div class="requisition_detail_stock_button">
                                                     <button type="button"
-                                                            ng-click="category.remainingNumber = category.itemNumPlus(category.remainingNumber, category.item.inStock, category.item.inRequisition)"
+                                                            ng-click="category.remainingNumber = category.itemNumPlus(category.remainingNumber, category.currentItem.inStock, category.currentItem.inRequisition)"
                                                             ng-style="category.plusDisabled"
                                                             ng-disabled="category.plusBtnDisabled">+</button>
                                                 </div>
                                             </div>
                                             <div id="confirm_button" class="industry_font">
                                                 <button type="button"
-                                                        ng-click="category.addItemToRequisition(category.item.id, category.remainingNumber, category.item.inStock, category.item.inRequisition)"
+                                                        ng-click="category.addItemToRequisition(category.currentItem.id, category.remainingNumber, category.currentItem.inStock, category.currentItem.inRequisition)"
                                                         ng-disabled="category.addToBtnDisabled"
                                                         ng-style="category.btnDisabled" translate="ADD_TO_CART">
                                                 </button>
@@ -187,7 +187,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div id="lightbox" ng-click="category.closeRequisitionDetail(category.item.id)"></div>
+                                <div id="lightbox" ng-click="category.closeRequisitionDetail(category.currentItem.id)"></div>
                             </div>
                         </div>
                     </div>

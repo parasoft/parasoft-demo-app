@@ -87,11 +87,18 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
         }
     }, 500);
 
-    category.openRequisitionDetail = function(itemId){
-        category.showCategoryRequisitionDetail = true;
+    category.openRequisitionDetail = function(item){
         category.loadingAnimation = true;
         category.showQuantity = false;
         category.remainingNumber = 1;
+        const itemId = item.id;
+        category.currentItem = {
+            id: itemId,
+            name: item.name,
+            description: item.description,
+            image: item.image
+        };
+        category.showCategoryRequisitionDetail = true;
 
         //Get cartItem by item id
         $http({
@@ -99,15 +106,8 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
             url: '/proxy/v1/cartItems/' + itemId
         }).then(function(result) {
             var cartItem = result.data.data;
-            category.item = {
-                id: cartItem.itemId,
-                name: cartItem.name,
-                description: cartItem.description,
-                image: cartItem.image,
-                inStock: cartItem.realInStock,
-                inRequisition: cartItem.quantity
-            };
-
+            category.currentItem.inStock = cartItem.realInStock;
+            category.currentItem.inRequisition = cartItem.quantity;
             checkInventory(cartItem.realInStock,itemId,cartItem.quantity);
             $interval(function(){category.loadingAnimation = false;category.showQuantity = true;},500,1);
         }).catch(function(result) {
