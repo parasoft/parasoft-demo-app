@@ -1,86 +1,86 @@
 .order_detail_container {
-	color: #C2EAFB;
-	background-image: url(/aerospace/images/order_detail_box.svg);
+    color: #C2EAFB;
+    background-image: url(/aerospace/images/order_detail_box.svg);
 }
 
 .table-title {
-	color: #C2EAFB;
+    color: #C2EAFB;
 }
 
 .table {
-	color: #C2EAFB;
+    color: #C2EAFB;
 }
 
 .table-bordered {
-	border-color: #c2eafb45;
+    border-color: #c2eafb45;
 }
 
 .table-bordered>tbody>tr>th, .table-bordered>tbody>tr>td {
-	border-color: #c2eafb45;
-	border-top: none;
+    border-color: #c2eafb45;
+    border-top: none;
 }
 
 .order_title {
-	background: #45494C;
+    background: #45494C;
 }
 
 .order_content {
-	background: #333;
+    background: #333;
 }
 
 .pager {
-	color: #C2EAFB;
+    color: #C2EAFB;
 }
 
 .item_img {
-	background-image: url(/aerospace/images/category_dark_overlay.svg);
+    background-image: url(/aerospace/images/category_dark_overlay.svg);
 }
 
 .order_detail_map {
-	width: 361px;
-	height: 361px;
-	margin-top: 15px;
+    width: 361px;
+    height: 361px;
+    margin-top: 15px;
 }
   
 .order_detail_map>img {
-	border: 2px solid #b6ddee;
-	border-radius: 14px;
+    border: 2px solid #b6ddee;
+    border-radius: 14px;
 }
 
 /*Define the scroll-bar's slider style*/
 .order_items_container::-webkit-scrollbar-thumb {
-	background-color: #C2EAFB;
+    background-color: #C2EAFB;
 }
 
 .order_rejected_reason {
-	width: 361px;
-	height: fit-content;
-	font-size: 16px;
-	color: #C2EAFB;
+    width: 361px;
+    height: fit-content;
+    font-size: 16px;
+    color: #C2EAFB;
 }
 
 .order_rejected_reason_content {
-	width: 361px;
-	height: 36px;
+    width: 361px;
+    height: 40px;
 }
 
 /*Define the scroll-bar's slider style*/
 .order_rejected_reason_content::-webkit-scrollbar-thumb {
-	height: 100px;
-	background-color: #C2EAFB;
+    height: 100px;
+    background-color: #C2EAFB;
 }
 
 .close_btn_field>button {
-	background-color: rgba(204, 136, 55, 1);
-	border-radius: 20px;
-	font-weight: 700;
-	color: #20200A;
+    background-color: rgba(204, 136, 55, 1);
+    border-radius: 20px;
+    font-weight: 700;
+    color: #20200A;
 }
 
 .order_items_container {
-	height: 170px;
+    height: 170px;
 }
 
 a:hover {
-	color: #E7FFA1;
+    color: #E7FFA1;
 }

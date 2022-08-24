@@ -1,80 +1,87 @@
 .order_detail_container {
-	background-image: url(/outdoor/images/order_detail_box.svg);
+    background-image: url(/outdoor/images/order_detail_box.svg);
 }
 
 .table-title {
-	font-size: 28px;
-	font-weight: 700;
-	color: #33424D;
+    font-size: 28px;
+    font-weight: 700;
+    color: #33424D;
 }
 
 .table-bordered>tbody>tr>th, .table-bordered>tbody>tr>td {
-	color: #33424D;
+    color: #33424D;
 }
 
 .item_img {
-	background-image: url(/outdoor/images/category_dark_overlay.svg);
+    background-image: url(/outdoor/images/category_dark_overlay.svg);
 }
 
 .order_detail_map>img {
-	border: 4px solid #33424D;
+    border: 4px solid #33424D;
+}
+
+.order_items_container {
+    height: 156px;
 }
 
 .order_items_container::-webkit-scrollbar {
-	background: transparent;
+    background: transparent;
 }
 
 .order_rejected_reason {
-	color: #33424D;
-	font-weight: 700;
+    color: #33424D;
+    font-weight: 700;
 }
 
 .order_rejected_reason_content {
-	font-weight: 400;
-	font-size: 16px;
+    font-weight: 400;
+    font-size: 16px;
 }
 
 .close_btn_field>button {
-	box-sizing: border-box;
-	border: 1px solid rgba(55, 67, 76, 1);
-	border-radius: 7px;
+    box-sizing: border-box;
+    border: 1px solid rgba(55, 67, 76, 1);
+    border-radius: 7px;
 }
 
 .order_detail_title {
-	font-weight: 700;
+    font-weight: 700;
 }
 
 .order_detail_assigned_campaign {
-	color: #33424D;
-	font-weight: 700;
-	margin-top: 50px;
+    color: #33424D;
+    font-weight: 700;
+    margin-top: 50px;
 }
 
 .order_detail_summary_title_and_content {
-	color: #2F2F16;
-	margin-top: 20px;
+    color: #2F2F16;
+    margin-top: 20px;
 }
 
 /*Define the scroll-bar style*/
 #order_rejected_reason_content::-webkit-scrollbar {
-	background: transparent;
+    background: transparent;
 }
 
 .order_detail_region {
-	color: #33424D;
-	font-weight: 700;
-	margin-top: 20px;
+    color: #33424D;
+    font-weight: 700;
+    margin-top: 20px;
 }
 
 .requested_assets {
-	color: #33424D;
-	font-weight: 700;
+    color: #33424D;
+    font-weight: 700;
 }
 
 .order_rejected_reason_content {
-	height: 36px;
+    height: 36px;
 }
 
 .cross_btn span {
-	font-weight: 800;
+    font-weight: 800;
+}
+.new_label {
+    left: -8px;
 }

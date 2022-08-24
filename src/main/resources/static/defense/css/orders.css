@@ -1,69 +1,66 @@
 .order_detail_container {
-	background-image: url(/defense/images/order_detail_box.svg);
+    background-image: url(/defense/images/order_detail_box.svg);
 }
 
 .item_img {
-	background-image: url(/defense/images/category_dark_overlay.svg);
+    background-image: url(/defense/images/category_dark_overlay.svg);
 }
 
 .order_detail_map>img {
-	border: 4px solid #47481e;
+    border: 4px solid #47481e;
 }
 
 .order_items_container::-webkit-scrollbar {
-	background: transparent;
+    background: transparent;
 }
 
 .order_rejected_reason {
-	width: 223px;
-	height: 23px;
-	font-size: 20px;
-	color: #2F2F16;
-	font-weight: 800;
+    width: 223px;
+    height: 23px;
+    font-size: 20px;
+    color: #2F2F16;
+    font-weight: 800;
 }
 
 .order_rejected_reason_content {
-	font-size: 16px;
-	font-weight: 400;
+    font-size: 16px;
+    font-weight: 400;
+    height: 44px;
 }
 
 .close_btn_field>button {
-	border-radius: 1px;
-	font-weight: 800;
-	color: #4F3000;
+    border-radius: 1px;
+    font-weight: 800;
+    color: #4F3000;
 }
 
 .order_detail_title {
-	font-weight: 800;
+    font-weight: 800;
 }
 
 .order_detail_assigned_campaign {
-	color: #2F2F16;
-	font-weight: 800;
-	margin-top: 50px;
+    color: #2F2F16;
+    font-weight: 800;
+    margin-top: 50px;
 }
 
 .order_detail_summary_title_and_content {
-	color: #2F2F16;
-	margin-top: 20px;
+    color: #2F2F16;
+    margin-top: 20px;
 }
 
 /*Define the scroll-bar style*/
 #order_rejected_reason_content::-webkit-scrollbar {
-	background: transparent;
+    background: transparent;
 }
 
 .order_detail_region {
-	color: #2F2F16;
-	font-weight: 800;
-	margin-top: 20px;
+    color: #2F2F16;
+    font-weight: 800;
+    margin-top: 20px;
 }
 
 .requested_assets {
-	color: #2F2F16;
-	font-weight: 800;
-}
-
-.order_rejected_reason_content {
-	height: 40px;
+    color: #2F2F16;
+    font-weight: 800;
 }
