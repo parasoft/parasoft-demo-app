@@ -25,15 +25,11 @@ body {
     color: #A6D58A;
 }
 
-.dropdown-menu {
+#username-button .dropdown-menu {
     background: linear-gradient(180deg, rgba(77, 91, 69, 1) 2%, rgba(36, 42, 33, 1) 53%);
 }
 
-.dropdown-item {
-    color: #51A41D;
-}
-
-.dropdown-menu>li>a {
+#username-button .dropdown-menu>li>a {
     color: #51A41D;
 }
 

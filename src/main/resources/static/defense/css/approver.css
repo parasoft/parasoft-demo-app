@@ -27,12 +27,17 @@ body {
     color: #FFFFFF;
 }
 
-.dropdown-menu {
+#username-button .dropdown-menu {
     background-color: rgba(249, 250, 251, 1);
 }
 
-.dropdown-item {
+#username-button .dropdown-menu>li>a{
     color: #333;
+}
+
+#username-button .dropdown-menu>li>a:hover{
+    color: #23527c;
+    background-color: #f5f5f5;
 }
 
 .table-bordered>tbody>tr>td, .table-bordered>thead>tr>th {
