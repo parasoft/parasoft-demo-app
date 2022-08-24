@@ -149,17 +149,18 @@ public class OrderService {
 
     public synchronized OrderEntity updateOrderByOrderNumberSynchronized(String orderNumber, String userRoleName,
                                             OrderStatus newStatus, Boolean reviewedByPRCH, Boolean reviewedByAPV,
-                                                                         String comments, boolean publicToMQ)
+                                                             String respondedBy, String comments, boolean publicToMQ)
             throws IncorrectOperationException, OrderNotFoundException, NoPermissionException, ParameterException {
 
         return updateOrderByOrderNumber(
-                orderNumber, userRoleName, newStatus, reviewedByPRCH, reviewedByAPV, comments, publicToMQ);
+                orderNumber, userRoleName, newStatus, reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
     }
 
     @Transactional(value = "industryTransactionManager")
     public OrderEntity updateOrderByOrderNumber(String orderNumber, String userRoleName, OrderStatus newStatus,
                                                                 Boolean reviewedByPRCH, Boolean reviewedByAPV,
-                                                                String comments, boolean publicToMQ)
+                                                                String respondedBy, String comments,
+                                                                boolean publicToMQ)
             throws ParameterException, OrderNotFoundException, NoPermissionException, IncorrectOperationException {
 
     	ParameterValidator.requireNonNull(newStatus, OrderMessages.STATUS_CANNOT_BE_NULL);
@@ -214,6 +215,8 @@ public class OrderService {
             }
 
             newOrder.setApproverReplyDate(new Date());
+            // Set response username only when approvers change the order status
+            newOrder.setRespondedBy(respondedBy);
         }
 
         newOrder = orderRepository.save(newOrder);

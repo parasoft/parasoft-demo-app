@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class OrderEntity implements Cloneable{
+public class OrderEntity {
 
     @Setter
     @Id
@@ -49,6 +49,10 @@ public class OrderEntity implements Cloneable{
     @Setter
     @Column(name = "reviewed_by_prch")
     private Boolean reviewedByPRCH;
+
+    @Setter
+    @Column(name = "responded_by")
+    private String respondedBy;  // approver's username
 
     @Setter
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "order")
@@ -109,6 +113,7 @@ public class OrderEntity implements Cloneable{
         newOrder.status = this.status;
         newOrder.reviewedByAPV = this.reviewedByAPV;
         newOrder.reviewedByPRCH = this.reviewedByPRCH;
+        newOrder.respondedBy = this.respondedBy;
         newOrder.orderItems = this.orderItems;
         newOrder.region = this.region;
         newOrder.location = this.location;
