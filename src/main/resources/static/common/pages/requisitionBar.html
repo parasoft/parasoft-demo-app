@@ -1,5 +1,5 @@
 <div id="requisition_bar" class="{{requisition.collapse}} collapse" ng-style="requisition.rightNavigationBar">
-	<div id="requisition_bar_content" class="industry_font">
+	<div id="requisition_bar_content">
 		<div id="requisition_close_button" class="industry_color_1" ng-click="requisition.closeRequisition()">
 			<span>X</span>
 		</div>
@@ -18,7 +18,7 @@
 		<div id="shopping_cart" ng-style="shoppingCart">
 			<div ng-repeat="cartItem in cartItems track by $index" class="requisition_item">
 				<div class="requisition_item_title">
-					<a href="/items/{{cartItem.itemId}}" title="{{cartItem.name}}" class="industry_color_1">
+					<a href="/items/{{cartItem.itemId}}" title="{{cartItem.name}}" class="industry_color_1 industry_font">
 						<span ng-bind="cartItem.name"></span>
 					</a>
 				</div>
@@ -26,20 +26,22 @@
 					<div class="requisition_item_img">
 						<img ng-src="{{cartItem.image}}">
 					</div>
-					<div class="requisition_item_description industry_color_2">
-						<span class="content_text" ng-bind="cartItem.description"></span>
-					</div>
+					<div class="requisition_item_description industry_color_2" ng-bind="cartItem.description"></div>
 					<div class="requisition-item-number-operations">
 						<div class="requisition_item_number">
-							<input class="requisition_item_number_input" type="number"
+							<input class="requisition_item_number_input industry_font" type="number"
 								   ng-model="cartItem.quantity" onkeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
 								   ng-blur="requisition.inputItemNum($index,cartItem)">
 						</div>
 						<div class="requisition_buttons">
-							<button class="requisition_minus_button"
-									ng-click="requisition.minusRequisition(requisitionNums,$index,cartItem)">-</button>
-							<button class="requisition_plus_button"
-									ng-click="requisition.plusRequisition(requisitionNums,$index,cartItem)">+</button>
+							<div class="requisition_minus_row{{requisition.requisitionRowExp($index)}}">
+								<button class="requisition_minus_button"
+										  ng-click="requisition.minusRequisition(requisitionNums,$index,cartItem)">-</button>
+							</div>
+							<div class="requisition_plus_row{{requisition.requisitionRowExp($index)}}">
+								<button class="requisition_plus_button"
+										  ng-click="requisition.plusRequisition(requisitionNums,$index,cartItem)">+</button>
+							</div>
 						</div>
 					</div>
 					<div class="requisition_item_extra">
@@ -48,7 +50,7 @@
 							<span class="noItemInfo" ng-show="cartItem.realInStock === null" translate="ITEM_NOT_FOUND"></span>
 						</div>
 						<div class="requisition_remove" ng-click="requisition.removeCartItem(cartItem.itemId)">
-							<a href="javaScript:void(0)" class="industry_color_1"><span translate="REMOVE"></span></a>
+							<a href="javaScript:void(0)"><span translate="REMOVE" class="industry_color_1"></span></a>
 						</div>
 					</div>
 				</div>
