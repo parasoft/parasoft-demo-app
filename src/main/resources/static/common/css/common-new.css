@@ -201,13 +201,22 @@ a, a:hover, a:focus {
     font-size: 24px;
 }
 
+.requisition_detail_dark_overlay_img {
+    position: absolute;
+    width: 115px;
+    height: 65px;
+}
+
+#requisition_img_dark_overlay {
+    z-index: 5;
+}
+
 .requisition_item_img img {
     width: 115px;
     height: 65px;
 }
 
 #requisition_submit_button {
-    width: 241px;
     height: 40px;
     box-sizing: border-box;
     border-width: 1px;
@@ -234,7 +243,7 @@ a, a:hover, a:focus {
 #shopping_cart {
     position: relative;
     overflow-y: auto;
-    height: 610px;
+    height: 586px;
     width: 660px;
 }
 
@@ -267,7 +276,7 @@ a, a:hover, a:focus {
 
 .requisition_item_description  {
     width: 270px;
-    height: 57px;
+    height: 65px;
     overflow-y: auto;
     margin-left: 10px;
     margin-right: 25px;
@@ -311,11 +320,11 @@ a, a:hover, a:focus {
 }
 
 .requisition_error {
+    height: 45px;
     font-size: 14px;
     color: red;
     font-weight: 700;
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-    padding-bottom: 20px;
 }
 
 .requisition_remove {

@@ -109,10 +109,6 @@ body {
     font-family: 'NewYorkExtraLarge-Heavy', 'New York Extra Large Heavy', 'New York Extra Large', sans-serif;
 }
 
-.requisition_item_img {
-    border: 2px solid #333;
-}
-
 .requisition_item_number_input {
     border-color: #333;
     background-color: rgba(255, 255, 255, 0.4);

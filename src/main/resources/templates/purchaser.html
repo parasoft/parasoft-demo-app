@@ -28,6 +28,11 @@
                         <div class="assets_summary_boxes">
                             <div class="asset_summary_box" ng-repeat="category in home.categories track by $index" ng-style="home.loadStyle($index)">
                                 <div class="asset_summary_container">
+                                    <div id="assets_img_dark_overlay">
+                                        <a ng-href="/categories/{{category.id}}">
+                                            <div class="assets_detail_dark_overlay_img"></div>
+                                        </a>
+                                    </div>
                                     <div class="asset_summary_img_container">
                                         <a ng-href="/categories/{{category.id}}">
                                             <img class="asset_summary_img" ng-alt="{{category.name}}" ng-src="{{category.image}}">

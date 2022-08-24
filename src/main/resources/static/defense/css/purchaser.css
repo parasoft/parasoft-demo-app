@@ -13,3 +13,15 @@
 .advertisement_content_text {
     color: #2F2F16
 }
+
+.assets_detail_dark_overlay_img {
+    position: absolute;
+    width: 235px;
+    height: 133px;
+    background-image: url("/defense/images/category_dark_overlay.svg.svg");
+    background-size: 100% 100%;
+}
+
+#assets_img_dark_overlay {
+    z-index: 5;
+}

@@ -14,11 +14,11 @@
 <body>
     <input type="hidden" id="current_username" th:value="${#authentication.principal.username}">
     <input type="hidden" id="current_rolename" th:value="${#authentication.principal.role.name}">
-    <div ng-include="'/common/pages/requisitionBar.html'" ng-controller="requisitionBarController as requisition"></div>
 
     <div class="page-container">
         <div ng-include="'/common/pages/header.html'" class="header-section" ng-controller="headerController as header"></div>
         <div ng-controller="itemDetailController as itemDetail" class="page-content-section item_wrapper">
+            <div ng-include="'/common/pages/requisitionBar.html'" ng-controller="requisitionBarController as requisition"></div>
             <div id="middle" ng-if="itemDetail.showItemDetail">
                 <div id="item_detail_breadcrumb">
                     <ol class="industry_font item_navigation_bar">
