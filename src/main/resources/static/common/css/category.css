@@ -219,11 +219,21 @@
     white-space: nowrap;
 }
 
+.requisition_detail_container {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+}
+
 #requisition_detail {
-    left: 37%;
-    top: 26%;
-    position: fixed;
     z-index: 1002;
+    left: 50%;
+    position: fixed;
+    margin-left: -195px;
+    top: 50%;
+    margin-top: -182.5px;
 }
 
 #requisition_detail_box {
