@@ -31,13 +31,10 @@
                     <div class="dropdown full-fill-center" ng-if="isShowAccount">
                         <div class="button-body industry_font dropdown-toggle full-fill-center" data-toggle="dropdown">
                             <div class="role-title industry_font">
-                                <span translate="PURCHASER_TITLE" class="account_text text-center" ng-if="isPurchaser"></span>
-                                <span translate="APPROVER_TITLE" class="account_text text-center" ng-if="isApprover"></span>
+                                <span class="account_text text-center">{{ username }}</span>
                             </div>
                         </div>
                         <ul class="dropdown-menu dropdown-menu-right">
-                            <li class="dropdown-item"><a>{{ username }}</a></li>
-                            <li class="divider"></li>
                             <li class="dropdown-item">
                                 <a class="logout" href="/logout" translate="SIGN_OUT"></a>
                             </li>
