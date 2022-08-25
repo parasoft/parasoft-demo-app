@@ -9,14 +9,16 @@ loginApp.controller('loginController', function($rootScope, $location, $window, 
 	var login = this;
 	login.credentials = {};
 	login.onSubmit = onSubmit;
-	
+
 	function onSubmit() {
 		var token = $window.btoa(login.credentials.username + ':' + login.credentials.password);
 		$window.localStorage.setItem('userToken', token);
 	}
 
+	$rootScope.isShowSettingButton = false;
+	$rootScope.isShowRequisitionButton = false;
+	$rootScope.isShowRequisitionRequestButton = false;
 	$rootScope.isShowAccount = false;
-	$rootScope.isShowOtherButtons = false;
 	login.isError = $location.absUrl().indexOf('error') != -1;
 	localStorage.setItem("removeRegionFilterInCookie",true);
 
@@ -31,7 +33,7 @@ loginApp.controller('loginController', function($rootScope, $location, $window, 
             angular.noop();
         });
     };
-	
+
 	//To avoid displaying page without styles due to the slow loading of CSS files
 	setTimeout(function(){ $("body").css("visibility","visible") }, 500);
  });
