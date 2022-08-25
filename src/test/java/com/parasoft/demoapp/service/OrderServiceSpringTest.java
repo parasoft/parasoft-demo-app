@@ -53,15 +53,17 @@ public class OrderServiceSpringTest {
     OrderService underTest;
 
     /**
-     * Test for addNewOrder(Long, RegionType, String, String, String, String)
+     * Test for addNewOrder(Long, String, RegionType, String, String, String, String)
      *
-     * @see OrderService#addNewOrder(Long, RegionType, String, String, String, String)
+     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String)
      */
     @Test
     public void testAddNewOrder() throws Throwable {
         CategoryEntity category = null;
         ItemEntity item = null;
-        Long userId = userService.getUserByUsername(GlobalUsersCreator.USERNAME_PURCHASER).getId();
+        UserEntity user = userService.getUserByUsername(GlobalUsersCreator.USERNAME_PURCHASER);
+        Long userId = user.getId();
+        String requestedBy = user.getUsername();
         try {
             category = categoryService.addNewCategory("name", "description", "imagePath");
             item = itemService.addNewItem("name", "description", category.getId(), 30, "imagePath", RegionType.LOCATION_1);
@@ -73,12 +75,12 @@ public class OrderServiceSpringTest {
             String receiverId = "345-6789-21";
             String eventId = "45833-ORG-7834";
             String eventNumber = "55-444-33-22";
-            OrderEntity result = underTest.addNewOrder(userId, region, location, receiverId, eventId, eventNumber);
+            OrderEntity result = underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
 
             // Then
             assertNotNull(result);
             assertEquals("name", result.getOrderItems().get(0).getName());
-            assertEquals(userId, result.getUserId());
+            assertEquals(requestedBy, result.getRequestedBy());
             assertEquals(OrderStatus.SUBMITTED.getStatus(), result.getStatus().getStatus());
             assertEquals(1, result.getOrderItems().size());
             assertEquals(RegionType.LOCATION_1, result.getRegion());
@@ -102,6 +104,7 @@ public class OrderServiceSpringTest {
     public void testUpdateOrderByOrderNumber1() throws Throwable {
         // When
         Long userId = null;
+        String requestedBy = null;
         CategoryEntity category = null;
         ItemEntity item = null;
         OrderEntity order = null;
@@ -109,6 +112,7 @@ public class OrderServiceSpringTest {
             // Given
             UserEntity user = userService.getUserByUsername(GlobalUsersCreator.USERNAME_APPROVER);
             userId = user.getId();
+            requestedBy = user.getUsername();
             category = categoryService.addNewCategory("name", "description", "imagePath");
             item = itemService.addNewItem("name", "description", category.getId(), 30, "imagePath", RegionType.LOCATION_1);
             shoppingCartService.addCartItemInShoppingCart(userId, item.getId(), 20);
@@ -119,7 +123,7 @@ public class OrderServiceSpringTest {
             String receiverId = "345-6789-21";
             String eventId = "45833-ORG-7834";
             String eventNumber = "55-444-33-22";
-            order = underTest.addNewOrder(userId, region, location, receiverId, eventId, eventNumber);
+            order = underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
 
             String orderNumber = order.getOrderNumber();
             String userRoleName = RoleType.ROLE_APPROVER.toString();
@@ -139,7 +143,7 @@ public class OrderServiceSpringTest {
 
             // When
             shoppingCartService.addCartItemInShoppingCart(userId, item.getId(), 20);
-            order = underTest.addNewOrder(userId, region, location, receiverId, eventId, eventNumber);
+            order = underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
             orderNumber = order.getOrderNumber();
             newStatus = OrderStatus.APPROVED;
             comments = "approved";
@@ -165,6 +169,7 @@ public class OrderServiceSpringTest {
 	@Test
 	public void testUpdateOrderByOrderNumber2() throws Throwable {
 		Long userId = null;
+		String requestedBy = null;
 		CategoryEntity category = null;
 		ItemEntity item = null;
 		OrderEntity order = null;
@@ -179,6 +184,7 @@ public class OrderServiceSpringTest {
 		// Given
 		UserEntity user = userService.getUserByUsername(GlobalUsersCreator.USERNAME_PURCHASER);
 		userId = user.getId();
+        requestedBy = user.getUsername();
 		category = categoryService.addNewCategory("name", "description", "imagePath");
 		item = itemService.addNewItem("name", "description", category.getId(), 30, "imagePath", RegionType.LOCATION_1);
 		// add item into cart, the quantity of item is 20.
@@ -188,7 +194,7 @@ public class OrderServiceSpringTest {
 		String receiverId = "345-6789-21";
 		String eventId = "45833-ORG-7834";
 		String eventNumber = "55-444-33-22";
-		order = underTest.addNewOrder(userId, region, location, receiverId, eventId, eventNumber);
+		order = underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
 		String orderNumber = order.getOrderNumber();
 		String comments = "";
 		userRoleName = RoleType.ROLE_PURCHASER.toString();
@@ -418,6 +424,7 @@ public class OrderServiceSpringTest {
 	@Test
 	public void testUpdateOrderByOrderNumber3() throws Throwable {
 		Long userId = null;
+		String requestedBy = null;
 		CategoryEntity category = null;
 		ItemEntity item = null;
 		OrderEntity order = null;
@@ -432,6 +439,7 @@ public class OrderServiceSpringTest {
 		// Given
 		UserEntity user = userService.getUserByUsername(GlobalUsersCreator.USERNAME_PURCHASER);
 		userId = user.getId();
+        requestedBy = user.getUsername();
 		category = categoryService.addNewCategory("name1", "description", "imagePath");
 		item = itemService.addNewItem("name", "description", category.getId(), 30, "imagePath", RegionType.LOCATION_1);
 		// add item into cart, the quantity of item is 20.
@@ -441,7 +449,7 @@ public class OrderServiceSpringTest {
 		String receiverId = "345-6789-21";
 		String eventId = "45833-ORG-7834";
 		String eventNumber = "55-444-33-22";
-		order = underTest.addNewOrder(userId, region, location, receiverId, eventId, eventNumber);
+		order = underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
 		String orderNumber = order.getOrderNumber();
 		String comments = "";
 		userRoleName = RoleType.ROLE_PURCHASER.toString();
@@ -587,6 +595,7 @@ public class OrderServiceSpringTest {
 	@Test
 	public void testUpdateOrderByOrderNumber4() throws Throwable {
 		Long userId = null;
+		String requestedBy = null;
 		CategoryEntity category = null;
 		ItemEntity item = null;
 		OrderEntity order = null;
@@ -601,6 +610,7 @@ public class OrderServiceSpringTest {
 		// Given
 		UserEntity user = userService.getUserByUsername(GlobalUsersCreator.USERNAME_PURCHASER);
 		userId = user.getId();
+        requestedBy = user.getUsername();
 		category = categoryService.addNewCategory("name1", "description", "imagePath");
 		item = itemService.addNewItem("name", "description", category.getId(), 30, "imagePath", RegionType.LOCATION_1);
 		// add item into cart, the quantity of item is 20.
@@ -610,7 +620,7 @@ public class OrderServiceSpringTest {
 		String receiverId = "345-6789-21";
 		String eventId = "45833-ORG-7834";
 		String eventNumber = "55-444-33-22";
-		order = underTest.addNewOrder(userId, region, location, receiverId, eventId, eventNumber);
+		order = underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
 		String orderNumber = order.getOrderNumber();
 		String comments = "";
 		userRoleName = RoleType.ROLE_PURCHASER.toString();

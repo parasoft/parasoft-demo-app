@@ -114,7 +114,7 @@ public class DefenseDefaultDataSpringTest {
 
 		// When
 		// get all orders of defense industry
-		List<OrderEntity> orders = orderService.getAllOrders(approver.getId(), approver.getRole().getName());
+		List<OrderEntity> orders = orderService.getAllOrders(approver.getUsername(), approver.getRole().getName());
 
 		// Then
 		assertNotNull(orders);

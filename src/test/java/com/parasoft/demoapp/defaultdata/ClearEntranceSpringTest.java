@@ -97,7 +97,7 @@ public class ClearEntranceSpringTest {
         String receiverId_defense = "xxx";
         String eventId_defense = "xxx";
         String eventNumber_defense = "xxx";
-        OrderEntity order_defense = orderService.addNewOrder(user_defense.getId(), region_defense, location_defense, receiverId_defense, eventId_defense, eventNumber_defense);
+        OrderEntity order_defense = orderService.addNewOrder(user_defense.getId(), user_defense.getUsername(), region_defense, location_defense, receiverId_defense, eventId_defense, eventNumber_defense);
         // Prepare some data, and these data need to be reset when running tests method is done.
         // switch database to AEROSPACE
         IndustryRoutingDataSource.currentIndustry = IndustryType.AEROSPACE;
@@ -124,7 +124,7 @@ public class ClearEntranceSpringTest {
         String receiverId_aerospace = "xxx";
         String eventId_aerospace = "xxx";
         String eventNumber_aerospace = "xxx";
-        OrderEntity order_aerospace = orderService.addNewOrder(user_aerospace.getId(), region_aerospace, location_aerospace, receiverId_aerospace, eventId_aerospace, eventNumber_aerospace);
+        OrderEntity order_aerospace = orderService.addNewOrder(user_aerospace.getId(), user_defense.getUsername(), region_aerospace, location_aerospace, receiverId_aerospace, eventId_aerospace, eventNumber_aerospace);
 
         // make sure all data is saved into database.
         assertNotNull(category_defense);

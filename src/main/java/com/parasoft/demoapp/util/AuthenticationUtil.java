@@ -42,4 +42,23 @@ public class AuthenticationUtil {
 
         return user.getRole().getName();
     }
+
+    /**
+     * to get current username
+     * @param auth
+     * @return username
+     */
+    public static String getUserNameInAuthentication(Authentication auth) {
+        if(auth == null){
+            return null;
+        }
+
+        UserEntity user = (UserEntity) auth.getPrincipal();
+
+        if(user == null){
+            return null;
+        }
+
+        return user.getUsername();
+    }
 }

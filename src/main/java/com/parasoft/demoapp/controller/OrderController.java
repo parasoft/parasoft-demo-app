@@ -62,7 +62,8 @@ public class OrderController {
 				ResponseResult.STATUS_OK, ResponseResult.MESSAGE_OK);
 
 		Long currentUserId = AuthenticationUtil.getUserIdInAuthentication(auth);
-		OrderEntity order = orderService.addNewOrderSynchronized(currentUserId, orderDto.getRegion(), orderDto.getLocation(),
+		String currentUserName = AuthenticationUtil.getUserNameInAuthentication(auth);
+		OrderEntity order = orderService.addNewOrderSynchronized(currentUserId, currentUserName, orderDto.getRegion(), orderDto.getLocation(),
 				orderDto.getReceiverId(), orderDto.getEventId(), orderDto.getEventNumber());
 		response.setData(order);
 
@@ -140,7 +141,7 @@ public class OrderController {
 		ResponseResult<List<OrderEntity>> response = ResponseResult.getInstance(ResponseResult.STATUS_OK,
 				ResponseResult.MESSAGE_OK);
 		
-		response.setData(orderService.getAllOrders(AuthenticationUtil.getUserIdInAuthentication(auth), 
+		response.setData(orderService.getAllOrders(AuthenticationUtil.getUserNameInAuthentication(auth),
 				AuthenticationUtil.getUserRoleNameInAuthentication(auth)));
 
 		return response;
@@ -168,7 +169,7 @@ public class OrderController {
 
 		pageable = demoBugService.introduceBugWithReverseOrdersIfNeeded(pageable);
 		
-		Page<OrderEntity> page = orderService.getAllOrders(AuthenticationUtil.getUserIdInAuthentication(auth),
+		Page<OrderEntity> page = orderService.getAllOrders(AuthenticationUtil.getUserNameInAuthentication(auth),
 				AuthenticationUtil.getUserRoleNameInAuthentication(auth), pageable);
 		PageInfo<OrderEntity> pageInfo =  new PageInfo<>(page);
 
