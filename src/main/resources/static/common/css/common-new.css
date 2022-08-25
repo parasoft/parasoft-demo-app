@@ -147,25 +147,32 @@ a, a:hover, a:focus {
     top: 0;
     right: 0;
     width: auto;
-    height: auto;
+    max-height: 795px;
+    height: 100%;
     z-index: 100;
     box-shadow: 0px 0px 10px rgb(0 0 0/ 35%);
 }
 
 #requisition_bar_content {
+    display: flex;
+    flex-direction: column;
     width: 688px;
-    height: 795px;
+    height: 100%;
     padding-left: 30px;
+}
+
+.shopping_title {
+    flex: 1;
 }
 
 @keyframes collapseIn {
     from {
         width: 688px;
-        height: auto;
+        height: 100%;
     } to {
           float: right;
           width: 0;
-          height: auto;
+          height: 100%;
       }
 }
 
@@ -173,11 +180,11 @@ a, a:hover, a:focus {
     from {
         float: right;
         width: 0;
-        height: auto;
+        height: 100%;
     } to {
           float: right;
           width: 688px;
-          height: auto;
+          height: 100%;
       }
 }
 
@@ -242,9 +249,9 @@ a, a:hover, a:focus {
 }
 
 #shopping_cart {
+    flex: 3;
     position: relative;
     overflow-y: auto;
-    height: 586px;
     width: 660px;
 }
 

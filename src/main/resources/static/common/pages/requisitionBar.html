@@ -1,63 +1,65 @@
 <div id="requisition_bar" class="{{requisition.collapse}} collapse" ng-style="requisition.rightNavigationBar">
-	<div id="requisition_bar_content">
-		<div id="requisition_close_button" class="industry_color_1" ng-click="requisition.closeRequisition()">
-			<span>X</span>
-		</div>
-		<div id="requisition_title" class="industry_color_2">
-			<span translate="CART_TITLE"></span>
-		</div>
-		<div class="common_industry">
-			<button id="requisition_submit_button" class="btn orange_button" ng-click="requisition.checkItems()"
-					ng-disabled="disableSubmitBtn || cartItemLoadError">
-				<span translate="ORDER_SUBMIT_BUTTON"></span>
-			</button>
-		</div>
-		<div id="assets_to_deploy" class="industry_color_2">
-			<p><span translate="ASSETS_TO_DEPLOY"></span><span>: </span><span id="assets_amount" ng-bind="totalAmount"></span></p>
-		</div>
-		<div id="shopping_cart" ng-style="shoppingCart">
-			<div ng-repeat="cartItem in cartItems track by $index" class="requisition_item">
-				<div class="requisition_item_title">
-					<a href="/items/{{cartItem.itemId}}" title="{{cartItem.name}}" class="industry_color_1 industry_font">
-						<span ng-bind="cartItem.name"></span>
-					</a>
-				</div>
-				<div class="item-content-container">
+    <div id="requisition_bar_content">
+        <div class="shopping_title">
+            <div id="requisition_close_button" class="industry_color_1" ng-click="requisition.closeRequisition()">
+                <span>X</span>
+            </div>
+            <div id="requisition_title" class="industry_color_2">
+                <span translate="CART_TITLE"></span>
+            </div>
+            <div class="common_industry">
+                <button id="requisition_submit_button" class="btn orange_button" ng-click="requisition.checkItems()"
+                        ng-disabled="disableSubmitBtn || cartItemLoadError">
+                    <span translate="ORDER_SUBMIT_BUTTON"></span>
+                </button>
+            </div>
+            <div id="assets_to_deploy" class="industry_color_2">
+                <p><span translate="ASSETS_TO_DEPLOY"></span><span>: </span><span id="assets_amount" ng-bind="totalAmount"></span></p>
+            </div>
+        </div>
+        <div id="shopping_cart" ng-style="shoppingCart">
+            <div ng-repeat="cartItem in cartItems track by $index" class="requisition_item">
+                <div class="requisition_item_title">
+                    <a href="/items/{{cartItem.itemId}}" title="{{cartItem.name}}" class="industry_color_1 industry_font">
+                        <span ng-bind="cartItem.name"></span>
+                    </a>
+                </div>
+                <div class="item-content-container">
                     <div id="requisition_img_dark_overlay">
-						<img class="requisition_detail_dark_overlay_img" ng-src="/{{industry}}/images/requisition_dark_overlay.svg">
+                        <img class="requisition_detail_dark_overlay_img" ng-src="/{{industry}}/images/requisition_dark_overlay.svg">
                     </div>
-					<div class="requisition_item_img">
-						<img ng-src="{{cartItem.image}}">
-					</div>
-					<div class="requisition_item_description industry_color_2" ng-bind="cartItem.description"></div>
-					<div class="requisition-item-number-operations">
-						<div class="requisition_item_number">
-							<input class="requisition_item_number_input industry_font" type="number"
-								   ng-model="cartItem.quantity" onkeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
-								   ng-blur="requisition.inputItemNum($index,cartItem)">
-						</div>
-						<div class="requisition_buttons">
-							<div class="requisition_minus_row{{requisition.requisitionRowExp($index)}}">
-								<button class="requisition_minus_button"
-										  ng-click="requisition.minusRequisition(requisitionNums,$index,cartItem)">-</button>
-							</div>
-							<div class="requisition_plus_row{{requisition.requisitionRowExp($index)}}">
-								<button class="requisition_plus_button"
-										  ng-click="requisition.plusRequisition(requisitionNums,$index,cartItem)">+</button>
-							</div>
-						</div>
-					</div>
-					<div class="requisition_item_extra">
-						<div class="requisition_error" ng-show="requisition.isInventoryEnough(cartItem.realInStock,requisitionNums[$index],$index)">
-							<span ng-show="cartItem.realInStock !== null">{{cartItem.realInStock}} {{'AVAILABLE' | translate}}</span>
-							<span class="noItemInfo" ng-show="cartItem.realInStock === null" translate="ITEM_NOT_FOUND"></span>
-						</div>
-						<div class="requisition_remove" ng-click="requisition.removeCartItem(cartItem.itemId)">
-							<a href="javaScript:void(0)"><span translate="REMOVE" class="industry_color_1"></span></a>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+                    <div class="requisition_item_img">
+                        <img ng-src="{{cartItem.image}}">
+                    </div>
+                    <div class="requisition_item_description industry_color_2" ng-bind="cartItem.description"></div>
+                    <div class="requisition-item-number-operations">
+                        <div class="requisition_item_number">
+                            <input class="requisition_item_number_input industry_font" type="number"
+                                   ng-model="cartItem.quantity" onkeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
+                                   ng-blur="requisition.inputItemNum($index,cartItem)">
+                        </div>
+                        <div class="requisition_buttons">
+                            <div class="requisition_minus_row{{requisition.requisitionRowExp($index)}}">
+                                <button class="requisition_minus_button"
+                                        ng-click="requisition.minusRequisition(requisitionNums,$index,cartItem)">-</button>
+                            </div>
+                            <div class="requisition_plus_row{{requisition.requisitionRowExp($index)}}">
+                                <button class="requisition_plus_button"
+                                        ng-click="requisition.plusRequisition(requisitionNums,$index,cartItem)">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="requisition_item_extra">
+                        <div class="requisition_error" ng-show="requisition.isInventoryEnough(cartItem.realInStock,requisitionNums[$index],$index)">
+                            <span ng-show="cartItem.realInStock !== null">{{cartItem.realInStock}} {{'AVAILABLE' | translate}}</span>
+                            <span class="noItemInfo" ng-show="cartItem.realInStock === null" translate="ITEM_NOT_FOUND"></span>
+                        </div>
+                        <div class="requisition_remove" ng-click="requisition.removeCartItem(cartItem.itemId)">
+                            <a href="javaScript:void(0)"><span translate="REMOVE" class="industry_color_1"></span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
