@@ -64,11 +64,7 @@ input:checked::after {
 }
 
 #availability_region_box {
-    align-items: flex-start;
     background-image: url(/aerospace/images/region_box.svg);
-    width: 264px;
-    height: 318px;
-    padding-left: 15px;
     padding-top: 15px;
 }
 

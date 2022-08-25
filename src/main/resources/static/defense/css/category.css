@@ -41,12 +41,6 @@
     background-image: url(/defense/images/requisition_dark_overlay.svg);
 }
 
-#availability_region_box {
-    flex-wrap: wrap;
-    align-content: center;
-    align-items: normal;
-}
-
 #requisition_detail_title {
     width: 234px;
 }
