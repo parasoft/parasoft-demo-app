@@ -12,7 +12,7 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
 
     OrderEntity findOrderByOrderNumber(String number);
 
-	List<OrderEntity> findAllByUserId(Long userId);
+	List<OrderEntity> findAllByRequestedBy(String requestedBy);
 
-    Page<OrderEntity> findAllByUserId(Long userId, Pageable pageable);
+    Page<OrderEntity> findAllByRequestedBy(String requestedBy, Pageable pageable);
 }

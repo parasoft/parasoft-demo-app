@@ -5,7 +5,6 @@ import com.parasoft.demoapp.dto.OrderMQMessageDTO;
 import com.parasoft.demoapp.dto.OrderStatusDTO;
 import com.parasoft.demoapp.exception.*;
 import com.parasoft.demoapp.messages.OrderMessages;
-import com.parasoft.demoapp.model.global.RoleType;
 import com.parasoft.demoapp.model.industry.OrderEntity;
 import com.parasoft.demoapp.service.DemoBugService;
 import com.parasoft.demoapp.service.OrderMQService;
@@ -63,7 +62,8 @@ public class OrderController {
 				ResponseResult.STATUS_OK, ResponseResult.MESSAGE_OK);
 
 		Long currentUserId = AuthenticationUtil.getUserIdInAuthentication(auth);
-		OrderEntity order = orderService.addNewOrderSynchronized(currentUserId, orderDto.getRegion(), orderDto.getLocation(),
+		String currentUserName = AuthenticationUtil.getUsernameInAuthentication(auth);
+		OrderEntity order = orderService.addNewOrderSynchronized(currentUserId, currentUserName, orderDto.getRegion(), orderDto.getLocation(),
 				orderDto.getReceiverId(), orderDto.getEventId(), orderDto.getEventNumber());
 		response.setData(order);
 
@@ -120,7 +120,8 @@ public class OrderController {
 
 		response.setData(orderService.updateOrderByOrderNumberSynchronized(
 				orderNumber, AuthenticationUtil.getUserRoleNameInAuthentication(auth), newStatus.getStatus(),
-				newStatus.isReviewedByPRCH(), newStatus.isReviewedByAPV(), AuthenticationUtil.getUsernameInAuthentication(auth), newStatus.getComments(), true));
+				newStatus.isReviewedByPRCH(), newStatus.isReviewedByAPV(), AuthenticationUtil.getUsernameInAuthentication(auth),
+				newStatus.getComments(), true));
 
 		return response;
 	}
@@ -141,7 +142,7 @@ public class OrderController {
 		ResponseResult<List<OrderEntity>> response = ResponseResult.getInstance(ResponseResult.STATUS_OK,
 				ResponseResult.MESSAGE_OK);
 
-		response.setData(orderService.getAllOrders(AuthenticationUtil.getUserIdInAuthentication(auth),
+		response.setData(orderService.getAllOrders(AuthenticationUtil.getUsernameInAuthentication(auth),
 				AuthenticationUtil.getUserRoleNameInAuthentication(auth)));
 
 		return response;
@@ -169,7 +170,7 @@ public class OrderController {
 
 		pageable = demoBugService.introduceBugWithReverseOrdersIfNeeded(pageable);
 
-		Page<OrderEntity> page = orderService.getAllOrders(AuthenticationUtil.getUserIdInAuthentication(auth),
+		Page<OrderEntity> page = orderService.getAllOrders(AuthenticationUtil.getUsernameInAuthentication(auth),
 				AuthenticationUtil.getUserRoleNameInAuthentication(auth), pageable);
 		PageInfo<OrderEntity> pageInfo =  new PageInfo<>(page);
 

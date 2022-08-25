@@ -2,6 +2,7 @@ package com.parasoft.demoapp.service;
 
 import static org.junit.Assert.assertEquals;
 
+import com.parasoft.demoapp.model.global.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
@@ -40,7 +41,7 @@ public class OrderServiceSpringTest2 {
 
     /**
 	 * <p>
-	 * Test for addNewOrder(Long, RegionType, String, String, String, String) with transaction.<br/>
+	 * Test for addNewOrder(Long, String, RegionType, String, String, String, String) with transaction.<br/>
 	 * Exception happens when clearing shopping cart, validate the database whether it is rollback or not.<br/>
 	 * This test doesn't run automatically, we need insert a RuntimeException(or an exception that is tracked by a transaction)
 	 * into business code(before return statement).
@@ -56,14 +57,16 @@ public class OrderServiceSpringTest2 {
      *  }
 	 * </pre>
 	 * Uncomment&nbsp;@Test and&nbsp;@RunWith(SpringJUnit4ClassRunner.class), then run this test.
-	 * @see OrderService#addNewOrder(Long, RegionType, String, String, String, String)
+	 * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String)
 	 */
     //@Test
     public void testAddNewOrder_rollbackWhenExceptionHappens() throws Throwable {
         CategoryEntity category = null;
         ItemEntity item = null;
         CartItemEntity cartItem = null;
-        Long userId = userService.getUserByUsername(GlobalUsersCreator.USERNAME_PURCHASER).getId();
+        UserEntity user = userService.getUserByUsername(GlobalUsersCreator.USERNAME_PURCHASER);
+        Long userId = user.getId();
+        String requestedBy = user.getUsername();
         try {
         	// Given
             category = categoryService.addNewCategory("name", "description", "imagePath");
@@ -76,7 +79,7 @@ public class OrderServiceSpringTest2 {
             String receiverId = "345-6789-21";
             String eventId = "45833-ORG-7834";
             String eventNumber = "55-444-33-22";
-            underTest.addNewOrder(userId, region, location, receiverId, eventId, eventNumber);
+            underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
         }catch(Exception e) {
         	e.printStackTrace();
         } finally {

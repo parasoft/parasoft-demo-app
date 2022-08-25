@@ -74,7 +74,7 @@ body {
 }
 
 .table {
-    width: 450px;
+    width: 580px;
     height: 330px;
     text-align: center;
     font-family: 'CourierNewPSMT', 'Courier New', sans-serif;
@@ -87,6 +87,18 @@ body {
 
 .table-bordered>thead>tr>th {
     padding: 5px;
+}
+
+.time, .requested_by {
+    width: 130px;
+}
+
+.requested_by_content {
+    width: 130px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
 }
 
 .new-status-label {
