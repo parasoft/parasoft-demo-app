@@ -47,9 +47,9 @@ public class OrderServiceSpringTest5 {
 
 	/**
 	 * <p>
-	 * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, boolean) with transaction.<br/>
+	 * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean) with transaction.<br/>
 	 * This test doesn't run automatically, we need insert a RuntimeException into business code(before return statement).
-	 * 
+	 *
 	 * like:
 	 * </p>
 	 *    <pre>&nbsp;&nbsp;@Transactional(value = "industryTransactionManager")
@@ -61,7 +61,7 @@ public class OrderServiceSpringTest5 {
      *  }
 	 * </pre>
 	 *Uncomment&nbsp;@Test and&nbsp;@RunWith(SpringJUnit4ClassRunner.class), then run this test.
-	 * @see com.parasoft.demoapp.service.OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, boolean)
+	 * @see com.parasoft.demoapp.service.OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
 	 */
 	//@Test
 	public void testUpdateOrderByOrderNumber_rollbackWhenExceptionHappens() throws Throwable {
@@ -93,11 +93,12 @@ public class OrderServiceSpringTest5 {
 			OrderStatus newStatus = OrderStatus.DECLINED;
 			Boolean reviewedByPRCH = true;
 			Boolean reviewedByAPV = true;
+			String respondedBy = null;
 			String comments = "reject";
 			boolean publicToMQ = true;
 
 			underTest.updateOrderByOrderNumber(
-					orderNumber, userRoleName, newStatus, reviewedByPRCH, reviewedByAPV, comments, publicToMQ);
+					orderNumber, userRoleName, newStatus, reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
 
 		}catch(Exception e){
 			e.printStackTrace();

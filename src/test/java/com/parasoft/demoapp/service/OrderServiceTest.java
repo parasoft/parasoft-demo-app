@@ -603,9 +603,9 @@ public class OrderServiceTest {
 	}
 
 	/**
-	 * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, boolean) with NullStatusException
+	 * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean) with NullStatusException
 	 *
-	 * @see OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, boolean)
+	 * @see OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
 	 */
 	@Test
 	public void testUpdateStatusOfOrderByOrderNumber_exception_nullStatusException() throws Throwable {
@@ -618,11 +618,12 @@ public class OrderServiceTest {
 		String roleTypeName = "";
 		Boolean reviewedByPRCH = false;
 		Boolean reviewedByAPV = true;
+		String respondedBy = null;
 		String comments = "reject";
 		boolean publicToMQ = true;
 		try {
 			underTest.updateOrderByOrderNumber(
-					orderNumber, roleTypeName, newStatus, reviewedByPRCH, reviewedByAPV, comments, publicToMQ);
+					orderNumber, roleTypeName, newStatus, reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
 		} catch (Exception e) {
 			message = e.getMessage();
 		}
@@ -632,9 +633,9 @@ public class OrderServiceTest {
 	}
 
 	/**
-	 * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, boolean) with NullOrderNumberException
+	 * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean) with NullOrderNumberException
 	 *
-	 * @see OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, boolean)
+	 * @see OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
 	 */
 	@Test
 	public void testUpdateStatusOfOrderByOrderNumber_exception_nullOrderNumberException() throws Throwable {
@@ -647,11 +648,12 @@ public class OrderServiceTest {
 		String roleTypeName = "";
 		Boolean reviewedByPRCH = false;
 		Boolean reviewedByAPV = true;
+		String respondedBy = null;
 		String comments = "reject";
 		boolean publicToMQ = true;
 		try {
 			underTest.updateOrderByOrderNumber(
-					orderNumber, roleTypeName, newStatus, reviewedByPRCH, reviewedByAPV, comments, publicToMQ);
+					orderNumber, roleTypeName, newStatus, reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
 		} catch (Exception e) {
 			message = e.getMessage();
 		}
@@ -661,9 +663,9 @@ public class OrderServiceTest {
 	}
 
 	/**
-	 * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, boolean) with NullOrderNumberException
+	 * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean) with NullOrderNumberException
 	 *
-	 * @see OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, boolean)
+	 * @see OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
 	 */
 	@Test
 	public void testUpdateStatusOfOrderByOrderNumber_exception_blankOrderNumberException() throws Throwable {
@@ -673,6 +675,7 @@ public class OrderServiceTest {
 		String roleTypeName = "";
 		Boolean reviewedByPRCH = false;
 		Boolean reviewedByAPV = true;
+		String respondedBy = null;
 		String comments = "reject";
 		boolean publicToMQ = true;
 
@@ -680,7 +683,7 @@ public class OrderServiceTest {
 		String message = "";
 		try {
 			underTest.updateOrderByOrderNumber(
-					orderNumber, roleTypeName, newStatus, reviewedByPRCH, reviewedByAPV, comments, publicToMQ);
+					orderNumber, roleTypeName, newStatus, reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
 		} catch (Exception e) {
 			message = e.getMessage();
 		}
@@ -765,7 +768,7 @@ public class OrderServiceTest {
 	 * Test for getAllOrders(Long userId, String userRoleName)
 	 *
 	 * @see OrderService#getAllOrders(Long userId, String userRoleName)
-	 * @throws Throwable 
+	 * @throws Throwable
 	 */
 	@Test
 	public void testGetAllOrders_normal_nullUserRoleName() throws Throwable {
@@ -800,9 +803,9 @@ public class OrderServiceTest {
 		content.add(new OrderEntity());
 		int totalElement = 2;
 		Page<OrderEntity> page = new PageImpl<>(content, pageable, totalElement);
-		
+
 		doReturn(page).when(orderRepository).findAll(nullable(Pageable.class));
-		
+
 		//doReturn(page).when(orderRepository).findAllByUserId(nullable(Long.class),
 		//		nullable(Pageable.class));
 
@@ -830,7 +833,7 @@ public class OrderServiceTest {
 		content.add(new OrderEntity());
 		int totalElement = 2;
 		Page<OrderEntity> page = new PageImpl<>(content, pageable, totalElement);
-		
+
 		doReturn(page).when(orderRepository).findAllByUserId(nullable(Long.class),
 				nullable(Pageable.class));
 
@@ -844,7 +847,7 @@ public class OrderServiceTest {
 		Assertions.assertEquals(content, result.getContent());
 		Assertions.assertEquals(totalElement, result.getTotalElements());
 	}
-	
+
 	/**
 	 * Test for getAllOrders(Long, String, Pageable)
 	 *
@@ -868,7 +871,7 @@ public class OrderServiceTest {
 		// Then
 		Assertions.assertEquals(OrderMessages.USER_ID_CANNOT_BE_NULL, message);
 	}
-	
+
 	/**
 	 * Test for getAllOrders(Long, String, Pageable)
 	 *
@@ -892,9 +895,9 @@ public class OrderServiceTest {
 	}
 
 	/**
-	 * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, boolean)
+	 * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
 	 *
-	 * @see com.parasoft.demoapp.service.OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, boolean)
+	 * @see com.parasoft.demoapp.service.OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
 	 */
 	@Test
 	public void testUpdateOrderByOrderNumber_purchaser_normal() throws Throwable {
@@ -904,29 +907,30 @@ public class OrderServiceTest {
 		order.setReviewedByPRCH(true);
 		order.setReviewedByAPV(false);
 		String orderNumber = "11-234-567";
-		OrderStatus newStatus = OrderStatus.SUBMITTED; 
-		String userRoleName = RoleType.ROLE_PURCHASER.toString(); 
+		OrderStatus newStatus = OrderStatus.SUBMITTED;
+		String userRoleName = RoleType.ROLE_PURCHASER.toString();
 		Boolean reviewedByPRCH = true;
 		Boolean reviewedByAPV = false;
+		String respondedBy = null;
 		String comments = "";
 		boolean publicToMQ = true;
 		doReturn(order).when(orderRepository).findOrderByOrderNumber(orderNumber);
 		doReturn(order).when(orderRepository).save(any());
 
 		// When
-		OrderEntity result = underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus, 
-				reviewedByPRCH, reviewedByAPV, comments, publicToMQ);
+		OrderEntity result = underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus,
+				reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
 
 		// Then
 		assertNotNull(result);
 		assertEquals(true, result.getReviewedByPRCH());
 		assertEquals(false, result.getReviewedByAPV());
 	}
-	
+
 	/**
-	 * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, boolean) with NoPermissionException
+	 * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean) with NoPermissionException
 	 *
-	 * @see com.parasoft.demoapp.service.OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, boolean)
+	 * @see com.parasoft.demoapp.service.OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
 	 */
 	@Test
 	public void testUpdateOrderByOrderNumber_purchaser_exception_NoPermissionException() throws Throwable {
@@ -937,9 +941,10 @@ public class OrderServiceTest {
 		order.setReviewedByAPV(false);
 		String orderNumber = "11-234-567";
 		OrderStatus newStatus = OrderStatus.DECLINED;
-		String userRoleName = RoleType.ROLE_PURCHASER.toString(); 
+		String userRoleName = RoleType.ROLE_PURCHASER.toString();
 		Boolean reviewedByPRCH = true;
 		Boolean reviewedByAPV = false;
+		String respondedBy = null;
 		String comments = "reject";
 		boolean publicToMQ = true;
 		doReturn(order).when(orderRepository).findOrderByOrderNumber(orderNumber);
@@ -948,8 +953,8 @@ public class OrderServiceTest {
 		// When
 		String message = "";
 		try {
-			underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus, 
-					reviewedByPRCH, reviewedByAPV, comments, publicToMQ);
+			underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus,
+					reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
 		} catch (Exception e){
 			message = e.getMessage();
 		}
@@ -957,11 +962,11 @@ public class OrderServiceTest {
 		// Then
 		assertEquals(MessageFormat.format(OrderMessages.NO_PERMISSION_TO_CHANGE_TO_ORDER_STATUS, newStatus), message);
 	}
-	
+
 	/**
-	 * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, boolean) with IncorrectOperationException
+	 * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean) with IncorrectOperationException
 	 *
-	 * @see com.parasoft.demoapp.service.OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, boolean)
+	 * @see com.parasoft.demoapp.service.OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
 	 */
 	@Test
 	public void testUpdateOrderByOrderNumber_purchaser_exception_IncorrectOperationExcetion() throws Throwable {
@@ -971,10 +976,11 @@ public class OrderServiceTest {
 		order.setReviewedByPRCH(true);
 		order.setReviewedByAPV(false);
 		String orderNumber = "11-234-567";
-		OrderStatus newStatus = OrderStatus.SUBMITTED; 
-		String userRoleName = RoleType.ROLE_PURCHASER.toString(); 
+		OrderStatus newStatus = OrderStatus.SUBMITTED;
+		String userRoleName = RoleType.ROLE_PURCHASER.toString();
 		Boolean reviewedByPRCH = false;
 		Boolean reviewedByAPV = false;
+		String respondedBy = null;
 		String comments = "";
 		boolean publicToMQ = true;
 		doReturn(order).when(orderRepository).findOrderByOrderNumber(orderNumber);
@@ -983,8 +989,8 @@ public class OrderServiceTest {
 		// When
 		String message = "";
 		try {
-			underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus, 
-					reviewedByPRCH, reviewedByAPV, comments, publicToMQ);
+			underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus,
+					reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
 		} catch (Exception e){
 			message = e.getMessage();
 		}
@@ -992,11 +998,11 @@ public class OrderServiceTest {
 		// Then
 		assertEquals(OrderMessages.CANNOT_SET_TRUE_TO_FALSE, message);
 	}
-	
+
 	/**
-	 * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, boolean) with ParameterException
+	 * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean) with ParameterException
 	 *
-	 * @see com.parasoft.demoapp.service.OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, boolean)
+	 * @see com.parasoft.demoapp.service.OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
 	 */
 	@Test
 	public void testUpdateOrderByOrderNumber_exception_ParameterException_reviewedByPRCH() throws Throwable {
@@ -1006,10 +1012,11 @@ public class OrderServiceTest {
 		order.setReviewedByPRCH(true);
 		order.setReviewedByAPV(false);
 		String orderNumber = "11-234-567";
-		OrderStatus newStatus = OrderStatus.SUBMITTED; 
-		String userRoleName = RoleType.ROLE_PURCHASER.toString(); 
+		OrderStatus newStatus = OrderStatus.SUBMITTED;
+		String userRoleName = RoleType.ROLE_PURCHASER.toString();
 		Boolean reviewedByPRCH = null; // test point
 		Boolean reviewedByAPV = false;
+		String respondedBy = null;
 		String comments = "";
 		boolean publicToMQ = true;
 		doReturn(order).when(orderRepository).findOrderByOrderNumber(orderNumber);
@@ -1018,8 +1025,8 @@ public class OrderServiceTest {
 		// When
 		String message = "";
 		try {
-			underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus, 
-					reviewedByPRCH, reviewedByAPV, comments, publicToMQ);
+			underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus,
+					reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
 		} catch (Exception e){
 			message = e.getMessage();
 		}
@@ -1027,11 +1034,11 @@ public class OrderServiceTest {
 		// Then
 		assertEquals(OrderMessages.ORDER_REVIEW_STATUS_OF_PURCHASER_SHOULD_NOT_BE_NULL, message);
 	}
-	
+
 	/**
-	 * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, boolean) with ParameterException
+	 * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean) with ParameterException
 	 *
-	 * @see com.parasoft.demoapp.service.OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, boolean)
+	 * @see com.parasoft.demoapp.service.OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
 	 */
 	@Test
 	public void testUpdateOrderByOrderNumber_exception_ParameterException_reviewedByAPV() throws Throwable {
@@ -1041,10 +1048,11 @@ public class OrderServiceTest {
 		order.setReviewedByPRCH(true);
 		order.setReviewedByAPV(false);
 		String orderNumber = "11-234-567";
-		OrderStatus newStatus = OrderStatus.SUBMITTED; 
-		String userRoleName = RoleType.ROLE_APPROVER.toString(); 
+		OrderStatus newStatus = OrderStatus.SUBMITTED;
+		String userRoleName = RoleType.ROLE_APPROVER.toString();
 		Boolean reviewedByPRCH = true;
 		Boolean reviewedByAPV = null; // test point
+		String respondedBy = null;
 		String comments = "";
 		boolean publicToMQ = true;
 		doReturn(order).when(orderRepository).findOrderByOrderNumber(orderNumber);
@@ -1053,8 +1061,8 @@ public class OrderServiceTest {
 		// When
 		String message = "";
 		try {
-			underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus, 
-					reviewedByPRCH, reviewedByAPV, comments, publicToMQ);
+			underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus,
+					reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
 		} catch (Exception e){
 			message = e.getMessage();
 		}
@@ -1062,7 +1070,7 @@ public class OrderServiceTest {
 		// Then
 		assertEquals(OrderMessages.ORDER_REVIEW_STATUS_OF_APPROVER_SHOULD_NOT_BE_NULL, message);
 	}
-	
+
 	/**
 	 * helper for preparing order with ignoring submmitted status
 	 * @return
