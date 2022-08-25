@@ -33,7 +33,7 @@ import java.util.List;
 @Controller
 @RequestMapping(value = {"/v1/orders", "/proxy/v1/orders"}, produces = MediaType.APPLICATION_JSON_VALUE)
 public class OrderController {
-	
+
 	@Autowired
 	private OrderService orderService;
 
@@ -62,7 +62,7 @@ public class OrderController {
 				ResponseResult.STATUS_OK, ResponseResult.MESSAGE_OK);
 
 		Long currentUserId = AuthenticationUtil.getUserIdInAuthentication(auth);
-		String currentUserName = AuthenticationUtil.getUserNameInAuthentication(auth);
+		String currentUserName = AuthenticationUtil.getUsernameInAuthentication(auth);
 		OrderEntity order = orderService.addNewOrderSynchronized(currentUserId, currentUserName, orderDto.getRegion(), orderDto.getLocation(),
 				orderDto.getReceiverId(), orderDto.getEventId(), orderDto.getEventNumber());
 		response.setData(order);
@@ -111,7 +111,7 @@ public class OrderController {
 			content = {@Content(schema = @Schema(hidden = true))})
 	@PutMapping("/{orderNumber}")
 	@ResponseBody
-	public ResponseResult<OrderEntity> updateStatusOfOrderByOrderNumber(Authentication auth, 
+	public ResponseResult<OrderEntity> updateStatusOfOrderByOrderNumber(Authentication auth,
 			@RequestBody OrderStatusDTO newStatus, @PathVariable String orderNumber)
 			throws ParameterException, OrderNotFoundException, NoPermissionException, IncorrectOperationException {
 
@@ -120,11 +120,12 @@ public class OrderController {
 
 		response.setData(orderService.updateOrderByOrderNumberSynchronized(
 				orderNumber, AuthenticationUtil.getUserRoleNameInAuthentication(auth), newStatus.getStatus(),
-				newStatus.isReviewedByPRCH(), newStatus.isReviewedByAPV(), newStatus.getComments(), true));
+				newStatus.isReviewedByPRCH(), newStatus.isReviewedByAPV(), AuthenticationUtil.getUsernameInAuthentication(auth),
+				newStatus.getComments(), true));
 
 		return response;
 	}
-	
+
 	//	@Operation(description = "Obtain all orders under current identity.")
 	//	@ApiResponses({
 	//		@ApiResponse(responseCode = "200",
@@ -137,11 +138,11 @@ public class OrderController {
 	//	@ResponseBody
 	@Deprecated
 	public ResponseResult<List<OrderEntity>> showAllOrders(Authentication auth) throws ParameterException {
-		
+
 		ResponseResult<List<OrderEntity>> response = ResponseResult.getInstance(ResponseResult.STATUS_OK,
 				ResponseResult.MESSAGE_OK);
-		
-		response.setData(orderService.getAllOrders(AuthenticationUtil.getUserNameInAuthentication(auth),
+
+		response.setData(orderService.getAllOrders(AuthenticationUtil.getUsernameInAuthentication(auth),
 				AuthenticationUtil.getUserRoleNameInAuthentication(auth)));
 
 		return response;
@@ -168,8 +169,8 @@ public class OrderController {
 				ResponseResult.MESSAGE_OK);
 
 		pageable = demoBugService.introduceBugWithReverseOrdersIfNeeded(pageable);
-		
-		Page<OrderEntity> page = orderService.getAllOrders(AuthenticationUtil.getUserNameInAuthentication(auth),
+
+		Page<OrderEntity> page = orderService.getAllOrders(AuthenticationUtil.getUsernameInAuthentication(auth),
 				AuthenticationUtil.getUserRoleNameInAuthentication(auth), pageable);
 		PageInfo<OrderEntity> pageInfo =  new PageInfo<>(page);
 

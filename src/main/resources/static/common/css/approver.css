@@ -89,6 +89,18 @@ body {
     padding: 5px;
 }
 
+.time, .requested_by {
+    width: 130px;
+}
+
+.requested_by_content {
+    width: 130px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+}
+
 .new-status-label {
     position: relative;
     font-weight: 700;
