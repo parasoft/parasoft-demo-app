@@ -69,14 +69,19 @@
 }
 
 .asset_summary_img_container {
-    width: 235px;
-    height: 133px;
-    padding: 2px;
+    display: flex;
+    flex-direction: column;
 }
 
 .asset_summary_img {
-    width: 231px;
-    height: 129px;
+    width: 235px;
+    height: 133px;
+}
+
+.assets_detail_dark_overlay_img {
+    width: 235px;
+    height: 133px;
+    margin-top: -133px;
 }
 
 .asset_summary_title a span {

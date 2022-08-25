@@ -72,16 +72,6 @@ body {
     background-image: url(/aerospace/images/category_box.svg);
 }
 
-.asset_summary_img_container {
-    height: 133px;
-    padding: 1px;
-}
-
-.asset_summary_img {
-    width: 233px;
-    height: 131px;
-}
-
 .asset_summary_description {
     font-size: 12px;
     font-weight: 700;
