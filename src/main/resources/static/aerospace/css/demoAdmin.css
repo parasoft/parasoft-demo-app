@@ -1,9 +1,34 @@
 #support_docs_box {
     background-image: url(/aerospace/images/region_box.svg);
+    height: 318px;
+}
+
+.input-wrapper button {
+    background-color: rgba(122, 141, 149, 1);
+    border-color: rgba(182, 221, 238, 1);
+    border-radius: 20px;
+    box-shadow: 1px 1px 1px rgb(0 0 0);
+    color: #C2EAFB;
 }
 
 #return_to_home_link:hover, .support_link:hover,  nav-tab-header:hover {
 	color: #E7FFA1;
+}
+
+.input-wrapper .form-control {
+    border: 1px solid #333;
+    border-radius: 20px;
+}
+
+.form-control {
+    border-radius: 20px;
+}
+
+.operation_button {
+	background-color: rgba(122, 141, 149, 1);
+    border-color: rgba(182, 221, 238, 1);
+    border-radius: 20px;
+    color: #C2EAFB;
 }
 
 .nav-tabs {
@@ -14,31 +39,74 @@
     border: 1px solid #90acb9;
 }
 
+.nav-tabs>li>a {
+    color: #C2EAFB;
+}
+
+.nav-tabs>li>a:hover, .nav-tabs>li>a:focus {
+	background-color: rgba(3, 57, 81, 1);
+    border-color: #C2EAFB;
+}
+
 .nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {
     background-color: rgba(3, 57, 81, 1);
     color: #C2EAFB;
 }
 
-.input-wrapper .form-control {
-    border: 1px solid #333;
-    border-radius: 20px;
+button.close, button.close:hover {
+    color: #E7FFA1;
+    opacity: 1;
 }
 
-.input-wrapper button, .operation_button {
+.btn-default:active, .btn-default:focus, .btn-default:active:focus,
+	.btn-default:active:hover, .btn-default:hover {
 	background-color: rgba(122, 141, 149, 1);
-    border-color: rgba(182, 221, 238, 1);
-    border-radius: 20px;
-    box-shadow: 1px 1px 1px rgb(0 0 0);
-    color: #C2EAFB;
+	color: #C2EAFB;
 }
 
-.save_button {
-    background-color: rgba(204, 136, 55, 1);
-    border-radius: 20px;
-    box-shadow: 1px 1px 1px rgb(0 0 0);
-	color: #333333;
+.btn-default[disabled]:hover,.btn-default[disabled]:focus {
+    background-color: rgba(122, 141, 149, 1);
 }
 
 .table .table_title {
     background: #c2eafb45;
+}
+
+.modal-title {
+    text-align: center;
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.modal-content {
+    background: #333;
+    border: 1px solid;
+}
+
+.saving-modal-content {
+    background: #333;
+    border: 1px solid;
+}
+
+.button-primary {
+    background-color: rgba(204, 136, 55, 1);
+    border-radius: 20px;
+	color: #333333;
+}
+
+.button-secondary {
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 14px;
+    color: #333333;
+    width: 94px;
+}
+
+#img_modal {
+    background: black;
+    border: 1px solid #ddd;
+}
+
+#close_btn {
+    color: #C2EAFB;
 }

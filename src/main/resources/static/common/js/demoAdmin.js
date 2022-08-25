@@ -488,7 +488,8 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 
     	demo.index = index;
     	demo.modalStyle = {
-        	"top": index * 38 + 417 + "px"
+        	"top": index * 42 + 327 + "px",
+        	"left": "440px"
         };
     }
 

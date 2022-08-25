@@ -1,16 +1,21 @@
+/* common */
 #page_title {
     font-size: 36px;
     font-weight: 800;
+    margin-top: 13px;
 }
 
 .page-content-section {
-	padding: 30px;
+    padding: 30px;
 }
 
 .page_main_content {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+}
+
+.page_main_left_content {
+    width: 855px;
 }
 
 .page_main_right_content {
@@ -23,26 +28,33 @@
     border-width: 1px;
     border-style: solid;
     margin-right: 100px;
+    box-shadow: 1px 1px 1px rgb(0 0 0);
+}
+
+.support_link_wrapper {
+    margin-top: 8px;
+}
+
+.support_link {
+    font-weight: 800;
+    font-size: 16px;
 }
 
 #support_docs_box {
     width: 264px;
-    height: 318px;
-    padding: 10px;
+    height: 285px;
+    padding: 10px 15px;
     background-repeat: no-repeat;
 }
 
 #support_doc_box_title {
-	margin-top: 0px;
+    margin-top: 0px;
     margin-bottom: 10px;
-}
-
-.support_link_wrapper {
-	margin-top: 5px;
+    font-weight: 700;
 }
 
 .nav-tabs {
-	margin: 30px 0 40px 0;
+    margin: 30px 0 40px 0;
     width: 802px;
     height: 36px;
 }
@@ -57,18 +69,18 @@
 }
 
 .nav-tabs>li>a {
-	width: 177px;
+    width: 177px;
     height: 34px;
     padding-top: 7px;
     border-radius: 0;
 }
 
 .tab_content {
-	padding: 0 30px;
+    padding: 0 30px;
 }
 
 .section_container {
-	margin-top: 40px;
+    margin-top: 30px;
 }
 
 .section_title {
@@ -77,14 +89,17 @@
 }
 
 .section_body {
-	padding-left: 20px;
+    padding-left: 20px;
+}
+
+.form-group {
+    margin-bottom: 5px;
 }
 
 .input-wrapper .form-control {
-	display: inline-block;
-	width: 500px;
+    display: inline-block;
+    width: 500px;
     height: 37px;
-    margin-right: 20px;
 }
 
 .input-wrapper button {
@@ -95,22 +110,24 @@
     border-style: solid;
 }
 
-.save_button {
-    height: 40px;
-    margin-top: 20px;
-}
-
-
-.labels_in_header {
-	margin-top: 10px;
+.form-control {
+	margin-bottom: 20px;
+	height: 37px;
+	border: 1px solid #333;
+	border-radius: 0px;
 }
 
 .table {
-	margin-top: 30px;
+    margin-top: 30px;
+    text-align: center;
+}
+
+th {
+    text-align: center;
 }
 
 .table td>img {
-	width: 41px;
+    width: 41px;
     height: 25px;
     cursor: pointer;
 }
@@ -122,7 +139,7 @@
 }
 
 .table_category_description {
-	width: 500px;
+    width: 500px;
 }
 
 .table_item_description {
@@ -130,28 +147,282 @@
 }
 
 .table_category_image {
-	width: 59px;
+    width: 59px;
 }
 
 .table_category_name, .table_item_name, .table_item_category {
-	width: 118px;
+    width: 118px;
 }
 
 .table_item_region {
-	width: 98px;
+    width: 90px;
 }
 
 .table_item_img {
-	width: 50px;
+    width: 50px;
 }
 
 .table_item_quantity {
-	width: 54px;
+    width: 68px;
+}
+
+.table_edit {
+    width: 75px;
 }
 
 .table .retract_format {
-	display: inline-block;
+    display: inline-block;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+label {
+    font-weight: normal;
+    display: inline-block;
+}
+
+.input-label {
+    margin-left: 5px;
+}
+
+.error_message {
+    color: #9c4141;
+}
+
+.form_label {
+    width: 35%
+}
+
+.invalid_message {
+    color: #F00;
+    text-align: right;
+    display: inline-block;
+}
+
+.labels_reset_btn {
+    height: 37px;
+    width: 60px;
+    font-size: 10px;
+    margin-left: 15px;
+    margin-bottom: 3px;
+}
+
+.modal-content {
+    width: 500px;
+    margin-left: 50px;
+    top: 65px;
+}
+
+.modal-content.wide {
+    width: 684px;
+}
+
+.modal-header {
+	border-bottom: none;
+}
+
+.modal-footer {
+	text-align: center;
+	border-top: none;
+}
+
+.modal-dialog {
+    position: relative;
+    top: 10%;
+}
+
+.warning_text {
+    color: #9c4141;
+}
+
+.modal_confirm_btn {
+    margin-right: 100px;
+    width: 97px;
+}
+
+.modal_item_title {
+    font-weight: 700;
+}
+
+.modal_item_image_title {
+    position: relative;
+    top: -30.4px;
+}
+
+.modal_save_btn {
+	margin-right: 100px;
+	width: 89px;
+}
+
+.modal_cancel_btn {
+    width: 90px;
+}
+
+.modal_item {
+    width: 300px;
+    display: inline-block;
+}
+
+.modal_select {
+    width: 300px;
+    padding: 8px;
+}
+
+.saving-modal-content {
+    width: 360px;
+    height: 160px;
+    top: 65px;
+}
+
+.saving-modal-header {
+    padding: 23px;
+}
+
+#saving_modal {
+    top: 160px;
+    /*left: 100px;*/
+}
+
+#img_in_modal {
+    width: 283px;
+    height: 240px;
+    position: relative;
+    top: 18px;
+}
+
+#img_modal {
+    position: absolute;
+    left: 445px;
+    width: 285px;
+    height: 260px;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.349019607843137);
+    background: rgba(47, 47, 22, 1);
+    border: 1px solid #333;
+}
+
+#close_btn {
+    position: absolute;
+    left: 273px;
+    z-index: 1;
+    font-weight: 700;
+    cursor: pointer;
+    top: -2px;
+}
+
+.button-primary {
+    box-sizing: border-box;
+    border-width: 1px;
+    border-style: solid;
+    box-shadow: 1px 1px 1px rgb(0 0 0);
+}
+
+.button-secondary {
+    box-sizing: border-box;
+    border-width: 1px;
+    border-style: solid;
+    box-shadow: 1px 1px 1px rgb(0 0 0);
+    color: #333;
+    background-color: #fff;
+    border-color: #ccc;
+}
+
+.button-secondary:hover {
+    background-color: #e6e6e6;
+    border-color: #adadad;
+}
+
+.save-changes-button {
+    width: 145px;
+    height: 40px;
+    margin-top: 15px;
+    font-size: 13px;
+}
+
+#database_reset_confirm_modal .modal-dialog, #remove_confirm_modal .modal-dialog {
+    top: 25%;
+}
+
+#remove_confirm_modal .modal-body {
+    text-align: center;
+}
+
+/* GENERAL tab */
+#test_connection_button {
+    margin-left: 15px;
+    margin-bottom: 3px;
+}
+/* CATEGORIES tab */
+.category_image_upload_box {
+    position: absolute;
+    top: 102px;
+    left: 349px;
+    width: 300px;
+}
+
+.category_upload_error_message {
+    position: relative;
+    left: 15px;
+    display: block;
+}
+
+.category_image_box {
+    top: 39px;
+}
+
+.category_image_in_modal {
+    display: inline-block;
+    margin-left: 45px;
+    width: 300px;
+}
+
+#image_form {
+    margin-left: 15px;
+    margin-right: 5px;
+    display: inline-block;
+}
+
+/* ITEMS tab */
+textarea {
+    width: 652px;
+    height: 105px;
+    resize: none;
+}
+
+.image_upload_box {
+    position: absolute;
+    bottom: 243px;
+}
+
+.img_box {
+    position: absolute;
+}
+
+.delete_image_icon {
+    cursor: pointer;
+    position: absolute;
+    left: 76px;
+    top: -10px;
+    color: #909090;
+    font-size: 20px;
+}
+
+.demo_admin_img_in_modal {
+    width: 85px;
+    height: 55px;
+}
+
+.item_name_in_modal, .item_quantity_in_modal {
+    margin-right: 45px;
+}
+
+.item_image_in_modal {
+    height: 82px;
+}
+
+.item_description_in_modal {
+    width: 652px;
+    height: 136px;
+}
+
+/* LABELS tab */
