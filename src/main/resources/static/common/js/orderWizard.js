@@ -8,10 +8,10 @@ initToastr();
 
 app.controller('orderWizardController', function($rootScope, $http, $filter) {
 	var orderWizard = this;
-	$rootScope.isShowRequisitionButton = false;
+	$rootScope.isShowRequisitionRequestButton = false;
 	connectAndSubscribeMQ(CURRENT_ROLE,$http,$rootScope,$filter);
 	getUnreviewedAmount($http,$rootScope,$filter);
-	
+
 	//Initialize wizard
 	orderWizard.isDelopmentLocation = true;
 	orderWizard.isAreaInfoNotReady = true;
@@ -33,7 +33,7 @@ app.controller('orderWizardController', function($rootScope, $http, $filter) {
 	        displayLoadError(result,$rootScope,$filter,$http,true,"locations");
 	    });
 	}, 500);
-	
+
 	//Whether the related link shows in the breadcrumb bar
 	orderWizard.isActive =function(flag,isClickable) {
 		return flag ? 'active' : (isClickable ? 'clickable non-active' : 'non-active');
@@ -44,7 +44,7 @@ app.controller('orderWizardController', function($rootScope, $http, $filter) {
 		$rootScope.footerHeight = {
 			"top" : "750px"
 		}
-		
+
 		if(currentProcess === 'Deployment Location' && isClickable){
 			orderWizard.isDelopmentLocation = true;
 			orderWizard.isAssignCampaign = false
@@ -56,7 +56,7 @@ app.controller('orderWizardController', function($rootScope, $http, $filter) {
 			orderWizard.isReview = false;
 		}
 	}
-	
+
 	//Change to next step when clicking button
 	orderWizard.nextProcess = function(currentProcess) {
 		if(currentProcess === 'Deployment Location'){
@@ -65,7 +65,7 @@ app.controller('orderWizardController', function($rootScope, $http, $filter) {
 			orderWizard.isReview = false;
 			orderWizard.isDevelopmentClickable = true;
 			orderWizard.isCampaignClickable = false;
-			
+
 		}else if(currentProcess === 'Assign Campaign'){
 			orderWizard.isDelopmentLocation = false;
 			orderWizard.isAssignCampaign = false;
@@ -75,7 +75,7 @@ app.controller('orderWizardController', function($rootScope, $http, $filter) {
 			$rootScope.footerHeight = {
 				"top" : "1050px"
 		    }
-			
+
 			//Get cart items from database to avoid the changes of items in other pages
 			$http({
 		        method: 'GET',
@@ -121,7 +121,7 @@ app.controller('orderWizardController', function($rootScope, $http, $filter) {
             orderWizard.isAreaInfoNotReady = false;
         }
 	}
-	
+
 	//Show submitted status
 	orderWizard.isSubmitted = false;
 	orderWizard.submitForApproval = function(region, location, receiverId, eventId, eventNumber){
@@ -132,7 +132,7 @@ app.controller('orderWizardController', function($rootScope, $http, $filter) {
 	        headers: { 'Content-Type': 'application/json' }
 	    }).then(function(result) {
 	    	orderWizard.isSubmitted = true;
-	    	
+
 	    	var response = result.data.data;
 	        orderWizard.orderNumber = response.orderNumber;
 	    }, function error(response) {
@@ -149,7 +149,7 @@ app.controller('orderWizardController', function($rootScope, $http, $filter) {
 	    	orderWizard.isSubmitted = false;
 	    });
 	}
-	
+
 	//Clear landmark
 	orderWizard.changeArea = function(area,positionId){
 		orderWizard.positionInfo = false;
@@ -185,13 +185,13 @@ app.controller('orderWizardController', function($rootScope, $http, $filter) {
 	//Whether the area info is not be null when change the value of the id (Platoon ID)
 	orderWizard.checkAreaInfo = function(area,positionId,landmark){
 		//Control for process button
-		if(area === null || area === '' || positionId === undefined || positionId === '' 
+		if(area === null || area === '' || positionId === undefined || positionId === ''
 			|| landmark === false){
 			orderWizard.isAreaInfoNotReady = true;
 		}else {
 			orderWizard.isAreaInfoNotReady = false;
 		}
-		
+
 		//Control for get location button
 		if(area !== null && area !== '' && positionId !== undefined && positionId !== ''){
 			orderWizard.getLocationButton = false;
@@ -199,7 +199,7 @@ app.controller('orderWizardController', function($rootScope, $http, $filter) {
 			orderWizard.getLocationButton = true;
 		}
 	}
-	
+
 	//Whether the campaign info is not be null when change the value of campaign data
 	orderWizard.checkCampaignInfo = function(campaignID,campaignNumber){
 		if(campaignID === undefined || campaignID === '' || campaignNumber === undefined || campaignNumber === ''){
@@ -208,6 +208,6 @@ app.controller('orderWizardController', function($rootScope, $http, $filter) {
 			orderWizard.isAssignCampaignInfoNotReady = false;
 		}
 	}
-	
+
 	$("body").css("visibility","visible");
 });

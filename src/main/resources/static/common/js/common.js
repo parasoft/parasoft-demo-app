@@ -113,9 +113,10 @@ function initHeaderController(app){
         $rootScope.isApprover = angular.equals(CURRENT_ROLE, ROLE_APPROVER);
         $rootScope.username = CURRENT_USERNAME;
 
-        $rootScope.isShowAccount = true;
-        $rootScope.isShowOtherButtons = true;
+        $rootScope.isShowSettingButton = true;
         $rootScope.isShowRequisitionButton = true;
+        $rootScope.isShowRequisitionRequestButton = true;
+        $rootScope.isShowAccount = true;
     });
 }
 
