@@ -68,7 +68,7 @@ body {
     color: #C2EAFB;
 }
 
-.asset_summary_box {
+.asset_summary_box, .assets_category_box_img {
     background-image: url(/aerospace/images/category_box.svg);
 }
 

@@ -29,6 +29,7 @@ a, a:hover, a:focus {
 .page-content-section {
     padding-top: 50px;
     flex-grow: 1;
+    position: relative;
 }
 
 #footer {
@@ -82,7 +83,8 @@ a, a:hover, a:focus {
 }
 
 #username-button {
-    width: 72px;
+    width: unset;
+    min-width: 72px;
     height: 35px;
     font-size: 10px;
 }
@@ -136,4 +138,23 @@ a, a:hover, a:focus {
     font-size: 16px;
     color: red;
     z-index: 2;
+}
+
+.error_box {
+    height: 40px;
+    background-color: #f1cfcf;
+    border-radius: 4px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.form_error_message {
+    position: relative;
+    top: 10px;
+}
+
+/* to prevent hiding scrollbar when modal open */
+.modal-open {
+    overflow: auto;
+    padding-right: 0 !important;
 }
