@@ -1,9 +1,9 @@
 #support_docs_box {
-	background-color: rgba(215, 215, 208, 1);
+    background-color: rgba(215, 215, 208, 1);
 }
 
 #return_to_home_link:hover, .support_link:hover,  nav-tab-header:hover {
-	color: rgb(51,153,135);
+    color: rgb(51,153,135);
 }
 
 .input-wrapper button {
@@ -22,98 +22,98 @@
 }
 
 .nav-tabs {
-	border-bottom: 1px solid #c1c1b9;
+    border-bottom: 1px solid #c1c1b9;
 }
 
 .nav-tabs>li {
-	background-color: #f9f9e3;
-	border: 1px solid #c1c1b9;
+    background-color: #f9f9e3;
+    border: 1px solid #c1c1b9;
 }
 
 .nav-tabs>li>a {
-	color: #2F2F16;
+    color: #2F2F16;
 }
 
 .nav-tabs>li.active>a {
-	background-color: #f9f9f4;
-	height: 34px;
+    background-color: #f9f9f4;
+    height: 34px;
 }
 
 .nav-tabs>li>a:hover, .nav-tabs>li>a:focus {
-	background-color: #f9f9e3;
+    background-color: #f9f9e3;
 }
 
 .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {
-	background-color: #f9f9f4;
+    background-color: #f9f9f4;
 }
 
 button.close, button.close:hover {
-	color: #117563;
-	opacity: 1;
+    color: #117563;
+    opacity: 1;
 }
 
 .btn-default {
-	border-radius: 1px;
-	box-shadow: 1px 1px 1px rgba(0, 0, 0, 1);
-	font-weight: 800;
-	color: #4F3000;
+    border-radius: 1px;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 1);
+    font-weight: 800;
+    color: #4F3000;
 }
 
 .btn-default:active, .btn-default:focus, .btn-default:active:focus,
-	.btn-default:active:hover, .btn-default:hover {
-	background-color: rgba(238, 208, 162, 1);
+    .btn-default:active:hover, .btn-default:hover {
+    background-color: rgba(238, 208, 162, 1);
 }
 
 .btn-default[disabled]:hover ,.btn-default[disabled]:focus {
-	background-color: rgba(251, 232, 202, 1);
-	border-color: #333;
+    background-color: rgba(251, 232, 202, 1);
+    border-color: #333;
 }
 
 a:focus {
-	color: rgb(51, 153, 135);
+    color: rgb(51, 153, 135);
 }
 
 .table-bordered>tbody>tr>td, .table-bordered>tbody>tr>th {
-	border: 1px solid #333;
+    border: 1px solid #333;
 }
 
 .table-bordered>tbody>tr>td {
-	background: #fff;
+    background: #fff;
 }
 
 .table_title {
-	background: #f9f9e3;
+    background: #f9f9e3;
 }
 
 .modal-title {
-	text-align: center;
-	font-size: 20px;
-	font-weight: 800;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 800;
 }
 
 .modal-content {
-	background: rgba(249, 249, 227, 1);
+    background: rgba(249, 249, 227, 1);
 }
 
 .modal_cancel_btn:active, .modal_cancel_btn:focus, .modal_cancel_btn:active:focus {
-	background-color: #e6e6e6;
+    background-color: #e6e6e6;
 }
 
 .saving-modal-content {
-	background: rgba(249, 249, 227, 1);
-	margin: auto;
+    background: rgba(249, 249, 227, 1);
+    margin: auto;
 }
 
 .button-primary {
-	background-color: rgba(255, 153, 0, 1);
-	border-color: rgba(121, 73, 0, 1);
-	border-radius: 1px;
-	color: #4F3000;
-	font-weight: 800;
+    background-color: rgba(255, 153, 0, 1);
+    border-color: rgba(121, 73, 0, 1);
+    border-radius: 1px;
+    color: #4F3000;
+    font-weight: 800;
 }
 
 .button-primary:hover {
-	background-color: rgba(249, 181, 78, 1);
+    background-color: rgba(249, 181, 78, 1);
 }
 
 .button-secondary {

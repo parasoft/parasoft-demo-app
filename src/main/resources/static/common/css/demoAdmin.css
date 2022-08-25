@@ -111,10 +111,10 @@
 }
 
 .form-control {
-	margin-bottom: 20px;
-	height: 37px;
-	border: 1px solid #333;
-	border-radius: 0px;
+    margin-bottom: 20px;
+    height: 37px;
+    border: 1px solid #333;
+    border-radius: 0px;
 }
 
 .table {
@@ -200,6 +200,10 @@ label {
     display: inline-block;
 }
 
+.valid_url_message {
+    color: #008000;
+}
+
 .labels_reset_btn {
     height: 37px;
     width: 60px;
@@ -210,21 +214,20 @@ label {
 
 .modal-content {
     width: 500px;
-    margin-left: 50px;
     top: 65px;
 }
 
-.modal-content.wide {
+.modal-content.wide, .modal-dialog.wide {
     width: 684px;
 }
 
 .modal-header {
-	border-bottom: none;
+    border-bottom: none;
 }
 
 .modal-footer {
-	text-align: center;
-	border-top: none;
+    text-align: center;
+    border-top: none;
 }
 
 .modal-dialog {
@@ -251,8 +254,8 @@ label {
 }
 
 .modal_save_btn {
-	margin-right: 100px;
-	width: 89px;
+    margin-right: 100px;
+    width: 89px;
 }
 
 .modal_cancel_btn {

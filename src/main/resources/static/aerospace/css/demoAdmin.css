@@ -12,7 +12,7 @@
 }
 
 #return_to_home_link:hover, .support_link:hover,  nav-tab-header:hover {
-	color: #E7FFA1;
+    color: #E7FFA1;
 }
 
 .input-wrapper .form-control {
@@ -25,7 +25,7 @@
 }
 
 .operation_button {
-	background-color: rgba(122, 141, 149, 1);
+    background-color: rgba(122, 141, 149, 1);
     border-color: rgba(182, 221, 238, 1);
     border-radius: 20px;
     color: #C2EAFB;
@@ -44,7 +44,7 @@
 }
 
 .nav-tabs>li>a:hover, .nav-tabs>li>a:focus {
-	background-color: rgba(3, 57, 81, 1);
+    background-color: rgba(3, 57, 81, 1);
     border-color: #C2EAFB;
 }
 
@@ -59,9 +59,9 @@ button.close, button.close:hover {
 }
 
 .btn-default:active, .btn-default:focus, .btn-default:active:focus,
-	.btn-default:active:hover, .btn-default:hover {
-	background-color: rgba(122, 141, 149, 1);
-	color: #C2EAFB;
+    .btn-default:active:hover, .btn-default:hover {
+    background-color: rgba(122, 141, 149, 1);
+    color: #C2EAFB;
 }
 
 .btn-default[disabled]:hover,.btn-default[disabled]:focus {
@@ -91,7 +91,7 @@ button.close, button.close:hover {
 .button-primary {
     background-color: rgba(204, 136, 55, 1);
     border-radius: 20px;
-	color: #333333;
+    color: #333333;
 }
 
 .button-secondary {
@@ -109,4 +109,8 @@ button.close, button.close:hover {
 
 #close_btn {
     color: #C2EAFB;
+}
+
+.item_description_input {
+    color: #555
 }
