@@ -61,6 +61,7 @@
 								<th class="requisition_number" translate="REQ"></th>
 								<th class="submission_date" translate="SUBMISSION_DATE"></th>
 								<th class="time" translate="TIME"></th>
+								<th class="requested_by" translate="REQUESTED_BY"></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -74,6 +75,9 @@
 							<td ng-bind="order.submissionDate.substring(0,order.submissionDate.indexOf('T'))"></td>
 							<td ng-bind="order.submissionDate.substring(order.submissionDate.indexOf('T')+1,
 									order.submissionDate.lastIndexOf('.'))"></td>
+							<td>
+								<span title="{{order.requestedBy}}" class="requested_by_content" ng-bind="order.requestedBy"></span>
+							</td>
 						</tr>
 						</tbody>
 					</table>
@@ -230,7 +234,7 @@
 		</div>
 		<footer ng-include="'/common/pages/footer.html'"></footer>
 	</div>
-	
+
 	<script type="text/javascript" src="/lib/jquery/jquery-3.3.1.min.js"></script>
 	<script type="text/javascript" src="/lib/jquery/jquery.serializejson.min.js"></script>
 	<script type="text/javascript" src="/lib/bootstrap/js/bootstrap.min.js"></script>

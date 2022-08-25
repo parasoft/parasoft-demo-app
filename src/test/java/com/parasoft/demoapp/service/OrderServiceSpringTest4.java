@@ -55,9 +55,9 @@ public class OrderServiceSpringTest4 {
 	GlobalPreferencesService globalPreferencesService;
 
 	/**
-	 * Test for updateOrderByOrderNumberSynchronized(String, String, OrderStatus, Boolean, Boolean, String, boolean) under concurrency condition.
+	 * Test for updateOrderByOrderNumberSynchronized(String, String, OrderStatus, Boolean, Boolean, String, String, boolean) under concurrency condition.
 	 *
-	 * @see com.parasoft.demoapp.service.OrderService#updateOrderByOrderNumberSynchronized(String, String, OrderStatus, Boolean, Boolean, String, boolean)
+	 * @see com.parasoft.demoapp.service.OrderService#updateOrderByOrderNumberSynchronized(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
 	 */
 	@Test
 	public void testUpdateOrderByOrderNumberSynchronized_concurrency() throws Throwable {
@@ -66,6 +66,7 @@ public class OrderServiceSpringTest4 {
 		globalPreferencesService.resetAllIndustriesDatabase();
 
 		Long userId = null;
+		String requestedBy = null;
 		CategoryEntity category = null;
 		ItemEntity item = null;
 		OrderEntity order = null;
@@ -73,6 +74,7 @@ public class OrderServiceSpringTest4 {
 			// Given
 			UserEntity user = userService.getUserByUsername(GlobalUsersCreator.USERNAME_PURCHASER);
 			userId = user.getId();
+            requestedBy = user.getUsername();
 			category = categoryService.addNewCategory("name", "description", "imagePath");
 			item = itemService.addNewItem("name", "description", category.getId(), 30, "imagePath", RegionType.LOCATION_1);
 			// add item into cart, the quantity of item is 20.
@@ -84,13 +86,14 @@ public class OrderServiceSpringTest4 {
 			String receiverId = "345-6789-21";
 			String eventId = "45833-ORG-7834";
 			String eventNumber = "55-444-33-22";
-			order = underTest.addNewOrder(userId, region, location, receiverId, eventId, eventNumber);
+			order = underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
 
 			String orderNumber = order.getOrderNumber();
 			String userRoleName = RoleType.ROLE_APPROVER.toString();
 			OrderStatus newStatus = OrderStatus.DECLINED;
 			Boolean reviewedByPRCH = true;
 			Boolean reviewedByAPV = true;
+			String respondedBy = null;
 			String comments = "reject";
 			boolean publicToMQ = true;
 			ExecutorService es = Executors.newCachedThreadPool();
@@ -98,7 +101,7 @@ public class OrderServiceSpringTest4 {
 			// use 3 threads to simulate the concurrency situation, decline orders repeatedly in the same time.
 			for (int i = 0; i < 3; i++) {
 				es.submit(new UpdateOrderByOrderNumberRunnable(underTest, orderNumber, userRoleName, newStatus,
-						reviewedByPRCH, reviewedByAPV, comments, publicToMQ));
+						reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ));
 			}
 
 			Thread.sleep(2000);
@@ -122,18 +125,20 @@ public class OrderServiceSpringTest4 {
 		private final OrderStatus newStatus;
 		private final Boolean reviewedByPRCH;
 		private final Boolean reviewedByAPV;
+		private final String respondedBy;
 		private final String comments;
 		private final boolean publicToMQ;
 
 		public UpdateOrderByOrderNumberRunnable(OrderService orderService, String orderNumber, String userRoleName,
 												OrderStatus newStatus, Boolean reviewedByPRCH, Boolean reviewedByAPV,
-												String comments, boolean publicToMQ) {
+												String respondedBy, String comments, boolean publicToMQ) {
 			this.orderService = orderService;
 			this.orderNumber = orderNumber;
 			this.userRoleName = userRoleName;
 			this.newStatus = newStatus;
 			this.reviewedByPRCH = reviewedByPRCH;
 			this.reviewedByAPV = reviewedByAPV;
+			this.respondedBy = respondedBy;
 			this.comments = comments;
 			this.publicToMQ = publicToMQ;
 		}
@@ -142,7 +147,7 @@ public class OrderServiceSpringTest4 {
 		public void run() {
 			try {
 				orderService.updateOrderByOrderNumberSynchronized(
-						orderNumber, userRoleName, newStatus, reviewedByPRCH, reviewedByAPV, comments, publicToMQ);
+						orderNumber, userRoleName, newStatus, reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

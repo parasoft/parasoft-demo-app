@@ -35,6 +35,7 @@
 									<th class="requisition_number" translate="ORDER_NUMBER"></th>
 									<th class="submission_date" translate="SUBMISSION_DATE"></th>
 									<th class="approver_reply_date" translate="APPROVER_REPLY_DATE"></th>
+									<th class="approver" translate="APPROVER"></th>
 									<th class="assets" translate="ASSETS"></th>
 								</tr>
 								<tr class="order_content" ng-repeat="order in history.orders">
@@ -53,10 +54,13 @@
 									</th>
 									<td ng-bind="order.submissionDate.substring(0,order.submissionDate.indexOf('T'))"></td>
 									<td ng-bind="order.approverReplyDate === null ? '-' : order.approverReplyDate.substring(0,order.approverReplyDate.indexOf('T'))"></td>
+									<td>
+										<span title="{{order.respondedBy}}" class="approver_content" ng-bind="order.respondedBy === null ? '-' : order.respondedBy"></span>
+									</td>
 									<td style="text-align:left;">
-										<span class="assets_content" 
-													title="{{history.showOrderItems(order.orderItems)}}" 
-													ng-bind="history.orderItems(order.orderItems)|textLengthSet:true:33:'...'">
+										<span class="assets_content"
+													title="{{history.showOrderItems(order.orderItems)}}"
+													ng-bind="history.orderItems(order.orderItems)">
 										</span>
 									</td>
 								</tr>

@@ -31,7 +31,7 @@ public class OrderEntityTest {
 		// Given
 		Long id = 1L;
 	    String orderNumber = "234-567-001";
-	    Long userId = 1L;
+	    String requestedBy = "testUser";
 	    OrderStatus status = OrderStatus.SUBMITTED;
 	    Boolean reviewedByAPV = true;
 	    Boolean reviewedByPRCH = true;
@@ -50,7 +50,7 @@ public class OrderEntityTest {
 		OrderEntity originalOrder = new OrderEntity();
 		originalOrder.setId(id);
 		originalOrder.setOrderNumber(orderNumber);
-		originalOrder.setUserId(userId);
+		originalOrder.setRequestedBy(requestedBy);
 		originalOrder.setStatus(status);
 		originalOrder.setReviewedByAPV(reviewedByAPV);
 		originalOrder.setReviewedByPRCH(reviewedByPRCH);
@@ -80,10 +80,10 @@ public class OrderEntityTest {
 		assertEquals(originalOrder, newOrder);
 
 		if(invokedByJtest) {
-			assertEquals(20, originalOrder.getClass().getDeclaredFields().length,
+			assertEquals(21, originalOrder.getClass().getDeclaredFields().length,
 					"Some additional files are not cloned, please confirm it is wanted or alter this test.");
 		}else {
-			assertEquals(16, originalOrder.getClass().getDeclaredFields().length,
+			assertEquals(17, originalOrder.getClass().getDeclaredFields().length,
 					"Some additional files are not cloned, please confirm it is wanted or alter this test.");
 		}
 	}

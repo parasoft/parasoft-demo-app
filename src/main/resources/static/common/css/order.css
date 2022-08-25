@@ -42,7 +42,7 @@
 }
 
 .table {
-    width: 870px;
+    max-width: 990px;
     text-align: center;
     margin: auto;
 }
@@ -61,6 +61,18 @@
 
 .approver_reply_date {
     width: 158px;
+}
+
+.approver {
+    width: 100px;
+}
+
+.approver_content {
+    width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
 }
 
 .assets {
@@ -278,7 +290,7 @@
     word-break: break-word;
 }
 
-.order_detail_assigned_campaign_summary { 
+.order_detail_assigned_campaign_summary {
     margin-top: 10px;
 }
 

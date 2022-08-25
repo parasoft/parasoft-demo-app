@@ -142,6 +142,25 @@ a, a:hover, a:focus {
     z-index: 2;
 }
 
+.error_box {
+    height: 40px;
+    background-color: #f1cfcf;
+    border-radius: 4px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.form_error_message {
+    position: relative;
+    top: 10px;
+}
+
+/* to prevent hiding scrollbar when modal open */
+.modal-open {
+    overflow: auto;
+    padding-right: 0 !important;
+}
+
 #requisition_bar {
     position: absolute;
     top: 0;
@@ -359,4 +378,3 @@ a, a:hover, a:focus {
     box-shadow: 1px 1px 1px rgb(0 0 0);
     font-style: normal;
 }
-

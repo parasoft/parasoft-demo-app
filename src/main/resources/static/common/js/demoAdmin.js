@@ -26,7 +26,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 	demo.end_point_for_orders = "/proxy/v1/orders/**";
 	demo.end_point_for_locations = "/proxy/v1/locations/**";
 
-	$rootScope.isShowOtherButtons = false;
+	$rootScope.isShowAccount = true;
     var flag = localStorage.getItem("status");
     var databaseResetFlag = localStorage.getItem("databaseResetStatus");
     connectAndSubscribeMQ(CURRENT_ROLE, $http, $rootScope, $filter);
@@ -488,7 +488,8 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 
     	demo.index = index;
     	demo.modalStyle = {
-        	"top": index * 38 + 417 + "px"
+        	"top": index * 42 + 327 + "px",
+        	"left": "440px"
         };
     }
 

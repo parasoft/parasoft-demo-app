@@ -18,17 +18,17 @@
                         <span class="amount-number" ng-bind="unreviewedNumByPRCH"></span>
                     </div>
                 </li>
-                <li id="cart-button">
-                    <div class="button-body full-fill-center" ng-click="switchBar()" ng-if="isShowRequisitionButton"
+                <li id="cart-button" ng-if="isShowRequisitionButton">
+                    <div class="button-body full-fill-center" ng-click="switchBar()"
                          data-toggle="collapse" data-target="#requisition_bar" title="{{'HEADER_CART_TITLE'|translate}}">
                         <img class="button-img" ng-src="/{{industry}}/images/shopping_cart.svg">
                     </div>
-                    <div class="amount-container" ng-if="isShowRequisitionButton" ng-show="totalAmount !== 0">
+                    <div class="amount-container" ng-show="totalAmount !== 0">
                         <span class="amount-number" ng-bind="totalAmount"></span>
                     </div>
                 </li>
-                <li id="username-button">
-                    <div class="dropdown full-fill-center" ng-if="isShowAccount">
+                <li id="username-button" ng-if="isShowAccount">
+                    <div class="dropdown full-fill-center">
                         <div class="button-body industry_font dropdown-toggle full-fill-center" data-toggle="dropdown">
                             <div class="role-title industry_font">
                                 <span class="account_text text-center">{{ username }}</span>

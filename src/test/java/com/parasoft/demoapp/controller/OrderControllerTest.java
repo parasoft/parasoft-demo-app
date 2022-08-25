@@ -72,7 +72,7 @@ public class OrderControllerTest {
 	public void setupMocks() {
 		MockitoAnnotations.initMocks(this);
 	}
-	
+
 	/**
 	 * Test for addNewOrder(Authentication, OrderDTO)
 	 *
@@ -84,7 +84,9 @@ public class OrderControllerTest {
 		Authentication auth = mock(Authentication.class);
 		UserEntity userEntity = new UserEntity();
 		long userId = 1L;
+		String requestedBy = "testUser";
 		userEntity.setId(userId);
+        userEntity.setUsername(requestedBy);
 		doReturn(userEntity).when(auth).getPrincipal();
 
 		OrderDTO orderDto = new OrderDTO();
@@ -95,7 +97,7 @@ public class OrderControllerTest {
 		orderDto.setEventNumber("55-444-33-22");
 		OrderEntity order = mock(OrderEntity.class);
 
-		doReturn(order).when(orderService).addNewOrderSynchronized(anyLong(), (RegionType) any(), anyString(), anyString(),
+		doReturn(order).when(orderService).addNewOrderSynchronized(anyLong(), anyString(), (RegionType) any(), anyString(), anyString(),
 				anyString(), anyString());
 
 		// When
@@ -118,12 +120,14 @@ public class OrderControllerTest {
 		// Given
 		Authentication auth = mock(Authentication.class);
 		UserEntity userEntity = new UserEntity();
-		long userId = 1L;
+		Long userId = 1L;
+		String requestedBy = "testUser";
 		userEntity.setId(userId);
+		userEntity.setUsername(requestedBy);
 		doReturn(userEntity).when(auth).getPrincipal();
 
 		OrderDTO orderDto = mock(OrderDTO.class);
-		when(orderService.addNewOrderSynchronized(anyLong(), (RegionType) any(), any(), any(), any(), any()))
+		when(orderService.addNewOrderSynchronized(anyLong(), anyString(), (RegionType) any(), any(), any(), any(), any()))
 				.thenThrow(ParameterException.class);
 
 		// When
@@ -142,11 +146,13 @@ public class OrderControllerTest {
 		Authentication auth = mock(Authentication.class);
 		UserEntity userEntity = new UserEntity();
 		long userId = 1L;
+        String requestedBy = "testUser";
 		userEntity.setId(userId);
+        userEntity.setUsername(requestedBy);
 		doReturn(userEntity).when(auth).getPrincipal();
 
 		OrderDTO orderDto = mock(OrderDTO.class);
-		doThrow(ItemNotFoundException.class).when(orderService).addNewOrderSynchronized(anyLong(), (RegionType) any(), any(), any(),
+		doThrow(ItemNotFoundException.class).when(orderService).addNewOrderSynchronized(anyLong(), anyString(), (RegionType) any(), any(), any(),
 				any(), any());
 
 		// When
@@ -164,11 +170,13 @@ public class OrderControllerTest {
 		Authentication auth = mock(Authentication.class);
 		UserEntity userEntity = new UserEntity();
 		long userId = 1L;
+        String requestedBy = "testUser";
 		userEntity.setId(userId);
+        userEntity.setUsername(requestedBy);
 		doReturn(userEntity).when(auth).getPrincipal();
 
 		OrderDTO orderDto = mock(OrderDTO.class);
-		doThrow(CartItemNotFoundException.class).when(orderService).addNewOrderSynchronized(anyLong(), (RegionType) any(), any(),
+		doThrow(CartItemNotFoundException.class).when(orderService).addNewOrderSynchronized(anyLong(), anyString(), (RegionType) any(), any(),
 				any(), any(), any());
 
 		// When
@@ -248,7 +256,7 @@ public class OrderControllerTest {
 		orderStatusDTO.setStatus(newOrderStatus);
 		OrderEntity order = mock(OrderEntity.class);
 		doReturn(order).when(orderService).updateOrderByOrderNumberSynchronized(
-				anyString(), anyString(), (OrderStatus) any(), anyBoolean(), anyBoolean(), nullable(String.class), any(boolean.class));
+				anyString(), anyString(), (OrderStatus) any(), anyBoolean(), anyBoolean(), nullable(String.class), nullable(String.class), any(boolean.class));
 
 		// When
 		ResponseResult<OrderEntity> result = underTest.updateStatusOfOrderByOrderNumber(auth, orderStatusDTO, orderNumber);
@@ -279,8 +287,8 @@ public class OrderControllerTest {
 		OrderStatus newOrderStatus = OrderStatus.APPROVED;
 		OrderStatusDTO orderStatusDTO = new OrderStatusDTO();
 		orderStatusDTO.setStatus(newOrderStatus);
-		doThrow(ParameterException.class).when(orderService).updateOrderByOrderNumberSynchronized(anyString(), 
-				anyString(), (OrderStatus) any(), anyBoolean(), anyBoolean(), nullable(String.class), any(boolean.class));
+		doThrow(ParameterException.class).when(orderService).updateOrderByOrderNumberSynchronized(anyString(),
+				anyString(), (OrderStatus) any(), anyBoolean(), anyBoolean(), nullable(String.class), nullable(String.class), any(boolean.class));
 
 		// When
 		underTest.updateStatusOfOrderByOrderNumber(auth, orderStatusDTO, orderNumber);
@@ -305,8 +313,8 @@ public class OrderControllerTest {
 		OrderStatus newOrderStatus = OrderStatus.APPROVED;
 		OrderStatusDTO orderStatusDTO = new OrderStatusDTO();
 		orderStatusDTO.setStatus(newOrderStatus);
-		doThrow(OrderNotFoundException.class).when(orderService).updateOrderByOrderNumberSynchronized(anyString(), 
-				anyString(), (OrderStatus) any(), anyBoolean(), anyBoolean(), nullable(String.class), any(boolean.class));
+		doThrow(OrderNotFoundException.class).when(orderService).updateOrderByOrderNumberSynchronized(anyString(),
+				anyString(), (OrderStatus) any(), anyBoolean(), anyBoolean(), nullable(String.class), nullable(String.class), any(boolean.class));
 
 		// When
 		underTest.updateStatusOfOrderByOrderNumber(auth, orderStatusDTO, orderNumber);
@@ -350,17 +358,17 @@ public class OrderControllerTest {
 		long userId = 1L;
 		userEntity.setId(userId);
 		doReturn(userEntity).when(auth).getPrincipal();
-		
+
 		Pageable pageable = Pageable.unpaged();
 		List<OrderEntity> content = new ArrayList<>();
 		content.add(new OrderEntity());
 		int totalElement = 2;
 		Page<OrderEntity> page = new PageImpl<>(content, pageable, totalElement);
-		doReturn(page).when(orderService).getAllOrders(nullable(Long.class), nullable(String.class),
+		doReturn(page).when(orderService).getAllOrders(nullable(String.class), nullable(String.class),
 				nullable(Pageable.class));
 		doNothing().when(demoBugService).introduceBugWithIncorrectLocationForApprovedOrdersIfNeeded(any(List.class));
 		doReturn(pageable).when(demoBugService).introduceBugWithReverseOrdersIfNeeded(any(Pageable.class));
-		
+
 		// When
 		ResponseResult<PageInfo<OrderEntity>> result = underTest.showAllOrders(auth, pageable);
 
@@ -372,7 +380,7 @@ public class OrderControllerTest {
 		assertEquals(content, result.getData().getContent());
 		assertEquals(totalElement, result.getData().getTotalElements());
 	}
-	
+
 	/**
 	 * Test for showAllOrders(Authentication, Pageable)
 	 *
@@ -381,7 +389,7 @@ public class OrderControllerTest {
 	@Test(expected = ParameterException.class)
 	public void testShowAllOrders_withPageable_parameterException() throws Throwable {
 		// Given
-		doThrow(ParameterException.class).when(orderService).getAllOrders(nullable(Long.class), nullable(String.class),
+		doThrow(ParameterException.class).when(orderService).getAllOrders(nullable(String.class), nullable(String.class),
 				nullable(Pageable.class));
 
 		// When
