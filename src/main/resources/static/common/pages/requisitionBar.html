@@ -1,166 +1,65 @@
-<div id="right_navigation_bar" class="{{requisition.collapse}} collapse"
-	ng-style="requisition.rightNavigationBar">
-	<div id="right_navigation_bar_content">
-		<div id="requisition_box" class="common_industry">
-			<div id="requisition_box_div" class="common_div"></div>
-		</div>
-		<div id="requisition_cross" class="common_industry industry_font font_color1"
-			ng-click="requisition.closeRequisition()">
-			<div id="requisition_cross_div" class="common_div industry_font"></div>
-			<div class="common_text">
-				<p>
-					<span>X</span>
-				</p>
-			</div>
-		</div>
-
-		<div id="requisition_title" class="common_industry industry_font">
-			<div id="requisition_title_div" class="common_div industry_font"></div>
-			<div class="common_text">
-				<p>
-					<span translate="CART_TITLE"></span>
-				</p>
-			</div>
-		</div>
-		<div id="submit_button" class="common_industry">
-			<button type="button" class="common_div submit_button_text btn orange_button"  ng-click="requisition.checkItems()"
-					ng-disabled="disableSubmitBtn || cartItemLoadError">
-				<span class="industry_font" translate="ORDER_SUBMIT_BUTTON"></span>
-			</button>
-		</div>
-		<div id="assets_to_deploy" class="common_industry industry_font">
-			<div id="assets_to_deploy_div" class="common_div industry_font"></div>
-			<div class="common_text">
-				<p>
-					<span translate="ASSETS_TO_DEPLOY"></span><span>: </span><span id="assets_amount" ng-bind="totalAmount"></span>
-				</p>
-			</div>
-		</div>
-		<div id="shopping_cart" ng-style="shoppingCart">
-			<div ng-repeat="cartItem in cartItems track by $index">
-				<div class="requisition_item_title common_industry industry_font 
-								requisition_title_row{{requisition.requisitionRowExp($index)}}">
-					<div class="requisition_item_title_div common_div industry_font"></div>
-					<div class="common_text">
-						<p>
-							<a href="/items/{{cartItem.itemId}}" title="{{cartItem.name}}">
-								<span class="font_color1 retract_format green_text" ng-bind="cartItem.name"></span>
-							</a>
-						</p>
-					</div>
-				</div>
-				<div class="requisition_item_img common_industry 
-							industry_font requisition_img_row{{requisition.requisitionRowExp($index)}}">
-					<img class="requisition_img_format" ng-src="{{cartItem.image}}">
-				</div>
-				<div class="requisition_item_img common_industry 
-							industry_font requisition_img_row{{requisition.requisitionRowExp($index)}}">
-					<img class="requisition_img_format" ng-src="/{{industry}}/images/requisition_dark_overlay.svg">
-				</div>
-				<div class="requisition_item_description common_industry 
-								industry_font requisition_description_row{{requisition.requisitionRowExp($index)}}">
-					<div class="requisition_item_description_div common_div industry_font"></div>
-					<div class="common_text">
-						<textarea class="content_text" readonly="readonly" ng-bind="cartItem.description"></textarea>
-					</div>
-				</div>
-				<div class="requisition_item_number common_industry industry_font 
-								requisition_number_row{{requisition.requisitionRowExp($index)}}">
-					<div class="requisition_item_number_div common_div industry_font"></div>
-					<input class="requisition_item_number_input input{{requisition.requisitionRowExp($index)}}" type="number"
-						ng-model="cartItem.quantity" onkeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
-						ng-blur="requisition.inputItemNum($index,cartItem)">
-				</div>
-				<div class="requisition_error requisition_error{{requisition.requisitionRowExp($index)}}"
-					ng-show="requisition.isInventoryEnough(cartItem.realInStock,requisitionNums[$index],$index)">
-						<span ng-show="cartItem.realInStock !== null" ng-bind="cartItem.realInStock"></span>
-						<span ng-show="cartItem.realInStock !== null" translate="AVAILABLE"></span>
-						<span class="noItemInfo" ng-show="cartItem.realInStock === null" translate="ITEM_NOT_FOUND"></span>
-				</div>
-				<div class="requisition_minus_button common_industry industry_font 
-								requisition_minus_row{{requisition.requisitionRowExp($index)}}">
-					<button type="button" class="common_div requisition_button request_button"
-						ng-click="requisition.minusRequisition(requisitionNums,$index,cartItem)">-</button>
-				</div>
-				<div class="requisition_plus_button common_industry industry_font 
-								requisition_plus_row{{requisition.requisitionRowExp($index)}}">
-					<button type="button" class="common_div requisition_button request_button"
-						ng-click="requisition.plusRequisition(requisitionNums,$index,cartItem)">+</button>
-				</div>
-				<div class="requisition_remove common_industry industry_font 
-						requisition_remove_row{{requisition.requisitionRowExp($index)}}"
-						ng-click="requisition.removeCartItem(cartItem.itemId)">
-					<a href="javaScript:void(0)"><span class="font_color1" translate="REMOVE"></span></a>
-				</div>
-			</div>
-		</div>
-<!-- 		<div id="related_asset" class="common_industry industry_font" ng-style="shoppingCart"> -->
-<!-- 			<div id="related_asset_div" class="common_div industry_font"></div> -->
-<!-- 			<div class="common_text"> -->
-<!-- 				<p> -->
-<!-- 					<span>{{"RELATED_ASSET" | translate}}</span> -->
-<!-- 				</p> -->
-<!-- 			</div> -->
-<!-- 		</div> -->
-<!-- 		<div ng-repeat="item in requisition.relatedItems | limitTo: 3" ng-style="shoppingCart"> -->
-<!-- 			<div id="related_asset_box" class="common_industry  -->
-<!-- 						industry_font related_box_line{{requisition.relatedLineExp($index)}}"> -->
-<!-- 				<div id="related_asset_box_div" class="common_div industry_font"></div> -->
-<!-- 			</div> -->
-<!-- 			<div id="related_asset_box_img" class="common_industry  -->
-<!-- 				related_box_line{{requisition.relatedLineExp($index)}}" -->
-<!-- 				ng-if="requisition.isAerospace"> -->
-<!-- 				<img ng-src="/{{industry}}/images/related_box.svg"> -->
-<!-- 			</div> -->
-<!-- 			<div class="related_button common_industry industry_font  -->
-<!-- 				related_button_line{{requisition.relatedLineExp($index)}}"> -->
-<!-- 				<div class="related_button_div common_div"></div> -->
-<!-- 				<div class="common_text"> -->
-<!-- 					<p> -->
-<!-- 						<span>{{"ADD_TO_CART" | translate}}</span> -->
-<!-- 					</p> -->
-<!-- 				</div> -->
-<!-- 			</div> -->
-<!-- 			<div id="related_asset_img" class="common_industry  -->
-<!-- 				related_img_line{{requisition.relatedLineExp($index)}}"> -->
-<!-- 				<img class="related_img_format" src="/common/images/blank.svg"> -->
-<!-- 			</div> -->
-<!-- 			<div id="related_asset_img" class="common_industry  -->
-<!-- 				related_img_line{{requisition.relatedLineExp($index)}}"> -->
-<!-- 				<img class="related_img_format" ng-src="/{{industry}}/images/related_dark_overlay.svg"> -->
-<!-- 			</div> -->
-<!-- 			<div id="related_asset_title" class="common_industry font_color1 industry_font  -->
-<!-- 					related_title_line{{requisition.relatedLineExp($index)}}"> -->
-<!-- 				<div id="related_asset_title_div" class="common_div industry_font"></div> -->
-<!-- 				<div class="common_text"> -->
-<!-- 					<p> -->
-<!-- 						<a href="javaScript:void(0)"> -->
-<!-- 							<span class="font_color1">Related Asset</span> -->
-<!-- 						</a> -->
-<!-- 					</p> -->
-<!-- 				</div> -->
-<!-- 			</div> -->
-<!-- 			<div id="related_asset_description" -->
-<!-- 				class="common_industry  -->
-<!-- 						industry_font related_decription_line{{requisition.relatedLineExp($index)}}"> -->
-<!-- 				<div id="related_asset_description_div" -->
-<!-- 					class="common_div industry_font"></div> -->
-<!-- 				<div class="common_text"> -->
-<!-- 					<p> -->
-<!-- 						<span>Asset info. Lorem ipsum dolor sit amet, consectetur -->
-<!-- 							adipiscing elit. </span> -->
-<!-- 					</p> -->
-<!-- 				</div> -->
-<!-- 			</div> -->
-<!-- 			<div id="related_asset_available" class="common_industry industry_font  -->
-<!-- 					related_available_line{{requisition.relatedLineExp($index)}}"> -->
-<!-- 				<div id="related_asset_available_div" class="common_div industry_font"></div> -->
-<!-- 				<div class="common_text"> -->
-<!-- 					<p> -->
-<!-- 						<span>10 Available</span> -->
-<!-- 					</p> -->
-<!-- 				</div> -->
-<!-- 			</div> -->
-<!-- 		</div> -->
-	</div>
+<div id="requisition_bar" class="{{requisition.collapse}} collapse" ng-style="requisition.rightNavigationBar">
+    <div id="requisition_bar_content">
+        <div class="shopping_title">
+            <div id="requisition_close_button" class="industry_color_1" ng-click="requisition.closeRequisition()">
+                <span>X</span>
+            </div>
+            <div id="requisition_title" class="industry_color_2">
+                <span translate="CART_TITLE"></span>
+            </div>
+            <div class="common_industry">
+                <button id="requisition_submit_button" class="btn orange_button" ng-click="requisition.checkItems()"
+                        ng-disabled="disableSubmitBtn || cartItemLoadError">
+                    <span translate="ORDER_SUBMIT_BUTTON"></span>
+                </button>
+            </div>
+            <div id="assets_to_deploy" class="industry_color_2">
+                <p><span translate="ASSETS_TO_DEPLOY"></span><span>: </span><span id="assets_amount" ng-bind="totalAmount"></span></p>
+            </div>
+        </div>
+        <div id="shopping_cart" ng-style="shoppingCart">
+            <div ng-repeat="cartItem in cartItems track by $index" class="requisition_item">
+                <div class="requisition_item_title">
+                    <a href="/items/{{cartItem.itemId}}" title="{{cartItem.name}}" class="industry_color_1 industry_font">
+                        <span ng-bind="cartItem.name"></span>
+                    </a>
+                </div>
+                <div class="item-content-container">
+                    <div id="requisition_img_dark_overlay">
+                        <img class="requisition_detail_dark_overlay_img" ng-src="/{{industry}}/images/requisition_dark_overlay.svg">
+                    </div>
+                    <div class="requisition_item_img">
+                        <img ng-src="{{cartItem.image}}">
+                    </div>
+                    <div class="requisition_item_description industry_color_2" ng-bind="cartItem.description"></div>
+                    <div class="requisition-item-number-operations">
+                        <div class="requisition_item_number">
+                            <input class="requisition_item_number_input industry_font" type="number"
+                                   ng-model="cartItem.quantity" onkeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
+                                   ng-blur="requisition.inputItemNum($index,cartItem)">
+                        </div>
+                        <div class="requisition_buttons">
+                            <div class="requisition_minus_row{{requisition.requisitionRowExp($index)}}">
+                                <button class="requisition_minus_button"
+                                        ng-click="requisition.minusRequisition(requisitionNums,$index,cartItem)">-</button>
+                            </div>
+                            <div class="requisition_plus_row{{requisition.requisitionRowExp($index)}}">
+                                <button class="requisition_plus_button"
+                                        ng-click="requisition.plusRequisition(requisitionNums,$index,cartItem)">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="requisition_item_extra">
+                        <div class="requisition_error" ng-show="requisition.isInventoryEnough(cartItem.realInStock,requisitionNums[$index],$index)">
+                            <span ng-show="cartItem.realInStock !== null">{{cartItem.realInStock}} {{'AVAILABLE' | translate}}</span>
+                            <span class="noItemInfo" ng-show="cartItem.realInStock === null" translate="ITEM_NOT_FOUND"></span>
+                        </div>
+                        <div class="requisition_remove" ng-click="requisition.removeCartItem(cartItem.itemId)">
+                            <a href="javaScript:void(0)"><span translate="REMOVE" class="industry_color_1"></span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

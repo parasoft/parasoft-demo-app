@@ -72,20 +72,49 @@ body {
     background-image: url(/aerospace/images/category_box.svg);
 }
 
-.asset_summary_img_container {
-    height: 133px;
-    padding: 1px;
-}
-
-.asset_summary_img {
-    width: 233px;
-    height: 131px;
-}
-
 .asset_summary_description {
     font-size: 12px;
     font-weight: 700;
     line-height: normal;
     height: 70px;
     margin-bottom: 32px;
+}
+
+#requisition_bar {
+    background-color: rgba(51, 51, 51, 1);
+    border: 1px solid rgba(182, 221, 238, 1);
+}
+
+#requisition_submit_button {
+    background-color: rgba(204, 136, 55, 1);
+    border-radius: 20px;
+    font-weight: 700;
+    color: #20200A;
+}
+
+#assets_to_deploy {
+    font-family: 'Ubuntu-Regular', 'Ubuntu', sans-serif;
+}
+
+.requisition_item_title a:hover{
+    color: #E7FFA1;
+}
+
+.requisition_item_number_input {
+    border-color: rgba(182, 221, 238, 1);
+    background-color: rgba(255, 255, 255, 1);
+    border-radius: 20px;
+}
+
+.requisition_buttons button {
+    background-color: rgba(204, 136, 55, 1);
+    border-radius: 20px;
+    font-family: 'Orbitron-Bold', 'Orbitron Bold', 'Orbitron', sans-serif;
+    font-weight: 700;
+    color: #fff;
+    border-width: 0;
+}
+
+.requisition_remove a:hover{
+    color: #E7FFA1
 }
