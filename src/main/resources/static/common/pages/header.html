@@ -4,13 +4,13 @@
     </div>
     <div class="header-menu">
         <nav>
-            <ul ng-if="isShowOtherButtons">
-                <li id="setting-button">
+            <ul>
+                <li id="setting-button" ng-if="isShowSettingButton">
                     <a href="/demoAdmin" class="button-body full-fill-center" title="{{'HEADER_DEMO_ADMIN_TITLE'|translate}}">
                         <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
                     </a>
                 </li>
-                <li id="requisition-button">
+                <li id="requisition-button" ng-if="isShowRequisitionButton">
                     <a href="/orders" class="button-body full-fill-center"  title="{{'HEADER_ORDER_TITLE'|translate}}">
                         <img class="button-img" ng-src="/{{industry}}/images/requisition.svg">
                     </a>
@@ -18,7 +18,7 @@
                         <span class="amount-number" ng-bind="unreviewedNumByPRCH"></span>
                     </div>
                 </li>
-                <li id="cart-button" ng-if="isShowRequisitionButton">
+                <li id="cart-button" ng-if="isShowRequisitionRequestButton">
                     <div class="button-body full-fill-center" ng-click="switchBar()"
                          data-toggle="collapse" data-target="#requisition_bar" title="{{'HEADER_CART_TITLE'|translate}}">
                         <img class="button-img" ng-src="/{{industry}}/images/shopping_cart.svg">

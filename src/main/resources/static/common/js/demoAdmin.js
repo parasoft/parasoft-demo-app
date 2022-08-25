@@ -26,7 +26,10 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 	demo.end_point_for_orders = "/proxy/v1/orders/**";
 	demo.end_point_for_locations = "/proxy/v1/locations/**";
 
-	$rootScope.isShowAccount = true;
+	$rootScope.isShowSettingButton = false;
+	$rootScope.isShowRequisitionButton = false;
+	$rootScope.isShowRequisitionRequestButton = false;
+
     var flag = localStorage.getItem("status");
     var databaseResetFlag = localStorage.getItem("databaseResetStatus");
     connectAndSubscribeMQ(CURRENT_ROLE, $http, $rootScope, $filter);
