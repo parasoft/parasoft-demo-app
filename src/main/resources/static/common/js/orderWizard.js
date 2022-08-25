@@ -41,10 +41,6 @@ app.controller('orderWizardController', function($rootScope, $http, $filter) {
 
 	//Change to the front step when clicking the related link
 	orderWizard.switchProcess = function(currentProcess,isClickable) {
-		$rootScope.footerHeight = {
-			"top" : "750px"
-		}
-
 		if(currentProcess === 'Deployment Location' && isClickable){
 			orderWizard.isDelopmentLocation = true;
 			orderWizard.isAssignCampaign = false
@@ -72,9 +68,6 @@ app.controller('orderWizardController', function($rootScope, $http, $filter) {
 			orderWizard.isReview = true;
 			orderWizard.isDevelopmentClickable = true;
 			orderWizard.isCampaignClickable = true;
-			$rootScope.footerHeight = {
-				"top" : "1050px"
-		    }
 
 			//Get cart items from database to avoid the changes of items in other pages
 			$http({
@@ -89,11 +82,6 @@ app.controller('orderWizardController', function($rootScope, $http, $filter) {
 					totalAmount += cartItems[i].quantity;
 				}
 
-				if(Number(cartItems.length) < 4){
-					angular.element("#items").css("height",84 * cartItems.length + "px");
-					angular.element("#summaries").css("top",215 + 84 * cartItems.length + "px");
-				}
-
 				orderWizard.cartItems = cartItems;
 				orderWizard.totalAmount = totalAmount;
 		    }).catch(function(result) {
@@ -101,14 +89,6 @@ app.controller('orderWizardController', function($rootScope, $http, $filter) {
 		        displayLoadError(result,$rootScope,$filter,$http,true,'cart');
 		    });
 		}
-	}
-
-	//Set CSS for every items
-	orderWizard.loadStyles = function(i){
-		angular.element(".item_title"+i).css("top",1 + 85 * i + "px");
-		angular.element(".item_description"+i).css("top",29 + 85 * i + "px");
-		angular.element(".item_quantity"+i).css("top",6 + 85 * i + "px");
-		angular.element(".item_img"+i).css("top",85 * i + "px");
 	}
 
 	//Show order delivery position
