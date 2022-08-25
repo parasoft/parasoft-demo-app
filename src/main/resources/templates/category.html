@@ -3,218 +3,210 @@
 <head>
     <meta charset="UTF-8">
     <title translate="PROJECT_NAME"></title>
-    
+
     <link rel="icon" href="/common/images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="/lib/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/lib/toastr/toastr.min.css"/>
-    <link rel="stylesheet" type="text/css" href="/common/css/common.css">
-    <link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/style.css'">
+    <link rel="stylesheet" type="text/css" href="/common/css/common-new.css">
+    <link rel="stylesheet" type="text/css" href="/common/css/category.css">
+    <link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/common.css'">
     <link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/category.css'">
 </head>
 <body>
-	<input type="hidden" id="current_username" th:value="${#authentication.principal.username}">
-	<input type="hidden" id="current_rolename" th:value="${#authentication.principal.role.name}">
-	<div ng-include="'/common/pages/header.html'" ng-controller="headerController"></div>
-	<div ng-include="'/common/pages/requisitionBar.html'" ng-controller="requisitionBarController as requisition"></div>
-	<div ng-controller="categoryController as category">
-		<div id="middle">
-			<div id="items_breadcrumb" class="common_industry">
-				<ol class="breadcrumb industry_font font_color1">
-					 <li><a href="/"><span class="font_color1" translate="RETURN_TO_HOME"></span></a></li>
-					 <li class="unClickable_color1 retract_format breadcrumb_unclickable_button" ng-bind="category.title"></li>
-				</ol>
-			</div>
-			<form id="categoryFilters">
-				<div id="search" class="common_industry industry_font">
-					<div id="search_text">
-						<div id="search_text_div" class="common_div industry_font"></div>
-						<input type="text" id="search_text_input" name="searchString" class="industry_font" ng-keypress="($event.which === 13)?category.search():0">
-					</div>
-					<div id="search_button" class="common_industry industry_font">
-						<img ng-src="/{{industry}}/images/search_button.svg" title="{{'SEARCH'|translate|lowercase}}" ng-click="category.search()">
-					</div>
-				</div>
-				<input name="categoryId" type="hidden" value="{{category.categoryId}}"></input>
-				<div id="item_select" class="common_industry industry_font">
-					<div id="item_select_div" class="common_div industry_font"></div>
-					<select id="item_select_content" name="sort" class="item_filter common_div industry_font"
-							ng-model="category.sort" ng-change="category.search()">
-						<option value="lastAccessedDate" translate="DATE_ADDED"></option>
-						<option value="name" translate="ALPHABETICAL"></option>
-					</select>
-				</div>
-				<div id="asset_type" class="common_industry industry_font">
-					<div id="asset_type_div" class="common_div industry_font"></div>
-					<div class="common_text">
-						<!-- to get category dynamically -->
-						<p><span title="{{category.title|uppercase}}" class="category_item_title orderContent category_item_title_width"
-								ng-bind="category.title|uppercase"></span></p>
-					</div>
-				</div>
-				<div id="availability_region" class="common_industry">
-					<div class="region_box_img"></div>
-				</div>
-				<div id="availability_region_box">
-					<div id="availability_region_title" class="industry_font">
-						<span translate="AVAILABILITY_LOCATIONS"></span>
-					</div>
-					<div id="regions_box">
-						<div ng-repeat="region in category.regions track by $index" class="industry_font regions">
-							<label class="region_label" for="{{region}}">
-								<input type="checkbox" name="regions[]" id="{{region}}" value="{{region}}" ng-click="category.search()"
-									   ng-checked="category.checkedRegions.indexOf(region) > -1"/>
-								<span translate="{{region}}"></span>
-							</label>
-						</div>
-					</div>
-				</div>
-			</form>
-			<div id="items">
-				<span id="no_result_text" class="common_text" translate="NO_RESULT" ng-show="category.showNoResultText"></span>
-				<div class="item" ng-repeat="item in category.items track by $index" ng-style="category.loadItemsStyle($index)">
-					<div class="common_industry assets_category_box">
-						<div class="common_div assets_category_box_div"></div>
-						<div class="assets_category_box_img" alt="item_box"></div>
-					</div>
-					<div class="assets_category_img">
-						<img class="category_img_format" ng-alt="{{item.name}}" ng-src="{{item.image}}">
-					</div>
-					<div class="assets_category_dark_overlay">
-						<a ng-href="/items/{{item.id}}">
-							<div class="category_dark_overlay" alt=""></div>
-						</a>
-					</div>
-					<div class="common_industry assets_category_title font_color1 industry_font">
-						<div class="common_div assets_category_title_div"></div>
-						<div class="common_text">
-							<p>
-								<a ng-href="/items/{{item.id}}">
-									<span title="{{item.name}}" ng-bind="item.name" 
-										class="font_color1 green_text category_item_title"></span>
-								</a>
-							</p>
-						</div>
-					</div>
-					<div class="common_industry assets_category_description">
-						<div class="common_div assets_category_description_div"></div>
-						<div class="common_text">
-							<p>
-								<span title="{{item.description}}" class="item_description" ng-bind="item.description"></span>
-							</p>
-						</div>
-					</div>
-					<div class="add_to_requisition common_industry industry_font" ng-click="category.openRequisitionDetail(item.id)">
-						<button id="add_to_requisition_btn">
-								<span class="add_to_requisition_color" translate="ADD_TO_CART"></span>
-						</button>
-					</div>
-					<div id="requsition_detail" class="requisitionDetail{{item.id}}">
-						<div id="requsition_detail_wrap">
-							<div id="requsition_detail_content">
-								<div id="requsition_detail_box" class="common_industry industry_font">
-									<div id="requsition_detail_box_div" class="common_div industry_font"></div>
-								</div>
-								<div id="requsition_detail_title" class="common_industry industry_font">
-									<div id="requsition_detail_title_div" class="common_div default_font"></div>
-									<div class="common_text">
-										<p><span title="{{item.name}}" class="category_item_title" ng-bind="item.name"></span></p>
-									</div>
-								</div>
-								<div class="requsition_detail_img common_industry">
-									<img ng-src="{{item.image}}">
-								</div>
-								<div class="requsition_detail_img common_industry">
-									<div class="requisition_dark_overlay"></div>
-								</div>
-								<div id="requsition_detail_description" class="common_industry industry_font">
-									<div id="requsition_detail_description_div" class="common_div default_font"></div>
-									<div class="common_text">
-										<p><span title="{{item.description}}" class="item_description item_description_popup" 
-												ng-bind="item.description"></span></p>
-									</div>
-								</div>
-								<div id="requsition_detail_available" class="common_industry industry_font">
-									<div id="requsition_detail_available_div" class="common_div default_font"></div>
-									<div class="common_text" ng-show="category.showQuantity">
-										<p class="in_stock">
-											<span ng-bind="category.inStock"></span>
-											<span translate="IN_STOCK"></span>
-										</p>
-										<p class="in_requisition_request" ng-show="category.inRequisition !== 0">
-											(<span ng-bind="category.inRequisition"></span>
-											<span translate="IN_CART"></span>)
-										</p>
-									</div>
-									<div class="loading common_industry" ng-show="category.loadingAnimation">
-										<div class="sp-3balls"></div>
-									</div>
-								</div>
-								<div id="requsition_detail_input" class="common_industry industry_font">
-									<input type="number" class="requsition_detail_input_number default_font" 
-									onkeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))" 
-									ng-model="category.remainingNumber" ng-blur="category.remainingNumber = 
-									category.calItemNum(category.remainingNumber,category.inStock,category.inRequisition)"
-									ng-value="category.remainingNumber">
-								</div>
-								<div id="requsition_detail_plus" class="common_industry industry_font">
-									<button type="button" class="common_div requisition_button requisition_detail_button" 
-											ng-click="category.remainingNumber = category.itemNumPlus(category.remainingNumber,
-												category.inStock,category.inRequisition)" ng-style="category.plusDisabled"
-											ng-disabled="category.plusBtnDisabled">+</button>
-								</div>
-								<div id="requsition_detail_minus" class="common_industry industry_font">
-									<button type="button" class="common_div requisition_button requisition_detail_button"
-										ng-click="category.remainingNumber = category.itemNumMinus(category.remainingNumber)"
-										ng-style="category.minusDisabled" ng-disabled="category.minusBtnDisabled">-</button>
-								</div>
-								<div id="confirm_button" class="common_industry industry_font">
-									<div class="common_text">
-										<p>
-											<button type="button" id="detail_button" class="common_div industry_font"
-												ng-click="category.addItemToReqisition(item.id,category.remainingNumber,
-												category.inStock,category.inRequisition)" ng-disabled="category.addToBtnDisabled"
-												ng-style="category.btnDisabled" translate="ADD_TO_CART">
-											</button>
-										</p>
-									</div>
-								</div>
-								<div id="requsition_detail_cross" class="common_industry industry_font font_color1" 
-										ng-click="category.closeRequisitionDetail(item.id)">
-									<div id="requsition_detail_cross_div" class="common_div industry_font"></div>
-									<div class="common_text">
-										<p><span>X</span></p>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div id="lightbox" class="requisitionDetail{{item.id}}" ng-click="category.closeRequisitionDetail(item.id)"></div>
-				</div>
-			</div>
-		</div>
-		<div class="items_empty_content_message" ng-include="'/common/pages/emptyContentMessage.html'"
-			 ng-if="category.emptyContentsMessage"></div>
-		<div class="items_empty_content_message empty_error_message" ng-include="'/common/pages/emptyContentMessage.html'"
-			 ng-if="category.itemsLoadError"></div>
-		<div class="items_empty_content_message empty_error_message" ng-if="category.regionsLoadError"
-				ng-style="category.locationErrorStyle">
-			 	<p class="error_message_block"><span ng-bind="locationsErrorMessage"></span></p>
-		</div>
-		<div class="items_empty_content_message empty_error_message" ng-include="'/common/pages/emptyContentMessage.html'"
-			 ng-if="category.items.length < 1"></div>
-	</div>
-	<div ng-include="'/common/pages/footer.html'"></div>
-    
-	<script type="text/javascript" src="/lib/jquery/jquery-3.3.1.min.js"></script>
-	<script type="text/javascript" src="/lib/jquery/jquery.serializejson.min.js"></script>
-	<script type="text/javascript" src="/lib/bootstrap/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="/lib/angularjs/angular.min.js"></script>
-	<script type="text/javascript" src="/lib/angularjs/angular-translate.min.js"></script>
-	<script type="text/javascript" src="/lib/angularjs/angular-translate-loader-url.min.js"></script>
-	<script type="text/javascript" src="/lib/angularjs/angular-cookies.min.js"></script>
-	<script type="text/javascript" src="/lib/toastr/toastr.min.js"></script>
-	<script type="text/javascript" src="/lib/stomp/stomp.min.js"></script>
-	<script type="text/javascript" src="/common/js/common.js"></script>
-	<script type="text/javascript" src="/common/js/category.js"></script>
+    <input type="hidden" id="current_username" th:value="${#authentication.principal.username}">
+    <input type="hidden" id="current_rolename" th:value="${#authentication.principal.role.name}">
+    <div ng-include="'/common/pages/requisitionBar.html'" ng-controller="requisitionBarController as requisition"></div>
+
+    <div class="page-container">
+        <div ng-include="'/common/pages/header.html'" class="header-section" ng-controller="headerController"></div>
+        <div class="page-content-section">
+            <div ng-controller="categoryController as category">
+                <ol class="breadcrumb industry_font">
+                    <li><a href="/"><span class="industry_color_1" translate="RETURN_TO_HOME"></span></a></li>
+                    <li class="industry_text_color" ng-bind="category.title"></li>
+                </ol>
+                <form class="category_filter_container industry_font">
+                    <div class="search_container">
+                        <div id="asset_type">
+                            <!-- to get category dynamically -->
+                            <span title="{{category.title|uppercase}}"
+                                  class="category_item_title orderContent category_item_title_width"
+                                  ng-bind="category.title|uppercase">
+                                </span>
+                        </div>
+                        <div id="search_text">
+                            <input type="text" id="search_text_input" name="searchString" ng-keypress="($event.which === 13)?category.search():0">
+                        </div>
+                    </div>
+                    <input name="categoryId" type="hidden" value="{{category.categoryId}}">
+                    <div id="search_button">
+                        <img ng-src="/{{industry}}/images/search_button.svg"
+                             title="{{'SEARCH'|translate|lowercase}}"
+                             ng-click="category.search()">
+                    </div>
+                    <div class="item_filter_container">
+                        <select id="item_filter" name="sort"
+                                ng-model="category.sort" ng-change="category.search()">
+                            <option value="lastAccessedDate" translate="DATE_ADDED"></option>
+                            <option value="name" translate="ALPHABETICAL"></option>
+                        </select>
+                    </div>
+                </form>
+                <div class="category_assets_container">
+                    <form class="category_filter_container industry_font">
+                        <div id="availability_region">
+                            <div id="availability_region_box" class="industry_font">
+                                <div id="availability_region_title">
+                                    <span translate="AVAILABILITY_LOCATIONS"></span>
+                                </div>
+                                <div id="availability_region_content">
+                                    <div class="items_empty_content_message empty_error_message"
+                                         ng-if="category.regionsLoadError">
+                                        <p class="error_message_block">
+                                            <span class="locations_error_message" ng-bind="locationsErrorMessage"></span>
+                                        </p>
+                                    </div>
+                                    <div ng-repeat="region in category.regions" class="regions">
+                                        <label class="region_label" for="{{region}}">
+                                            <input type="checkbox"
+                                                   name="regions[]"
+                                                   id="{{region}}"
+                                                   value="{{region}}"
+                                                   ng-click="category.search()"
+                                                   ng-checked="category.checkedRegions.indexOf(region) > -1"/>
+                                            <span translate="{{region}}"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="assets_category">
+                        <span id="no_result_text" translate="NO_RESULT" ng-if="category.showNoResultText"></span>
+                        <div class="items_empty_content_message empty_error_message"
+                             ng-include="'/common/pages/emptyContentMessage.html'"
+                             ng-if="category.items.length < 1 || category.itemsLoadError">
+                        </div>
+                        <div class="assets_category_boxes">
+                            <div class="assets_category_box" ng-repeat="item in category.items">
+                                <div class="assets_category_box_img" alt="item_box">
+                                    <div class="assets_category_container">
+                                        <a ng-href="/items/{{item.id}}" class="assets_category_img">
+                                            <img ng-alt="{{item.name}}" ng-src="{{item.image}}">
+                                            <div class="assets_category_overlay_img"></div>
+                                        </a>
+                                        <div class="assets_category_title industry_color_1 industry_font">
+                                            <a ng-href="/items/{{item.id}}">
+                                                <span title="{{item.name}}"
+                                                      ng-bind="item.name"
+                                                      class="industry_color_1 green_text category_item_title"></span>
+                                            </a>
+                                        </div>
+                                        <p class="assets_category_description"
+                                           title="{{item.description}}"
+                                           ng-bind="item.description"></p>
+                                        <div class="add_to_requisition industry_font"
+                                             ng-click="category.openRequisitionDetail(item)">
+                                            <button id="add_to_requisition_btn">
+                                                <span class="add_to_requisition_color" translate="ADD_TO_CART"></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="requisition_detail_container" ng-if="category.showCategoryRequisitionDetail">
+                                <div id="requisition_detail">
+                                    <div id="requisition_detail_box">
+                                        <div class="requisition_title_and_close_button">
+                                            <div id="requisition_detail_title" class="industry_font">
+                                            <span title="{{category.currentItem.name}}"
+                                                  class="category_item_title"
+                                                  ng-bind="category.currentItem.name">
+                                            </span>
+                                            </div>
+                                            <div id="requisition_detail_cross" class="industry_color_1"
+                                                 ng-click="category.closeRequisitionDetail(category.currentItem.id)">
+                                                <span>X</span>
+                                            </div>
+                                        </div>
+                                        <div class="requisition_img_and_description">
+                                            <img ng-src="{{category.currentItem.image}}" class="requisition_detail_img">
+                                            <div class="requisition_detail_overlay_img"></div>
+                                            <div id="requisition_detail_description">
+                                                <span title="{{category.currentItem.description}}"
+                                                      class="item_description"
+                                                      ng-bind="category.currentItem.description">
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div id="requisition_detail_available">
+                                            <div ng-show="category.showQuantity">
+                                                <p class="in_stock">
+                                                    <span ng-bind="category.currentItem.inStock"></span>
+                                                    <span translate="IN_STOCK"></span>
+                                                </p>
+                                                <p class="in_requisition_request"
+                                                   ng-show="category.currentItem.inRequisition !== 0">
+                                                    (<span ng-bind="category.currentItem.inRequisition"></span>
+                                                    <span translate="IN_CART"></span>)
+                                                </p>
+                                            </div>
+                                            <div class="loading" ng-show="category.loadingAnimation">
+                                                <div class="sp-3balls"></div>
+                                            </div>
+                                        </div>
+                                        <div class="requisition_detail_buttons">
+                                            <div class="requisition_detail_stock_buttons">
+                                                <div class="requisition_detail_stock_button">
+                                                    <button type="button"
+                                                            ng-click="category.remainingNumber = category.itemNumMinus(category.remainingNumber)"
+                                                            ng-style="category.minusDisabled"
+                                                            ng-disabled="category.minusBtnDisabled">-</button>
+                                                </div>
+                                                <div id="requisition_detail_input">
+                                                    <input type="number"
+                                                           onkeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
+                                                           ng-model="category.remainingNumber"
+                                                           ng-blur="category.remainingNumber = category.calItemNum(category.remainingNumber, category.currentItem.inStock, category.currentItem.inRequisition)"
+                                                           ng-value="category.remainingNumber">
+                                                </div>
+                                                <div class="requisition_detail_stock_button">
+                                                    <button type="button"
+                                                            ng-click="category.remainingNumber = category.itemNumPlus(category.remainingNumber, category.currentItem.inStock, category.currentItem.inRequisition)"
+                                                            ng-style="category.plusDisabled"
+                                                            ng-disabled="category.plusBtnDisabled">+</button>
+                                                </div>
+                                            </div>
+                                            <div id="confirm_button" class="industry_font">
+                                                <button type="button"
+                                                        ng-click="category.addItemToRequisition(category.currentItem.id, category.remainingNumber, category.currentItem.inStock, category.currentItem.inRequisition)"
+                                                        ng-disabled="category.addToBtnDisabled"
+                                                        ng-style="category.btnDisabled" translate="ADD_TO_CART">
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="lightbox" ng-click="category.closeRequisitionDetail(category.currentItem.id)"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer ng-include="'/common/pages/footer.html'"></footer>
+    </div>
+
+    <script type="text/javascript" src="/lib/jquery/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="/lib/jquery/jquery.serializejson.min.js"></script>
+    <script type="text/javascript" src="/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/lib/angularjs/angular.min.js"></script>
+    <script type="text/javascript" src="/lib/angularjs/angular-translate.min.js"></script>
+    <script type="text/javascript" src="/lib/angularjs/angular-translate-loader-url.min.js"></script>
+    <script type="text/javascript" src="/lib/angularjs/angular-cookies.min.js"></script>
+    <script type="text/javascript" src="/lib/toastr/toastr.min.js"></script>
+    <script type="text/javascript" src="/lib/stomp/stomp.min.js"></script>
+    <script type="text/javascript" src="/common/js/common.js"></script>
+    <script type="text/javascript" src="/common/js/category.js"></script>
 </body>
 </html>

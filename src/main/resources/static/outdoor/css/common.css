@@ -52,6 +52,10 @@ body {
     box-shadow: 0 0 10px grey;
 }
 
+.asset_summary_title a:hover, .assets_category_title a span:hover {
+    color: rgb(4,126,213);
+}
+
 #requisition_bar {
     background-color: #fff;;
     border: 2px solid rgba(71, 72, 30, 1);
