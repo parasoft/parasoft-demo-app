@@ -106,3 +106,7 @@ body {
 .requisition_buttons button:hover {
     background-color: rgba(238, 208, 162, 1);
 }
+
+.home-link:hover {
+    color: rgb(4,126,213);
+}

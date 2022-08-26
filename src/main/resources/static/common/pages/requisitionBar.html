@@ -8,7 +8,7 @@
                 <span translate="CART_TITLE"></span>
             </div>
             <div class="common_industry">
-                <button id="requisition_submit_button" class="btn orange_button" ng-click="requisition.checkItems()"
+                <button id="requisition_submit_button" class="btn industry_font " ng-click="requisition.checkItems()"
                         ng-disabled="disableSubmitBtn || cartItemLoadError">
                     <span translate="ORDER_SUBMIT_BUTTON"></span>
                 </button>
@@ -20,7 +20,7 @@
         <div id="shopping_cart" ng-style="shoppingCart">
             <div ng-repeat="cartItem in cartItems track by $index" class="requisition_item">
                 <div class="requisition_item_title">
-                    <a href="/items/{{cartItem.itemId}}" title="{{cartItem.name}}" class="industry_color_1 industry_font">
+                    <a href="/items/{{cartItem.itemId}}" title="{{cartItem.name}}" class="industry_color_1">
                         <span ng-bind="cartItem.name"></span>
                     </a>
                 </div>

@@ -118,3 +118,7 @@ body {
 .requisition_remove a:hover{
     color: #E7FFA1
 }
+
+.home-link:hover {
+    color: #E7FFA1;
+}

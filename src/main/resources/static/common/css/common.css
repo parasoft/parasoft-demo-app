@@ -88,7 +88,7 @@ a, a:hover, a:focus {
     width: unset;
     min-width: 72px;
     height: 35px;
-    font-size: 10px;
+    font-size: 12px;
 }
 
 #setting-button a {
@@ -115,7 +115,7 @@ a, a:hover, a:focus {
     min-width: 14px;
     height: 14px;
     padding: 1px 4px 0 4px;
-    background-color: #CC8837;
+    background-color: rgba(255, 153, 0, 1);
     border-radius: 14px;
     font-size: 10px;
     display: flex;
@@ -127,7 +127,6 @@ a, a:hover, a:focus {
 #username-button .dropdown-menu {
     min-width: 100px;
     min-height: 29px;
-    margin-top: 10px;
     right: -15px;
 }
 
@@ -254,10 +253,6 @@ a, a:hover, a:focus {
     font-size: 16px;
     margin-bottom: 20px;
     margin-top: 20px;
-}
-
-#requisition_title {
-    font-size: 20px;
 }
 
 #assets_to_deploy {
