@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class OrderEntity implements Cloneable{
+public class OrderEntity {
 
     @Setter
     @Id
@@ -35,8 +35,8 @@ public class OrderEntity implements Cloneable{
     private String orderNumber;
 
     @Setter
-    @Column(name = "user_id")
-    private Long userId;
+    @Column(name = "requested_by")
+    private String requestedBy;
 
     @Setter
     @Enumerated(EnumType.STRING)
@@ -49,6 +49,10 @@ public class OrderEntity implements Cloneable{
     @Setter
     @Column(name = "reviewed_by_prch")
     private Boolean reviewedByPRCH;
+
+    @Setter
+    @Column(name = "responded_by")
+    private String respondedBy;  // approver's username
 
     @Setter
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "order")
@@ -90,9 +94,9 @@ public class OrderEntity implements Cloneable{
     @Column(name = "comments")
     private String comments;
 
-    public OrderEntity(Long userId, RegionType region, String location, String receiverId,
+    public OrderEntity(String requestedBy, RegionType region, String location, String receiverId,
     		String eventId, String eventNumber) {
-        this.userId = userId;
+        this.requestedBy = requestedBy;
         this.region = region;
         this.location = location;
         this.receiverId = receiverId;
@@ -105,10 +109,11 @@ public class OrderEntity implements Cloneable{
 
         newOrder.id = this.id;
         newOrder.orderNumber = this.orderNumber;
-        newOrder.userId = this.userId;
+        newOrder.requestedBy = this.requestedBy;
         newOrder.status = this.status;
         newOrder.reviewedByAPV = this.reviewedByAPV;
         newOrder.reviewedByPRCH = this.reviewedByPRCH;
+        newOrder.respondedBy = this.respondedBy;
         newOrder.orderItems = this.orderItems;
         newOrder.region = this.region;
         newOrder.location = this.location;

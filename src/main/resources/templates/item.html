@@ -3,156 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <title translate="PROJECT_NAME"></title>
-    
     <link rel="icon" href="/common/images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="/lib/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/lib/toastr/toastr.min.css"/>
     <link rel="stylesheet" type="text/css" href="/common/css/common.css">
-    <link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/style.css'">
+    <link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/common.css'">
+    <link rel="stylesheet" type="text/css" href="/common/css/item.css">
     <link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/item.css'">
 </head>
 <body>
-	<input type="hidden" id="current_username" th:value="${#authentication.principal.username}">
-	<input type="hidden" id="current_rolename" th:value="${#authentication.principal.role.name}">
-	<div ng-include="'/common/pages/header.html'" ng-controller="headerController as header"></div>
-	<div ng-include="'/common/pages/requisitionBar.html'" ng-controller="requisitionBarController as requisition"></div>
-	<div  ng-controller="itemDetailController as itemDetail">
-		<div id="middle" ng-if="itemDetail.showItemDetail">
-			<div id="item_detail_breadcrumb" class="common_industry">
-				<ol class="breadcrumb industry_font font_color1">
-					 <li><a href="/"><span class="font_color1" translate="RETURN_TO_HOME"></span></a></li>
-					 <li><a ng-href="/categories/{{itemDetail.item.categoryId}}">
-					 	<span class="font_color1" ng-bind="itemDetail.categoryName|textLengthSet:true:50:'...'"></span>
-					 </a></li>
-					 <li class="unClickable_color1 retract_format breadcrumb_unclickable_button" ng-bind="itemDetail.item.name"></li>
-				</ol>
-			</div>
-			<div id="item_title" class="common_industry industry_font">
-				<div id="item_title_div" class="common_div industry_font"></div>
-				<div class="common_text" title="{{itemDetail.itemTitle}}">
-					<p><span class="font_color2 nowrap retract_format" ng-bind="itemDetail.item.name" title="{{itemDetail.item.name}}"></span></p>
-				</div>
-			</div>
-			<div id="item_img_dark_overlay" class="common_industry">
-				<div class="detail_dark_overlay_img"></div>
-			</div>
-			<div id="item_img" class="common_industry">
-				<div id="item_img_div" class="common_div"></div>
-				<img ng-src="{{itemDetail.item.image}}"> 
-			</div>
-			<div id="item_minus" class="common_industry industry_font" >
-				<div class="common_text">
-					<button type="button" class="common_div requisition_button requisition_detail_button" 
-							ng-click="itemNum = itemDetail.minusItemNum(itemNum,itemInventory,inRequisition)"
-							ng-style="minusDisabled" ng-disabled="minusBtnDisabled">-</button>
-				</div>
-			</div>
-			<div id="item_plus" class="common_industry industry_font">
-				<div class="common_text">
-					<button type="button" class="common_div requisition_button requisition_detail_button" 
-							ng-click="itemNum = itemDetail.plusItemNum(itemNum,itemInventory,inRequisition)"
-							ng-style="plusDisabled" ng-disabled="plusBtnDisabled">+</button>
-				</div>
-			</div>
-			<div id="item_number" class="common_industry industry_font">
-				<div id="item_number_div" class="common_div industry_font"></div>
-				<input id="item_number_input" class="common_div industry_font" type="number"
-						onkeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
-					 	ng-onkeyup="itemNum = itemNum.replace(/\D/g,'')" ng-model="itemNum"
-						ng-blur="itemNum = itemDetail.inputItemNum(itemNum,itemInventory,inRequisition)"
-						ng-value="itemNum">
-			</div>
-			<div id="item_to_requisition" class="common_industry industry_font">
-				<div id="item_to_requisition_div" class="common_div industry_font"></div>
-				<div class="common_text">
-					<button class="detail_btn common_div industry_font orange_button" ng-style="btnDisabled" ng-disabled="addToBtnDisabled"
-							ng-click="itemDetail.addItemToReqisition(itemNum,itemInventory,inRequisition)">
-						<span translate="ADD_TO_CART"></span>
-					</button>
-				</div>
-			</div>
-			<div id="item_available" class="common_industry industry_font">
-				<div id="item_available_div" class="common_div industry_font"></div>
-				<div class="common_text font_color2" ng-show="itemDetail.showQuantity">
-					<p class="in_stock">
-						<span ng-bind="itemInventory"></span>
-						<span translate="IN_STOCK"></span>
-					</p>
-					<p ng-show="inRequisition !== 0">
-						(<span ng-bind="inRequisition"></span>
-						<span translate="IN_CART"></span>)
-					</p>
-				</div>
-				<div class="loading common_industry" ng-show="itemDetail.loadingAnimation">
-					<div class="sp-3balls"></div>
-				</div>
-			</div>
-			<div id="item_description"  class="common_industry">
-				<div id="item_description_div" class="common_div"></div>
-				<div class="common_text font_color2 item_description_detail">
-					<p><span class="item_detail_des_format" ng-bind="itemDetail.item.description"></span></p>
-				</div>
-			</div>
-		</div>
-<!-- 		<div class="common_industry"> -->
-<!-- 			<div id="related_title" class="common_industry industry_font font_color2"> -->
-<!-- 				<div id="related_title_div" class="common_div industry_font"></div> -->
-<!-- 				<div class="common_text"> -->
-<!-- 					<p><span ng-bind="itemDetail.relatedAssets"></span></p> -->
-<!-- 				</div> -->
-<!-- 			</div> -->
-<!-- 			<div class="related_item" ng-repeat="item in itemDetail.relatedItems | limitTo: 3"> -->
-<!-- 				<div class="related_item_box common_industry industry_font related_item_line{{itemDetail.itemLineExp($index)}}_box"> -->
-<!-- 					<div class="related_item_box_div common_industry industry_font"></div> -->
-<!-- 					<img ng-src="/{{industry}}/images/category_box.svg"> -->
-<!-- 				</div> -->
-<!-- 				<div class="related_item_img common_industry related_item_line{{itemDetail.itemLineExp($index)}}_img"> -->
-<!-- 					<img class="category_img_format" ng-src="{{itemDetail.relatedImg}}"> -->
-<!-- 				</div> -->
-<!-- 				<div class="related_dark_overlay common_industry related_item_line{{itemDetail.itemLineExp($index)}}_dark_overlay"> -->
-<!-- 					<img ng-src="/{{industry}}/images/category_dark_overlay.svg"> -->
-<!-- 				</div> -->
-<!-- 				<div class="related_item_title common_industry industry_font related_item_line{{itemDetail.itemLineExp($index)}}_title"> -->
-<!-- 					<div class="common_div industry_font"></div> -->
-<!-- 					<div class="common_text font_color1"> -->
-<!-- 						<p> -->
-<!-- 							<span>Related Asset 1</span> -->
-<!-- 						</p> -->
-<!-- 					</div> -->
-<!-- 				</div> -->
-<!-- 				<div class="related_item_description common_industry related_item_line{{itemDetail.itemLineExp($index)}}_description"> -->
-<!-- 					<div class="common_div"></div> -->
-<!-- 					<div class="common_text font_color2"> -->
-<!-- 						<p> -->
-<!-- 							<span>Asset info. Lorem ipsum dolor sit amet, consectetur -->
-<!-- 								adipiscing elit. Aenean euismod bibendum laoreet. </span> -->
-<!-- 						</p> -->
-<!-- 					</div> -->
-<!-- 				</div> -->
-<!-- 				<div class="related_item_button common_industry industry_font related_item_line{{itemDetail.itemLineExp($index)}}_button"> -->
-<!-- 					<div class="related_item_button_div common_div industry_font"></div> -->
-<!-- 					<div class="common_text"> -->
-<!-- 						<p> -->
-<!-- 							<span ng-bind="itemDetail.addToRequisition"></span> -->
-<!-- 						</p> -->
-<!-- 					</div> -->
-<!-- 				</div> -->
-<!-- 			</div> -->
-<!-- 		</div> -->
-		<div class="items_empty_content_message empty_error_message" ng-include="'/common/pages/emptyContentMessage.html'"
-					ng-if="itemDetail.itemDetailError"></div>
-	</div>
+    <input type="hidden" id="current_username" th:value="${#authentication.principal.username}">
+    <input type="hidden" id="current_rolename" th:value="${#authentication.principal.role.name}">
 
-	<div ng-include="'/common/pages/footer.html'"></div>
-    
-	<script type="text/javascript" src="/lib/jquery/jquery-3.3.1.min.js"></script>
-	<script type="text/javascript" src="/lib/bootstrap/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="/lib/angularjs/angular.min.js"></script>
-	<script type="text/javascript" src="/lib/angularjs/angular-translate.min.js"></script>
-	<script type="text/javascript" src="/lib/angularjs/angular-translate-loader-url.min.js"></script>
-	<script type="text/javascript" src="/lib/toastr/toastr.min.js"></script>
-	<script type="text/javascript" src="/lib/stomp/stomp.min.js"></script>
-	<script type="text/javascript" src="/common/js/common.js"></script>
-	<script type="text/javascript" src="/common/js/item.js"></script>
+    <div class="page-container">
+        <div ng-include="'/common/pages/header.html'" class="header-section" ng-controller="headerController as header"></div>
+        <div ng-controller="itemDetailController as itemDetail" class="page-content-section item_wrapper">
+            <div ng-include="'/common/pages/requisitionBar.html'" ng-controller="requisitionBarController as requisition"></div>
+            <div id="middle" ng-if="itemDetail.showItemDetail">
+                <div id="item_detail_breadcrumb">
+                    <ol class="industry_font item_navigation_bar">
+                        <li>
+                            <a href="/"><span class="industry_color_1 home-link" translate="RETURN_TO_HOME"></span></a>
+                        </li>
+                        <li>
+                            <a ng-href="/categories/{{itemDetail.item.categoryId}}">
+                                <span class="industry_color_1" ng-bind="itemDetail.categoryName|textLengthSet:true:50:'...'"></span>
+                            </a>
+                        </li>
+                        <li class="unClickable_color1" ng-bind="itemDetail.item.name"></li>
+                    </ol>
+                </div>
+                <div id="item_title" class="industry_font item_common_text">
+                    <span class="industry_color_2 nowrap" ng-bind="itemDetail.item.name" title="{{itemDetail.item.name}}"></span>
+                </div>
+                <div class="item_detailed_information">
+                    <div class="item_img_and_buttons">
+                        <div id="item_img_dark_overlay" class="common_industry">
+                            <div class="detail_dark_overlay_img"></div>
+                        </div>
+                        <div id="item_img">
+                            <img ng-src="{{itemDetail.item.image}}">
+                        </div>
+                        <div class="item_buttons">
+                            <div class="industry_font item_minus_and_plus">
+                                <div class="item_minus">
+                                    <button type="button" class="requisition_button"
+                                            ng-click="itemNum = itemDetail.minusItemNum(itemNum,itemInventory,inRequisition)"
+                                            ng-style="minusDisabled" ng-disabled="minusBtnDisabled">-</button>
+                                </div>
+                                <div id="item_number">
+                                    <input id="item_number_input" type="number"
+                                           onkeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
+                                           ng-onkeyup="itemNum = itemNum.replace(/\D/g,'')" ng-model="itemNum"
+                                           ng-blur="itemNum = itemDetail.inputItemNum(itemNum,itemInventory,inRequisition)"
+                                           ng-value="itemNum">
+                                </div>
+                                <div id="item_plus">
+                                    <button type="button" class="requisition_button"
+                                            ng-click="itemNum = itemDetail.plusItemNum(itemNum,itemInventory,inRequisition)"
+                                            ng-style="plusDisabled" ng-disabled="plusBtnDisabled">+</button>
+                                </div>
+                            </div>
+                            <div id="item_add_to_cart_button" class="industry_font">
+                                <button ng-style="btnDisabled" ng-disabled="addToBtnDisabled"
+                                        ng-click="itemDetail.addItemToReqisition(itemNum,itemInventory,inRequisition)">
+                                    <span translate="ADD_TO_CART"></span>
+                                </button>
+                            </div>
+                            <div id="item_available">
+                                <div class="industry_color_2 item_inventory_and_requisition" ng-show="itemDetail.showQuantity">
+                                    <div class="in_stock">
+                                        <span ng-bind="itemInventory"></span>
+                                        <span translate="IN_STOCK"></span>
+                                    </div>
+                                    <div ng-show="inRequisition !== 0">
+                                        (<span ng-bind="inRequisition"></span>
+                                        <span translate="IN_CART"></span>)
+                                    </div>
+                                </div>
+                                <div class="item_loading" ng-show="itemDetail.loadingAnimation">
+                                    <div class="sp-3balls"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="item_description"  class="industry_color_2 item_common_text"
+                         ng-bind="itemDetail.item.description">
+                    </div>
+                </div>
+            </div>
+            <div ng-include="'/common/pages/emptyContentMessage.html'" ng-if="itemDetail.itemDetailError"></div>
+        </div>
+
+        <footer ng-include="'/common/pages/footer.html'"></footer>
+    </div>
+
+    <script type="text/javascript" src="/lib/jquery/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/lib/angularjs/angular.min.js"></script>
+    <script type="text/javascript" src="/lib/angularjs/angular-translate.min.js"></script>
+    <script type="text/javascript" src="/lib/angularjs/angular-translate-loader-url.min.js"></script>
+    <script type="text/javascript" src="/lib/toastr/toastr.min.js"></script>
+    <script type="text/javascript" src="/lib/stomp/stomp.min.js"></script>
+    <script type="text/javascript" src="/common/js/common.js"></script>
+    <script type="text/javascript" src="/common/js/item.js"></script>
 </body>
 </html>

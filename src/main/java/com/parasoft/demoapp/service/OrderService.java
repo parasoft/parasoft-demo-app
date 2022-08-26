@@ -41,19 +41,20 @@ public class OrderService {
     @Autowired
     private LocationService locationService;
 
-    public synchronized OrderEntity addNewOrderSynchronized(Long userId, RegionType region, String location,
+    public synchronized OrderEntity addNewOrderSynchronized(Long userId, String username, RegionType region, String location,
                                                             String receiverId, String eventId, String eventNumber)
             throws ParameterException, ItemNotFoundException, CartItemNotFoundException {
 
-        return  addNewOrder(userId, region, location, receiverId, eventId, eventNumber);
+        return  addNewOrder(userId, username, region, location, receiverId, eventId, eventNumber);
     }
 
     @Transactional(value = "industryTransactionManager", rollbackFor = {CartItemNotFoundException.class})
-    public OrderEntity addNewOrder(Long userId, RegionType region, String location, String receiverId, String eventId,
+    public OrderEntity addNewOrder(Long userId, String username, RegionType region, String location, String receiverId, String eventId,
                                    String eventNumber)
             throws ParameterException, ItemNotFoundException, CartItemNotFoundException {
 
         ParameterValidator.requireNonNull(userId, OrderMessages.USER_ID_CANNOT_BE_NULL);
+        ParameterValidator.requireNonNull(username, OrderMessages.USERNAME_CANNOT_BE_NULL);
         ParameterValidator.requireNonNull(region, OrderMessages.REGION_CANNOT_BE_NULL);
         ParameterValidator.requireNonBlank(location, OrderMessages.LOCATION_CANNOT_BE_BLANK);
         ParameterValidator.requireNonBlank(receiverId, OrderMessages.RECEIVER_ID_CANNOT_BE_BLANK);
@@ -68,7 +69,7 @@ public class OrderService {
         }
 
         OrderEntity order = new OrderEntity();
-        order.setUserId(userId);
+        order.setRequestedBy(username);
         order.setStatus(OrderStatus.SUBMITTED);
         order.setRegion(region);
         order.setLocation(location);
@@ -149,17 +150,18 @@ public class OrderService {
 
     public synchronized OrderEntity updateOrderByOrderNumberSynchronized(String orderNumber, String userRoleName,
                                             OrderStatus newStatus, Boolean reviewedByPRCH, Boolean reviewedByAPV,
-                                                                         String comments, boolean publicToMQ)
+                                                             String respondedBy, String comments, boolean publicToMQ)
             throws IncorrectOperationException, OrderNotFoundException, NoPermissionException, ParameterException {
 
         return updateOrderByOrderNumber(
-                orderNumber, userRoleName, newStatus, reviewedByPRCH, reviewedByAPV, comments, publicToMQ);
+                orderNumber, userRoleName, newStatus, reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
     }
 
     @Transactional(value = "industryTransactionManager")
     public OrderEntity updateOrderByOrderNumber(String orderNumber, String userRoleName, OrderStatus newStatus,
                                                                 Boolean reviewedByPRCH, Boolean reviewedByAPV,
-                                                                String comments, boolean publicToMQ)
+                                                                String respondedBy, String comments,
+                                                                boolean publicToMQ)
             throws ParameterException, OrderNotFoundException, NoPermissionException, IncorrectOperationException {
 
     	ParameterValidator.requireNonNull(newStatus, OrderMessages.STATUS_CANNOT_BE_NULL);
@@ -214,6 +216,8 @@ public class OrderService {
             }
 
             newOrder.setApproverReplyDate(new Date());
+            // Set response username only when approvers change the order status
+            newOrder.setRespondedBy(respondedBy);
         }
 
         newOrder = orderRepository.save(newOrder);
@@ -255,8 +259,8 @@ public class OrderService {
     	}
 	}
 
-	public List<OrderEntity> getAllOrders(Long userId, String userRoleName) throws ParameterException {
-        ParameterValidator.requireNonNull(userId, OrderMessages.USER_ID_CANNOT_BE_NULL);
+	public List<OrderEntity> getAllOrders(String requestedBy, String userRoleName) throws ParameterException {
+        ParameterValidator.requireNonNull(requestedBy, OrderMessages.USERNAME_CANNOT_BE_NULL);
         ParameterValidator.requireNonBlank(userRoleName, OrderMessages.USER_ROLE_NAME_CANNOT_BE_BLANK);
 
         List<OrderEntity> list = new ArrayList<>();
@@ -264,15 +268,15 @@ public class OrderService {
             list = orderRepository.findAll();
 
         }else if (RoleType.ROLE_PURCHASER.toString().equals(userRoleName)) {
-            list = orderRepository.findAllByUserId(userId);
+            list = orderRepository.findAllByRequestedBy(requestedBy);
         }
 
         return list;
     }
 
-    public Page<OrderEntity> getAllOrders(Long userId, String userRoleName, Pageable pageable)
+    public Page<OrderEntity> getAllOrders(String requestedBy, String userRoleName, Pageable pageable)
             throws ParameterException {
-        ParameterValidator.requireNonNull(userId, OrderMessages.USER_ID_CANNOT_BE_NULL);
+        ParameterValidator.requireNonNull(requestedBy, OrderMessages.USERNAME_CANNOT_BE_NULL);
         ParameterValidator.requireNonBlank(userRoleName, OrderMessages.USER_ROLE_NAME_CANNOT_BE_BLANK);
 
         Page<OrderEntity> page = new PageImpl<>(new ArrayList<>(), pageable,  0);
@@ -280,7 +284,7 @@ public class OrderService {
             page = orderRepository.findAll(pageable);
 
         }else if (RoleType.ROLE_PURCHASER.toString().equals(userRoleName)) {
-            page = orderRepository.findAllByUserId(userId, pageable);
+            page = orderRepository.findAllByRequestedBy(requestedBy, pageable);
         }
 
         return page;

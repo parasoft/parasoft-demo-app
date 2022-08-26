@@ -1,0 +1,112 @@
+body {
+    background-color: rgba(240, 240, 240, 1);
+}
+
+.industry_color_1 {
+    color: #0366AE;
+}
+
+.industry_font {
+    line-height: normal;
+    font-weight: 400;
+}
+
+#header-container {
+    background-color: rgba(24, 60, 130, 1);
+    box-shadow: 0 6px 9px rgb(0 0 0 / 40%);
+}
+
+#header-container .button-body:hover {
+    background-color: rgba(247, 247, 217, 0.101960784313725);
+}
+
+.header-title a {
+    color: white;
+    font-weight: 400;
+    font-size: 36px;
+}
+
+#setting-button a, .role-title {
+    color: #b2c2cd;
+}
+
+#username-button .dropdown-item a {
+    color: #0366AE;
+}
+
+#username-button .dropdown-item a:hover {
+    background-color: white;
+}
+
+#footer {
+    background-color: rgba(1, 20, 34, 1);
+    color: white;
+}
+
+.asset_summary_box, .assets_category_box {
+    background-color: rgba(255, 255, 255, 1);
+    box-shadow: 0 0 4px rgb(47 47 22 / 35%);
+}
+
+.asset_summary_box:hover, .assets_category_box:hover {
+    box-shadow: 0 0 10px grey;
+}
+
+.asset_summary_title a:hover, .assets_category_title a span:hover {
+    color: rgb(4,126,213);
+}
+
+#requisition_bar {
+    background-color: #fff;;
+    border: 2px solid rgba(71, 72, 30, 1);
+}
+
+#requisition_close_button:hover, .requisition_item_title a:hover {
+    color: rgb(4,126,213);
+}
+
+#requisition_title {
+    color: #33424D;;
+}
+
+#requisition_submit_button {
+    background-color: rgba(255, 153, 0, 1);
+    border-radius: 6px;
+    font-weight: 400;
+    color: #4F3000;
+}
+
+#requisition_submit_button:hover {
+    background-color: rgba(249, 181, 78, 1);
+}
+
+#assets_to_deploy {
+    font-size: 20px;
+}
+
+.industry_font {
+    font-family: 'NewYorkExtraLarge-Heavy', 'New York Extra Large Heavy', 'New York Extra Large', 'Arial', sans-serif;
+}
+
+.requisition_item_number_input {
+    border-color: #333;
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+.requisition_buttons button {
+    background-color: rgba(251, 243, 227, 1);
+    border-radius: 6px;
+    font-family: 'NewYorkExtraLarge-Heavy', 'New York Extra Large Heavy', 'New York Extra Large', sans-serif;
+    font-weight: 400;
+    color: #4F3000;
+    border-width: 1px;
+    border-color: rgba(121, 73, 0, 1);
+}
+
+.requisition_buttons button:hover {
+    background-color: rgba(238, 208, 162, 1);
+}
+
+.home-link:hover {
+    color: rgb(4,126,213);
+}

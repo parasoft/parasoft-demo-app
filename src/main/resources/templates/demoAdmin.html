@@ -1,688 +1,631 @@
 <!DOCTYPE html>
 <html xmlns:ng="http://angularjs.org" xmlns:th="http://www.thymeleaf.org" ng-app="demoAdminApp">
 <head>
-	<meta charset="UTF-8">
-	<title translate="PROJECT_NAME"></title>
+    <meta charset="UTF-8">
+    <title translate="PROJECT_NAME"></title>
 
-	<link rel="icon" href="/common/images/favicon.ico" type="image/x-icon">
-	<link rel="stylesheet" type="text/css" href="/lib/fontawesome/font-awesome.min.css">
-	<link rel="stylesheet" type="text/css" href="/lib/bootstrap/css/bootstrap.min.css">
-	<link rel="stylesheet" type="text/css" href="/lib/toastr/toastr.min.css"/>
-	<link rel="stylesheet" type="text/css" href="/common/css/common.css">
-	<link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/style.css'">
-	<link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/demoAdmin.css'">
-
+    <link rel="icon" href="/common/images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="/lib/fontawesome/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/lib/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/lib/toastr/toastr.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/common/css/common.css">
+    <link rel="stylesheet" type="text/css" href="/common/css/demoAdmin.css">
+    <link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/common.css'">
+    <link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/demoAdmin.css'">
 </head>
 <body>
-	<input type="hidden" id="current_username" th:value="${#authentication.principal.username}">
-	<input type="hidden" id="current_rolename" th:value="${#authentication.principal.role.name}">
-	<div ng-include="'/common/pages/header.html'" ng-controller="headerController"></div>
+<input type="hidden" id="current_username" th:value="${#authentication.principal.username}">
+<input type="hidden" id="current_rolename" th:value="${#authentication.principal.role.name}">
+<div class="page-container">
+    <div ng-include="'/common/pages/header.html'" ng-controller="headerController" class="header-section"></div>
 
-	<div ng-controller="demo_admin_controller as demo">
-		<div id="return_to_home" class="common_industry industry_font">
-			<div id="return_to_home_div" class="common_div industry_font"></div>
-			<div class="common_text">
-				<p><a href="/"><span class="font_color1" translate="RETURN_TO_HOME"></span></a></p>
-			</div>
-		</div>
-	 	<div id="industry_title" class="industry_font demo_admin">
-	 		<div id="industry_title_div" class="demo_admin_div"></div>
-	 		<div class="demo_admin_text">
-	 			<p><span translate="TITLE_DEMO_ADMIN"></span><span>: </span><span ng-bind="INDUSTRY"></span></p>
-	 		</div>
-	 	</div>
+    <div ng-controller="demo_admin_controller as demo" class="page-content-section industry_font industry_color_2">
+        <div>
+            <a href="/" translate="RETURN_TO_HOME" class="industry_color_1 home-link"></a>
+        </div>
+        <div id="page_title">
+            <span translate="TITLE_DEMO_ADMIN"></span>:&nbsp;<span ng-bind="INDUSTRY"></span>
+        </div>
+        <div class="page_main_content">
+            <div class="page_main_left_content">
+                <ul class="nav nav-tabs">
+                    <li role="presentation" ng-class="demo.GENERAL" ng-click="demo.changeToGeneral()">
+                        <a type="button" class="industry_color_2 nav-tab-header" translate="GENERAL_ADMIN"></a>
+                    </li>
+                    <li role="presentation" class="category_tab" ng-class="demo.CATEGORIES" ng-click="demo.changeToCategories()">
+                        <a type="button" class="industry_color_2 nav-tab-header" translate="CATEGORIES_ADMIN"></a>
+                    </li>
+                    <li role="presentation" class="item_tab" ng-class="demo.ITEMS" ng-click="demo.changeToItems()">
+                        <a type="button" class="industry_color_2 nav-tab-header" translate="ITEMS_ADMIN"></a>
+                    </li>
+                    <li role="presentation" class="labels_tab last_tab" ng-class="demo.LABELS" ng-click="demo.changeToLabels()">
+                        <a type="button" class="industry_color_2 nav-tab-header" translate="LABELS_ADMIN"></a>
+                    </li>
+                </ul>
 
-	 	<ul class="nav nav-tabs industry_font">
-			<li role="presentation" ng-class="demo.GENERAL" ng-click="demo.changeToGeneral()">
-				<a type="button" translate="GENERAL_ADMIN"></a>
-			</li>
-			<li role="presentation" class="category_tab" ng-class="demo.CATEGORIES" ng-click="demo.changeToCategories()">
-				<a type="button" translate="CATEGORIES_ADMIN"></a>
-			</li>
-			<li role="presentation" class="item_tab" ng-class="demo.ITEMS" ng-click="demo.changeToItems()">
-				<a type="button" translate="ITEMS_ADMIN"></a>
-			</li>
-			<li role="presentation" class="labels_tab last_tab" ng-class="demo.LABELS" ng-click="demo.changeToLabels()">
-				<a type="button" translate="LABELS_ADMIN"></a>
-			</li>
-		</ul>
+                <div ng-if="demo.GENERAL" class="tab_content">
+                    <div class="section_container">
+                        <div class="section_title">
+                            <span translate="DATABASE"></span>
+                        </div>
+                        <div class="section_body">
+                            <div class="database_operation_buttons">
+                                <button class="btn btn-default operation_button" data-toggle="modal" data-target="#database_reset_confirm_modal"
+                                        ng-click="demo.showDatabaseOperationConfirmModal('reset')">
+                                    <span name="reset" class="industry_font" translate="RESET"></span>
+                                </button>
+                                <button class="btn btn-default operation_button" data-toggle="modal" data-target="#database_reset_confirm_modal"
+                                        ng-click="demo.showDatabaseOperationConfirmModal('clear')">
+                                    <span name="clear" class="industry_font" translate="CLEAR"></span>
+                                </button>
+                            </div>
 
-	 	<div ng-if="demo.GENERAL">
-			<div id="industry_save_button" class="demo_admin">
-				<div id="industry_save_button_div" class="demo_admin_div"></div>
-				<div id="industry_save_button_text" class="industry_font">
-					<button id="save_changes_button" class="btn common_div orange_button"
-						data-toggle="modal" data-target="#saving_modal" ng-click="demo.saveAll()"
-						ng-disabled="demo.disableSaveChangesButton()">
-						<span translate="SAVE_CHANGES"></span>
-					</button>
-				</div>
-			</div>
-			<div id="saving_modal" class="modal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
-				<div class="modal-dialog">
-					<div class="saving-modal-content industry_font">
-						<div class="saving-modal-header"></div>
-						<div class="modal-body">
-							<div class="modal-title">
-								<span translate="SAVING"></span>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div id="database" class="demo_admin">
-			 	<div id="database_div" class="demo_admin_div"></div>
-			 	<div class="industry_font demo_admin_text">
-			 		<p><span translate="DATABASE"></span></p>
-				</div>
-			 </div>
-			 <div id="database_button" class="demo_admin_button demo_admin">
-			 			<!-- <div id="database_button_div" class="demo_admin_div"></div> -->
-			 	<div id="database_button_text">
-			 		<button class="btn btn-default industry_button reset_btn function_btn" data-toggle="modal" data-target="#database_reset_confirm_modal"
-			 			ng-click="demo.showDatabaseOperationConfirmModal('reset')">
-			 			<span name="reset" class="industry_font" translate="RESET"></span>
-			 		</button>
-			 		<button class="btn btn-default industry_button clear_btn function_btn" data-toggle="modal" data-target="#database_reset_confirm_modal"
-			 			ng-click="demo.showDatabaseOperationConfirmModal('clear')">
-			 			<span name="clear" class="industry_font" translate="CLEAR"></span>
-			 		</button>
-			 	</div>
-			 	<div id="database_reset_confirm_modal" class="modal fade" tabindex="-1" role="dialog">
-			 		<div class="modal-dialog">
-						<div class="modal-content industry_font">
-							<div class="modal-header">
-								<button type="button" class="close font_color1 green_text" data-dismiss="modal" aria-hidden="true">
-									&times;
-								</button>
-								<div class="modal-title">
-									<span ng-if="demo.currentDatabaseOperation==='reset'" translate="RESET"></span>
-									<span ng-if="demo.currentDatabaseOperation==='clear'" translate="CLEAR"></span>
-								</div>
-							</div>
-							<div class="modal-body">
-								<span ng-if="demo.currentDatabaseOperation==='reset'" class="warning_text" translate="DATABASE_RESET_CONFIRM_TEXT"></span>
-								<span ng-if="demo.currentDatabaseOperation==='clear'" class="warning_text" translate="DATABASE_CLEAR_CONFIRM_TEXT"></span>
-							</div>
-							<div class="modal-footer">
-								<button ng-if="demo.currentDatabaseOperation==='reset'" type="button" class="btn orange_button modal_confirm_btn"
-										ng-click="demo.resetDatabase()" translate="CONFIRM">
-								</button>
-								<button ng-if="demo.currentDatabaseOperation==='clear'" type="button" class="btn orange_button modal_confirm_btn"
-										ng-click="demo.clearDatabase()" translate="CONFIRM">
-								</button>
-								<button type="button" class="btn btn-default modal_cancel_btn" data-dismiss="modal"
-										ng-bind="'CANCEL'|translate|uppercase"></button>
-							</div>
-						</div><!-- /.modal-content -->
-					</div><!-- /.modal-dialog -->
-			 	</div><!-- /.modal -->
-			</div>
-			<form id="options_form" ng-controller="optionsForm as options">
-				<div id="web_service" class="demo_admin">
-					<div id="web_service_div" class="demo_admin_div"></div>
-					<div class="industry_font demo_admin_text">
-						<p><span translate="WEB_SERVICE"></span></p>
-					</div>
-				</div>
-				<div id="rest_endpoint_set" class="industry_font">
-					<div>
-						<div class="form-group">
-							<label class="endpoint_label" for="categories_rest_endpoint"><span translate="CATEGORIES"></span><span ng-bind="':'"></span></label>
-							<div class="endpoint_url_test_message_position">
-								<span class="invalid_url_message" ng-show="demo.endpointError_categories"
-										translate={{'INVALID_ENDPOINT_URL'|translate}}></span>
-							</div>
-							<input id="categories_rest_endpoint" type="text" name="categoriesRestEndpoint"
-									class="form-control" placeholder="{{'ENDPOINT_URL_FOR_CATEGORIES'|translate}} {{demo.end_point_for_categories}}"
-									ng-model="options.restEndpoints.categoriesRestEndpointUrl"  ng-trim="false"
-									ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.categoriesRestEndpointUrl, 'categories');"/>
-							<button class="btn btn-default industry_button function_btn endpoint_reset"
-									ng-click="options.resetEndpoint('categories')">
-								<span translate="RESET_ENDPOINT"></span>
-							</button>
-						</div>
-						<div class="form-group">
-							<label class="endpoint_label" for="items_rest_endpoint"><span translate="ITEMS"></span><span ng-bind="':'"></span></label>
-							<div class="endpoint_url_test_message_position">
-								<span class="invalid_url_message" ng-show="demo.endpointError_items"
-									translate={{'INVALID_ENDPOINT_URL'|translate}}></span>
-							</div>
-							<input id="items_rest_endpoint" type="text" name="itemsRestEndpoint"
-									class="form-control" placeholder="{{'ENDPOINT_URL_FOR_ITEMS'|translate}} {{demo.end_point_for_items}}"
-									ng-model="options.restEndpoints.itemsRestEndpointUrl"  ng-trim="false"
-									ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.itemsRestEndpointUrl, 'items')"/>
-							<button class="btn btn-default industry_button function_btn endpoint_reset"
-									style="top: 97px" ng-click="options.resetEndpoint('items')">
-								<span translate="RESET_ENDPOINT"></span>
-							</button>
-						</div>
-						<div class="form-group">
-							<label class="endpoint_label" for="cart_items_rest_endpoint"><span translate="CART_ITEMS"></span><span ng-bind="':'"></span></label>
-							<div class="endpoint_url_test_message_position">
-								<span class="invalid_url_message" ng-show="demo.endpointError_cart"
-										translate={{'INVALID_ENDPOINT_URL'|translate}}></span>
-							</div>
-							<input id="cart_items_rest_endpoint" type="text" name="cartItemsRestEndpoint"
-									class="form-control" placeholder="{{'ENDPOINT_URL_FOR_CARTITEMS'|translate}} {{demo.end_point_for_cartItems}}"
-									ng-model="options.restEndpoints.cartItemsRestEndpointUrl"  ng-trim="false"
-									ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.cartItemsRestEndpointUrl, 'cart')"/>
-							<button class="btn btn-default industry_button function_btn endpoint_reset"
-									style="top: 174px" ng-click="options.resetEndpoint('cart')">
-								<span translate="RESET_ENDPOINT"></span>
-							</button>
-						</div>
-						<div class="form-group">
-							<label class="endpoint_label" for="orders_rest_endpoint"><span translate="ORDERS"></span><span ng-bind="':'"></span></label>
-							<div class="endpoint_url_test_message_position">
-								<span class="invalid_url_message" ng-show="demo.endpointError_orders"
-										translate={{'INVALID_ENDPOINT_URL'|translate}}></span>
-							</div>
-							<input id="orders_rest_endpoint" type="text" name="ordersRestEndpoint"
-									class="form-control" placeholder="{{'ENDPOINT_URL_FOR_ORDERS'|translate}} {{demo.end_point_for_orders}}"
-									ng-model="options.restEndpoints.ordersRestEndpointUrl"  ng-trim="false"
-									ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.ordersRestEndpointUrl, 'orders')"/>
-							<button class="btn btn-default industry_button function_btn endpoint_reset"
-									style="top: 251px" ng-click="options.resetEndpoint('orders')">
-								<span translate="RESET_ENDPOINT"></span>
-							</button>
-						</div>
-						<div class="form-group">
-							<label class="endpoint_label" for="locations_rest_endpoint"><span translate="LOCATIONS"></span><span ng-bind="':'"></span></label>
-							<div class="endpoint_url_test_message_position">
-								<span class="invalid_url_message" ng-show="demo.endpointError_locations"
-										translate={{'INVALID_ENDPOINT_URL'|translate}}></span>
-							</div>
-							<input id="locations_rest_endpoint" type="text" name="locationsRestEndpoint"
-									class="form-control" placeholder="{{'ENDPOINT_URL_FOR_LOCATIONS'|translate}} {{demo.end_point_for_locations}}"
-									ng-model="options.restEndpoints.locationsRestEndpointUrl"  ng-trim="false"
-									ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.locationsRestEndpointUrl, 'locations')"/>
-							<button class="btn btn-default industry_button function_btn endpoint_reset"
-									style="top: 328px" ng-click="options.resetEndpoint('locations')">
-								<span translate="RESET_ENDPOINT"></span>
-							</button>
-						</div>
-					</div>
-				</div>
-				<div id="parasoft_jdbc_proxy" class="common_industry">
-					<div id="parasoft_jdbc_proxy_title">
-						<div class="industry_font demo_admin_text">
-							<p><span translate="PARASOFT_JDBC_PROXY"></span></p>
-						</div>
-					</div>
-					<div id="parasoft_jdbc_proxy_radio" class="industry_font">
-						<div class="form-group">
-							<label>
-								<input type="checkbox" name="useParasoftJDBCProxy" ng-model="options.useParasoftJDBCProxy" value="true"
-										ng-change="demo.triggerParasoftJdbcProxy(options.useParasoftJDBCProxy, options.parasoftVirtualizeServerUrl,
-																				options.parasoftVirtualizeServerPath, options.parasoftVirtualizeGroupId)"/>
-								<span class="selection_content" translate="ENABLE"></span>
-							</label>
-						</div>
+                            <div id="database_reset_confirm_modal" class="modal fade" tabindex="-1" role="dialog">
+                                <div class="modal-dialog">
+                                    <div class="modal-content industry_font">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                            <div class="modal-title">
+                                                <span ng-if="demo.currentDatabaseOperation==='reset'" translate="RESET"></span>
+                                                <span ng-if="demo.currentDatabaseOperation==='clear'" translate="CLEAR"></span>
+                                            </div>
+                                        </div>
+                                        <div class="modal-body">
+                                            <span ng-if="demo.currentDatabaseOperation==='reset'" class="warning_text" translate="DATABASE_RESET_CONFIRM_TEXT"></span>
+                                            <span ng-if="demo.currentDatabaseOperation==='clear'" class="warning_text" translate="DATABASE_CLEAR_CONFIRM_TEXT"></span>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button ng-if="demo.currentDatabaseOperation==='reset'" type="button" class="btn button-primary modal_confirm_btn"
+                                                    ng-click="demo.resetDatabase()" translate="CONFIRM">
+                                            </button>
+                                            <button ng-if="demo.currentDatabaseOperation==='clear'" type="button" class="btn button-primary modal_confirm_btn"
+                                                    ng-click="demo.clearDatabase()" translate="CONFIRM">
+                                            </button>
+                                            <button type="button" class="btn button-secondary modal_cancel_btn" data-dismiss="modal"
+                                                    ng-bind="'CANCEL'|translate|uppercase"></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-						<div class="form-group">
-							<label for="parasoft_virtualize_server_url" class="virtualize_server_url_label" translate="PARASOFT_VIRTUALIZE_SERVER_URL"></label>
-							<input type="hidden" name="parasoftVirtualizeServerUrl" ng-value="options.parasoftVirtualizeServerUrl">
-							<div class="virtualize_server_url_test_message_position">
-								<span class="invalid_url_message" ng-show="demo.invalidVirtualizeServerUrl"
-										translate={{'INVALID_VIRTUALIZE_SERVER_URL'|translate}}></span>
-								<span class="valid_url_message" ng-show="demo.validVirtualizeServerUrl"
-										translate={{'VALID_VIRTUALIZE_SERVER_URL'|translate}}></span>
-								<span class="invalid_url_message" ng-show="demo.cannotConnectToVirtualizeServerUrl"
-										translate={{'UNREACHABLE_VIRTUALIZE_SERVER_URL'|translate}}></span>
-								<span ng-show="demo.isVirtualizeServerUrlTesting"
-									  translate={{'TESTING'|translate}}></span>
-							</div>
-							<input type="text" id="parasoft_virtualize_server_url" class="form-control" ng-model="options.parasoftVirtualizeServerUrl" ng-trim="false"
-								   ng-disabled="!options.useParasoftJDBCProxy" ng-change="demo.validateVirtualizeServerUrlWellForm(options.parasoftVirtualizeServerUrl)">
-							<button class="btn btn-default industry_button function_btn virtualize_server_url_reset" translate="RESET_URL"
-									ng-click="options.resetVirtualizeServerUrl();demo.clearVirtualizeServerUrlTestMessage();"
-									ng-disabled="!options.useParasoftJDBCProxy"></button>
-							<button class="btn btn-default industry_button function_btn virtualize_server_url_test" translate="TEST_CONNECT"
-								    ng-click="demo.validateVirtualizeServerUrl(options.parasoftVirtualizeServerUrl)"
-								    ng-disabled="options.parasoftVirtualizeServerUrl == null || options.parasoftVirtualizeServerUrl=='' || !options.useParasoftJDBCProxy"></button>
-						</div>
-						<div class="form-group">
-							<label for="parasoft_virtualize_server_path" class="virtualize_server_path_label" translate="PARASOFT_VIRTUALIZE_SERVER_PATH"></label>
-							<input type="hidden" name="parasoftVirtualizeServerPath" ng-value="options.parasoftVirtualizeServerPath">
-							<div class="virtualize_server_path_test_message_position">
-								<span class="invalid_path_message" ng-show="demo.invalidVirtualizeServerPath"
-										translate={{'INVALID_VIRTUALIZE_SERVER_PATH'|translate}}></span>
-							</div>
-							<input type="text" id="parasoft_virtualize_server_path" class="form-control" ng-model="options.parasoftVirtualizeServerPath" ng-trim="false"
-								   ng-disabled="!options.useParasoftJDBCProxy" ng-change="options.fullfilPath();demo.validateVirtualizeServerPathWellForm(options.parasoftVirtualizeServerPath);">
-							<button class="btn btn-default industry_button function_btn virtualize_server_path_reset" translate="RESET_PATH"
-									ng-click="options.resetVirtualizeServerPath();demo.clearVirtualizeServerPathTestMessage();"
-									ng-disabled="!options.useParasoftJDBCProxy"></button>
-						</div>
-						<div class="form-group">
-							<label for="parasoft_virtualize_gourp_id" class="virtualize_gourp_id_label" translate="PARASOFT_VIRTUALIZE_GROUP_ID"></label>
-							<input type="hidden" name="parasoftVirtualizeGroupId" ng-value="options.parasoftVirtualizeGroupId">
-							<div class="virtualize_gourp_id_test_message_position">
-								<span class="invalid_gourp_id_message" ng-show="demo.invalidVirtualizeGroupId"
-										translate={{'INVALID_VIRTUALIZE_GROUP_ID'|translate}}></span>
-							</div>
-							<input type="text" id="parasoft_virtualize_gourp_id" class="form-control" ng-model="options.parasoftVirtualizeGroupId" ng-trim="false"
-								   ng-disabled="!options.useParasoftJDBCProxy" ng-change="demo.validateVirtualizeGroupIdWellForm(options.parasoftVirtualizeGroupId)">
-							<button class="btn btn-default industry_button function_btn virtualize_group_id_reset" translate="RESET_GROUP_ID"
-									ng-click="options.resetVirtualizeGroupId();demo.clearVirtualizeGroupIdTestMessage();"
-									ng-disabled="!options.useParasoftJDBCProxy"></button>
-						</div>
+                    <form id="options_form" ng-controller="optionsForm as options">
+                        <div class="section_container">
+                            <div class="section_title">
+                                <span translate="WEB_SERVICE"></span>
+                            </div>
+                            <div class="section_body">
+                                <div class="form-group">
+                                    <label class="form_label" for="categories_rest_endpoint"><span translate="CATEGORIES"></span>:</label>
+                                    <div class="invalid_message" ng-show="demo.endpointError_categories" translate={{'INVALID_ENDPOINT_URL'|translate}}></div>
+                                    <div class="input-wrapper">
+                                        <input id="categories_rest_endpoint" type="text" name="categoriesRestEndpoint"
+                                               class="form-control" placeholder="{{'ENDPOINT_URL_FOR_CATEGORIES'|translate}} {{demo.end_point_for_categories}}"
+                                               ng-model="options.restEndpoints.categoriesRestEndpointUrl"  ng-trim="false"
+                                               ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.categoriesRestEndpointUrl, 'categories');"/>
+                                        <button class="btn btn-default industry_button labels_reset_btn" ng-click="options.resetEndpoint('categories')">
+                                            <span translate="RESET_ENDPOINT"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form_label" for="items_rest_endpoint"><span translate="ITEMS"></span>:</label>
+                                    <div class="invalid_message" ng-show="demo.endpointError_items" translate={{'INVALID_ENDPOINT_URL'|translate}}></div>
+                                    <div class="input-wrapper">
+                                        <input id="items_rest_endpoint" type="text" name="itemsRestEndpoint"
+                                               class="form-control" placeholder="{{'ENDPOINT_URL_FOR_ITEMS'|translate}} {{demo.end_point_for_items}}"
+                                               ng-model="options.restEndpoints.itemsRestEndpointUrl"  ng-trim="false"
+                                               ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.itemsRestEndpointUrl, 'items')"/>
+                                        <button class="btn btn-default industry_button labels_reset_btn" ng-click="options.resetEndpoint('items')">
+                                            <span translate="RESET_ENDPOINT"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form_label" for="cart_items_rest_endpoint"><span translate="CART_ITEMS"></span>:</label>
+                                    <div class="invalid_message" ng-show="demo.endpointError_cart" translate={{'INVALID_ENDPOINT_URL'|translate}}></div>
+                                    <div class="input-wrapper">
+                                        <input id="cart_items_rest_endpoint" type="text" name="cartItemsRestEndpoint"
+                                               class="form-control" placeholder="{{'ENDPOINT_URL_FOR_CARTITEMS'|translate}} {{demo.end_point_for_cartItems}}"
+                                               ng-model="options.restEndpoints.cartItemsRestEndpointUrl"  ng-trim="false"
+                                               ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.cartItemsRestEndpointUrl, 'cart')"/>
+                                        <button class="btn btn-default labels_reset_btn" ng-click="options.resetEndpoint('cart')">
+                                            <span translate="RESET_ENDPOINT"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form_label" for="orders_rest_endpoint"><span translate="ORDERS"></span>:</label>
+                                    <div class="invalid_message" ng-show="demo.endpointError_orders" translate={{'INVALID_ENDPOINT_URL'|translate}}></div>
+                                    <div class="input-wrapper">
+                                        <input id="orders_rest_endpoint" type="text" name="ordersRestEndpoint"
+                                               class="form-control" placeholder="{{'ENDPOINT_URL_FOR_ORDERS'|translate}} {{demo.end_point_for_orders}}"
+                                               ng-model="options.restEndpoints.ordersRestEndpointUrl"  ng-trim="false"
+                                               ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.ordersRestEndpointUrl, 'orders')"/>
+                                        <button class="btn btn-default labels_reset_btn" ng-click="options.resetEndpoint('orders')">
+                                            <span translate="RESET_ENDPOINT"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form_label" for="locations_rest_endpoint"><span translate="LOCATIONS"></span>:</label>
+                                    <div class="invalid_message" ng-show="demo.endpointError_locations" translate={{'INVALID_ENDPOINT_URL'|translate}}></div>
+                                    <div class="input-wrapper">
+                                        <input id="locations_rest_endpoint" type="text" name="locationsRestEndpoint"
+                                               class="form-control" placeholder="{{'ENDPOINT_URL_FOR_LOCATIONS'|translate}} {{demo.end_point_for_locations}}"
+                                               ng-model="options.restEndpoints.locationsRestEndpointUrl"  ng-trim="false"
+                                               ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.locationsRestEndpointUrl, 'locations')"/>
+                                        <button class="btn btn-default labels_reset_btn" ng-click="options.resetEndpoint('locations')">
+                                            <span translate="RESET_ENDPOINT"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-					</div>
-				</div>
-				<div id="demo_bugs" class="demo_admin">
-					<div id="demo_bugs_div" class="demo_admin_div"></div>
-					<div class="demo_admin_text industry_font">
-						<p><span translate="DEMO_BUGS"></span></p>
-					</div>
+                        <div class="section_container">
+                            <div class="section_title">
+                                <span translate="PARASOFT_JDBC_PROXY"></span>
+                            </div>
+                            <div class="section_body">
+                                <div class="form-group">
+                                    <label>
+                                        <input type="checkbox" name="useParasoftJDBCProxy" ng-model="options.useParasoftJDBCProxy" value="true"
+                                               ng-change="demo.triggerParasoftJdbcProxy(options.useParasoftJDBCProxy, options.parasoftVirtualizeServerUrl,
+                                                                                options.parasoftVirtualizeServerPath, options.parasoftVirtualizeGroupId)"/>
+                                        <span class="input-label" translate="ENABLE"></span>
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label for="parasoft_virtualize_server_url" class="form_label" translate="PARASOFT_VIRTUALIZE_SERVER_URL"></label>
+                                    <input type="hidden" name="parasoftVirtualizeServerUrl" ng-value="options.parasoftVirtualizeServerUrl">
+                                    <span class="test_virtualize_server_url_message">
+                                            <div class="invalid_message" ng-show="demo.invalidVirtualizeServerUrl" translate={{'INVALID_VIRTUALIZE_SERVER_URL'|translate}}></div>
+                                            <span class="valid_url_message" ng-show="demo.validVirtualizeServerUrl" translate={{'VALID_VIRTUALIZE_SERVER_URL'|translate}}></span>
+                                            <div class="invalid_message" ng-show="demo.cannotConnectToVirtualizeServerUrl" translate={{'UNREACHABLE_VIRTUALIZE_SERVER_URL'|translate}}></div>
+                                            <span ng-show="demo.isVirtualizeServerUrlTesting" translate={{'TESTING'|translate}}></span>
+                                        </span>
+                                    <div class="input-wrapper">
+                                        <input type="text" id="parasoft_virtualize_server_url" class="form-control" ng-model="options.parasoftVirtualizeServerUrl" ng-trim="false"
+                                               ng-disabled="!options.useParasoftJDBCProxy" ng-change="demo.validateVirtualizeServerUrlWellForm(options.parasoftVirtualizeServerUrl)">
+                                        <button class="btn btn-default industry_button labels_reset_btn" translate="RESET_URL"
+                                                ng-click="options.resetVirtualizeServerUrl();demo.clearVirtualizeServerUrlTestMessage();"
+                                                ng-disabled="!options.useParasoftJDBCProxy"></button>
+                                        <button id="test_connection_button" class="btn btn-default industry_button" translate="TEST_CONNECT"
+                                                ng-click="demo.validateVirtualizeServerUrl(options.parasoftVirtualizeServerUrl)"
+                                                ng-disabled="options.parasoftVirtualizeServerUrl == null || options.parasoftVirtualizeServerUrl=='' || !options.useParasoftJDBCProxy"></button>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="parasoft_virtualize_server_path" class="form_label" translate="PARASOFT_VIRTUALIZE_SERVER_PATH"></label>
+                                    <input type="hidden" name="parasoftVirtualizeServerPath" ng-value="options.parasoftVirtualizeServerPath">
+                                    <span class="invalid_message" ng-show="demo.invalidVirtualizeServerPath" translate={{'INVALID_VIRTUALIZE_SERVER_PATH'|translate}}></span>
+                                    <div class="input-wrapper">
+                                        <input type="text" id="parasoft_virtualize_server_path" class="form-control" ng-model="options.parasoftVirtualizeServerPath" ng-trim="false"
+                                               ng-disabled="!options.useParasoftJDBCProxy" ng-change="options.fullfilPath();demo.validateVirtualizeServerPathWellForm(options.parasoftVirtualizeServerPath);">
+                                        <button class="btn btn-default industry_button labels_reset_btn" translate="RESET_PATH"
+                                                ng-click="options.resetVirtualizeServerPath();demo.clearVirtualizeServerPathTestMessage();"
+                                                ng-disabled="!options.useParasoftJDBCProxy"></button>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="parasoft_virtualize_gourp_id" class="form_label" translate="PARASOFT_VIRTUALIZE_GROUP_ID"></label>
+                                    <input type="hidden" name="parasoftVirtualizeGroupId" ng-value="options.parasoftVirtualizeGroupId">
+                                    <span class="invalid_message" ng-show="demo.invalidVirtualizeGroupId" translate={{'INVALID_VIRTUALIZE_GROUP_ID'|translate}}></span>
+                                    <div class="input-wrapper">
+                                        <input type="text" id="parasoft_virtualize_gourp_id" class="form-control" ng-model="options.parasoftVirtualizeGroupId" ng-trim="false"
+                                               ng-disabled="!options.useParasoftJDBCProxy" ng-change="demo.validateVirtualizeGroupIdWellForm(options.parasoftVirtualizeGroupId)">
+                                        <button class="btn btn-default industry_button labels_reset_btn" translate="RESET_GROUP_ID"
+                                                ng-click="options.resetVirtualizeGroupId();demo.clearVirtualizeGroupIdTestMessage();"
+                                                ng-disabled="!options.useParasoftJDBCProxy"></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-					<div id="demo_bugs_checkbox" class="demo_admin industry_font">
-						<div class="demo_admin_text">
-							<p>
-								<label>
-									<input type="checkbox" name="demoBugs[]" value="INCORRECT_NUMBER_OF_ITEMS_IN_SUMMARY_OF_PENDING_ORDER"
-										   ng-checked="options.demoBugs.incorrect_number">
-									<span class="selection_content" translate="INCORRECT_NUMBER_OF_ITEMS"></span>
-								</label>
-							</p>
-							<p>
-								<label>
-									<input type="checkbox" name="demoBugs[]" value="INCORRECT_LOCATION_FOR_APPROVED_ORDERS"
-											ng-checked="options.demoBugs.incorrect_location">
-									<span class="selection_content" translate="INCORRECT_LOCATION_FOR_APPROVED_ORDERS"></span>
-								</label>
-							</p>
-							<p>
-								<label>
-									<input type="checkbox" name="demoBugs[]" value="REVERSE_ORDER_OF_ORDERS"
-											ng-checked="options.demoBugs.reverse_order_of_orders">
-									<span class="selection_content" translate="INCONSISTENT_ORDER_OF_ORDERS"></span>
-								</label>
-							</p>
-							<p>
-								<label>
-									<input type="checkbox" name="demoBugs[]" value="REINITIALIZE_DATASOURCE_FOR_EACH_HTTP_REQUEST"
-										   ng-checked="options.demoBugs.reinitialize_datasource_for_each_http_request">
-									<span class="selection_content" translate="REINITIALIZE_DATASOURCE_FOR_EACH_HTTP_REQUEST"></span>
-								</label>
-							</p>
-						</div>
-					</div>
-				</div>
+                        <div class="section_container">
+                            <div class="section_title">
+                                <span translate="DEMO_BUGS"></span>
+                            </div>
+                            <div class="section_body">
+                                <div>
+                                    <label>
+                                        <input type="checkbox" name="demoBugs[]" value="INCORRECT_NUMBER_OF_ITEMS_IN_SUMMARY_OF_PENDING_ORDER"
+                                               ng-checked="options.demoBugs.incorrect_number">
+                                        <span class="input-label" translate="INCORRECT_NUMBER_OF_ITEMS"></span>
+                                    </label>
+                                </div>
+                                <div>
+                                    <label>
+                                        <input type="checkbox" name="demoBugs[]" value="INCORRECT_LOCATION_FOR_APPROVED_ORDERS"
+                                               ng-checked="options.demoBugs.incorrect_location">
+                                        <span class="input-label" translate="INCORRECT_LOCATION_FOR_APPROVED_ORDERS"></span>
+                                    </label>
+                                </div>
+                                <div>
+                                    <label>
+                                        <input type="checkbox" name="demoBugs[]" value="REVERSE_ORDER_OF_ORDERS"
+                                               ng-checked="options.demoBugs.reverse_order_of_orders">
+                                        <span class="input-label" translate="INCONSISTENT_ORDER_OF_ORDERS"></span>
+                                    </label>
+                                </div>
+                                <div>
+                                    <label>
+                                        <input type="checkbox" name="demoBugs[]" value="REINITIALIZE_DATASOURCE_FOR_EACH_HTTP_REQUEST"
+                                               ng-checked="options.demoBugs.reinitialize_datasource_for_each_http_request">
+                                        <span class="input-label" translate="REINITIALIZE_DATASOURCE_FOR_EACH_HTTP_REQUEST"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
 
-				<div id="design" class="demo_admin">
-					<div id="design_div" class="demo_admin_div"></div>
-					<div class="industry_font demo_admin_text">
-						<p>
-							<span translate="INDUSTRY_DESIGN"></span>
-						</p>
-					</div>
+                        <div class="section_container">
+                            <div class="section_title">
+                                <span translate="INDUSTRY_DESIGN"></span>
+                            </div>
+                            <div class="section_body">
+                                <div>
+                                    <label>
+                                        <input type="checkbox" name="advertisingEnabled" ng-checked="options.advertisingEnabled" value="true">
+                                        <span class="input-label" translate="INCLUDE_PARASOFT_NEWS"></span>
+                                    </label>
+                                </div>
+                                <div>
+                                    <label>
+                                        <input type="radio" name="industryType" ng-model="options.industryType" value="DEFENSE">
+                                        <span class="input-label" translate="DEFENSE"></span>
+                                    </label>
+                                </div>
+                                <div>
+                                    <label>
+                                        <input type="radio" name="industryType" ng-model="options.industryType" value="AEROSPACE">
+                                        <span class="input-label" translate="AEROSPACE"></span>
+                                    </label>
+                                </div>
+                                <div>
+                                    <label>
+                                        <input type="radio" name="industryType" ng-model="options.industryType" value="OUTDOOR">
+                                        <span class="input-label" translate="OUTDOOR"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="section_container">
+                            <button id="save_changes_button" class="btn save-changes-button button-primary"
+                                    data-toggle="modal" data-target="#saving_modal" ng-click="demo.saveAll()"
+                                    ng-disabled="demo.disableSaveChangesButton()">
+                                <span translate="SAVE_CHANGES"></span>
+                            </button>
+                            <div id="saving_modal" class="modal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+                                <div class="modal-dialog">
+                                    <div class="saving-modal-content industry_font">
+                                        <div class="saving-modal-header"></div>
+                                        <div class="modal-body">
+                                            <div class="modal-title">
+                                                <span translate="SAVING"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div ng-if="demo.CATEGORIES" class="tab_content">
+                    <div id="add_category_btn" ng-click="demo.showCategoryModal()">
+                        <button class="btn btn-default operation_button" data-toggle="modal" data-target="#category_modal" translate="ADD_NEW_CATEGORY"></button>
+                    </div>
+                    <table id="category_table" class="table table-bordered">
+                        <tbody>
+                        <tr class="table_title">
+                            <th class="table_category_name" translate="CATEGORY"></th>
+                            <th class="table_category_description" translate="DESCRIPTION"></th>
+                            <th class="table_category_image" translate="IMAGE"></th>
+                            <th class="table_edit" translate="EDIT"></th>
+                        </tr>
+                        <tr ng-repeat="category in demo.categories | orderBy: 'name'">
+                            <td title="{{category.name}}">
+                                <span class="table_category_name retract_format" ng-bind="category.name"></span>
+                            </td>
+                            <td title={{category.description}}>
+                                <span class="table_category_description retract_format" ng-bind="category.description"></span>
+                            </td>
+                            <td>
+                                <img ng-src="{{category.image}}" ng-click="demo.showImgModal($index,category.image)">
+                            </td>
+                            <td>
+                                <img class="edit_icon" ng-src="/{{industry}}/images/edit.svg" data-toggle="modal"
+                                     data-target="#category_modal" ng-click="demo.showCategoryModal(category)">
+                                <img class="delete_icon" ng-src="/{{industry}}/images/delete.svg" data-toggle="modal"
+                                     data-target="#remove_confirm_modal" ng-click="demo.showRemoveConfirmModal(category)">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
 
-					<div id="design_radio" class="demo_admin">
-						<div class="industry_font demo_admin_text">
-							<p>
-								<label> <input type="radio" name="industryType" ng-model="options.industryType" value="DEFENSE">
-									<span class="selection_content" translate="DEFENSE"></span>
-								</label>
-							</p>
-							<p>
-								<label> <input type="radio" name="industryType" ng-model="options.industryType" value="AEROSPACE">
-									<span class="selection_content" translate="AEROSPACE"></span>
-								</label>
-							</p>
-							<p>
-								<label> <input type="radio" name="industryType" ng-model="options.industryType" value="OUTDOOR">
-									<span class="selection_content" translate="OUTDOOR"></span>
-								</label>
-							</p>
-						</div>
-					</div>
-				</div>
+                    <div id="category_modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+                        <div class="modal-dialog wide">
+                            <div class="modal-content wide industry_font">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                    <div class="modal-title" id="myModalLabel">
+                                        <span ng-if="!demo.editCategory" translate="ADD_NEW_CATEGORY"></span>
+                                        <span ng-if="demo.editCategory" translate="EDIT_CATEGORY"></span>
+                                    </div>
+                                </div>
 
-				<div id="advertising_and_news" class="common_industry industry_font">
-					<p><label>
-						<input type="checkbox" name="advertisingEnabled" ng-checked="options.advertisingEnabled" value="true">
-						<span class="selection_content" translate="INCLUDE_PARASOFT_NEWS"></span>
-					</label></p>
-				</div>
-			</form>
-		</div>
-		<div ng-if="demo.CATEGORIES">
-			<div id="add_btn" class="common_industry industry_font" ng-click="demo.showCategoryModal()">
-				<button class="btn industry_button function_btn category_btn" data-toggle="modal"
-						data-target="#category_modal" translate="ADD_NEW_CATEGORY"></button>
-			</div>
-			<table class="table table-bordered common_industry industry_font" >
-				<tbody>
-					<tr class="table_title">
-						<th class="table_category_name" translate="CATEGORY"></th>
-						<th class="table_category_description" translate="DESCRIPTION"></th>
-						<th class="table_category_image" translate="IMAGE"></th>
-						<th class="table_edit" translate="EDIT"></th>
-					</tr>
-					<tr ng-repeat="category in demo.categories | orderBy: 'name'">
-						<td title="{{category.name}}">
-							<span class="table_category_name retract_format" ng-bind="category.name|textLengthSet:true:16:'...'"></span>
-						</td>
-						<td title={{category.description}}>
-							<span class="table_category_description retract_format" ng-bind="category.description|textLengthSet:true:65:'...'"></span>
-						</td>
-						<td>
-							<img ng-src="{{category.image}}" ng-click="demo.showImgModal($index,category.image)">
-						</td>
-						<td>
-							<img class="edit_icon" ng-src="/{{industry}}/images/edit.svg" data-toggle="modal"
-									data-target="#category_modal" ng-click="demo.showCategoryModal(category)">
-							<img class="delete_icon" ng-src="/{{industry}}/images/delete.svg" data-toggle="modal"
-									data-target="#remove_confirm_modal" ng-click="demo.showRemoveConfirmModal(category)">
-						</td>
-					</tr>
-				</tbody>
-			</table>
+                                <form id="category_form">
+                                    <div class="modal-body">
+                                        <div class="error_box" ng-show="demo.categoryModal.showErrorBox">
+                                            <span class="error_message form_error_message" translate="{{demo.categoryModal.formError}}"></span>
+                                        </div>
+                                        <div class="modal_item category_name_in_modal">
+                                            <label class="modal_item_title" translate="CATEGORY"></label>
+                                            <input type="text" name="name" class="form-control"
+                                                   ng-value="demo.categoryModal.form.currentValue.name"
+                                                   ng-model="demo.categoryModal.form.currentValue.name"
+                                                   ng-change="demo.categoryModal.fieldsOnChange()">
+                                        </div>
+                                        <div class="category_image_in_modal">
+                                            <label class="modal_item_title modal_item_image_title" translate="IMAGE"></label>
+                                            <input type="hidden" name="imagePath" ng-value="demo.categoryModal.form.currentValue.image"
+                                                   ng-model="demo.categoryModal.form.currentValue.image">
+                                            <div class="img_box category_image_box" ng-show="demo.categoryModal.showTmpImage"
+                                                 ng-style="demo.categoryModal.formError !== '' ? demo.imgBoxStyle : ''">
+                                                <span class="fa fa-times-circle delete_image_icon" ng-click="demo.categoryModal.removeTmpImage()"></span>
+                                                <img class="demo_admin_img_in_modal" ng-src="{{demo.categoryModal.tmpImage}}"/>
+                                            </div>
+                                        </div>
+                                        <div class="category_description_in_modal">
+                                            <label class="modal_item_title" translate="DESCRIPTION"></label>
+                                            <textarea type="text" name="description" class="form-control"
+                                                      ng-model="demo.categoryModal.form.currentValue.description"
+                                                      ng-bind="demo.categoryModal.form.currentValue.description"
+                                                      ng-change="demo.categoryModal.fieldsOnChange()" ></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn button-primary modal_save_btn"
+                                                ng-click="demo.categoryModal.saveCategory(demo.categoryModal.form.currentValue.id)" translate="SAVE"
+                                                ng-disabled="demo.categoryModal.disableSaveButton">
+                                        </button>
+                                        <button type="button" class="btn button-secondary modal_cancel_btn" data-dismiss="modal"
+                                                ng-bind="'CANCEL'|translate|uppercase"></button>
+                                    </div>
+                                </form>
+                                <div class="category_image_upload_box" ng-show="demo.categoryModal.showUploadBox"
+                                     ng-style="demo.categoryModal.formError !== '' ? demo.imgUploadBoxStyle : ''">
+                                    <form id="image_form" enctype="multipart/form-data">
+                                        <input id="file_choose" type="file" name="image"
+                                               ng-model="demo.categoryModal.chosenFile" ng-value="demo.categoryModal.chosenFile"
+                                               onchange="angular.element(this).scope().demo.categoryModal.fileChosenOnChange(this)"
+                                               accept="image/gif,image/jpeg,image/jpg,image/png,image/bmp"/>
+                                    </form>
+                                    <span class="error_message category_upload_error_message" translate="{{demo.categoryModal.uploadError}}" ng-show="demo.categoryModal.showUploadErrorBox"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div ng-if="demo.ITEMS" class="tab_content">
+                    <div id="add_btn" class="common_industry industry_font" ng-click="demo.showItemModal()">
+                        <button class="btn btn-default operation_button" data-toggle="modal" data-target="#item_modal"
+                                translate="ADD_NEW_ITEM"></button>
+                    </div>
+                    <table class="table table-bordered common_industry industry_font" >
+                        <tbody>
+                        <tr class="table_title">
+                            <th class="table_item_name" translate="ITEM"></th>
+                            <th class="table_item_category" translate="CATEGORY"></th>
+                            <th class="table_item_description" translate="DESCRIPTION"></th>
+                            <th class="table_item_region" translate="LOCATION"></th>
+                            <th class="table_item_quantity" translate="QUANTITY"></th>
+                            <th class="table_item_img" translate="IMAGE"></th>
+                            <th class="table_edit" translate="EDIT"></th>
+                        </tr>
+                        <tr ng-repeat="item in demo.items | orderBy: 'name'">
+                            <td title="{{item.name}}"><span class="table_item_name retract_format" ng-bind="item.name"></span></td>
+                            <td title="{{demo.categoryMap.get(item.categoryId)}}">
+                                <span class="table_item_category retract_format" ng-bind="demo.categoryMap.get(item.categoryId)"></span>
+                            </td>
+                            <td title={{item.description}}><span class="table_item_description retract_format" ng-bind="item.description"></span></td>
+                            <td title="{{item.region|translate}}">
+                                <span class="table_item_region retract_format" translate="{{item.region}}"></span>
+                            </td>
+                            <td title="{{item.inStock}}"><span class="table_item_quantity retract_format" ng-bind="item.inStock"></span></td>
+                            <td><img ng-src="{{item.image}}" ng-click="demo.showImgModal($index,item.image)"></td>
+                            <td>
+                                <img class="edit_icon" ng-src="/{{industry}}/images/edit.svg" data-toggle="modal"
+                                     data-target="#item_modal" ng-click="demo.showItemModal(item)" >
+                                <img class="delete_icon" ng-src="/{{industry}}/images/delete.svg" data-toggle="modal"
+                                     data-target="#remove_confirm_modal" ng-click="demo.showRemoveConfirmModal(item)" >
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
 
-			<div id="category_modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
-				<div class="modal-dialog">
-					<div class="modal-content industry_font">
-						<div class="modal-header">
-							<button type="button" class="close font_color1 green_text" data-dismiss="modal" aria-hidden="true">
-								&times;
-							</button>
-							<div class="modal-title" id="myModalLabel">
-								<span ng-if="!demo.editCategory" translate="ADD_NEW_CATEGORY"></span>
-								<span ng-if="demo.editCategory" translate="EDIT_CATEGORY"></span>
-							</div>
-						</div>
+                    <div id="item_modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+                        <div class="modal-dialog wide">
+                            <div class="modal-content wide industry_font">
+                                <div class="modal-header">
+                                    <button type="button" class="close font_color1 green_text" data-dismiss="modal" aria-hidden="true">
+                                        &times;
+                                    </button>
+                                    <div class="modal-title" id="myModalLabel">
+                                        <span ng-if="!demo.editItem" translate="ADD_NEW_ITEM"></span>
+                                        <span ng-if="demo.editItem" translate="EDIT_ITEM"></span>
+                                    </div>
+                                </div>
 
-						<form id="category_form">
-							<div class="modal-body">
-								<div class="error_box" ng-show="demo.categoryModal.showErrorBox">
-									<span class="error_message form_error_message" translate="{{demo.categoryModal.formError}}"></span>
-								</div>
-								<div class="modal_item category_name_in_modal">
-									<label class="modal_item_title" translate="CATEGORY"></label>
-									<input type="text" name="name" class="form-control"
-											ng-value="demo.categoryModal.form.currentValue.name"
-										 	ng-model="demo.categoryModal.form.currentValue.name"
-										 	ng-change="demo.categoryModal.fieldsOnChange()">
-								</div>
-								<div class="category_image_in_modal">
-									<label class="modal_item_title modal_item_image_title" translate="IMAGE"></label>
-									<input type="hidden" name="imagePath" ng-value="demo.categoryModal.form.currentValue.image"
-											ng-model="demo.categoryModal.form.currentValue.image">
-									<div class="img_box category_image_box" ng-show="demo.categoryModal.showTmpImage"
-											ng-style="demo.categoryModal.formError !== '' ? demo.imgBoxStyle : ''">
-										<span class="fa fa-times-circle delete_image_icon" ng-click="demo.categoryModal.removeTmpImage()"></span>
-										<img class="demo_admin_img_in_modal" ng-src="{{demo.categoryModal.tmpImage}}"/>
-									</div>
-								</div>
-								<div class="category_description_in_modal">
-									<label class="modal_item_title" translate="DESCRIPTION"></label>
-									<textarea type="text" name="description" class="form-control"
-										 	ng-model="demo.categoryModal.form.currentValue.description"
-										 	ng-bind="demo.categoryModal.form.currentValue.description"
-										 	ng-change="demo.categoryModal.fieldsOnChange()" ></textarea>
-								</div>
-							</div>
-							<div class="modal-footer">
-								<button type="button" class="btn orange_button modal_save_btn"
-											ng-click="demo.categoryModal.saveCategory(demo.categoryModal.form.currentValue.id)" translate="SAVE"
-											ng-disabled="demo.categoryModal.disableSaveButton">
-								</button>
-								<button type="button" class="btn btn-default modal_cancel_btn" data-dismiss="modal"
-										ng-bind="'CANCEL'|translate|uppercase"></button>
-							</div>
-						</form>
-						<div class="category_image_upload_box" ng-show="demo.categoryModal.showUploadBox"
-								ng-style="demo.categoryModal.formError !== '' ? demo.imgUploadBoxStyle : ''">
-							<form id="image_form" enctype="multipart/form-data">
-						        <input id="file_choose" type="file" name="image"
-						        	   ng-model="demo.categoryModal.chosenFile" ng-value="demo.categoryModal.chosenFile"
-						        	   onchange="angular.element(this).scope().demo.categoryModal.fileChosenOnChange(this)"
-						        	   accept="image/gif,image/jpeg,image/jpg,image/png,image/bmp"/>
-						    </form>
-						    <span class="error_message category_upload_error_message" translate="{{demo.categoryModal.uploadError}}" ng-show="demo.categoryModal.showUploadErrorBox"></span>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div ng-if="demo.ITEMS">
-			<div id="add_btn" class="common_industry industry_font" ng-click="demo.showItemModal()">
-				<button class="btn industry_button function_btn" data-toggle="modal" data-target="#item_modal"
-						translate="ADD_NEW_ITEM"></button>
-			</div>
-			<table class="table table-bordered common_industry industry_font" >
-				<tbody>
-					<tr class="table_title">
-						<th class="table_item_name" translate="ITEM"></th>
-						<th class="table_item_category" translate="CATEGORY"></th>
-						<th class="table_item_description" translate="DESCRIPTION"></th>
-						<th class="table_item_region" translate="LOCATION"></th>
-						<th class="table_item_quantity" translate="QUANTITY"></th>
-						<th class="table_item_img" translate="IMAGE"></th>
-						<th class="table_edit" translate="EDIT"></th>
-					</tr>
-					<tr ng-repeat="item in demo.items | orderBy: 'name'">
-						<td title="{{item.name}}"><span class="table_item_name retract_format" ng-bind="item.name|textLengthSet:true:11:'...'"></span></td>
-						<td title="{{demo.categoryMap.get(item.categoryId)}}">
-							<span class="table_item_category retract_format" ng-bind="demo.categoryMap.get(item.categoryId)|textLengthSet:true:11:'...'"></span>
-						</td>
-						<td title={{item.description}}><span class="table_item_description retract_format" ng-bind="item.description|textLengthSet:true:25:'...'"></span></td>
-						<td title="{{item.region|translate}}">
-							<span class="table_item_region retract_format" translate="{{item.region}}"></span>
-						</td>
-						<td title="{{item.inStock}}"><span class="table_item_quantity retract_format" ng-bind="item.inStock"></span></td>
-						<td><img ng-src="{{item.image}}" ng-click="demo.showImgModal($index,item.image)"></td>
-						<td>
-							<img class="edit_icon" ng-src="/{{industry}}/images/edit.svg" data-toggle="modal"
-									data-target="#item_modal" ng-click="demo.showItemModal(item)" >
-							<img class="delete_icon" ng-src="/{{industry}}/images/delete.svg" data-toggle="modal"
-									data-target="#remove_confirm_modal" ng-click="demo.showRemoveConfirmModal(item)" >
-						</td>
-					</tr>
-				</tbody>
-			</table>
+                                <form id="item_form">
+                                    <div class="modal-body">
+                                        <div class="error_box" ng-show="demo.itemModal.showErrorBox">
+                                            <span class="error_message form_error_message" translate="{{demo.itemModal.formError}}"></span>
+                                        </div>
+                                        <div class="modal_item item_name_in_modal">
+                                            <label class="modal_item_title" translate="ITEM"></label>
+                                            <input type="text" name="name" class="form-control"
+                                                   ng-value="demo.itemModal.form.currentValue.name"
+                                                   ng-model="demo.itemModal.form.currentValue.name" ng-change="demo.itemModal.fieldsOnChange()">
+                                        </div>
+                                        <div class="modal_item item_location_in_modal">
+                                            <label class="modal_item_title" translate="LOCATION"></label>
+                                            <select name="region" class="modal_select industry_font form-control"
+                                                    ng-value="demo.itemModal.form.currentValue.region" ng-model="demo.itemModal.form.currentValue.region"
+                                                    ng-change="demo.itemModal.fieldsOnChange()">
+                                                <option value='' ng-bind="'-'"></option>
+                                                <option ng-repeat="area in demo.regions"
+                                                        translate="{{area}}" value="{{area}}"
+                                                        ng-selected="demo.itemModal.form.currentValue.region === area">
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="modal_item item_quantity_in_modal">
+                                            <label class="modal_item_title" translate="QUANTITY"></label>
+                                            <input type="number" name="inStock" class="form-control"
+                                                   onkeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
+                                                   ng-value="demo.itemModal.form.currentValue.inStock"
+                                                   ng-model="demo.itemModal.form.currentValue.inStock" ng-change="demo.itemModal.fieldsOnChange()">
+                                        </div>
+                                        <div class="modal_item item_category_in_modal">
+                                            <label class="modal_item_title" translate="CATEGORY"></label>
+                                            <select name="categoryId" class="modal_select industry_font form-control"
+                                                    ng-model="demo.itemModal.form.currentValue.categoryId"
+                                                    ng-change="demo.itemModal.fieldsOnChange()">
+                                                <option value='' ng-bind="'-'"></option>
+                                                <option ng-repeat="categoryOption in demo.modalCategories"
+                                                        ng-bind="categoryOption.name" value="{{categoryOption.id}}"
+                                                        ng-selected="demo.itemModal.form.currentValue.categoryId === categoryOption.id+''">
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="item_image_in_modal">
+                                            <label class="modal_item_title" translate="IMAGE"></label>
+                                            <input type="hidden" name="imagePath" ng-value="demo.itemModal.form.currentValue.image"
+                                                   ng-model="demo.itemModal.form.currentValue.image">
+                                            <div class="img_box" ng-show="demo.itemModal.showTmpImage">
+                                                <span class="fa fa-times-circle delete_image_icon" ng-click="demo.itemModal.removeTmpImage()"></span>
+                                                <img class="demo_admin_img_in_modal" ng-src="{{demo.itemModal.tmpImage}}"/>
+                                            </div>
+                                        </div>
+                                        <div class="item_description_in_modal">
+                                            <label class="modal_item_title" translate="DESCRIPTION"></label>
+                                            <textarea class="item_description_input" name="description" ng-bind="demo.itemModal.form.currentValue.description"
+                                                      ng-model="demo.itemModal.form.currentValue.description" ng-change="demo.itemModal.fieldsOnChange()">
+                                    </textarea>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn button-primary modal_save_btn"
+                                                ng-click="demo.itemModal.saveItem(demo.itemModal.form.currentValue.id)" translate="SAVE"
+                                                ng-disabled="demo.itemModal.disableSaveButton">
+                                        </button>
+                                        <button type="button" class="btn button-secondary modal_cancel_btn" data-dismiss="modal"
+                                                ng-bind="'CANCEL'|translate|uppercase"></button>
+                                    </div>
+                                </form>
+                                <div class="image_upload_box" ng-show="demo.itemModal.showUploadBox">
+                                    <form id="image_form" enctype="multipart/form-data">
+                                        <input id="file_choose" type="file" name="image"
+                                               ng-model="demo.itemModal.chosenFile" ng-value="demo.itemModal.chosenFile"
+                                               onchange="angular.element(this).scope().demo.itemModal.fileChosenOnChange(this)"
+                                               accept="image/gif,image/jpeg,image/jpg,image/png,image/bmp"/>
+                                    </form>
+                                    <span class="error_message upload_error_message" translate="{{demo.itemModal.uploadError}}" ng-show="demo.itemModal.showUploadErrorBox"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div ng-if="demo.LABELS" class="tab_content">
+                    <div id="label_override_title" class="section_title">
+                        <span class="ng-scope" translate="LABELS_OVERRIDE"></span>
+                    </div>
+                    <div id="label_overrided_content" class="section_body">
+                        <form id="labels_form">
+                            <input type="hidden" name="languageType" ng-value="demo.overridedLabels.languageType">
+                            <div class="form-group">
+                                <label id="labels_overrided_checkbox_box">
+                                    <input type="checkbox" ng-model="demo.useLabelsOverrided" value="true"/>
+                                    <input type="hidden" name="labelsOverrided" ng-value="(demo.useLabelsOverrided) ? true : false">
+                                    <span class="input-label" translate="ENABLE"></span>
+                                </label>
+                            </div>
+                            <div ng-include="'common/pages/labels.html'"></div>
+                        </form>
+                        <div class="section_container">
+                            <button id="save_labels_changes_button" class="btn save-changes-button button-primary"
+                                    data-toggle="modal" data-target="#saving_modal" ng-click="demo.saveOverridedLabels()">
+                                <span translate="SAVE_CHANGES"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="page_main_right_content">
+                <div id="support_docs_box">
+                    <div id="support_doc_box_title" class="section_title">
+                        <span translate="SUPPORT_DOCS"></span>
+                    </div>
+                    <div class="support_link_wrapper">
+                        <a href="/swagger-ui/index.html?type=demoApp" class="support_link industry_color_1" target="_blank" translate="SWAGGER"></a>
+                    </div>
+                    <div class="support_link_wrapper">
+                        <a href="/swagger-ui/index.html?type=gateway" class="support_link industry_color_1" target="_blank" translate="SWAGGER_PROXY"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-			<div id="item_modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
-				<div class="modal-dialog">
-					<div class="modal-content industry_font">
-						<div class="modal-header">
-							<button type="button" class="close font_color1 green_text" data-dismiss="modal" aria-hidden="true">
-								&times;
-							</button>
-							<div class="modal-title" id="myModalLabel">
-								<span ng-if="!demo.editItem" translate="ADD_NEW_ITEM"></span>
-								<span ng-if="demo.editItem" translate="EDIT_ITEM"></span>
-							</div>
-						</div>
+        <div id="img_modal" ng-if="demo.isShowImgModal" class="common_industry" ng-style="demo.modalStyle">
+            <div ng-click="demo.closeImgModal()"><span id="close_btn" ng-bind="'x'" class="common_div font_color2"></span></div>
+            <img id="img_in_modal" ng-src="{{demo.itemImg}}">
+        </div>
 
-						<form id="item_form">
-							<div class="modal-body">
-								<div class="error_box" ng-show="demo.itemModal.showErrorBox">
-									<span class="error_message form_error_message" translate="{{demo.itemModal.formError}}"></span>
-								</div>
-								<div class="modal_item item_name_in_modal">
-									<label class="modal_item_title" translate="ITEM"></label>
-									<input type="text" name="name" class="form-control"
-										   ng-value="demo.itemModal.form.currentValue.name"
-										   ng-model="demo.itemModal.form.currentValue.name" ng-change="demo.itemModal.fieldsOnChange()">
-								</div>
-								<div class="modal_item item_location_in_modal">
-									<label class="modal_item_title" translate="LOCATION"></label>
-									<select name="region" class="modal_select industry_font form-control"
-											ng-value="demo.itemModal.form.currentValue.region" ng-model="demo.itemModal.form.currentValue.region"
-											ng-change="demo.itemModal.fieldsOnChange()">
-										<option value='' ng-bind="'-'"></option>
-										<option ng-repeat="area in demo.regions"
-												 translate="{{area}}" value="{{area}}"
-												 ng-selected="demo.itemModal.form.currentValue.region === area">
-										 </option>
-									</select>
-								</div>
-								<div class="modal_item item_quantity_in_modal">
-									<label class="modal_item_title" translate="QUANTITY"></label>
-									<input type="number" name="inStock" class="form-control"
-											onkeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
-											ng-value="demo.itemModal.form.currentValue.inStock"
-											ng-model="demo.itemModal.form.currentValue.inStock" ng-change="demo.itemModal.fieldsOnChange()">
-								</div>
-								<div class="modal_item item_category_in_modal">
-									<label class="modal_item_title" translate="CATEGORY"></label>
-									<select name="categoryId" class="modal_select industry_font form-control"
-											ng-model="demo.itemModal.form.currentValue.categoryId"
-											ng-change="demo.itemModal.fieldsOnChange()">
-										 <option value='' ng-bind="'-'"></option>
-										 <option ng-repeat="categoryOption in demo.modalCategories"
-												 ng-bind="categoryOption.name" value="{{categoryOption.id}}"
-												 ng-selected="demo.itemModal.form.currentValue.categoryId === categoryOption.id+''">
-										 </option>
-									</select>
-								</div>
-								<div class="item_image_in_modal">
-									<label class="modal_item_title" translate="IMAGE"></label>
-									<input type="hidden" name="imagePath" ng-value="demo.itemModal.form.currentValue.image"
-											   ng-model="demo.itemModal.form.currentValue.image">
-									<div class="img_box" ng-show="demo.itemModal.showTmpImage">
-										<span class="fa fa-times-circle delete_image_icon" ng-click="demo.itemModal.removeTmpImage()"></span>
-										<img class="demo_admin_img_in_modal" ng-src="{{demo.itemModal.tmpImage}}"/>
-									</div>
-								</div>
-								<div class="item_description_in_modal">
-									<label class="modal_item_title" translate="DESCRIPTION"></label>
-									<textarea name="description" ng-bind="demo.itemModal.form.currentValue.description"
-											  ng-model="demo.itemModal.form.currentValue.description" ng-change="demo.itemModal.fieldsOnChange()">
-									</textarea>
-								</div>
-							</div>
-							<div class="modal-footer">
-								<button type="button" class="btn orange_button modal_save_btn"
-										ng-click="demo.itemModal.saveItem(demo.itemModal.form.currentValue.id)" translate="SAVE"
-										ng-disabled="demo.itemModal.disableSaveButton">
-								</button>
-								<button type="button" class="btn btn-default modal_cancel_btn" data-dismiss="modal"
-										ng-bind="'CANCEL'|translate|uppercase"></button>
-							</div>
-						</form>
-						<div class="image_upload_box" ng-show="demo.itemModal.showUploadBox">
-							<form id="image_form" enctype="multipart/form-data">
-						        <input id="file_choose" type="file" name="image"
-						        	   ng-model="demo.itemModal.chosenFile" ng-value="demo.itemModal.chosenFile"
-						        	   onchange="angular.element(this).scope().demo.itemModal.fileChosenOnChange(this)"
-						        	   accept="image/gif,image/jpeg,image/jpg,image/png,image/bmp"/>
-						    </form>
-						    <span class="error_message upload_error_message" translate="{{demo.itemModal.uploadError}}" ng-show="demo.itemModal.showUploadErrorBox"></span>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div ng-if="demo.LABELS">
-			<div id="label_overrided" class="demo_admin">
-				<div id="label_overrided_title">
-					<div class="demo_admin_text industry_font">
-						<p>
-							<span class="ng-scope" translate="LABELS_OVERRIDE"></span>
-						</p>
-					</div>
-				</div>
-				<div id="label_overrided_content" class="industry_font">
-					<form id="labels_form">
-						<input type="hidden" name="languageType" ng-value="demo.overridedLabels.languageType">
-						<div class="form-group">
-							<label id="labels_overrided_checkbox_box">
-								<input type="checkbox" ng-model="demo.useLabelsOverrided" value="true"/>
-								<input type="hidden" name="labelsOverrided"
-										ng-value="(demo.useLabelsOverrided)?true:false">
-								<span class="selection_content" translate="ENABLE"></span>
-							</label>
-						</div>
-						<div ng-include="'common/pages/labels.html'"></div>
-					</form>
-					<button id="save_labels_changes_button" class="btn orange_button"
-						data-toggle="modal" data-target="#saving_modal" ng-click="demo.saveOverridedLabels()">
-						<span translate="SAVE_CHANGES"></span>
-					</button>
-				</div>
-			</div>
-		</div>
-		<div id="img_modal" ng-if="demo.isShowImgModal" class="common_industry" ng-style="demo.modalStyle">
-			<div ng-click="demo.closeImgModal()"><span id="close_btn" ng-bind="'x'" class="common_div font_color2"></span></div>
-			<img id="img_in_modal" ng-src="{{demo.itemImg}}">
-		</div>
-		<div id="support_doc">
-			<div id="support_doc_box" class="industry_font demo_admin">
-				<img class="demo_admin_img_format" ng-src="/{{industry}}/images/region_box.svg" ng-if="isAerospace">
-				<div id="support_doc_box_div" class="demo_admin_div"></div>
-				<div id="support_doc_box_text" class="demo_admin_div">
-					<p>
-						<span translate="SUPPORT_DOCS"></span>
-					</p>
-				</div>
-			</div>
-			<!-- 			<div id="doc1" class="demo_admin">-->
-			<!--	 			<div id="doc1_div" class="demo_admin_div"></div>-->
-			<!--		 		<div><p><a href="javaScript:void(0)" class="support_text">Documentation</a></p></div>-->
-			<!--	 		</div>-->
-			<div id="doc2" class="demo_admin">
-				<div id="doc2_div" class="demo_admin_div"></div>
-				<div class="industry_font">
-					<p>
-						<a href="/swagger-ui/index.html?type=demoApp"
-						   class="support_text font_color1" target="_blank" translate="SWAGGER"></a>
-					</p>
-					<p>
-						<a href="/swagger-ui/index.html?type=gateway"
-						   class="support_text font_color1" target="_blank" translate="SWAGGER_PROXY"></a>
-					</p>
-				</div>
-			</div>
-		</div>
-		<div id="remove_confirm_modal" class="modal fade" tabindex="-1"
-		role="dialog">
-		<div class="modal-dialog">
-			<div class="modal-content industry_font">
-				<div class="modal-header">
-					<button type="button" class="close font_color1 green_text"
-						data-dismiss="modal" aria-hidden="true">&times;</button>
-					<div class="modal-title">
-						<span translate="REMOVE_CONFIRMATION"></span>
-					</div>
-				</div>
-				<div class="modal-body">
-					<span ng-if="!demo.isCategory" class="warning_text" translate="REMOVE_ITEM_OR_NOT"></span>
-					<span ng-if="demo.isCategory" class="warning_text" translate="REMOVE_CATEGORY_OR_NOT"></span>
-					<span class="warning_text">{{demo.selected_item.name}} ?</span>
-				</div>
-				<div class="modal-footer">
-					<button ng-if="demo.isCategory" type="button" class="btn orange_button modal_confirm_btn"
-						ng-click="demo.removeCategory(demo.selected_item)" translate="CONFIRM">
-					</button>
-					<button ng-if="!demo.isCategory" type="button" class="btn orange_button modal_confirm_btn"
-						ng-click="demo.removeItem(demo.selected_item)" translate="CONFIRM">
-					</button>
-					<button type="button" class="btn btn-default modal_cancel_btn"
-						data-dismiss="modal" ng-bind="'CANCEL'|translate|uppercase">
-					</button>
-				</div>
-			</div>
-			<!-- /.modal-content -->
-		</div>
-		<!-- /.modal-dialog -->
-	</div>
-	</div>
+        <div id="remove_confirm_modal" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content industry_font">
+                    <div class="modal-header">
+                        <button type="button" class="close font_color1 green_text"
+                                data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <div class="modal-title">
+                            <span translate="REMOVE_CONFIRMATION"></span>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <span ng-if="!demo.isCategory" class="warning_text" translate="REMOVE_ITEM_OR_NOT"></span>
+                        <span ng-if="demo.isCategory" class="warning_text" translate="REMOVE_CATEGORY_OR_NOT"></span>
+                        <span class="warning_text">{{demo.selected_item.name}} ?</span>
+                    </div>
+                    <div class="modal-footer">
+                        <button ng-if="demo.isCategory" type="button" class="btn button-primary modal_confirm_btn"
+                                ng-click="demo.removeCategory(demo.selected_item)" translate="CONFIRM">
+                        </button>
+                        <button ng-if="!demo.isCategory" type="button" class="btn button-primary modal_confirm_btn"
+                                ng-click="demo.removeItem(demo.selected_item)" translate="CONFIRM">
+                        </button>
+                        <button type="button" class="btn button-secondary modal_cancel_btn"
+                                data-dismiss="modal" ng-bind="'CANCEL'|translate|uppercase">
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-	<div ng-include="'common/pages/footer.html'"></div>
+    <footer ng-include="'common/pages/footer.html'"></footer>
+</div>
 
-	<script type="text/javascript" src="/lib/jquery/jquery-3.3.1.min.js"></script>
-	<script type="text/javascript" src="/lib/jquery/jquery.serializejson.min.js"></script>
-	<script type="text/javascript" src="/lib/bootstrap/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="/lib/angularjs/angular.min.js"></script>
-	<script type="text/javascript" src="/lib/angularjs/angular-translate.min.js"></script>
-	<script type="text/javascript" src="/lib/angularjs/angular-translate-loader-url.min.js"></script>
-	<script type="text/javascript" src="/lib/stomp/stomp.min.js"></script>
-	<script type="text/javascript" src="/common/js/common.js"></script>
-	<script type="text/javascript" src="/lib/toastr/toastr.min.js"></script>
-	<script type="text/javascript" src="/common/js/demoAdmin.js"></script>
+<script type="text/javascript" src="/lib/jquery/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="/lib/jquery/jquery.serializejson.min.js"></script>
+<script type="text/javascript" src="/lib/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/lib/angularjs/angular.min.js"></script>
+<script type="text/javascript" src="/lib/angularjs/angular-translate.min.js"></script>
+<script type="text/javascript" src="/lib/angularjs/angular-translate-loader-url.min.js"></script>
+<script type="text/javascript" src="/lib/stomp/stomp.min.js"></script>
+<script type="text/javascript" src="/common/js/common.js"></script>
+<script type="text/javascript" src="/lib/toastr/toastr.min.js"></script>
+<script type="text/javascript" src="/common/js/demoAdmin.js"></script>
 </body>
 </html>

@@ -1,60 +1,15 @@
-#dark_overlay {
-	border-width: 0px;
-	position: absolute;
-	display: flex;
+.assets_detail_dark_overlay_img {
+    background-image: url("/defense/images/category_dark_overlay.svg");
 }
 
-#search_text {
-	left: 295px;
+#assets_title {
+    color: #33424D;
 }
 
-#search_button {
-	left: 715px;
+#advertisement_title {
+    color: #333;
 }
 
-.assets_category_box_div {
-	background-color: rgba(249, 249, 227, 1);
-    border: none;
-    border-radius: 8px;
-    -moz-box-shadow: 0px 0px 4px rgba(47, 47, 22, 0.345098039215686);
-    -webkit-box-shadow: 0px 0px 4px rgba(47, 47, 22, 0.345098039215686);
-    box-shadow: 0px 0px 4px rgba(47, 47, 22, 0.345098039215686);
-}
-
-.assets_category_box_img {
-	display: none;
-}
-
-.assets_category_viewall {
-	width: 60px;
-	height: 22px;
-	font-size: 13px;
-	top: 292px;
-	left: 109px;
-}
-
-.assets_category_viewall_div {
-	width: 48px;
-	height: 22px;
-	font-size: 13px;
-}
-
-.assets_category_img, .assets_category_dark_overlay {
-	top: 16px;
-	left: 15px;
-}
-
-.assets_category_title {
-	top: 152px;
-	left: 15px;
-}
-
-.assets_category_description {
-	top: 196px;
-	left: 15px;
-}
-
-.assets_categories {
-	top: 157px;
-	position: absolute;
+.advertisement_content_text {
+    color: #2F2F16
 }

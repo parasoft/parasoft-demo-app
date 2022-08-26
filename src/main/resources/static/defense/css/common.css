@@ -1,0 +1,138 @@
+body {
+    background-color: rgba(240, 240, 230, 1);
+}
+
+.industry_color_1 {
+    color: #117563;
+}
+
+.industry_front {
+    line-height: normal;
+    font-weight: 400;
+}
+
+#header-container {
+    background-color: rgba(47, 47, 22, 1);
+}
+
+.page-content-section {
+    background-image: url(/defense/images/background.svg);
+    background-repeat: no-repeat;
+}
+
+#header-container .button-body:hover {
+    background-color: rgba(247, 247, 217, 0.101960784313725);
+}
+
+.header-title a {
+    color: #F7F7D9;
+    font-weight: 800;
+    font-size: 36px;
+}
+
+#setting-button a, .role-title {
+    color: #F7F7D9;
+}
+
+#username-button .dropdown-menu {
+    background-color: #F7F7D9;
+}
+
+#username-button .dropdown-item a {
+    color: #117563;
+}
+
+#username-button .dropdown-item a:hover {
+    background-color: #F7F7D9;
+}
+
+#footer {
+    background-color: rgba(47, 47, 22, 1);
+    color: #F7F7D9;
+}
+
+
+.asset_summary_box, .assets_category_box {
+    background-color: rgba(249, 249, 227, 1);
+    box-shadow: 0 0 4px rgb(47 47 22 / 35%);
+}
+
+.asset_summary_box:hover, .assets_category_box:hover {
+    box-shadow: 0 0 10px grey;
+}
+
+.asset_summary_title a span {
+    font-weight: 800;
+}
+
+.asset_summary_title a:hover,
+.asset_summary_view_all a:hover,
+.assets_category_title a span:hover,
+#requisition_close_button span:hover,
+.requisition_item_title a:hover {
+    color: rgb(51,153,135);
+}
+
+.background {
+    width: fit-content;
+    height: 0px;
+    margin: 0px;
+}
+
+.background-img {
+    background-image: url(/defense/images/background.svg);
+}
+
+.background-img {
+    height: 720px;
+    width: 1200px;
+    position: relative;
+    z-index: -1;
+}
+
+#requisition_bar {
+    background-color: rgba(249, 249, 227, 1);;
+    border: 2px solid rgba(71, 72, 30, 1);
+}
+
+#requisition_submit_button {
+    background-color: rgba(255, 153, 0, 1);
+    border-radius: 1px;
+    font-weight: 800;
+    color: #4F3000;
+}
+
+#requisition_submit_button:hover {
+    background-color: rgba(249, 181, 78, 1);
+}
+
+.industry_font {
+    font-family: 'NewYorkExtraLarge-Heavy', 'New York Extra Large Heavy', 'New York Extra Large', sans-serif;
+}
+
+.requisition_item_number_input {
+    border-color: #333;
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+.requisition_buttons button {
+    background-color: rgba(251, 232, 202, 1);
+    border-radius: 1px;
+    font-family: 'NewYorkExtraLarge-Heavy', 'New York Extra Large Heavy', 'New York Extra Large', sans-serif;
+    font-weight: 800;
+    color: #4F3000;
+    border-width: 1px;
+}
+
+.requisition_buttons button:hover {
+    background-color: rgba(238, 208, 162, 1);
+}
+
+.requisition_remove a:hover {
+    color: #117563;
+}
+
+.home-link:hover {
+    color: #117563;
+}
+

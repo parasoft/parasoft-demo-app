@@ -49,7 +49,7 @@ public class ClearEntranceSpringTest {
 
     @Autowired
     ResetEntrance resetEntrance;
-    
+
     @Autowired
     ClearEntrance clearEntrance;
 
@@ -91,13 +91,13 @@ public class ClearEntranceSpringTest {
         UserEntity user_defense = userService.getUserByUsername(GlobalUsersCreator.USERNAME_PURCHASER);
         int quantity_defense = 5;
         CartItemEntity cartItem_defense = shoppingCartService.addCartItemInShoppingCart(user_defense.getId(), item_defense.getId(), quantity_defense);
-        
+
         RegionType region_defense = RegionType.JAPAN;
         String location_defense = "xxx";
         String receiverId_defense = "xxx";
         String eventId_defense = "xxx";
         String eventNumber_defense = "xxx";
-        OrderEntity order_defense = orderService.addNewOrder(user_defense.getId(), region_defense, location_defense, receiverId_defense, eventId_defense, eventNumber_defense);
+        OrderEntity order_defense = orderService.addNewOrder(user_defense.getId(), user_defense.getUsername(), region_defense, location_defense, receiverId_defense, eventId_defense, eventNumber_defense);
         // Prepare some data, and these data need to be reset when running tests method is done.
         // switch database to AEROSPACE
         IndustryRoutingDataSource.currentIndustry = IndustryType.AEROSPACE;
@@ -124,7 +124,7 @@ public class ClearEntranceSpringTest {
         String receiverId_aerospace = "xxx";
         String eventId_aerospace = "xxx";
         String eventNumber_aerospace = "xxx";
-        OrderEntity order_aerospace = orderService.addNewOrder(user_aerospace.getId(), region_aerospace, location_aerospace, receiverId_aerospace, eventId_aerospace, eventNumber_aerospace);
+        OrderEntity order_aerospace = orderService.addNewOrder(user_aerospace.getId(), user_aerospace.getUsername(), region_aerospace, location_aerospace, receiverId_aerospace, eventId_aerospace, eventNumber_aerospace);
 
         // make sure all data is saved into database.
         assertNotNull(category_defense);
@@ -180,11 +180,11 @@ public class ClearEntranceSpringTest {
             message = e.getMessage();
         }
         assertNotEquals("", message);
-        
+
         // switch database to AEROSPACE
         // Assert database have no any changes for other industry.
     	IndustryRoutingDataSource.currentIndustry = IndustryType.AEROSPACE;
-    	
+
     	message = "";
         try{
             categoryService.getByCategoryId(category_aerospace.getId());

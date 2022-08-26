@@ -47,9 +47,9 @@ public class OrderServiceSpringTest5 {
 
 	/**
 	 * <p>
-	 * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, boolean) with transaction.<br/>
+	 * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean) with transaction.<br/>
 	 * This test doesn't run automatically, we need insert a RuntimeException into business code(before return statement).
-	 * 
+	 *
 	 * like:
 	 * </p>
 	 *    <pre>&nbsp;&nbsp;@Transactional(value = "industryTransactionManager")
@@ -61,12 +61,13 @@ public class OrderServiceSpringTest5 {
      *  }
 	 * </pre>
 	 *Uncomment&nbsp;@Test and&nbsp;@RunWith(SpringJUnit4ClassRunner.class), then run this test.
-	 * @see com.parasoft.demoapp.service.OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, boolean)
+	 * @see com.parasoft.demoapp.service.OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
 	 */
 	//@Test
 	public void testUpdateOrderByOrderNumber_rollbackWhenExceptionHappens() throws Throwable {
 		// When
 		Long userId = null;
+        String requestedBy = null;
 		CategoryEntity category = null;
 		ItemEntity item = null;
 		OrderEntity order = null;
@@ -74,6 +75,7 @@ public class OrderServiceSpringTest5 {
 			// Given
 			UserEntity user = userService.getUserByUsername(GlobalUsersCreator.USERNAME_PURCHASER);
 			userId = user.getId();
+            requestedBy = user.getUsername();
 			category = categoryService.addNewCategory("name", "description", "imagePath");
 			item = itemService.addNewItem("name", "description", category.getId(), 30, "imagePath", RegionType.JAPAN);
 			// add item into cart, the quantity of item is 20.
@@ -86,18 +88,19 @@ public class OrderServiceSpringTest5 {
 			String eventId = "45833-ORG-7834";
 			String eventNumber = "55-444-33-22";
 			// after add a new order, the in stock of item is 10.
-			order = underTest.addNewOrder(userId, region, location, receiverId, eventId, eventNumber);
+			order = underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
 
 			String orderNumber = order.getOrderNumber();
 			String userRoleName = RoleType.ROLE_APPROVER.toString();
 			OrderStatus newStatus = OrderStatus.DECLINED;
 			Boolean reviewedByPRCH = true;
 			Boolean reviewedByAPV = true;
+			String respondedBy = null;
 			String comments = "reject";
 			boolean publicToMQ = true;
 
 			underTest.updateOrderByOrderNumber(
-					orderNumber, userRoleName, newStatus, reviewedByPRCH, reviewedByAPV, comments, publicToMQ);
+					orderNumber, userRoleName, newStatus, reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
 
 		}catch(Exception e){
 			e.printStackTrace();

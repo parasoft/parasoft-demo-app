@@ -48,18 +48,20 @@ public class OrderServiceSpringTest3 {
     OrderService underTest;
 
     /**
-     * Test for addNewOrderSynchronized(Long, RegionType, String, String, String, String) under concurrency condition.
+     * Test for addNewOrderSynchronized(Long, String, RegionType, String, String, String, String) under concurrency condition.
      *
-     * @see OrderService#addNewOrderSynchronized(Long, RegionType, String, String, String, String)
+     * @see OrderService#addNewOrderSynchronized(Long, String, RegionType, String, String, String, String)
      */
     @Test
     public void testAddNewOrderSynchronized_concurrency() throws Throwable {
 		Long userId = null;
+		String requestedBy = null;
 		CategoryEntity category = null;
 		ItemEntity item = null;
 		try {
 			// Given
 			userId = userService.getUserByUsername(GlobalUsersCreator.USERNAME_PURCHASER).getId();
+			requestedBy = userService.getUserByUsername(GlobalUsersCreator.USERNAME_PURCHASER).getUsername();
 			category = categoryService.addNewCategory("name", "description", "imagePath");
 			item = itemService.addNewItem("name", "description", category.getId(), 30, "imagePath", RegionType.LOCATION_1);
 			// add item into cart, the quantity of item is 20.
@@ -76,7 +78,7 @@ public class OrderServiceSpringTest3 {
 
 			// use 3 threads to simulate the concurrency situation, submit orders repeatedly in the same time.
 			for (int i = 0; i < 3; i++) {
-				es.submit(new AddNewOrderRunnable(underTest, userId, region, location, receiverId, eventId, eventNumber));
+				es.submit(new AddNewOrderRunnable(underTest, userId, requestedBy, region, location, receiverId, eventId, eventNumber));
 			}
 
 			Thread.sleep(2000);
@@ -94,18 +96,20 @@ public class OrderServiceSpringTest3 {
     
     private class AddNewOrderRunnable implements Runnable {
     	private final OrderService orderService;
-    	private final Long userId;
+        private final Long userId;
+    	private final String requestedBy;
     	private final RegionType region;
     	private final String location;
     	private final String receiverId;
     	private final String eventId;
     	private final String eventNumber;
         
-		public AddNewOrderRunnable(OrderService orderService, Long userId, RegionType region, String location,
+		public AddNewOrderRunnable(OrderService orderService, Long userId, String requestedBy, RegionType region, String location,
 									String receiverId, String eventId, String eventNumber) {
 			
 			this.orderService = orderService;
 			this.userId = userId;
+			this.requestedBy = requestedBy;
 			this.region = region;
 			this.location = location;
 			this.receiverId = receiverId;
@@ -116,7 +120,7 @@ public class OrderServiceSpringTest3 {
 		@Override
 		public void run() {
 			try {
-				orderService.addNewOrderSynchronized(userId, region, location, receiverId, eventId, eventNumber);
+				orderService.addNewOrderSynchronized(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
