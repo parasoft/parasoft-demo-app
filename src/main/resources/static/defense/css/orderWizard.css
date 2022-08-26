@@ -15,6 +15,10 @@
 	color: #4F3000;
 }
 
+.wizard_btn:hover {
+    background-color: rgba(249, 181, 78, 1);
+}
+
 #get_location>button {
 	background-color: rgba(251, 232, 202, 1);
 }

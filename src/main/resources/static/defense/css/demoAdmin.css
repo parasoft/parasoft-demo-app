@@ -2,7 +2,7 @@
     background-color: rgba(215, 215, 208, 1);
 }
 
-#return_to_home_link:hover, .support_link:hover,  nav-tab-header:hover {
+#return_to_home_link:hover, .support_link:hover, .support_link:focus, nav-tab-header:hover {
     color: rgb(51,153,135);
 }
 
@@ -67,10 +67,6 @@ button.close, button.close:hover {
 .btn-default[disabled]:hover ,.btn-default[disabled]:focus {
     background-color: rgba(251, 232, 202, 1);
     border-color: #333;
-}
-
-a:focus {
-    color: rgb(51, 153, 135);
 }
 
 .table-bordered>tbody>tr>td, .table-bordered>tbody>tr>th {

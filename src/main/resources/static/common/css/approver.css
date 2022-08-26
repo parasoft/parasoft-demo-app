@@ -155,7 +155,7 @@ body {
 }
 
 .approver_empty_content_message {
-    width: 450px;
+    width: 100%;
 }
 
 .order-detail {
@@ -372,6 +372,7 @@ body {
 .order-actions {
     display: flex;
     justify-content: space-between;
+    margin-top: 10px;
 }
 
 #cancel_btn {

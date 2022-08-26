@@ -6,7 +6,7 @@
     <link rel="icon" href="/common/images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="/lib/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/lib/toastr/toastr.min.css"/>
-    <link rel="stylesheet" type="text/css" href="/common/css/common-new.css">
+    <link rel="stylesheet" type="text/css" href="/common/css/common.css">
     <link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/common.css'">
     <link rel="stylesheet" type="text/css" href="/common/css/item.css">
     <link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/item.css'">
@@ -23,7 +23,7 @@
                 <div id="item_detail_breadcrumb">
                     <ol class="industry_font item_navigation_bar">
                         <li>
-                            <a href="/"><span class="industry_color_1" translate="RETURN_TO_HOME"></span></a>
+                            <a href="/"><span class="industry_color_1 home-link" translate="RETURN_TO_HOME"></span></a>
                         </li>
                         <li>
                             <a ng-href="/categories/{{itemDetail.item.categoryId}}">

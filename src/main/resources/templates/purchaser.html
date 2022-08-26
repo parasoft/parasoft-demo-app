@@ -7,7 +7,7 @@
     <link rel="icon" href="/common/images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="/lib/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/lib/toastr/toastr.min.css"/>
-    <link rel="stylesheet" type="text/css" th:href="'/common/css/common-new.css'">
+    <link rel="stylesheet" type="text/css" th:href="'/common/css/common.css'">
     <link rel="stylesheet" type="text/css" th:href="'/common/css/purchaser.css'">
     <link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/common.css'">
     <link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/purchaser.css'">
@@ -20,7 +20,7 @@
         <div class="page-content-section">
             <div ng-include="'/common/pages/requisitionBar.html'" ng-controller="requisitionBarController as requisition"></div>
             <div id="assets_title">
-                <span translate="ASSETS_TITLE" class="industry_font"></span>
+                <span translate="ASSETS_TITLE"></span>
             </div>
             <div class="content-container">
                 <div class="assets-container" ng-controller="homepageController as home">

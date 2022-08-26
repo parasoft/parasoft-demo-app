@@ -81,6 +81,7 @@ footer {
 	margin: 15px auto 0px auto;
 	display: flex;
 	font-size: 14px;
+	line-height: 20px;
 }
 
 .input-field {
@@ -93,7 +94,6 @@ footer {
 }
 
 .input-label>span {
-	line-height: 20px;
 	text-align: center;
 	margin: 0px;
 }

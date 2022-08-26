@@ -16,6 +16,10 @@
 	border-radius: 6px;
 }
 
+.wizard_btn:hover {
+    background-color: rgba(249, 181, 78, 1);
+}
+
 #get_location>button, #get_location>button[disabled]:hover{
 	background-color: rgba(251, 243, 227, 1);
 }
