@@ -82,6 +82,14 @@
 								</div>
 								<input id="platoon_id_input" type="text" class="industry_font form-control deploy_input"
 									   ng-model="positionId" ng-change="orderWizard.checkAreaInfo(selectedArea,positionId,orderWizard.getPositionInfo)">
+								<div class="deploy_inf industry_font">
+									<span translate="SHIPPING"></span><span>:</span>
+								</div>
+								<select id="shipping_service_select" class="form-control industry_font deploy_input"
+										ng-model="selectedShippingService"
+										ng-options="shippingService | translate for shippingService in orderWizard.shippingServices">
+									<option value="">-</option>
+								</select>
 								<div id="location">
 									<div id="get_location" class="common_industry industry_font" ng-click="orderWizard.showPosition(positionId)">
 										<button class="btn wizard_btn" type="button" translate="GET_LOCATION"
@@ -170,7 +178,12 @@
 												 ng-bind="positionId == null ? '-' : positionId"></div>
 										</div>
 										<div class="review_info">
-											<div class="order_info_format summary_title3"><span translate="GPS_COORDINATES"></span><span>: </span></div>
+											<div class="order_info_format summary_title3"><span translate="SHIPPING"></span><span>: </span></div>
+											<div class="order_info_format order_info_content_format order_content"
+												 ng-bind="selectedShippingService | translate"></div>
+										</div>
+										<div class="review_info">
+											<div class="order_info_format summary_title4"><span translate="GPS_COORDINATES"></span><span>: </span></div>
 											<div class="order_info_format order_info_content_format order_content" ng-bind="orderWizard.locationInfo"></div>
 										</div>
 										<div id="assigned_campaign_summary">

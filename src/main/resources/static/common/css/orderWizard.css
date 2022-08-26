@@ -152,7 +152,7 @@
     position: relative;
 }
 
-.summary_title1, .summary_title2, .summary_title3 {
+.summary_title1, .summary_title2, .summary_title3, .summary_title4 {
 	font-size: 15px;
 	width: 200px;
 }
@@ -247,7 +247,7 @@
 	font-size: 13px;
 }
 
-.summary_title2, .summary_title3 {
+.summary_title2, .summary_title3, .summary_title4 {
 	top: 0;
 }
 
