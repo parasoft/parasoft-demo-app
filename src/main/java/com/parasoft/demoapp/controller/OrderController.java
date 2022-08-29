@@ -64,7 +64,7 @@ public class OrderController {
 		Long currentUserId = AuthenticationUtil.getUserIdInAuthentication(auth);
 		String currentUserName = AuthenticationUtil.getUsernameInAuthentication(auth);
 		OrderEntity order = orderService.addNewOrderSynchronized(currentUserId, currentUserName, orderDto.getRegion(), orderDto.getLocation(),
-				orderDto.getReceiverId(), orderDto.getEventId(), orderDto.getEventNumber());
+				orderDto.getShipping().getShippingType(), orderDto.getShipping().getReceiverId(), orderDto.getEventId(), orderDto.getEventNumber());
 		response.setData(order);
 
 		OrderMQMessageDTO message =

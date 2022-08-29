@@ -19,6 +19,12 @@ app.controller('orderWizardController', function($rootScope, $http, $filter) {
 	orderWizard.isAssignCampaignInfoNotReady = true;
 	orderWizard.getPositionInfo = false;
 
+    orderWizard.shippingServices = {
+        shippingService1: 'STANDARD_SHIPPING',
+        shippingService2: 'RUSH_SHIPPING',
+        shippingService3: 'Next_DAY_SHIPPING'
+    };
+
 	// Set time out for avoiding to get the key when using $filter('translate') filter.
 	setTimeout(function(){
 		//Get regions
@@ -104,11 +110,11 @@ app.controller('orderWizardController', function($rootScope, $http, $filter) {
 
 	//Show submitted status
 	orderWizard.isSubmitted = false;
-	orderWizard.submitForApproval = function(region, location, receiverId, eventId, eventNumber){
+	orderWizard.submitForApproval = function(region, location, shipping, receiverId, eventId, eventNumber){
 		$http({
 	        method: 'POST',
 	        url: '/proxy/v1/orders',
-	        data: {region: region, location: location, receiverId: receiverId, eventId: eventId, eventNumber: eventNumber},
+	        data: {region: region, location: location, shipping: shipping, receiverId: receiverId, eventId: eventId, eventNumber: eventNumber},
 	        headers: { 'Content-Type': 'application/json' }
 	    }).then(function(result) {
 	    	orderWizard.isSubmitted = true;
