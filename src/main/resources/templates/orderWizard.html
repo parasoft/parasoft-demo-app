@@ -112,12 +112,12 @@
 							<div class="deploy_inf industry_font">
 								<span translate="INVOICE_NUMBER"></span><span>:</span>
 							</div>
-							<input type="text" class="form-control deploy_input"
+							<input type="text" class="form-control deploy_input" id="campaign_id"
 								   ng-model="campaignID" ng-change="orderWizard.checkCampaignInfo(campaignID,campaignNumber)">
 							<div class="deploy_inf industry_font">
 								<span translate="UNIQUE_NUMBER"></span><span>:</span>
 							</div>
-							<input type="text" class="form-control deploy_input"
+							<input type="text" class="form-control deploy_input" id="campaign_number"
 								   ng-model="campaignNumber" ng-change="orderWizard.checkCampaignInfo(campaignID,campaignNumber)">
 						</div>
 						<div ng-show="orderWizard.isReview">
