@@ -24,7 +24,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
                 resp.sendRedirect("/loginPage");
             }else{
                 resp.setHeader("WWW-Authenticate", "Basic");
-                HttpServletResponseUtil.returnJsonErrorResponse(resp, HttpStatus.UNAUTHORIZED.value(),
+                HttpServletResponseUtil.returnJsonResponse(resp, HttpStatus.UNAUTHORIZED.value(),
                         ResponseResult.STATUS_ERR, ConfigMessages.USER_IS_NOT_AUTHORIZED, authException.getMessage());
             }
         }

@@ -40,7 +40,7 @@ public class ParasoftJDBCProxyValidateInterceptor extends HandlerInterceptorAdap
         }
 
         if(needResponseDirectly){
-            HttpServletResponseUtil.returnJsonErrorResponse(response, HttpStatus.INTERNAL_SERVER_ERROR.value(),
+            HttpServletResponseUtil.returnJsonResponse(response, HttpStatus.INTERNAL_SERVER_ERROR.value(),
                     ResponseResult.STATUS_ERR, errorMessage, IndustryRoutingDataSource.parasoftVirtualizeServerUrl);
             return false;
         }else{
