@@ -26,8 +26,8 @@ app.controller('orderWizardController', function($rootScope, $http, $filter) {
     };
 
     orderWizard.shippingService = {
-        shippingType: '',
-        positionId: ''
+        shippingType: undefined,
+        positionId: undefined
     };
 
     // Set time out for avoiding to get the key when using $filter('translate') filter.
@@ -180,8 +180,8 @@ app.controller('orderWizardController', function($rootScope, $http, $filter) {
     //Whether the area info is not be null when change the value of the id (Platoon ID)
     orderWizard.checkAreaInfo = function(area,positionId,shippingType,landmark){
         //Control for process button
-        if(area === undefined || area === null || area === '' || positionId === undefined || positionId === ''
-            || shippingType === undefined || shippingType === null || shippingType === ''
+        if(area === undefined || area === null || area === '' || positionId === undefined || positionId === null
+            || positionId === '' || shippingType === undefined || shippingType === null || shippingType === ''
             || landmark === false){
             orderWizard.isAreaInfoNotReady = true;
         }else{
@@ -190,7 +190,7 @@ app.controller('orderWizardController', function($rootScope, $http, $filter) {
 
         //Control for get location button
         if(area !== undefined && area !== null && area !== '' && positionId !== undefined && positionId !== ''
-            && shippingType !== undefined && shippingType !== null && shippingType !== ''){
+            && positionId !== null && shippingType !== undefined && shippingType !== null && shippingType !== ''){
             orderWizard.getLocationButton = false;
         }else{
             orderWizard.getLocationButton = true;

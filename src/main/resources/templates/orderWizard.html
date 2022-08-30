@@ -80,14 +80,21 @@
                         <div class="deploy_inf industry_font">
                            <span translate="RECEIVER_NAME"></span><span>:</span>
                         </div>
-                        <input id="platoon_id_input" type="text" class="industry_font form-control deploy_input"
-                              ng-model="orderWizard.shippingService.positionId" ng-change="orderWizard.checkAreaInfo(selectedArea,orderWizard.shippingService.positionId,orderWizard.shippingService.shippingType,orderWizard.getPositionInfo)">
+                        <input id="platoon_id_input"
+                               name="orderWizard.shippingService.positionId"
+                               type="text"
+                               class="industry_font form-control deploy_input"
+                               ng-model="orderWizard.shippingService.positionId"
+                               ng-change="orderWizard.checkAreaInfo(selectedArea,orderWizard.shippingService.positionId,orderWizard.shippingService.shippingType,orderWizard.getPositionInfo)">
                         <div class="deploy_inf industry_font">
                            <span translate="SHIPPING"></span><span>:</span>
                         </div>
-                        <select id="shipping_service_select" class="form-control industry_font deploy_input"
-                              ng-model="orderWizard.shippingService.shippingType" ng-change="orderWizard.checkAreaInfo(selectedArea,orderWizard.shippingService.positionId,orderWizard.shippingService.shippingType,orderWizard.getPositionInfo)"
-                              ng-options="shippingType | translate for shippingType in orderWizard.shippingTypes">
+                        <select id="shipping_service_select"
+                                name="orderWizard.shippingService.shippingType"
+                                class="form-control industry_font deploy_input"
+                                ng-model="orderWizard.shippingService.shippingType"
+                                ng-change="orderWizard.checkAreaInfo(selectedArea,orderWizard.shippingService.positionId,orderWizard.shippingService.shippingType,orderWizard.getPositionInfo)"
+                                ng-options="shippingType | translate for shippingType in orderWizard.shippingTypes">
                            <option value="">-</option>
                         </select>
                         <div id="location">
