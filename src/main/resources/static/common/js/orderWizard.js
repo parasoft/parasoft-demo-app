@@ -19,10 +19,15 @@ app.controller('orderWizardController', function($rootScope, $http, $filter) {
     orderWizard.isAssignCampaignInfoNotReady = true;
     orderWizard.getPositionInfo = false;
 
-    orderWizard.shippingServices = {
+    orderWizard.shippingTypes = {
         shippingService1: 'STANDARD_SHIPPING',
         shippingService2: 'RUSH_SHIPPING',
         shippingService3: 'NEXT_DAY_SHIPPING'
+    };
+
+    orderWizard.shippingService = {
+        shippingType: '',
+        positionId: ''
     };
 
     // Set time out for avoiding to get the key when using $filter('translate') filter.
@@ -110,11 +115,15 @@ app.controller('orderWizardController', function($rootScope, $http, $filter) {
 
     //Show submitted status
     orderWizard.isSubmitted = false;
-    orderWizard.submitForApproval = function(region, location, receiverId, eventId, eventNumber){
+    orderWizard.submitForApproval = function(region, location, shippingType, receiverId, eventId, eventNumber){
+        const shipping = {
+            shippingType: shippingType,
+            receiverId: receiverId
+        }
         $http({
             method: 'POST',
             url: '/proxy/v1/orders',
-            data: {region: region, location: location, receiverId: receiverId, eventId: eventId, eventNumber: eventNumber},
+            data: {region: region, location: location, shipping: shipping, eventId: eventId, eventNumber: eventNumber},
             headers: { 'Content-Type': 'application/json' }
         }).then(function(result) {
             orderWizard.isSubmitted = true;
@@ -169,19 +178,19 @@ app.controller('orderWizardController', function($rootScope, $http, $filter) {
     }
 
     //Whether the area info is not be null when change the value of the id (Platoon ID)
-    orderWizard.checkAreaInfo = function(area,positionId,shippingService,landmark){
+    orderWizard.checkAreaInfo = function(area,positionId,shippingType,landmark){
         //Control for process button
         if(area === undefined || area === null || area === '' || positionId === undefined || positionId === ''
-            || shippingService === undefined || shippingService === null || shippingService === ''
+            || shippingType === undefined || shippingType === null || shippingType === ''
             || landmark === false){
             orderWizard.isAreaInfoNotReady = true;
-        }else {
+        }else{
             orderWizard.isAreaInfoNotReady = false;
         }
 
         //Control for get location button
         if(area !== undefined && area !== null && area !== '' && positionId !== undefined && positionId !== ''
-            && shippingService !== undefined && shippingService !== null && shippingService !== ''){
+            && shippingType !== undefined && shippingType !== null && shippingType !== ''){
             orderWizard.getLocationButton = false;
         }else{
             orderWizard.getLocationButton = true;
