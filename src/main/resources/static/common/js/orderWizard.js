@@ -19,6 +19,12 @@ app.controller('orderWizardController', function($rootScope, $http, $filter) {
 	orderWizard.isAssignCampaignInfoNotReady = true;
 	orderWizard.getPositionInfo = false;
 
+    orderWizard.shippingServices = {
+        shippingService1: 'STANDARD_SHIPPING',
+        shippingService2: 'RUSH_SHIPPING',
+        shippingService3: 'NEXT_DAY_SHIPPING'
+    };
+
 	// Set time out for avoiding to get the key when using $filter('translate') filter.
 	setTimeout(function(){
 		//Get regions
