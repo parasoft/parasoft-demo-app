@@ -72,7 +72,7 @@
 								<div class="deploy_inf industry_font">
 									<span translate="LOCATION_OPTIONS"></span><span>:</span>
 								</div>
-								<select id="region_select" class="form-control industry_font deploy_input"
+								<select id="region_select" class="form-control industry_font deploy_input" name="selectedArea"
 										ng-model="selectedArea" ng-change="orderWizard.changeArea(selectedArea,positionId)"
 										ng-options="area | translate for area in orderWizard.regions">
 									<option value="">-</option>
@@ -80,7 +80,7 @@
 								<div class="deploy_inf industry_font">
 									<span translate="RECEIVER_NAME"></span><span>:</span>
 								</div>
-								<input id="platoon_id_input" type="text" class="industry_font form-control deploy_input"
+								<input id="platoon_id_input" type="text" class="industry_font form-control deploy_input" name="positionId"
 									   ng-model="positionId" ng-change="orderWizard.checkAreaInfo(selectedArea,positionId,orderWizard.getPositionInfo)">
 								<div id="location">
 									<div id="get_location" class="common_industry industry_font" ng-click="orderWizard.showPosition(positionId)">
