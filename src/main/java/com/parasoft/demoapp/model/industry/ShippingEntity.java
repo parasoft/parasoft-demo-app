@@ -6,7 +6,6 @@ import javax.persistence.*;
 
 @Getter
 @Entity
-@Table(name="tbl_shipping")
 @NoArgsConstructor
 @EqualsAndHashCode
 @ToString
@@ -16,7 +15,6 @@ public class ShippingEntity {
     private Long id;
 
     @Setter
-    @Column(name = "shipping_type")
     private String shippingType;
 
     @Setter
