@@ -26,7 +26,8 @@ app.controller('orderWizardController', function($rootScope, $http, $filter) {
     };
 
     orderWizard.shippingService = {
-        shippingType: undefined,
+        // Set shippingType1 as the initial value for better demo about Selenium
+        shippingType: orderWizard.shippingTypes.shippingService1,
         positionId: undefined
     };
 
@@ -146,7 +147,7 @@ app.controller('orderWizardController', function($rootScope, $http, $filter) {
     }
 
     //Clear landmark
-    orderWizard.changeArea = function(area,positionId){
+    orderWizard.changeArea = function(area,positionId,shippingType){
         orderWizard.positionInfo = false;
         orderWizard.isAreaInfoNotReady = true;
         orderWizard.getPositionInfo = false;
@@ -170,7 +171,8 @@ app.controller('orderWizardController', function($rootScope, $http, $filter) {
         }
 
         //Control for get location button
-        if(area !== null && area !== '' && positionId !== undefined && positionId !== ''){
+        if(area !== null && area !== '' && positionId !== undefined && positionId !== ''
+           && shippingType !== undefined && shippingType !== null && shippingType !== ''){
             orderWizard.getLocationButton = false;
         }else{
             orderWizard.getLocationButton = true;
