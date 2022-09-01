@@ -28,7 +28,7 @@
 						</span>
 					</div>
 					<div class="login-form">
-						<form class="industry_font" method="POST" novalidate="novalidate" action="/login" ng-submit="login.onSubmit()">
+						<form class="industry_font" novalidate="novalidate">
 							<div class="input-label industry_color_2">
 								<span translate="USER_NAME"></span>:
 							</div>
@@ -43,7 +43,7 @@
 							</div>
 							<div class="btn-field">
 								<div class="submit-button industry_font">
-									<button class="btn industry_font" type="submit" translate="SIGN_IN"></button>
+									<button class="btn industry_font" type="submit" translate="SIGN_IN" ng-click="login.onSubmit()"></button>
 								</div>
 								<div class="forgot-password industry_font industry_color_1">
 									<a translate="FORGOT_PASSWORD" data-toggle="modal" href="#forgot-password-modal" ng-click="login.forgotPassword()"></a>
