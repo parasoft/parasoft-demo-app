@@ -98,7 +98,6 @@
 										ng-model="orderWizard.shippingService.shippingType"
 										ng-change="orderWizard.checkAreaInfo(selectedArea,orderWizard.shippingService.positionId,orderWizard.shippingService.shippingType,orderWizard.getPositionInfo)"
 										ng-options="shippingType | translate for shippingType in orderWizard.shippingTypes">
-									<option value="">-</option>
 								</select>
 								<div id="location">
 									<div id="get_location" class="common_industry industry_font" ng-click="orderWizard.showPosition(positionId)">
