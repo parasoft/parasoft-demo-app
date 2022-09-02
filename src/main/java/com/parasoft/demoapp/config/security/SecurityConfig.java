@@ -26,6 +26,9 @@ public class SecurityConfig {
     private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
     @Autowired
+    private CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
+
+    @Autowired
     private CustomLogoutSuccessHandler customLogoutSuccessHandler;
 
 
@@ -102,6 +105,7 @@ public class SecurityConfig {
                     .formLogin()
                         .loginPage("/loginPage")
                         .loginProcessingUrl("/login")
+                        .failureHandler(customAuthenticationFailureHandler)
                         .successHandler(customAuthenticationSuccessHandler)
                 .and()
                     .logout()

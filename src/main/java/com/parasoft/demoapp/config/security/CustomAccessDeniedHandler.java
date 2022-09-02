@@ -20,7 +20,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
         if(!UrlUtil.isRestfulApiRequest(req)){
             resp.sendRedirect("/accessDenied");
         }else{
-            HttpServletResponseUtil.returnJsonErrorResponse(resp, HttpStatus.FORBIDDEN.value(),
+            HttpServletResponseUtil.returnJsonResponse(resp, HttpStatus.FORBIDDEN.value(),
                     ResponseResult.STATUS_ERR, ConfigMessages.USER_HAS_NO_PERMISSION, accessDeniedException.getMessage());
         }
     }

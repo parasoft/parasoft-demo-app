@@ -11,15 +11,31 @@ loginApp.controller('loginController', function($rootScope, $location, $window, 
 	login.onSubmit = onSubmit;
 
 	function onSubmit() {
-		var token = $window.btoa(login.credentials.username + ':' + login.credentials.password);
-		$window.localStorage.setItem('userToken', token);
+		let loginFormData = new FormData();
+		loginFormData.append('username', login.credentials.username);
+		loginFormData.append('password', login.credentials.password);
+
+		$http({
+			method: 'POST',
+			url: '/login',
+			data: loginFormData,
+			headers: {'Content-Type': undefined},
+		}).then(function(result) {
+			login.isError = false;
+
+			var token = $window.btoa(login.credentials.username + ':' + login.credentials.password);
+			$window.localStorage.setItem('userToken', token);
+
+			$window.location.href = "/";
+		}).catch(function(error) {
+			login.isError = true;
+		});
 	}
 
 	$rootScope.isShowSettingButton = false;
 	$rootScope.isShowRequisitionButton = false;
 	$rootScope.isShowRequisitionRequestButton = false;
 	$rootScope.isShowAccount = false;
-	login.isError = $location.absUrl().indexOf('error') != -1;
 	localStorage.setItem("removeRegionFilterInCookie",true);
 
     login.forgotPassword = () => {
