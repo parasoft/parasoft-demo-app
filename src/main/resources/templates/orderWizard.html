@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:ng="http://angularjs.org" xmlns:th="http://www.thymeleaf.org" ng-app="orderWizardPageApp">
 <head>
-	<meta charset="UTF-8">
-	<title translate="PROJECT_NAME"></title>
+   <meta charset="UTF-8">
+   <title translate="PROJECT_NAME"></title>
 
-	<link rel="icon" href="/common/images/favicon.ico" type="image/x-icon">
-	<link rel="stylesheet" type="text/css" href="/lib/bootstrap/css/bootstrap.min.css">
-	<link rel="stylesheet" type="text/css" href="/lib/swiper/swiper.min.css">
-	<link rel="stylesheet" type="text/css" href="/lib/toastr/toastr.min.css"/>
-	<link rel="stylesheet" type="text/css" href="/common/css/common.css">
-	<link rel="stylesheet" type="text/css" th:href="'/common/css/orderWizard.css'">
-	<link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/common.css'">
-	<link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/orderWizard.css'">
+   <link rel="icon" href="/common/images/favicon.ico" type="image/x-icon">
+   <link rel="stylesheet" type="text/css" href="/lib/bootstrap/css/bootstrap.min.css">
+   <link rel="stylesheet" type="text/css" href="/lib/swiper/swiper.min.css">
+   <link rel="stylesheet" type="text/css" href="/lib/toastr/toastr.min.css"/>
+   <link rel="stylesheet" type="text/css" href="/common/css/common.css">
+   <link rel="stylesheet" type="text/css" th:href="'/common/css/orderWizard.css'">
+   <link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/common.css'">
+   <link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/orderWizard.css'">
 </head>
 <body>
 	<input type="hidden" id="current_username" th:value="${#authentication.principal.username}">
@@ -72,16 +72,26 @@
 								<div class="deploy_inf industry_font">
 									<span translate="LOCATION_OPTIONS"></span><span>:</span>
 								</div>
-								<select id="region_select" class="form-control industry_font deploy_input" name="selectedArea"
-										ng-model="selectedArea" ng-change="orderWizard.changeArea(selectedArea,positionId)"
+								<select id="region_select" class="form-control industry_font deploy_input" name="shippingInfo.selectedArea"
+										ng-model="selectedArea" ng-change="orderWizard.changeArea(selectedArea,orderWizard.shippingService.positionId,orderWizard.shippingService.shippingType)"
 										ng-options="area | translate for area in orderWizard.regions">
 									<option value="">-</option>
 								</select>
 								<div class="deploy_inf industry_font">
 									<span translate="RECEIVER_NAME"></span><span>:</span>
 								</div>
-								<input id="platoon_id_input" type="text" class="industry_font form-control deploy_input" name="positionId"
-									   ng-model="positionId" ng-change="orderWizard.checkAreaInfo(selectedArea,positionId,orderWizard.getPositionInfo)">
+								<input id="platoon_id_input" type="text" class="industry_font form-control deploy_input" name="shippingInfo.positionId"
+									   ng-model="orderWizard.shippingService.positionId" ng-change="orderWizard.checkAreaInfo(selectedArea,orderWizard.shippingService.positionId,orderWizard.shippingService.shippingType,orderWizard.getPositionInfo)">
+                <div class="deploy_inf industry_font">
+									<span translate="SHIPPING"></span><span>:</span>
+								</div>
+								<select id="shipping_service_select"
+										name="shippingInfo.shippingType"
+										class="form-control industry_font deploy_input"
+										ng-model="orderWizard.shippingService.shippingType"
+										ng-change="orderWizard.checkAreaInfo(selectedArea,orderWizard.shippingService.positionId,orderWizard.shippingService.shippingType,orderWizard.getPositionInfo)"
+										ng-options="shippingType | translate for shippingType in orderWizard.shippingTypes">
+								</select>
 								<div id="location">
 									<div id="get_location" class="common_industry industry_font" ng-click="orderWizard.showPosition(positionId)">
 										<button class="btn wizard_btn" type="button" translate="GET_LOCATION"
@@ -123,7 +133,7 @@
 						<div ng-show="orderWizard.isReview">
 							<div id="submit_for_approval" class="wizard_btn_position industry_font">
 								<button ng-show="!orderWizard.isSubmitted" class="btn wizard_btn" type="button"
-										translate="SUBMIT_FOR_APPROVAL" ng-click=orderWizard.submitForApproval(orderWizard.region,orderWizard.locationInfo,orderWizard.platoonId,campaignID,campaignNumber)></button>
+										translate="SUBMIT_FOR_APPROVAL" ng-click=orderWizard.submitForApproval(orderWizard.region,orderWizard.locationInfo,orderWizard.shippingService.shippingType,orderWizard.shippingService.positionId,campaignID,campaignNumber)></button>
 							</div>
 							<div class="wizard_title industry_font">
 								<div class="common_text">
@@ -167,10 +177,15 @@
 										<div class="review_info">
 											<div class="order_info_format summary_title2"><span translate="RECEIVER_NAME"></span><span>: </span></div>
 											<div class="order_info_format order_info_content_format order_content"
-												 ng-bind="positionId == null ? '-' : positionId"></div>
+												 ng-bind="orderWizard.shippingService.positionId == null ? '-' : orderWizard.shippingService.positionId"></div>
 										</div>
 										<div class="review_info">
-											<div class="order_info_format summary_title3"><span translate="GPS_COORDINATES"></span><span>: </span></div>
+											<div class="order_info_format summary_title3"><span translate="SHIPPING"></span><span>: </span></div>
+											<div class="order_info_format order_info_content_format order_content"
+												 ng-bind="orderWizard.shippingService.shippingType | translate"></div>
+										</div>
+										<div class="review_info">
+											<div class="order_info_format summary_title4"><span translate="GPS_COORDINATES"></span><span>: </span></div>
 											<div class="order_info_format order_info_content_format order_content" ng-bind="orderWizard.locationInfo"></div>
 										</div>
 										<div id="assigned_campaign_summary">
