@@ -6,18 +6,17 @@ initImportPageControllers(app);
 
 initToastr();
 
-app.controller('orderWizardController', function($rootScope, $http, $filter) {
-	var orderWizard = this;
+app.controller('orderWizardController', function($scope, $rootScope, $http, $filter) {
 	$rootScope.isShowRequisitionRequestButton = false;
 	connectAndSubscribeMQ(CURRENT_ROLE,$http,$rootScope,$filter);
 	getUnreviewedAmount($http,$rootScope,$filter);
 
 	//Initialize wizard
-	orderWizard.isDelopmentLocation = true;
-	orderWizard.isAreaInfoNotReady = true;
-	orderWizard.getLocationButton = true;
-	orderWizard.isAssignCampaignInfoNotReady = true;
-	orderWizard.getPositionInfo = false;
+	$scope.isDevelopmentLocation = true;
+	$scope.isAreaInfoNotReady = true;
+	$scope.getLocationButton = true;
+	$scope.isAssignCampaignInfoNotReady = true;
+	$scope.getPositionInfo = false;
 
 	// Set time out for avoiding to get the key when using $filter('translate') filter.
 	setTimeout(function(){
@@ -27,7 +26,7 @@ app.controller('orderWizardController', function($rootScope, $http, $filter) {
 	        url: '/proxy/v1/locations/regions',
 	    }).then(function(result) {
 	    	var regions = result.data.data;
-	    	orderWizard.regions = regions;
+	    	$scope.regions = regions;
 	    }).catch(function(result) {
 	        console.info(result);
 	        displayLoadError(result,$rootScope,$filter,$http,true,"locations");
@@ -35,39 +34,39 @@ app.controller('orderWizardController', function($rootScope, $http, $filter) {
 	}, 500);
 
 	//Whether the related link shows in the breadcrumb bar
-	orderWizard.isActive =function(flag,isClickable) {
+	$scope.isActive =function(flag,isClickable) {
 		return flag ? 'active' : (isClickable ? 'clickable non-active' : 'non-active');
 	}
 
 	//Change to the front step when clicking the related link
-	orderWizard.switchProcess = function(currentProcess,isClickable) {
+	$scope.switchProcess = function(currentProcess,isClickable) {
 		if(currentProcess === 'Deployment Location' && isClickable){
-			orderWizard.isDelopmentLocation = true;
-			orderWizard.isAssignCampaign = false
-			orderWizard.isReview = false;
-			orderWizard.isCampaignClickable = false;
+			$scope.isDevelopmentLocation = true;
+			$scope.isAssignCampaign = false
+			$scope.isReview = false;
+			$scope.isCampaignClickable = false;
 		}else if(currentProcess === 'Assign Campaign' && isClickable){
-			orderWizard.isDelopmentLocation = false;
-			orderWizard.isAssignCampaign = true;
-			orderWizard.isReview = false;
+			$scope.isDevelopmentLocation = false;
+			$scope.isAssignCampaign = true;
+			$scope.isReview = false;
 		}
 	}
 
 	//Change to next step when clicking button
-	orderWizard.nextProcess = function(currentProcess) {
+	$scope.nextProcess = function(currentProcess) {
 		if(currentProcess === 'Deployment Location'){
-			orderWizard.isDelopmentLocation = false;
-			orderWizard.isAssignCampaign = true;
-			orderWizard.isReview = false;
-			orderWizard.isDevelopmentClickable = true;
-			orderWizard.isCampaignClickable = false;
+			$scope.isDevelopmentLocation = false;
+			$scope.isAssignCampaign = true;
+			$scope.isReview = false;
+			$scope.isDevelopmentClickable = true;
+			$scope.isCampaignClickable = false;
 
 		}else if(currentProcess === 'Assign Campaign'){
-			orderWizard.isDelopmentLocation = false;
-			orderWizard.isAssignCampaign = false;
-			orderWizard.isReview = true;
-			orderWizard.isDevelopmentClickable = true;
-			orderWizard.isCampaignClickable = true;
+			$scope.isDevelopmentLocation = false;
+			$scope.isAssignCampaign = false;
+			$scope.isReview = true;
+			$scope.isDevelopmentClickable = true;
+			$scope.isCampaignClickable = true;
 
 			//Get cart items from database to avoid the changes of items in other pages
 			$http({
@@ -82,8 +81,8 @@ app.controller('orderWizardController', function($rootScope, $http, $filter) {
 					totalAmount += cartItems[i].quantity;
 				}
 
-				orderWizard.cartItems = cartItems;
-				orderWizard.totalAmount = totalAmount;
+				$scope.cartItems = cartItems;
+				$scope.totalAmount = totalAmount;
 		    }).catch(function(result) {
 		        console.info(result);
 		        displayLoadError(result,$rootScope,$filter,$http,true,'cart');
@@ -92,29 +91,29 @@ app.controller('orderWizardController', function($rootScope, $http, $filter) {
 	}
 
 	//Show order delivery position
-	orderWizard.showPosition = function(positionId){
+	$scope.showPosition = function(){
 		var platoonId = angular.element("#platoon_id_input").val();
-		orderWizard.platoonId = platoonId;
-		orderWizard.getPositionInfo = true;
+		$scope.platoonId = platoonId;
+		$scope.getPositionInfo = true;
 
-		if(positionId !== null && positionId !== ''){
-            orderWizard.isAreaInfoNotReady = false;
+		if($scope.positionId !== null && $scope.positionId !== ''){
+            $scope.isAreaInfoNotReady = false;
         }
 	}
 
 	//Show submitted status
-	orderWizard.isSubmitted = false;
-	orderWizard.submitForApproval = function(region, location, receiverId, eventId, eventNumber){
+	$scope.isSubmitted = false;
+	$scope.submitForApproval = function(){
 		$http({
 	        method: 'POST',
 	        url: '/proxy/v1/orders',
-	        data: {region: region, location: location, receiverId: receiverId, eventId: eventId, eventNumber: eventNumber},
+	        data: {region: $scope.region, location: $scope.locationInfo, receiverId: $scope.platoonId, eventId: $scope.campaignID, eventNumber: $scope.campaignNumber},
 	        headers: { 'Content-Type': 'application/json' }
 	    }).then(function(result) {
-	    	orderWizard.isSubmitted = true;
+	    	$scope.isSubmitted = true;
 
 	    	var response = result.data.data;
-	        orderWizard.orderNumber = response.orderNumber;
+	        $scope.orderNumber = response.orderNumber;
 	    }, function error(response) {
 	    	if(response.status === 400){
 	    		toastr.error($filter('translate')('INSUFFICIENT_INVENTORY'));
@@ -126,28 +125,28 @@ app.controller('orderWizardController', function($rootScope, $http, $filter) {
 	    		}
 	    	}
 	    }).catch(function(result) {
-	    	orderWizard.isSubmitted = false;
+	    	$scope.isSubmitted = false;
 	    });
 	}
 
 	//Clear landmark
-	orderWizard.changeArea = function(area,positionId){
-		orderWizard.positionInfo = false;
-		orderWizard.isAreaInfoNotReady = true;
-		orderWizard.getPositionInfo = false;
+	$scope.changeArea = function() {
+		$scope.positionInfo = false;
+		$scope.isAreaInfoNotReady = true;
+		$scope.getPositionInfo = false;
 
         var region_select = angular.element("#region_select option:selected").val().replace("string:","");
-        orderWizard.region = region_select;
+        $scope.region = region_select;
 		if(region_select !== '' && region_select !== '-'){
             $http({
                 method: 'GET',
         	    url: '/proxy/v1/locations/location',
         	    params:{"region": region_select}
             }).then(function(result) {
-        	    orderWizard.positionInfo = true;
+        	    $scope.positionInfo = true;
         	    var location = result.data.data;
-        	    orderWizard.locationInfo = location.locationInfo;
-        	    orderWizard.locationImage = location.locationImage;
+        	    $scope.locationInfo = location.locationInfo;
+        	    $scope.locationImage = location.locationImage;
             }).catch(function(result) {
         	    console.info(result);
         	    displayLoadError(result,$rootScope,$filter,$http,true,"locations");
@@ -155,37 +154,37 @@ app.controller('orderWizardController', function($rootScope, $http, $filter) {
         }
 
 		//Control for get location button
-		if(area !== null && area !== '' && positionId !== undefined && positionId !== ''){
-			orderWizard.getLocationButton = false;
+		if($scope.selectedArea !== null && $scope.selectedArea !== '' && $scope.positionId !== undefined && $scope.positionId !== ''){
+			$scope.getLocationButton = false;
 		}else{
-			orderWizard.getLocationButton = true;
+			$scope.getLocationButton = true;
 		}
 	}
 
 	//Whether the area info is not be null when change the value of the id (Platoon ID)
-	orderWizard.checkAreaInfo = function(area,positionId,landmark){
+	$scope.checkAreaInfo = function(landmark){
 		//Control for process button
-		if(area === null || area === '' || positionId === undefined || positionId === ''
-			|| landmark === false){
-			orderWizard.isAreaInfoNotReady = true;
+		if($scope.selectedArea === null || $scope.selectedArea === '' || $scope.positionId === undefined || $scope.positionId === ''
+			|| $scope.getPositionInfo === false){
+			$scope.isAreaInfoNotReady = true;
 		}else {
-			orderWizard.isAreaInfoNotReady = false;
+			$scope.isAreaInfoNotReady = false;
 		}
 
 		//Control for get location button
-		if(area !== null && area !== '' && positionId !== undefined && positionId !== ''){
-			orderWizard.getLocationButton = false;
+		if($scope.selectedArea !== null && $scope.selectedArea !== '' && $scope.positionId !== undefined && $scope.positionId !== ''){
+			$scope.getLocationButton = false;
 		}else{
-			orderWizard.getLocationButton = true;
+			$scope.getLocationButton = true;
 		}
 	}
 
 	//Whether the campaign info is not be null when change the value of campaign data
-	orderWizard.checkCampaignInfo = function(campaignID,campaignNumber){
-		if(campaignID === undefined || campaignID === '' || campaignNumber === undefined || campaignNumber === ''){
-			orderWizard.isAssignCampaignInfoNotReady = true;
+	$scope.checkCampaignInfo = function() {
+		if($scope.campaignID === undefined || $scope.campaignID === '' || $scope.campaignNumber === undefined || $scope.campaignNumber === ''){
+			$scope.isAssignCampaignInfoNotReady = true;
 		}else {
-			orderWizard.isAssignCampaignInfoNotReady = false;
+			$scope.isAssignCampaignInfoNotReady = false;
 		}
 	}
 
