@@ -57,11 +57,14 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
             category.items = items;
 
             if(items.length === 0){
-                $rootScope.emptyContentError = true;
-                category.emptyContentsMessage = true;
+                if(checkedRegions) {
+                    category.showNoResultText = true;
+                    console.log(category.showNoResultText);
+                } else {
+                    $rootScope.emptyContentError = true;
+                    category.emptyContentsMessage = true;
+                }
             }
-
-            countFooterHeight(items.length);
         }).catch(function(result) {
             console.info(result);
             displayLoadError(result,$rootScope,$filter,$http,false,'items');
@@ -204,7 +207,6 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
         }).then(function (result) {
             items = result.data.data.content;
             category.items = items;
-            countFooterHeight(items.length);
             var checkedRegions = result.config.params.regions;
             var regionFilterDisabled = checkedRegions === "" || checkedRegions === null || checkedRegions === undefined;
 
@@ -220,17 +222,6 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
             console.info(result);
             displayLoadError(result, $rootScope, $filter, $http, true, 'items');
         });
-    }
-
-    //Calculate the footer's distance from the top based on the amount of items
-    function countFooterHeight(itemLength){
-        var row = Math.ceil(itemLength/3);
-        row = row < 1 ? 1 : row;
-        if(row > 1){
-            $rootScope.footerHeight = {
-                "top" : 348 * (row - 1) + 700 + "px"
-            }
-        }
     }
 
     function closeRequisitionDetail(index){
