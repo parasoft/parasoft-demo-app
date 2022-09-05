@@ -40,6 +40,7 @@ import com.parasoft.demoapp.model.industry.OrderItemEntity;
 import com.parasoft.demoapp.model.industry.OrderStatus;
 import com.parasoft.demoapp.model.industry.RegionType;
 import com.parasoft.demoapp.repository.industry.OrderRepository;
+import com.parasoft.demoapp.model.industry.ShippingEntity;
 
 /**
  * Test class for OrderService
@@ -48,195 +49,202 @@ import com.parasoft.demoapp.repository.industry.OrderRepository;
  */
 public class OrderServiceTest {
 
-	@InjectMocks
-	OrderService underTest;
+    @InjectMocks
+    OrderService underTest;
 
-	@Mock
-	OrderRepository orderRepository;
+    @Mock
+    OrderRepository orderRepository;
 
-	@Mock
-	ShoppingCartService shoppingCartService;
+    @Mock
+    ShoppingCartService shoppingCartService;
 
-	@Mock
-	ItemService itemService;
+    @Mock
+    ItemService itemService;
 
-	@Mock
-	GlobalPreferencesService globalPreferencesService;
+    @Mock
+    GlobalPreferencesService globalPreferencesService;
 
-	@Mock
-	LocationService locationService;
+    @Mock
+    LocationService locationService;
 
-	@Before
-	public void setupMocks() {
-		MockitoAnnotations.initMocks(this);
-	}
-
-	/**
-	 * Test for addNewOrder(Long, String, RegionType, String, String, String, String)
-	 *
-	 * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String)
-	 */
-	@Test
-	public void testAddNewOrder_normal() throws Throwable {
-		// Given
-		Long orderId = 10L;
-		Long userId = 1L;
-		String requestedBy = "testUser";
-		Long itemId = 2L;
-		String name = "name";
-		String description = "description";
-		String imagePath = "imagePath";
-		RegionType region = RegionType.JAPAN;
-		ItemEntity item = new ItemEntity(name, description, null, 20, imagePath, region, new Date());
-		item.setId(itemId);
-
-		int ItemQuantityInOrder = 1;
-		OrderItemEntity orderItem = new OrderItemEntity(name, description, imagePath, ItemQuantityInOrder);
-		List<OrderItemEntity> orderItems = new ArrayList<>();
-		orderItems.add(orderItem);
-
-		int inStock = 10;
-		List<CartItemEntity> cartItems = new ArrayList<>();
-		CartItemEntity cartItem = new CartItemEntity(userId, item, inStock);
-		cartItems.add(cartItem);
-
-		String location = "JAPAN 82.8628° S, 135.0000° E";
-		String receiverId = "345-6789-21";
-		String eventId = "45833-ORG-7834";
-		String eventNumber = "55-444-33-22";
-		Date submissionDate = new Date();
-
-		OrderEntity saveResult = new OrderEntity(requestedBy, region, location, receiverId, eventId, eventNumber);
-		saveResult.setId(orderId);
-		saveResult.setStatus(OrderStatus.SUBMITTED);
-		saveResult.setOrderItems(orderItems);
-		saveResult.setSubmissionDate(submissionDate);
-		saveResult.setOrderImage(imagePath);
-		orderItem.setOrder(saveResult);
-
-		LocationEntity locationEntity = new LocationEntity();
-		locationEntity.setRegion(region);
-		locationEntity.setLocationInfo(location);
-		locationEntity.setLocationImage(imagePath);
-		when(locationService.getLocationByRegion(any(RegionType.class))).thenReturn(locationEntity);
-
-		when(shoppingCartService.getCartItemsByUserId(anyLong())).thenReturn(cartItems);
-		when(itemService.getItemById(anyLong())).thenReturn(item);
-		when(orderRepository.save((OrderEntity) any())).thenReturn(saveResult);
-
-		// When
-		OrderEntity result = underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
-
-		// Then
-		assertNotNull(result);
-		assertEquals(requestedBy, result.getRequestedBy());
-		assertEquals(OrderStatus.SUBMITTED.getStatus(), result.getStatus().getStatus());
-		assertEquals(1, result.getOrderItems().size());
-		assertEquals(RegionType.JAPAN, result.getRegion());
-		assertEquals(receiverId, result.getReceiverId());
-		assertEquals(location, result.getLocation());
-		assertEquals(eventId, result.getEventId());
-		assertEquals(imagePath, result.getOrderImage());
-		assertEquals(eventNumber, result.getEventNumber());
-		assertEquals("23-456-010", result.getOrderNumber());
-		assertEquals(submissionDate, result.getSubmissionDate());
-	}
-
-	/**
-	 * Test for addNewOrder(Long, String, RegionType, String, String, String, String)
-	 *
-	 * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String)
-	 */
-	@Test
-	public void testAddNewOrder_exception_regionTypeNotFound() throws Throwable {
-		// Given
-		Long userId = 1L;
-		String requestedBy = "testUser";
-		RegionType region = RegionType.JAPAN;
-		String location = "JAPAN 82.8628° S, 135.0000° E";
-		String receiverId = "345-6789-21";
-		String eventId = "45833-ORG-7834";
-		String eventNumber = "55-444-33-22";
-
-		when(locationService.getLocationByRegion(any(RegionType.class))).thenThrow(LocationNotFoundException.class);
-
-		// When
-		String message = "";
-		try {
-			underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
-		} catch (Exception e) {
-			message = e.getMessage();
-		}
-
-		// Then
-		Assertions.assertEquals(MessageFormat.format(OrderMessages.LOCATION_NOT_FOUND_FOR_REGION, region.toString()), message);
-	}
-
-	/**
-	 * Test for addNewOrder(Long, String, RegionType, String, String, String, String)
-	 *
-	 * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String)
-	 */
-	@Test
-	public void testAddNewOrder_exception_noCartItemsInCart() throws Throwable {
-		// Given
-		Long userId = 1L;
-		String requestedBy = "testUser";
-		RegionType region = RegionType.JAPAN;
-		String location = "JAPAN 82.8628° S, 135.0000° E";
-		String receiverId = "345-6789-21";
-		String eventId = "45833-ORG-7834";
-		String eventNumber = "55-444-33-22";
-
-		LocationEntity locationEntity = mock(LocationEntity.class);
-		when(locationService.getLocationByRegion(any(RegionType.class))).thenReturn(locationEntity);
-		List<CartItemEntity> cartItems = new ArrayList<>();
-		when(shoppingCartService.getCartItemsByUserId(anyLong())).thenReturn(cartItems);
-
-		// When
-		String message = "";
-		try {
-			underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
-		} catch (Exception e) {
-			message = e.getMessage();
-		}
-
-		// Then
-		Assertions.assertEquals(AssetMessages.NO_CART_ITEMS, message);
-	}
-
-	/**
-	 * Test for addNewOrder(Long, String, RegionType, String, String, String, String) with NullUserIdException
-	 *
-	 * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String)
-	 */
-	@Test
-	public void testAddNewOrder_exception_nullUserIdException() {
-		// Given
-		Long userId = null;
-		String requestedBy = "";
-		RegionType region = RegionType.JAPAN;
-		String location = "JAPAN 82.8628° S, 135.0000° E";
-		String receiverId = "345-6789-21";
-		String eventId = "45833-ORG-7834";
-		String eventNumber = "55-444-33-22";
-
-		// When
-		String message = "";
-		try {
-			underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
-		} catch (Exception e) {
-			message = e.getMessage();
-		}
-
-		// Then
-		Assertions.assertEquals(OrderMessages.USER_ID_CANNOT_BE_NULL, message);
-	}
+    @Before
+    public void setupMocks() {
+        MockitoAnnotations.initMocks(this);
+    }
 
     /**
-     * Test for addNewOrder(Long, String, RegionType, String, String, String, String) with NullUserNameException
+     * Test for addNewOrder(Long, String, RegionType, String, String, String, String, String)
      *
-     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String)
+     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String)
+     */
+    @Test
+    public void testAddNewOrder_normal() throws Throwable {
+        // Given
+        Long orderId = 10L;
+        Long userId = 1L;
+        String requestedBy = "testUser";
+        Long itemId = 2L;
+        String name = "name";
+        String description = "description";
+        String imagePath = "imagePath";
+        RegionType region = RegionType.JAPAN;
+        ItemEntity item = new ItemEntity(name, description, null, 20, imagePath, region, new Date());
+        item.setId(itemId);
+
+        int ItemQuantityInOrder = 1;
+        OrderItemEntity orderItem = new OrderItemEntity(name, description, imagePath, ItemQuantityInOrder);
+        List<OrderItemEntity> orderItems = new ArrayList<>();
+        orderItems.add(orderItem);
+
+        int inStock = 10;
+        List<CartItemEntity> cartItems = new ArrayList<>();
+        CartItemEntity cartItem = new CartItemEntity(userId, item, inStock);
+        cartItems.add(cartItem);
+
+        ShippingEntity shipping = new ShippingEntity();
+        shipping.setShippingType("Standard (1 - 2 weeks)");
+        shipping.setReceiverId("345-6789-21");
+
+        String location = "JAPAN 82.8628° S, 135.0000° E";
+        String eventId = "45833-ORG-7834";
+        String eventNumber = "55-444-33-22";
+        Date submissionDate = new Date();
+
+        OrderEntity saveResult = new OrderEntity(requestedBy, region, location, shipping, eventId, eventNumber);
+        saveResult.setId(orderId);
+        saveResult.setStatus(OrderStatus.SUBMITTED);
+        saveResult.setOrderItems(orderItems);
+        saveResult.setSubmissionDate(submissionDate);
+        saveResult.setOrderImage(imagePath);
+        orderItem.setOrder(saveResult);
+
+        LocationEntity locationEntity = new LocationEntity();
+        locationEntity.setRegion(region);
+        locationEntity.setLocationInfo(location);
+        locationEntity.setLocationImage(imagePath);
+        when(locationService.getLocationByRegion(any(RegionType.class))).thenReturn(locationEntity);
+
+        when(shoppingCartService.getCartItemsByUserId(anyLong())).thenReturn(cartItems);
+        when(itemService.getItemById(anyLong())).thenReturn(item);
+        when(orderRepository.save((OrderEntity) any())).thenReturn(saveResult);
+
+        // When
+        OrderEntity result = underTest.addNewOrder(userId, requestedBy, region, location, shipping.getShippingType(), shipping.getReceiverId(), eventId, eventNumber);
+
+        // Then
+        assertNotNull(result);
+        assertEquals(requestedBy, result.getRequestedBy());
+        assertEquals(OrderStatus.SUBMITTED.getStatus(), result.getStatus().getStatus());
+        assertEquals(1, result.getOrderItems().size());
+        assertEquals(RegionType.JAPAN, result.getRegion());
+        assertEquals(shipping.getShippingType(), result.getShippingType());
+        assertEquals(shipping.getReceiverId(), result.getReceiverId());
+        assertEquals(location, result.getLocation());
+        assertEquals(eventId, result.getEventId());
+        assertEquals(imagePath, result.getOrderImage());
+        assertEquals(eventNumber, result.getEventNumber());
+        assertEquals("23-456-010", result.getOrderNumber());
+        assertEquals(submissionDate, result.getSubmissionDate());
+    }
+
+    /**
+     * Test for addNewOrder(Long, String, RegionType, String, String, String, String, String)
+     *
+     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String)
+     */
+    @Test
+    public void testAddNewOrder_exception_regionTypeNotFound() throws Throwable {
+        // Given
+        Long userId = 1L;
+        String requestedBy = "testUser";
+        RegionType region = RegionType.JAPAN;
+        String location = "JAPAN 82.8628° S, 135.0000° E";
+        String shippingType = "Standard (1 - 2 weeks)";
+        String receiverId = "345-6789-21";
+        String eventId = "45833-ORG-7834";
+        String eventNumber = "55-444-33-22";
+
+        when(locationService.getLocationByRegion(any(RegionType.class))).thenThrow(LocationNotFoundException.class);
+
+        // When
+        String message = "";
+        try {
+            underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
+        } catch (Exception e) {
+            message = e.getMessage();
+        }
+
+        // Then
+        Assertions.assertEquals(MessageFormat.format(OrderMessages.LOCATION_NOT_FOUND_FOR_REGION, region.toString()), message);
+    }
+
+    /**
+     * Test for addNewOrder(Long, String, RegionType, String, String, String, String, String)
+     *
+     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String)
+     */
+    @Test
+    public void testAddNewOrder_exception_noCartItemsInCart() throws Throwable {
+        // Given
+        Long userId = 1L;
+        String requestedBy = "testUser";
+        RegionType region = RegionType.JAPAN;
+        String location = "JAPAN 82.8628° S, 135.0000° E";
+        String shippingType = "Standard (1 - 2 weeks)";
+        String receiverId = "345-6789-21";
+        String eventId = "45833-ORG-7834";
+        String eventNumber = "55-444-33-22";
+
+        LocationEntity locationEntity = mock(LocationEntity.class);
+        when(locationService.getLocationByRegion(any(RegionType.class))).thenReturn(locationEntity);
+        List<CartItemEntity> cartItems = new ArrayList<>();
+        when(shoppingCartService.getCartItemsByUserId(anyLong())).thenReturn(cartItems);
+
+        // When
+        String message = "";
+        try {
+            underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
+        } catch (Exception e) {
+            message = e.getMessage();
+        }
+
+        // Then
+        Assertions.assertEquals(AssetMessages.NO_CART_ITEMS, message);
+    }
+
+    /**
+     * Test for addNewOrder(Long, String, RegionType, String, String, String, String, String) with NullUserIdException
+     *
+     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String)
+     */
+    @Test
+    public void testAddNewOrder_exception_nullUserIdException() {
+        // Given
+        Long userId = null;
+        String requestedBy = "";
+        RegionType region = RegionType.JAPAN;
+        String location = "JAPAN 82.8628° S, 135.0000° E";
+        String shippingType = "Standard (1 - 2 weeks)";
+        String receiverId = "345-6789-21";
+        String eventId = "45833-ORG-7834";
+        String eventNumber = "55-444-33-22";
+
+        // When
+        String message = "";
+        try {
+            underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
+        } catch (Exception e) {
+            message = e.getMessage();
+        }
+
+        // Then
+        Assertions.assertEquals(OrderMessages.USER_ID_CANNOT_BE_NULL, message);
+    }
+
+    /**
+     * Test for addNewOrder(Long, String, RegionType, String, String, String, String, String) with NullUserNameException
+     *
+     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String)
      */
     @Test
     public void testAddNewOrder_exception_nullUserNameException() {
@@ -245,6 +253,7 @@ public class OrderServiceTest {
         String requestedBy = null;
         RegionType region = RegionType.JAPAN;
         String location = "JAPAN 82.8628° S, 135.0000° E";
+        String shippingType = "Standard (1 - 2 weeks)";
         String receiverId = "345-6789-21";
         String eventId = "45833-ORG-7834";
         String eventNumber = "55-444-33-22";
@@ -252,7 +261,7 @@ public class OrderServiceTest {
         // When
         String message = "";
         try {
-            underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
+            underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
         } catch (Exception e) {
             message = e.getMessage();
         }
@@ -261,875 +270,945 @@ public class OrderServiceTest {
         Assertions.assertEquals(OrderMessages.USERNAME_CANNOT_BE_NULL, message);
     }
 
-	/**
-	 * Test for addNewOrder(Long, String, RegionType, String, String, String, String) with NullRegionException
-	 *
-	 * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String)
-	 */
-	@Test
-	public void testAddNewOrder_exception_nullRegionException() throws Exception {
-		// Given
-		Long userId = 1L;
-		String requestedBy = "testUser";
-		RegionType region = null;
-		String location = "JAPAN 82.8628° S, 135.0000° E";
-		String receiverId = "345-6789-21";
-		String eventId = "45833-ORG-7834";
-		String eventNumber = "55-444-33-22";
-
-		// When
-		String message = "";
-		try {
-			underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
-		} catch (Exception e) {
-			message = e.getMessage();
-		}
-
-		// Then
-		Assertions.assertEquals(OrderMessages.REGION_CANNOT_BE_NULL, message);
-	}
-
-	/**
-	 * Test for addNewOrder(Long, String, RegionType, String, String, String, String) with BlankReceiverIdException
-	 *
-	 * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String)
-	 */
-	@Test
-	public void testAddNewOrder_exception_nullReceiverIdException() throws Exception {
-		// Given
-		Long userId = 1L;
+    /**
+     * Test for addNewOrder(Long, String, RegionType, String, String, String, String, String) with NullRegionException
+     *
+     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String)
+     */
+    @Test
+    public void testAddNewOrder_exception_nullRegionException() throws Exception {
+        // Given
+        Long userId = 1L;
         String requestedBy = "testUser";
-		RegionType region = RegionType.JAPAN;
-		String location = "JAPAN 82.8628° S, 135.0000° E";
-		String receiverId = null;
-		String eventId = "45833-ORG-7834";
-		String eventNumber = "55-444-33-22";
+        RegionType region = null;
+        String location = "JAPAN 82.8628° S, 135.0000° E";
+        String shippingType = "Standard (1 - 2 weeks)";
+        String receiverId = "345-6789-21";
+        String eventId = "45833-ORG-7834";
+        String eventNumber = "55-444-33-22";
 
-		// When
-		String message = "";
-		try {
-			underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
-		} catch (Exception e) {
-			message = e.getMessage();
-		}
+        // When
+        String message = "";
+        try {
+            underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
+        } catch (Exception e) {
+            message = e.getMessage();
+        }
 
-		// Then
-		Assertions.assertEquals(OrderMessages.RECEIVER_ID_CANNOT_BE_BLANK, message);
-	}
+        // Then
+        Assertions.assertEquals(OrderMessages.REGION_CANNOT_BE_NULL, message);
+    }
 
-	/**
-	 * Test for addNewOrder(Long, String, RegionType, String, String, String, String) with BlankReceiverIdException
-	 *
-	 * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String)
-	 */
-	@Test
-	public void testAddNewOrder_exception_blankReceiverIdException() throws Exception {
-		// Given
-		Long userId = 1L;
+    /**
+     * Test for addNewOrder(Long, String, RegionType, String, String, String, String, String) with BlankShippingException
+     *
+     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String)
+     */
+    @Test
+    public void testAddNewOrder_exception_nullShippingException() throws Exception {
+        // Given
+        Long userId = 1L;
         String requestedBy = "testUser";
-		RegionType region = RegionType.JAPAN;
-		String location = "JAPAN 82.8628° S, 135.0000° E";
-		String receiverId = "";
-		String eventId = "45833-ORG-7834";
-		String eventNumber = "55-444-33-22";
+        RegionType region = RegionType.JAPAN;
+        String location = "JAPAN 82.8628° S, 135.0000° E";
+        String shippingType = null;
+        String receiverId = "345-6789-21";
+        String eventId = "45833-ORG-7834";
+        String eventNumber = "55-444-33-22";
 
-		// When
-		String message = "";
-		try {
-			underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
-		} catch (Exception e) {
-			message = e.getMessage();
-		}
+        // When
+        String message = "";
+        try {
+            underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
+        } catch (Exception e) {
+            message = e.getMessage();
+        }
 
-		// Then
-		Assertions.assertEquals(OrderMessages.RECEIVER_ID_CANNOT_BE_BLANK, message);
-	}
+        // Then
+        Assertions.assertEquals(OrderMessages.SHIPPING_CANNOT_BE_BLANK, message);
+    }
 
-	/**
-	 * Test for addNewOrder(Long, String, RegionType, String, String, String, String) with BlankEventIdException
-	 *
-	 * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String)
-	 */
-	@Test
-	public void testAddNewOrder_exception_nullEventIdException() throws Exception {
-		// Given
-		Long userId = 1L;
+    /**
+     * Test for addNewOrder(Long, String, RegionType, String, String, String, String, String) with BlankShippingException
+     *
+     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String)
+     */
+    @Test
+    public void testAddNewOrder_exception_blankShippingException() throws Exception {
+        // Given
+        Long userId = 1L;
         String requestedBy = "testUser";
-		RegionType region = RegionType.JAPAN;
-		String location = "JAPAN 82.8628° S, 135.0000° E";
-		String receiverId = "345-6789-21";
-		String eventId = null;
-		String eventNumber = "55-444-33-22";
+        RegionType region = RegionType.JAPAN;
+        String location = "JAPAN 82.8628° S, 135.0000° E";
+        String shippingType = "";
+        String receiverId = "345-6789-21";
+        String eventId = "45833-ORG-7834";
+        String eventNumber = "55-444-33-22";
 
-		// When
-		String message = "";
-		try {
-			underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
-		} catch (Exception e) {
-			message = e.getMessage();
-		}
+        // When
+        String message = "";
+        try {
+            underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
+        } catch (Exception e) {
+            message = e.getMessage();
+        }
 
-		// Then
-		Assertions.assertEquals(OrderMessages.EVENT_ID_CANNOT_BE_BLANK, message);
-	}
+        // Then
+        Assertions.assertEquals(OrderMessages.SHIPPING_CANNOT_BE_BLANK, message);
+    }
 
-	/**
-	 * Test for addNewOrder(Long, String, RegionType, String, String, String, String) with BlankEventIdException
-	 *
-	 * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String)
-	 */
-	@Test
-	public void testAddNewOrder_exception_blankEventIdException() throws Exception {
-		// Given
-		Long userId = 1L;
+    /**
+     * Test for addNewOrder(Long, String, RegionType, String, String, String, String, String) with BlankReceiverIdException
+     *
+     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String)
+     */
+    @Test
+    public void testAddNewOrder_exception_nullReceiverIdException() throws Exception {
+        // Given
+        Long userId = 1L;
         String requestedBy = "testUser";
-		RegionType region = RegionType.JAPAN;
-		String location = "JAPAN 82.8628° S, 135.0000° E";
-		String receiverId = "345-6789-21";
-		String eventId = "";
-		String eventNumber = "55-444-33-22";
+        RegionType region = RegionType.JAPAN;
+        String location = "JAPAN 82.8628° S, 135.0000° E";
+        String shippingType = "Standard (1 - 2 weeks)";
+        String receiverId = null;
+        String eventId = "45833-ORG-7834";
+        String eventNumber = "55-444-33-22";
 
-		// When
-		String message = "";
-		try {
-			underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
-		} catch (Exception e) {
-			message = e.getMessage();
-		}
+        // When
+        String message = "";
+        try {
+            underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
+        } catch (Exception e) {
+            message = e.getMessage();
+        }
 
-		// Then
-		Assertions.assertEquals(OrderMessages.EVENT_ID_CANNOT_BE_BLANK, message);
-	}
+        // Then
+        Assertions.assertEquals(OrderMessages.RECEIVER_ID_CANNOT_BE_BLANK, message);
+    }
 
-	/**
-	 * Test for addNewOrder(Long, String, RegionType, String, String, String, String) with BlankEventNumberException
-	 *
-	 * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String)
-	 */
-	@Test
-	public void testAddNewOrder_exception_nullEventNumberException() throws Exception {
-		// Given
-		Long userId = 1L;
+    /**
+     * Test for addNewOrder(Long, String, RegionType, String, String, String, String, String) with BlankReceiverIdException
+     *
+     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String)
+     */
+    @Test
+    public void testAddNewOrder_exception_blankReceiverIdException() throws Exception {
+        // Given
+        Long userId = 1L;
         String requestedBy = "testUser";
-		RegionType region = RegionType.JAPAN;
-		String location = "JAPAN 82.8628° S, 135.0000° E";
-		String receiverId = "345-6789-21";
-		String eventId = "45833-ORG-7834";
-		String eventNumber = null;
+        RegionType region = RegionType.JAPAN;
+        String location = "JAPAN 82.8628° S, 135.0000° E";
+        String shippingType = "Standard (1 - 2 weeks)";
+        String receiverId = "";
+        String eventId = "45833-ORG-7834";
+        String eventNumber = "55-444-33-22";
 
-		// When
-		String message = "";
-		try {
-			underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
-		} catch (Exception e) {
-			message = e.getMessage();
-		}
+        // When
+        String message = "";
+        try {
+            underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
+        } catch (Exception e) {
+            message = e.getMessage();
+        }
 
-		// Then
-		Assertions.assertEquals(OrderMessages.EVENT_NUMBER_CANNOT_BE_BLANK, message);
-	}
+        // Then
+        Assertions.assertEquals(OrderMessages.RECEIVER_ID_CANNOT_BE_BLANK, message);
+    }
 
-	/**
-	 * Test for addNewOrder(Long, String, RegionType, String, String, String, String) with BlankEventNumberException
-	 *
-	 * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String)
-	 */
-	@Test
-	public void testAddNewOrder_exception_blankEventNumberException() throws Exception {
-		// Given
-		Long userId = 1L;
+    /**
+     * Test for addNewOrder(Long, String, RegionType, String, String, String, String, String) with BlankEventIdException
+     *
+     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String)
+     */
+    @Test
+    public void testAddNewOrder_exception_nullEventIdException() throws Exception {
+        // Given
+        Long userId = 1L;
         String requestedBy = "testUser";
-		RegionType region = RegionType.JAPAN;
-		String location = "JAPAN 82.8628° S, 135.0000° E";
-		String receiverId = "345-6789-21";
-		String eventId = "45833-ORG-7834";
-		String eventNumber = "";
+        RegionType region = RegionType.JAPAN;
+        String location = "JAPAN 82.8628° S, 135.0000° E";
+        String shippingType = "Standard (1 - 2 weeks)";
+        String receiverId = "345-6789-21";
+        String eventId = null;
+        String eventNumber = "55-444-33-22";
 
-		// When
-		String message = "";
-		try {
-			underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
-		} catch (Exception e) {
-			message = e.getMessage();
-		}
+        // When
+        String message = "";
+        try {
+            underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
+        } catch (Exception e) {
+            message = e.getMessage();
+        }
 
-		// Then
-		Assertions.assertEquals(OrderMessages.EVENT_NUMBER_CANNOT_BE_BLANK, message);
-	}
+        // Then
+        Assertions.assertEquals(OrderMessages.EVENT_ID_CANNOT_BE_BLANK, message);
+    }
 
-	/**
-	 * Test for OrderService#addNewOrder(Long, String, RegionType, String, String, String, String) with BlankLocationException
-	 *
-	 * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String)
-	 */
-	@Test
-	public void testAddNewOrder_exception_nullLocationException() {
-		// Given
-		Long userId = 1L;
+    /**
+     * Test for addNewOrder(Long, String, RegionType, String, String, String, String, String) with BlankEventIdException
+     *
+     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String)
+     */
+    @Test
+    public void testAddNewOrder_exception_blankEventIdException() throws Exception {
+        // Given
+        Long userId = 1L;
         String requestedBy = "testUser";
-		RegionType region = RegionType.JAPAN;
-		String location = null;
-		String receiverId = "345-6789-21";
-		String eventId = "45833-ORG-7834";
-		String eventNumber = "23-456-010";
+        RegionType region = RegionType.JAPAN;
+        String location = "JAPAN 82.8628° S, 135.0000° E";
+        String shippingType = "Standard (1 - 2 weeks)";
+        String receiverId = "345-6789-21";
+        String eventId = "";
+        String eventNumber = "55-444-33-22";
 
-		// When
-		String message = "";
-		try {
-			underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
-		} catch (Exception e) {
-			message = e.getMessage();
-		}
+        // When
+        String message = "";
+        try {
+            underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
+        } catch (Exception e) {
+            message = e.getMessage();
+        }
 
-		// Then
-		Assertions.assertEquals(OrderMessages.LOCATION_CANNOT_BE_BLANK, message);
-	}
+        // Then
+        Assertions.assertEquals(OrderMessages.EVENT_ID_CANNOT_BE_BLANK, message);
+    }
 
-	/**
-	 * Test for OrderService#addNewOrder(Long, String, RegionType, String, String, String, String) with BlankLocationException
-	 *
-	 * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String)
-	 */
-	@Test
-	public void testAddNewOrder_exception_blankLocationException() {
-		// Given
-		Long userId = 1L;
+    /**
+     * Test for addNewOrder(Long, String, RegionType, String, String, String, String, String) with BlankEventNumberException
+     *
+     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String)
+     */
+    @Test
+    public void testAddNewOrder_exception_nullEventNumberException() throws Exception {
+        // Given
+        Long userId = 1L;
         String requestedBy = "testUser";
-		RegionType region = RegionType.JAPAN;
-		String location = "";
-		String receiverId = "345-6789-21";
-		String eventId = "45833-ORG-7834";
-		String eventNumber = "23-456-010";
+        RegionType region = RegionType.JAPAN;
+        String location = "JAPAN 82.8628° S, 135.0000° E";
+        String shippingType = "Standard (1 - 2 weeks)";
+        String receiverId = "345-6789-21";
+        String eventId = "45833-ORG-7834";
+        String eventNumber = null;
 
-		// When
-		String message = "";
-		try {
-			underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
-		} catch (Exception e) {
-			message = e.getMessage();
-		}
+        // When
+        String message = "";
+        try {
+            underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
+        } catch (Exception e) {
+            message = e.getMessage();
+        }
 
-		// Then
-		Assertions.assertEquals(OrderMessages.LOCATION_CANNOT_BE_BLANK, message);
-	}
+        // Then
+        Assertions.assertEquals(OrderMessages.EVENT_NUMBER_CANNOT_BE_BLANK, message);
+    }
 
-	/**
-	 * Test for addNewOrder(Long, String, RegionType, String, String, String, String)
-	 *
-	 * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String)
-	 */
-	@Test
-	public void testAddNewOrder_exception_overQuantity() throws Throwable {
-		// Given
-		Long userId = 1L;
+    /**
+     * Test for addNewOrder(Long, String, RegionType, String, String, String, String, String, String) with BlankEventNumberException
+     *
+     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String)
+     */
+    @Test
+    public void testAddNewOrder_exception_blankEventNumberException() throws Exception {
+        // Given
+        Long userId = 1L;
         String requestedBy = "testUser";
-		Long categoryId = 1L;
-		ItemEntity item = new ItemEntity("name", "description", categoryId, 10, "iamgePath", RegionType.JAPAN, new Date());
-		item.setId(1L);
-		List<ItemEntity> items = new ArrayList<>();
-		items.add(item);
+        RegionType region = RegionType.JAPAN;
+        String location = "JAPAN 82.8628° S, 135.0000° E";
+        String shippingType = "Standard (1 - 2 weeks)";
+        String receiverId = "345-6789-21";
+        String eventId = "45833-ORG-7834";
+        String eventNumber = "";
 
-		CartItemEntity cartItem = new CartItemEntity(userId, item, 11);
-		List<CartItemEntity> cartItems = new ArrayList<>();
-		cartItems.add(cartItem);
+        // When
+        String message = "";
+        try {
+            underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
+        } catch (Exception e) {
+            message = e.getMessage();
+        }
 
-		RegionType region = RegionType.JAPAN;
-		String location = "JAPAN 82.8628° S, 135.0000° E";
-		String receiverId = "345-6789-21";
-		String eventId = "45833-ORG-7834";
-		String eventNumber = "55-444-33-22";
+        // Then
+        Assertions.assertEquals(OrderMessages.EVENT_NUMBER_CANNOT_BE_BLANK, message);
+    }
 
-		LocationEntity locationEntity = mock(LocationEntity.class);
-		when(locationService.getLocationByRegion(any(RegionType.class))).thenReturn(locationEntity);
-		when(shoppingCartService.getCartItemsByUserId(anyLong())).thenReturn(cartItems);
-		when(itemService.getItemById(anyLong())).thenReturn(item);
-
-		// When
-		String message = "";
-		try {
-			underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
-		} catch (Exception e) {
-			message = e.getMessage();
-		}
-
-		// Then
-		Assertions.assertEquals(
-				MessageFormat.format(AssetMessages.IN_STOCK_OF_ITEM_IS_INSUFFICIENT, item.getName()), message);
-	}
-
-	/**
-	 * Test for getOrderByOrderNumber(String)
-	 *
-	 * @see OrderService#getOrderByOrderNumber(String)
-	 */
-	@Test
-	public void testGetOrderByOrderNumber_normal() throws Exception {
-		// Given
-		String orderNumber = "11-234-567";
-		OrderEntity findResult = mock(OrderEntity.class);
-		doReturn(findResult).when(orderRepository).findOrderByOrderNumber(anyString());
-
-		// When
-		OrderEntity result = underTest.getOrderByOrderNumber(orderNumber);
-
-		// Then
-		assertNotNull(result);
-	}
-
-	/**
-	 * Test for getOrderByOrderNumber(String) with BlankOrderNumberException
-	 *
-	 * @see OrderService#getOrderByOrderNumber(String)
-	 */
-	@Test
-	public void testGetOrderByOrderNumber_exception_nullOrderNumberException() {
-		// Given
-		String orderNumber = null;
-
-		// When
-		String message = "";
-		try {
-			underTest.getOrderByOrderNumber(orderNumber);
-		} catch (Exception e) {
-			message = e.getMessage();
-		}
-
-		// Then
-		Assertions.assertEquals(OrderMessages.ORDER_NUMBER_CANNOT_BE_BLANK, message);
-	}
-
-	/**
-	 * Test for getOrderByOrderNumber(String) with BlankOrderNumberException
-	 *
-	 * @see OrderService#getOrderByOrderNumber(String)
-	 */
-	@Test
-	public void testGetOrderByOrderNumber_exception_blankOrderNumberException() {
-		// Given
-		String orderNumber = "";
-
-		// When
-		String message = "";
-		try {
-			underTest.getOrderByOrderNumber(orderNumber);
-		} catch (Exception e) {
-			message = e.getMessage();
-		}
-
-		// Then
-		Assertions.assertEquals(OrderMessages.ORDER_NUMBER_CANNOT_BE_BLANK, message);
-	}
-
-	/**
-	 * Test for getOrderByOrderNumber(String) with NoOrderCorrespondingToException
-	 *
-	 * @see OrderService#getOrderByOrderNumber(String)
-	 */
-	@Test
-	public void testGetOrderByOrderNumber_exception_noOrderCorrespondingToException() throws Exception {
-		// Given
-		String orderNumber = "123";
-		doReturn(null).when(orderRepository).findOrderByOrderNumber(anyString());
-
-		// When
-		String message = "";
-		try {
-			underTest.getOrderByOrderNumber(orderNumber);
-		} catch (Exception e) {
-			message = e.getMessage();
-		}
-
-		// Then
-		Assertions.assertEquals(
-				MessageFormat.format(OrderMessages.THERE_IS_NO_ORDER_CORRESPONDING_TO, orderNumber), message);
-	}
-
-	/**
-	 * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean) with NullStatusException
-	 *
-	 * @see OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
-	 */
-	@Test
-	public void testUpdateStatusOfOrderByOrderNumber_exception_nullStatusException() throws Throwable {
-		// Given
-		OrderStatus newStatus = null;
-		String orderNumber = "11-234-567";
-
-		// When
-		String message = "";
-		String roleTypeName = "";
-		Boolean reviewedByPRCH = false;
-		Boolean reviewedByAPV = true;
-		String respondedBy = null;
-		String comments = "reject";
-		boolean publicToMQ = true;
-		try {
-			underTest.updateOrderByOrderNumber(
-					orderNumber, roleTypeName, newStatus, reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
-		} catch (Exception e) {
-			message = e.getMessage();
-		}
-
-		// Then
-		Assertions.assertEquals(OrderMessages.STATUS_CANNOT_BE_NULL, message);
-	}
-
-	/**
-	 * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean) with NullOrderNumberException
-	 *
-	 * @see OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
-	 */
-	@Test
-	public void testUpdateStatusOfOrderByOrderNumber_exception_nullOrderNumberException() throws Throwable {
-		// Given
-		OrderStatus newStatus = OrderStatus.DECLINED;
-		String orderNumber = null;
-
-		// When
-		String message = "";
-		String roleTypeName = "";
-		Boolean reviewedByPRCH = false;
-		Boolean reviewedByAPV = true;
-		String respondedBy = null;
-		String comments = "reject";
-		boolean publicToMQ = true;
-		try {
-			underTest.updateOrderByOrderNumber(
-					orderNumber, roleTypeName, newStatus, reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
-		} catch (Exception e) {
-			message = e.getMessage();
-		}
-
-		// Then
-		Assertions.assertEquals(OrderMessages.ORDER_NUMBER_CANNOT_BE_BLANK, message);
-	}
-
-	/**
-	 * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean) with NullOrderNumberException
-	 *
-	 * @see OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
-	 */
-	@Test
-	public void testUpdateStatusOfOrderByOrderNumber_exception_blankOrderNumberException() throws Throwable {
-		// Given
-		OrderStatus newStatus = OrderStatus.DECLINED;
-		String orderNumber = "";
-		String roleTypeName = "";
-		Boolean reviewedByPRCH = false;
-		Boolean reviewedByAPV = true;
-		String respondedBy = null;
-		String comments = "reject";
-		boolean publicToMQ = true;
-
-		// When
-		String message = "";
-		try {
-			underTest.updateOrderByOrderNumber(
-					orderNumber, roleTypeName, newStatus, reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
-		} catch (Exception e) {
-			message = e.getMessage();
-		}
-
-		// Then
-		Assertions.assertEquals(OrderMessages.ORDER_NUMBER_CANNOT_BE_BLANK, message);
-	}
-
-	/**
-	 * Test for getAllOrders(String requestedBy, String userRoleName)
-	 *
-	 * @see OrderService#getAllOrders(String requestedBy, String userRoleName)
-	 */
-	@Test
-	public void testGetAllOrders_normal_approver() throws Throwable {
-		// Given
+    /**
+     * Test for OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String) with BlankLocationException
+     *
+     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String)
+     */
+    @Test
+    public void testAddNewOrder_exception_nullLocationException() {
+        // Given
+        Long userId = 1L;
         String requestedBy = "testUser";
-		String userRoleName = RoleType.ROLE_APPROVER.toString();
-		OrderEntity orderEntity = mock(OrderEntity.class);
-		List<OrderEntity> findResult = new ArrayList<>();
-		findResult.add(orderEntity);
+        RegionType region = RegionType.JAPAN;
+        String location = null;
+        String shippingType = "Standard (1 - 2 weeks)";
+        String receiverId = "345-6789-21";
+        String eventId = "45833-ORG-7834";
+        String eventNumber = "23-456-010";
 
-		doReturn(findResult).when(orderRepository).findAll();
+        // When
+        String message = "";
+        try {
+            underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
+        } catch (Exception e) {
+            message = e.getMessage();
+        }
 
-		// When
-		List<OrderEntity> result = underTest.getAllOrders(requestedBy, userRoleName);
+        // Then
+        Assertions.assertEquals(OrderMessages.LOCATION_CANNOT_BE_BLANK, message);
+    }
 
-		// Then
-		assertNotNull(result);
-		Assertions.assertEquals(1, result.size());
-	}
+    /**
+     * Test for OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String) with BlankLocationException
+     *
+     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String)
+     */
+    @Test
+    public void testAddNewOrder_exception_blankLocationException() {
+        // Given
+        Long userId = 1L;
+        String requestedBy = "testUser";
+        RegionType region = RegionType.JAPAN;
+        String location = "";
+        String shippingType = "Standard (1 - 2 weeks)";
+        String receiverId = "345-6789-21";
+        String eventId = "45833-ORG-7834";
+        String eventNumber = "23-456-010";
 
-	/**
-	 * Test for getAllOrders(String requestedBy, String userRoleName)
-	 *
-	 * @see OrderService#getAllOrders(String requestedBy, String userRoleName)
-	 */
-	@Test
-	public void testGetAllOrders_normal_purchaser() throws Throwable {
-		// Given
-		String requestedBy = "testUser";
-		String userRoleName = RoleType.ROLE_PURCHASER.toString();
-		OrderEntity orderEntity = mock(OrderEntity.class);
-		orderEntity.setRequestedBy(requestedBy);
-		List<OrderEntity> findResult = new ArrayList<>();
-		findResult.add(orderEntity);
+        // When
+        String message = "";
+        try {
+            underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
+        } catch (Exception e) {
+            message = e.getMessage();
+        }
 
-		doReturn(findResult).when(orderRepository).findAllByRequestedBy(anyString());
+        // Then
+        Assertions.assertEquals(OrderMessages.LOCATION_CANNOT_BE_BLANK, message);
+    }
 
-		// When
-		List<OrderEntity> result = underTest.getAllOrders(requestedBy, userRoleName);
+    /**
+     * Test for addNewOrder(Long, String, RegionType, String, String, String, String, String)
+     *
+     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String)
+     */
+    @Test
+    public void testAddNewOrder_exception_overQuantity() throws Throwable {
+        // Given
+        Long userId = 1L;
+        String requestedBy = "testUser";
+        Long categoryId = 1L;
+        ItemEntity item = new ItemEntity("name", "description", categoryId, 10, "iamgePath", RegionType.JAPAN, new Date());
+        item.setId(1L);
+        List<ItemEntity> items = new ArrayList<>();
+        items.add(item);
 
-		// Then
-		assertNotNull(result);
-		Assertions.assertEquals(1, result.size());
-	}
+        CartItemEntity cartItem = new CartItemEntity(userId, item, 11);
+        List<CartItemEntity> cartItems = new ArrayList<>();
+        cartItems.add(cartItem);
 
-	/**
-	 * Test for getAllOrders(String requestedBy, String userRoleName) with NullUserIdException
-	 *
-	 * @see OrderService#getAllOrders(String requestedBy, String userRoleName)
-	 */
-	@Test
-	public void testGetAllOrders_exception_nullUserNameException() {
-		// Given
+        RegionType region = RegionType.JAPAN;
+        String location = "JAPAN 82.8628° S, 135.0000° E";
+        String shippingType = "Standard (1 - 2 weeks)";
+        String receiverId = "345-6789-21";
+        String eventId = "45833-ORG-7834";
+        String eventNumber = "55-444-33-22";
+
+        LocationEntity locationEntity = mock(LocationEntity.class);
+        when(locationService.getLocationByRegion(any(RegionType.class))).thenReturn(locationEntity);
+        when(shoppingCartService.getCartItemsByUserId(anyLong())).thenReturn(cartItems);
+        when(itemService.getItemById(anyLong())).thenReturn(item);
+
+        // When
+        String message = "";
+        try {
+            underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
+        } catch (Exception e) {
+            message = e.getMessage();
+        }
+
+        // Then
+        Assertions.assertEquals(
+                MessageFormat.format(AssetMessages.IN_STOCK_OF_ITEM_IS_INSUFFICIENT, item.getName()), message);
+    }
+
+    /**
+     * Test for getOrderByOrderNumber(String)
+     *
+     * @see OrderService#getOrderByOrderNumber(String)
+     */
+    @Test
+    public void testGetOrderByOrderNumber_normal() throws Exception {
+        // Given
+        String orderNumber = "11-234-567";
+        OrderEntity findResult = mock(OrderEntity.class);
+        doReturn(findResult).when(orderRepository).findOrderByOrderNumber(anyString());
+
+        // When
+        OrderEntity result = underTest.getOrderByOrderNumber(orderNumber);
+
+        // Then
+        assertNotNull(result);
+    }
+
+    /**
+     * Test for getOrderByOrderNumber(String) with BlankOrderNumberException
+     *
+     * @see OrderService#getOrderByOrderNumber(String)
+     */
+    @Test
+    public void testGetOrderByOrderNumber_exception_nullOrderNumberException() {
+        // Given
+        String orderNumber = null;
+
+        // When
+        String message = "";
+        try {
+            underTest.getOrderByOrderNumber(orderNumber);
+        } catch (Exception e) {
+            message = e.getMessage();
+        }
+
+        // Then
+        Assertions.assertEquals(OrderMessages.ORDER_NUMBER_CANNOT_BE_BLANK, message);
+    }
+
+    /**
+     * Test for getOrderByOrderNumber(String) with BlankOrderNumberException
+     *
+     * @see OrderService#getOrderByOrderNumber(String)
+     */
+    @Test
+    public void testGetOrderByOrderNumber_exception_blankOrderNumberException() {
+        // Given
+        String orderNumber = "";
+
+        // When
+        String message = "";
+        try {
+            underTest.getOrderByOrderNumber(orderNumber);
+        } catch (Exception e) {
+            message = e.getMessage();
+        }
+
+        // Then
+        Assertions.assertEquals(OrderMessages.ORDER_NUMBER_CANNOT_BE_BLANK, message);
+    }
+
+    /**
+     * Test for getOrderByOrderNumber(String) with NoOrderCorrespondingToException
+     *
+     * @see OrderService#getOrderByOrderNumber(String)
+     */
+    @Test
+    public void testGetOrderByOrderNumber_exception_noOrderCorrespondingToException() throws Exception {
+        // Given
+        String orderNumber = "123";
+        doReturn(null).when(orderRepository).findOrderByOrderNumber(anyString());
+
+        // When
+        String message = "";
+        try {
+            underTest.getOrderByOrderNumber(orderNumber);
+        } catch (Exception e) {
+            message = e.getMessage();
+        }
+
+        // Then
+        Assertions.assertEquals(
+                MessageFormat.format(OrderMessages.THERE_IS_NO_ORDER_CORRESPONDING_TO, orderNumber), message);
+    }
+
+    /**
+     * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean) with NullStatusException
+     *
+     * @see OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
+     */
+    @Test
+    public void testUpdateStatusOfOrderByOrderNumber_exception_nullStatusException() throws Throwable {
+        // Given
+        OrderStatus newStatus = null;
+        String orderNumber = "11-234-567";
+
+        // When
+        String message = "";
+        String roleTypeName = "";
+        Boolean reviewedByPRCH = false;
+        Boolean reviewedByAPV = true;
+        String respondedBy = null;
+        String comments = "reject";
+        boolean publicToMQ = true;
+        try {
+            underTest.updateOrderByOrderNumber(
+                    orderNumber, roleTypeName, newStatus, reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
+        } catch (Exception e) {
+            message = e.getMessage();
+        }
+
+        // Then
+        Assertions.assertEquals(OrderMessages.STATUS_CANNOT_BE_NULL, message);
+    }
+
+    /**
+     * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean) with NullOrderNumberException
+     *
+     * @see OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
+     */
+    @Test
+    public void testUpdateStatusOfOrderByOrderNumber_exception_nullOrderNumberException() throws Throwable {
+        // Given
+        OrderStatus newStatus = OrderStatus.DECLINED;
+        String orderNumber = null;
+
+        // When
+        String message = "";
+        String roleTypeName = "";
+        Boolean reviewedByPRCH = false;
+        Boolean reviewedByAPV = true;
+        String respondedBy = null;
+        String comments = "reject";
+        boolean publicToMQ = true;
+        try {
+            underTest.updateOrderByOrderNumber(
+                    orderNumber, roleTypeName, newStatus, reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
+        } catch (Exception e) {
+            message = e.getMessage();
+        }
+
+        // Then
+        Assertions.assertEquals(OrderMessages.ORDER_NUMBER_CANNOT_BE_BLANK, message);
+    }
+
+    /**
+     * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean) with NullOrderNumberException
+     *
+     * @see OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
+     */
+    @Test
+    public void testUpdateStatusOfOrderByOrderNumber_exception_blankOrderNumberException() throws Throwable {
+        // Given
+        OrderStatus newStatus = OrderStatus.DECLINED;
+        String orderNumber = "";
+        String roleTypeName = "";
+        Boolean reviewedByPRCH = false;
+        Boolean reviewedByAPV = true;
+        String respondedBy = null;
+        String comments = "reject";
+        boolean publicToMQ = true;
+
+        // When
+        String message = "";
+        try {
+            underTest.updateOrderByOrderNumber(
+                    orderNumber, roleTypeName, newStatus, reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
+        } catch (Exception e) {
+            message = e.getMessage();
+        }
+
+        // Then
+        Assertions.assertEquals(OrderMessages.ORDER_NUMBER_CANNOT_BE_BLANK, message);
+    }
+
+    /**
+     * Test for getAllOrders(String requestedBy, String userRoleName)
+     *
+     * @see OrderService#getAllOrders(String requestedBy, String userRoleName)
+     */
+    @Test
+    public void testGetAllOrders_normal_approver() throws Throwable {
+        // Given
+        String requestedBy = "testUser";
+        String userRoleName = RoleType.ROLE_APPROVER.toString();
+        OrderEntity orderEntity = mock(OrderEntity.class);
+        List<OrderEntity> findResult = new ArrayList<>();
+        findResult.add(orderEntity);
+
+        doReturn(findResult).when(orderRepository).findAll();
+
+        // When
+        List<OrderEntity> result = underTest.getAllOrders(requestedBy, userRoleName);
+
+        // Then
+        assertNotNull(result);
+        Assertions.assertEquals(1, result.size());
+    }
+
+    /**
+     * Test for getAllOrders(String requestedBy, String userRoleName)
+     *
+     * @see OrderService#getAllOrders(String requestedBy, String userRoleName)
+     */
+    @Test
+    public void testGetAllOrders_normal_purchaser() throws Throwable {
+        // Given
+        String requestedBy = "testUser";
+        String userRoleName = RoleType.ROLE_PURCHASER.toString();
+        OrderEntity orderEntity = mock(OrderEntity.class);
+        orderEntity.setRequestedBy(requestedBy);
+        List<OrderEntity> findResult = new ArrayList<>();
+        findResult.add(orderEntity);
+
+        doReturn(findResult).when(orderRepository).findAllByRequestedBy(anyString());
+
+        // When
+        List<OrderEntity> result = underTest.getAllOrders(requestedBy, userRoleName);
+
+        // Then
+        assertNotNull(result);
+        Assertions.assertEquals(1, result.size());
+    }
+
+    /**
+     * Test for getAllOrders(String requestedBy, String userRoleName) with NullUserIdException
+     *
+     * @see OrderService#getAllOrders(String requestedBy, String userRoleName)
+     */
+    @Test
+    public void testGetAllOrders_exception_nullUserNameException() {
+        // Given
         String requestedBy = null;
-		String userRoleName = RoleType.ROLE_APPROVER.toString();
+        String userRoleName = RoleType.ROLE_APPROVER.toString();
 
-		// When
-		String message = "";
-		try {
-			underTest.getAllOrders(requestedBy, userRoleName);
-		} catch (Exception e) {
-			message = e.getMessage();
-		}
+        // When
+        String message = "";
+        try {
+            underTest.getAllOrders(requestedBy, userRoleName);
+        } catch (Exception e) {
+            message = e.getMessage();
+        }
 
-		// Then
-		Assertions.assertEquals(OrderMessages.USERNAME_CANNOT_BE_NULL, message);
-	}
+        // Then
+        Assertions.assertEquals(OrderMessages.USERNAME_CANNOT_BE_NULL, message);
+    }
 
-	/**
-	 * Test for getAllOrders(String requestedBy, String userRoleName)
-	 *
-	 * @see OrderService#getAllOrders(String requestedBy, String userRoleName)
-	 * @throws Throwable
-	 */
-	@Test
-	public void testGetAllOrders_normal_nullUserRoleName() throws Throwable {
-		// Given
+    /**
+     * Test for getAllOrders(String requestedBy, String userRoleName)
+     *
+     * @see OrderService#getAllOrders(String requestedBy, String userRoleName)
+     * @throws Throwable
+     */
+    @Test
+    public void testGetAllOrders_normal_nullUserRoleName() throws Throwable {
+        // Given
         String requestedBy = "testUser";
-		String userRoleName = null; // test point
-		List<OrderEntity> findResult = new ArrayList<>();
+        String userRoleName = null; // test point
+        List<OrderEntity> findResult = new ArrayList<>();
 
-		doReturn(findResult).when(orderRepository).findAllByRequestedBy(anyString());
+        doReturn(findResult).when(orderRepository).findAllByRequestedBy(anyString());
 
-		// When
-		String message = "";
-		try {
-			underTest.getAllOrders(requestedBy, userRoleName);
-		} catch (Exception e) {
-			message = e.getMessage();
-		}
+        // When
+        String message = "";
+        try {
+            underTest.getAllOrders(requestedBy, userRoleName);
+        } catch (Exception e) {
+            message = e.getMessage();
+        }
 
-		// Then
-		Assertions.assertEquals(OrderMessages.USER_ROLE_NAME_CANNOT_BE_BLANK, message);	}
+        // Then
+        Assertions.assertEquals(OrderMessages.USER_ROLE_NAME_CANNOT_BE_BLANK, message);	}
 
-	/**
-	 * Test for getAllOrders(String, String, Pageable)
-	 *
-	 * @see com.parasoft.demoapp.service.OrderService#getAllOrders(String, String, Pageable)
-	 */
-	@Test
-	public void testGetAllOrders_withPageable_approver() throws Throwable {
-		// Given
-		Pageable pageable = Pageable.unpaged();
-		List<OrderEntity> content = new ArrayList<>();
-		content.add(new OrderEntity());
-		int totalElement = 2;
-		Page<OrderEntity> page = new PageImpl<>(content, pageable, totalElement);
+    /**
+     * Test for getAllOrders(String, String, Pageable)
+     *
+     * @see com.parasoft.demoapp.service.OrderService#getAllOrders(String, String, Pageable)
+     */
+    @Test
+    public void testGetAllOrders_withPageable_approver() throws Throwable {
+        // Given
+        Pageable pageable = Pageable.unpaged();
+        List<OrderEntity> content = new ArrayList<>();
+        content.add(new OrderEntity());
+        int totalElement = 2;
+        Page<OrderEntity> page = new PageImpl<>(content, pageable, totalElement);
 
-		doReturn(page).when(orderRepository).findAll(nullable(Pageable.class));
+        doReturn(page).when(orderRepository).findAll(nullable(Pageable.class));
 
-		//doReturn(page).when(orderRepository).findAllByUserId(nullable(Long.class),
-		//		nullable(Pageable.class));
+        //doReturn(page).when(orderRepository).findAllByUserId(nullable(Long.class),
+        //		nullable(Pageable.class));
 
-		// When
+        // When
         String requestedBy = "testUser";
-		String userRoleName = RoleType.ROLE_APPROVER.toString();
-		Page<OrderEntity> result = underTest.getAllOrders(requestedBy, userRoleName, pageable);
+        String userRoleName = RoleType.ROLE_APPROVER.toString();
+        Page<OrderEntity> result = underTest.getAllOrders(requestedBy, userRoleName, pageable);
 
-		// Then
-		assertNotNull(result);
-		Assertions.assertEquals(content, result.getContent());
-		Assertions.assertEquals(totalElement, result.getTotalElements());
-	}
+        // Then
+        assertNotNull(result);
+        Assertions.assertEquals(content, result.getContent());
+        Assertions.assertEquals(totalElement, result.getTotalElements());
+    }
 
-	/**
-	 * Test for getAllOrders(String, String, Pageable)
-	 *
-	 * @see com.parasoft.demoapp.service.OrderService#getAllOrders(String, String, Pageable)
-	 */
-	@Test
-	public void testGetAllOrders_withPageable_purcher() throws Throwable {
-		// Given
-		Pageable pageable = Pageable.unpaged();
-		List<OrderEntity> content = new ArrayList<>();
-		content.add(new OrderEntity());
-		int totalElement = 2;
-		Page<OrderEntity> page = new PageImpl<>(content, pageable, totalElement);
+    /**
+     * Test for getAllOrders(String, String, Pageable)
+     *
+     * @see com.parasoft.demoapp.service.OrderService#getAllOrders(String, String, Pageable)
+     */
+    @Test
+    public void testGetAllOrders_withPageable_purcher() throws Throwable {
+        // Given
+        Pageable pageable = Pageable.unpaged();
+        List<OrderEntity> content = new ArrayList<>();
+        content.add(new OrderEntity());
+        int totalElement = 2;
+        Page<OrderEntity> page = new PageImpl<>(content, pageable, totalElement);
 
-		doReturn(page).when(orderRepository).findAllByRequestedBy(nullable(String.class),
-				nullable(Pageable.class));
+        doReturn(page).when(orderRepository).findAllByRequestedBy(nullable(String.class),
+                nullable(Pageable.class));
 
-		// When
+        // When
         String requestedBy = "testUser";
-		String userRoleName = RoleType.ROLE_PURCHASER.toString();
-		Page<OrderEntity> result = underTest.getAllOrders(requestedBy, userRoleName, pageable);
+        String userRoleName = RoleType.ROLE_PURCHASER.toString();
+        Page<OrderEntity> result = underTest.getAllOrders(requestedBy, userRoleName, pageable);
 
-		// Then
-		assertNotNull(result);
-		Assertions.assertEquals(content, result.getContent());
-		Assertions.assertEquals(totalElement, result.getTotalElements());
-	}
+        // Then
+        assertNotNull(result);
+        Assertions.assertEquals(content, result.getContent());
+        Assertions.assertEquals(totalElement, result.getTotalElements());
+    }
 
-	/**
-	 * Test for getAllOrders(String, String, Pageable)
-	 *
-	 * @see com.parasoft.demoapp.service.OrderService#getAllOrders(String, String, Pageable)
-	 */
-	@Test
-	public void testGetAllOrders_withPageable_nullUserName() throws Throwable {
-		// Given
+    /**
+     * Test for getAllOrders(String, String, Pageable)
+     *
+     * @see com.parasoft.demoapp.service.OrderService#getAllOrders(String, String, Pageable)
+     */
+    @Test
+    public void testGetAllOrders_withPageable_nullUserName() throws Throwable {
+        // Given
         String requestedBy = null;
-		String userRoleName = RoleType.ROLE_PURCHASER.toString();
-		Pageable pageable = Pageable.unpaged();
+        String userRoleName = RoleType.ROLE_PURCHASER.toString();
+        Pageable pageable = Pageable.unpaged();
 
-		// When
-		String message = "";
-		try {
-			underTest.getAllOrders(requestedBy, userRoleName, pageable);
-		} catch (Exception e) {
-			message = e.getMessage();
-		}
+        // When
+        String message = "";
+        try {
+            underTest.getAllOrders(requestedBy, userRoleName, pageable);
+        } catch (Exception e) {
+            message = e.getMessage();
+        }
 
-		// Then
-		Assertions.assertEquals(OrderMessages.USERNAME_CANNOT_BE_NULL, message);
-	}
+        // Then
+        Assertions.assertEquals(OrderMessages.USERNAME_CANNOT_BE_NULL, message);
+    }
 
-	/**
-	 * Test for getAllOrders(String, String, Pageable)
-	 *
-	 * @see com.parasoft.demoapp.service.OrderService#getAllOrders(String, String, Pageable)
-	 */
-	@Test
-	public void testGetAllOrders_withPageable_unwantedRoleName() throws Throwable {
-		// Given
+    /**
+     * Test for getAllOrders(String, String, Pageable)
+     *
+     * @see com.parasoft.demoapp.service.OrderService#getAllOrders(String, String, Pageable)
+     */
+    @Test
+    public void testGetAllOrders_withPageable_unwantedRoleName() throws Throwable {
+        // Given
         String requestedBy = "testUser";
-		String userRoleName = "unwantedRoleName";
-		Pageable pageable = Pageable.unpaged();
+        String userRoleName = "unwantedRoleName";
+        Pageable pageable = Pageable.unpaged();
 
-		// When
-		Page<OrderEntity> result = underTest.getAllOrders(requestedBy, userRoleName, pageable);
+        // When
+        Page<OrderEntity> result = underTest.getAllOrders(requestedBy, userRoleName, pageable);
 
-		// Then
-		assertNotNull(result);
-		assertNotNull(result.getContent());
-		Assertions.assertEquals(0, result.getContent().size());
-		Assertions.assertEquals(0, result.getTotalElements());
-	}
+        // Then
+        assertNotNull(result);
+        assertNotNull(result.getContent());
+        Assertions.assertEquals(0, result.getContent().size());
+        Assertions.assertEquals(0, result.getTotalElements());
+    }
 
-	/**
-	 * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
-	 *
-	 * @see com.parasoft.demoapp.service.OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
-	 */
-	@Test
-	public void testUpdateOrderByOrderNumber_purchaser_normal() throws Throwable {
-		// Given
-		OrderEntity order = prepareOrderWithIgnoringSubmmitedStatusHelper();
-		order.setStatus(OrderStatus.SUBMITTED);
-		order.setReviewedByPRCH(true);
-		order.setReviewedByAPV(false);
-		String orderNumber = "11-234-567";
-		OrderStatus newStatus = OrderStatus.SUBMITTED;
-		String userRoleName = RoleType.ROLE_PURCHASER.toString();
-		Boolean reviewedByPRCH = true;
-		Boolean reviewedByAPV = false;
-		String respondedBy = null;
-		String comments = "";
-		boolean publicToMQ = true;
-		doReturn(order).when(orderRepository).findOrderByOrderNumber(orderNumber);
-		doReturn(order).when(orderRepository).save(any());
+    /**
+     * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
+     *
+     * @see com.parasoft.demoapp.service.OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
+     */
+    @Test
+    public void testUpdateOrderByOrderNumber_purchaser_normal() throws Throwable {
+        // Given
+        OrderEntity order = prepareOrderWithIgnoringSubmmitedStatusHelper();
+        order.setStatus(OrderStatus.SUBMITTED);
+        order.setReviewedByPRCH(true);
+        order.setReviewedByAPV(false);
+        String orderNumber = "11-234-567";
+        OrderStatus newStatus = OrderStatus.SUBMITTED;
+        String userRoleName = RoleType.ROLE_PURCHASER.toString();
+        Boolean reviewedByPRCH = true;
+        Boolean reviewedByAPV = false;
+        String respondedBy = null;
+        String comments = "";
+        boolean publicToMQ = true;
+        doReturn(order).when(orderRepository).findOrderByOrderNumber(orderNumber);
+        doReturn(order).when(orderRepository).save(any());
 
-		// When
-		OrderEntity result = underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus,
-				reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
+        // When
+        OrderEntity result = underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus,
+                reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
 
-		// Then
-		assertNotNull(result);
-		assertEquals(true, result.getReviewedByPRCH());
-		assertEquals(false, result.getReviewedByAPV());
-	}
+        // Then
+        assertNotNull(result);
+        assertEquals(true, result.getReviewedByPRCH());
+        assertEquals(false, result.getReviewedByAPV());
+    }
 
-	/**
-	 * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean) with NoPermissionException
-	 *
-	 * @see com.parasoft.demoapp.service.OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
-	 */
-	@Test
-	public void testUpdateOrderByOrderNumber_purchaser_exception_NoPermissionException() throws Throwable {
-		// Given
-		OrderEntity order = prepareOrderWithIgnoringSubmmitedStatusHelper();
-		order.setStatus(OrderStatus.SUBMITTED);
-		order.setReviewedByPRCH(true);
-		order.setReviewedByAPV(false);
-		String orderNumber = "11-234-567";
-		OrderStatus newStatus = OrderStatus.DECLINED;
-		String userRoleName = RoleType.ROLE_PURCHASER.toString();
-		Boolean reviewedByPRCH = true;
-		Boolean reviewedByAPV = false;
-		String respondedBy = null;
-		String comments = "reject";
-		boolean publicToMQ = true;
-		doReturn(order).when(orderRepository).findOrderByOrderNumber(orderNumber);
-		doReturn(order).when(orderRepository).save(any());
+    /**
+     * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean) with NoPermissionException
+     *
+     * @see com.parasoft.demoapp.service.OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
+     */
+    @Test
+    public void testUpdateOrderByOrderNumber_purchaser_exception_NoPermissionException() throws Throwable {
+        // Given
+        OrderEntity order = prepareOrderWithIgnoringSubmmitedStatusHelper();
+        order.setStatus(OrderStatus.SUBMITTED);
+        order.setReviewedByPRCH(true);
+        order.setReviewedByAPV(false);
+        String orderNumber = "11-234-567";
+        OrderStatus newStatus = OrderStatus.DECLINED;
+        String userRoleName = RoleType.ROLE_PURCHASER.toString();
+        Boolean reviewedByPRCH = true;
+        Boolean reviewedByAPV = false;
+        String respondedBy = null;
+        String comments = "reject";
+        boolean publicToMQ = true;
+        doReturn(order).when(orderRepository).findOrderByOrderNumber(orderNumber);
+        doReturn(order).when(orderRepository).save(any());
 
-		// When
-		String message = "";
-		try {
-			underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus,
-					reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
-		} catch (Exception e){
-			message = e.getMessage();
-		}
+        // When
+        String message = "";
+        try {
+            underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus,
+                    reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
+        } catch (Exception e){
+            message = e.getMessage();
+        }
 
-		// Then
-		assertEquals(MessageFormat.format(OrderMessages.NO_PERMISSION_TO_CHANGE_TO_ORDER_STATUS, newStatus), message);
-	}
+        // Then
+        assertEquals(MessageFormat.format(OrderMessages.NO_PERMISSION_TO_CHANGE_TO_ORDER_STATUS, newStatus), message);
+    }
 
-	/**
-	 * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean) with IncorrectOperationException
-	 *
-	 * @see com.parasoft.demoapp.service.OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
-	 */
-	@Test
-	public void testUpdateOrderByOrderNumber_purchaser_exception_IncorrectOperationExcetion() throws Throwable {
-		// Given
-		OrderEntity order = prepareOrderWithIgnoringSubmmitedStatusHelper();
-		order.setStatus(OrderStatus.SUBMITTED);
-		order.setReviewedByPRCH(true);
-		order.setReviewedByAPV(false);
-		String orderNumber = "11-234-567";
-		OrderStatus newStatus = OrderStatus.SUBMITTED;
-		String userRoleName = RoleType.ROLE_PURCHASER.toString();
-		Boolean reviewedByPRCH = false;
-		Boolean reviewedByAPV = false;
-		String respondedBy = null;
-		String comments = "";
-		boolean publicToMQ = true;
-		doReturn(order).when(orderRepository).findOrderByOrderNumber(orderNumber);
-		doReturn(order).when(orderRepository).save(any());
+    /**
+     * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean) with IncorrectOperationException
+     *
+     * @see com.parasoft.demoapp.service.OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
+     */
+    @Test
+    public void testUpdateOrderByOrderNumber_purchaser_exception_IncorrectOperationExcetion() throws Throwable {
+        // Given
+        OrderEntity order = prepareOrderWithIgnoringSubmmitedStatusHelper();
+        order.setStatus(OrderStatus.SUBMITTED);
+        order.setReviewedByPRCH(true);
+        order.setReviewedByAPV(false);
+        String orderNumber = "11-234-567";
+        OrderStatus newStatus = OrderStatus.SUBMITTED;
+        String userRoleName = RoleType.ROLE_PURCHASER.toString();
+        Boolean reviewedByPRCH = false;
+        Boolean reviewedByAPV = false;
+        String respondedBy = null;
+        String comments = "";
+        boolean publicToMQ = true;
+        doReturn(order).when(orderRepository).findOrderByOrderNumber(orderNumber);
+        doReturn(order).when(orderRepository).save(any());
 
-		// When
-		String message = "";
-		try {
-			underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus,
-					reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
-		} catch (Exception e){
-			message = e.getMessage();
-		}
+        // When
+        String message = "";
+        try {
+            underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus,
+                    reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
+        } catch (Exception e){
+            message = e.getMessage();
+        }
 
-		// Then
-		assertEquals(OrderMessages.CANNOT_SET_TRUE_TO_FALSE, message);
-	}
+        // Then
+        assertEquals(OrderMessages.CANNOT_SET_TRUE_TO_FALSE, message);
+    }
 
-	/**
-	 * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean) with ParameterException
-	 *
-	 * @see com.parasoft.demoapp.service.OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
-	 */
-	@Test
-	public void testUpdateOrderByOrderNumber_exception_ParameterException_reviewedByPRCH() throws Throwable {
-		// Given
-		OrderEntity order = prepareOrderWithIgnoringSubmmitedStatusHelper();
-		order.setStatus(OrderStatus.SUBMITTED);
-		order.setReviewedByPRCH(true);
-		order.setReviewedByAPV(false);
-		String orderNumber = "11-234-567";
-		OrderStatus newStatus = OrderStatus.SUBMITTED;
-		String userRoleName = RoleType.ROLE_PURCHASER.toString();
-		Boolean reviewedByPRCH = null; // test point
-		Boolean reviewedByAPV = false;
-		String respondedBy = null;
-		String comments = "";
-		boolean publicToMQ = true;
-		doReturn(order).when(orderRepository).findOrderByOrderNumber(orderNumber);
-		doReturn(order).when(orderRepository).save(any());
+    /**
+     * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean) with ParameterException
+     *
+     * @see com.parasoft.demoapp.service.OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
+     */
+    @Test
+    public void testUpdateOrderByOrderNumber_exception_ParameterException_reviewedByPRCH() throws Throwable {
+        // Given
+        OrderEntity order = prepareOrderWithIgnoringSubmmitedStatusHelper();
+        order.setStatus(OrderStatus.SUBMITTED);
+        order.setReviewedByPRCH(true);
+        order.setReviewedByAPV(false);
+        String orderNumber = "11-234-567";
+        OrderStatus newStatus = OrderStatus.SUBMITTED;
+        String userRoleName = RoleType.ROLE_PURCHASER.toString();
+        Boolean reviewedByPRCH = null; // test point
+        Boolean reviewedByAPV = false;
+        String respondedBy = null;
+        String comments = "";
+        boolean publicToMQ = true;
+        doReturn(order).when(orderRepository).findOrderByOrderNumber(orderNumber);
+        doReturn(order).when(orderRepository).save(any());
 
-		// When
-		String message = "";
-		try {
-			underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus,
-					reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
-		} catch (Exception e){
-			message = e.getMessage();
-		}
+        // When
+        String message = "";
+        try {
+            underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus,
+                    reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
+        } catch (Exception e){
+            message = e.getMessage();
+        }
 
-		// Then
-		assertEquals(OrderMessages.ORDER_REVIEW_STATUS_OF_PURCHASER_SHOULD_NOT_BE_NULL, message);
-	}
+        // Then
+        assertEquals(OrderMessages.ORDER_REVIEW_STATUS_OF_PURCHASER_SHOULD_NOT_BE_NULL, message);
+    }
 
-	/**
-	 * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean) with ParameterException
-	 *
-	 * @see com.parasoft.demoapp.service.OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
-	 */
-	@Test
-	public void testUpdateOrderByOrderNumber_exception_ParameterException_reviewedByAPV() throws Throwable {
-		// Given
-		OrderEntity order = prepareOrderWithIgnoringSubmmitedStatusHelper();
-		order.setStatus(OrderStatus.SUBMITTED);
-		order.setReviewedByPRCH(true);
-		order.setReviewedByAPV(false);
-		String orderNumber = "11-234-567";
-		OrderStatus newStatus = OrderStatus.SUBMITTED;
-		String userRoleName = RoleType.ROLE_APPROVER.toString();
-		Boolean reviewedByPRCH = true;
-		Boolean reviewedByAPV = null; // test point
-		String respondedBy = null;
-		String comments = "";
-		boolean publicToMQ = true;
-		doReturn(order).when(orderRepository).findOrderByOrderNumber(orderNumber);
-		doReturn(order).when(orderRepository).save(any());
+    /**
+     * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean) with ParameterException
+     *
+     * @see com.parasoft.demoapp.service.OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
+     */
+    @Test
+    public void testUpdateOrderByOrderNumber_exception_ParameterException_reviewedByAPV() throws Throwable {
+        // Given
+        OrderEntity order = prepareOrderWithIgnoringSubmmitedStatusHelper();
+        order.setStatus(OrderStatus.SUBMITTED);
+        order.setReviewedByPRCH(true);
+        order.setReviewedByAPV(false);
+        String orderNumber = "11-234-567";
+        OrderStatus newStatus = OrderStatus.SUBMITTED;
+        String userRoleName = RoleType.ROLE_APPROVER.toString();
+        Boolean reviewedByPRCH = true;
+        Boolean reviewedByAPV = null; // test point
+        String respondedBy = null;
+        String comments = "";
+        boolean publicToMQ = true;
+        doReturn(order).when(orderRepository).findOrderByOrderNumber(orderNumber);
+        doReturn(order).when(orderRepository).save(any());
 
-		// When
-		String message = "";
-		try {
-			underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus,
-					reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
-		} catch (Exception e){
-			message = e.getMessage();
-		}
+        // When
+        String message = "";
+        try {
+            underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus,
+                    reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
+        } catch (Exception e){
+            message = e.getMessage();
+        }
 
-		// Then
-		assertEquals(OrderMessages.ORDER_REVIEW_STATUS_OF_APPROVER_SHOULD_NOT_BE_NULL, message);
-	}
+        // Then
+        assertEquals(OrderMessages.ORDER_REVIEW_STATUS_OF_APPROVER_SHOULD_NOT_BE_NULL, message);
+    }
 
-	/**
-	 * helper for preparing order with ignoring submmitted status
-	 * @return
-	 */
-	private OrderEntity prepareOrderWithIgnoringSubmmitedStatusHelper() {
-		Long orderId = 11234567L;
+    /**
+     * helper for preparing order with ignoring submmitted status
+     * @return
+     */
+    private OrderEntity prepareOrderWithIgnoringSubmmitedStatusHelper() {
+        Long orderId = 11234567L;
         String requestedBy = "testUser";
-		CartItemEntity cartItem = mock(CartItemEntity.class);
-		List<CartItemEntity> cartItems = new ArrayList<>();
-		cartItems.add(cartItem);
-		RegionType region = RegionType.JAPAN;
-		String location = "JAPAN 82.8628° S, 135.0000° E";
-		String receiverId = "345-6789-21";
-		String eventId = "45833-ORG-7834";
-		String eventNumber = "55-444-33-22";
-		OrderEntity order = new OrderEntity(requestedBy, region, location, receiverId, eventId, eventNumber);
-		order.setId(orderId);
-		return order;
-	}
+        CartItemEntity cartItem = mock(CartItemEntity.class);
+        List<CartItemEntity> cartItems = new ArrayList<>();
+        cartItems.add(cartItem);
+        ShippingEntity shipping = new ShippingEntity();
+        shipping.setShippingType("Standard (1 - 2 weeks)");
+        shipping.setReceiverId("345-6789-21");
+        RegionType region = RegionType.JAPAN;
+        String location = "JAPAN 82.8628° S, 135.0000° E";
+        String eventId = "45833-ORG-7834";
+        String eventNumber = "55-444-33-22";
+        OrderEntity order = new OrderEntity(requestedBy, region, location, shipping, eventId, eventNumber);
+        order.setId(orderId);
+        return order;
+    }
 }

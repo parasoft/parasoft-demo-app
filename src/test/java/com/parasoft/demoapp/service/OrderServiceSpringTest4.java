@@ -33,125 +33,125 @@ import com.parasoft.demoapp.repository.industry.OrderRepository;
 @TestPropertySource("file:./src/test/java/com/parasoft/demoapp/application.properties")
 @DirtiesContext
 public class OrderServiceSpringTest4 {
-	@Autowired
-	UserService userService;
+    @Autowired
+    UserService userService;
 
-	@Autowired
-	CategoryService categoryService;
+    @Autowired
+    CategoryService categoryService;
 
-	@Autowired
-	ItemService itemService;
+    @Autowired
+    ItemService itemService;
 
-	@Autowired
-	ShoppingCartService shoppingCartService;
+    @Autowired
+    ShoppingCartService shoppingCartService;
 
-	@Autowired
-	OrderRepository orderRepository;
+    @Autowired
+    OrderRepository orderRepository;
 
-	@Autowired
-	OrderService underTest;
+    @Autowired
+    OrderService underTest;
 
-	@Autowired
-	GlobalPreferencesService globalPreferencesService;
+    @Autowired
+    GlobalPreferencesService globalPreferencesService;
 
-	/**
-	 * Test for updateOrderByOrderNumberSynchronized(String, String, OrderStatus, Boolean, Boolean, String, String, boolean) under concurrency condition.
-	 *
-	 * @see com.parasoft.demoapp.service.OrderService#updateOrderByOrderNumberSynchronized(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
-	 */
-	@Test
-	public void testUpdateOrderByOrderNumberSynchronized_concurrency() throws Throwable {
-		// When
-		// reset database of industry
-		globalPreferencesService.resetAllIndustriesDatabase();
+    /**
+     * Test for updateOrderByOrderNumberSynchronized(String, String, OrderStatus, Boolean, Boolean, String, String, boolean) under concurrency condition.
+     *
+     * @see com.parasoft.demoapp.service.OrderService#updateOrderByOrderNumberSynchronized(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
+     */
+    @Test
+    public void testUpdateOrderByOrderNumberSynchronized_concurrency() throws Throwable {
+        // When
+        // reset database of industry
+        globalPreferencesService.resetAllIndustriesDatabase();
 
-		Long userId = null;
-		String requestedBy = null;
-		CategoryEntity category = null;
-		ItemEntity item = null;
-		OrderEntity order = null;
-		try {
-			// Given
-			UserEntity user = userService.getUserByUsername(GlobalUsersCreator.USERNAME_PURCHASER);
-			userId = user.getId();
+        Long userId = null;
+        String requestedBy = null;
+        CategoryEntity category = null;
+        ItemEntity item = null;
+        OrderEntity order = null;
+        try {
+            // Given
+            UserEntity user = userService.getUserByUsername(GlobalUsersCreator.USERNAME_PURCHASER);
+            userId = user.getId();
             requestedBy = user.getUsername();
-			category = categoryService.addNewCategory("name", "description", "imagePath");
-			item = itemService.addNewItem("name", "description", category.getId(), 30, "imagePath", RegionType.LOCATION_1);
-			// add item into cart, the quantity of item is 20.
-			shoppingCartService.addCartItemInShoppingCart(userId, item.getId(), 20);
+            category = categoryService.addNewCategory("name", "description", "imagePath");
+            item = itemService.addNewItem("name", "description", category.getId(), 30, "imagePath", RegionType.LOCATION_1);
+            // add item into cart, the quantity of item is 20.
+            shoppingCartService.addCartItemInShoppingCart(userId, item.getId(), 20);
 
-			// When
-			RegionType region = RegionType.LOCATION_1;
-			String location = "JAPAN 82.8628° S, 135.0000° E";
-			String receiverId = "345-6789-21";
-			String eventId = "45833-ORG-7834";
-			String eventNumber = "55-444-33-22";
-			order = underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
+            // When
+            RegionType region = RegionType.LOCATION_1;
+            String location = "JAPAN 82.8628° S, 135.0000° E";
+            String shippingType = "Standard (1 - 2 weeks)";
+            String receiverId = "345-6789-21";
+            String eventId = "45833-ORG-7834";
+            String eventNumber = "55-444-33-22";
+            order = underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
 
-			String orderNumber = order.getOrderNumber();
-			String userRoleName = RoleType.ROLE_APPROVER.toString();
-			OrderStatus newStatus = OrderStatus.DECLINED;
-			Boolean reviewedByPRCH = true;
-			Boolean reviewedByAPV = true;
-			String respondedBy = null;
-			String comments = "reject";
-			boolean publicToMQ = true;
-			ExecutorService es = Executors.newCachedThreadPool();
+            String orderNumber = order.getOrderNumber();
+            String userRoleName = RoleType.ROLE_APPROVER.toString();
+            OrderStatus newStatus = OrderStatus.DECLINED;
+            Boolean reviewedByPRCH = true;
+            Boolean reviewedByAPV = true;
+            String respondedBy = null;
+            String comments = "reject";
+            boolean publicToMQ = true;
+            ExecutorService es = Executors.newCachedThreadPool();
 
-			// use 3 threads to simulate the concurrency situation, decline orders repeatedly in the same time.
-			for (int i = 0; i < 3; i++) {
-				es.submit(new UpdateOrderByOrderNumberRunnable(underTest, orderNumber, userRoleName, newStatus,
-						reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ));
-			}
+            // use 3 threads to simulate the concurrency situation, decline orders repeatedly in the same time.
+            for (int i = 0; i < 3; i++) {
+                es.submit(new UpdateOrderByOrderNumberRunnable(underTest, orderNumber, userRoleName, newStatus,
+                        reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ));
+            }
 
-			Thread.sleep(2000);
-		}catch(Exception e){
-			e.printStackTrace();
-		}finally {
-			// Then
-			assertEquals(1, orderRepository.findAll().size());
-			assertEquals(OrderStatus.DECLINED, orderRepository.findOrderByOrderNumber(order.getOrderNumber()).getStatus());
-			assertEquals(30, (int)itemService.getInStockById(item.getId()));
-			itemService.removeItemById(item.getId());
-			categoryService.removeCategory(category.getId());
-			orderRepository.deleteAll();
-		}
-	}
+            Thread.sleep(2000);
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally {
+            // Then
+            assertEquals(1, orderRepository.findAll().size());
+            assertEquals(OrderStatus.DECLINED, orderRepository.findOrderByOrderNumber(order.getOrderNumber()).getStatus());
+            assertEquals(30, (int)itemService.getInStockById(item.getId()));
+            itemService.removeItemById(item.getId());
+            categoryService.removeCategory(category.getId());
+            orderRepository.deleteAll();
+        }
+    }
 
-	private class UpdateOrderByOrderNumberRunnable implements Runnable {
-		private final OrderService orderService;
-		private final String orderNumber;
-		private final String userRoleName;
-		private final OrderStatus newStatus;
-		private final Boolean reviewedByPRCH;
-		private final Boolean reviewedByAPV;
-		private final String respondedBy;
-		private final String comments;
-		private final boolean publicToMQ;
+    private class UpdateOrderByOrderNumberRunnable implements Runnable {
+        private final OrderService orderService;
+        private final String orderNumber;
+        private final String userRoleName;
+        private final OrderStatus newStatus;
+        private final Boolean reviewedByPRCH;
+        private final Boolean reviewedByAPV;
+        private final String respondedBy;
+        private final String comments;
+        private final boolean publicToMQ;
 
-		public UpdateOrderByOrderNumberRunnable(OrderService orderService, String orderNumber, String userRoleName,
-												OrderStatus newStatus, Boolean reviewedByPRCH, Boolean reviewedByAPV,
-												String respondedBy, String comments, boolean publicToMQ) {
-			this.orderService = orderService;
-			this.orderNumber = orderNumber;
-			this.userRoleName = userRoleName;
-			this.newStatus = newStatus;
-			this.reviewedByPRCH = reviewedByPRCH;
-			this.reviewedByAPV = reviewedByAPV;
-			this.respondedBy = respondedBy;
-			this.comments = comments;
-			this.publicToMQ = publicToMQ;
-		}
+        public UpdateOrderByOrderNumberRunnable(OrderService orderService, String orderNumber, String userRoleName,
+                                                OrderStatus newStatus, Boolean reviewedByPRCH, Boolean reviewedByAPV,
+                                                String respondedBy, String comments, boolean publicToMQ) {
+            this.orderService = orderService;
+            this.orderNumber = orderNumber;
+            this.userRoleName = userRoleName;
+            this.newStatus = newStatus;
+            this.reviewedByPRCH = reviewedByPRCH;
+            this.reviewedByAPV = reviewedByAPV;
+            this.respondedBy = respondedBy;
+            this.comments = comments;
+            this.publicToMQ = publicToMQ;
+        }
 
-		@Override
-		public void run() {
-			try {
-				orderService.updateOrderByOrderNumberSynchronized(
-						orderNumber, userRoleName, newStatus, reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-
-	}
+        @Override
+        public void run() {
+            try {
+                orderService.updateOrderByOrderNumberSynchronized(
+                        orderNumber, userRoleName, newStatus, reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
