@@ -85,7 +85,7 @@
                         <span id="no_result_text" translate="NO_RESULT" ng-if="category.showNoResultText"></span>
                         <div class="items_empty_content_message empty_error_message"
                              ng-include="'/common/pages/emptyContentMessage.html'"
-                             ng-if="category.items.length < 1 || category.itemsLoadError">
+                             ng-if="(category.items.length < 1 || category.itemsLoadError) && !category.showNoResultText">
                         </div>
                         <div class="assets_category_boxes">
                             <div class="assets_category_box" ng-repeat="item in category.items">
