@@ -47,7 +47,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 		session.setAttribute(SessionUtil.ROLE_NAME_KEY, roleName);
 
 		HttpServletResponseUtil.returnJsonResponse(response, HttpStatus.OK.value(),
-				ResponseResult.STATUS_OK, "Login successfully", null);
+				ResponseResult.STATUS_OK, ConfigMessages.LOGIN_SUCCESSFULLY, null);
 	}
 
 }

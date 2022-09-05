@@ -4,6 +4,7 @@ public class ConfigMessages extends Messages {
 
 	public static final String USER_IS_NOT_AUTHORIZED = "Current user is not authorized.";
 	public static final String USER_HAS_NO_PERMISSION = "Current user does not have permission.";
+	public static final String LOGIN_SUCCESSFULLY = "Login successfully.";
 	public static final String CAN_NOT_ADD_RESOURCES_STATIC_LOCATION = "Unable to create directory for image uploads: {0}.";
 	public static final String MAP_RESOURCES_STATIC_PATTERN = "Map resources static pattern [{0}] with location [file:{1}].";
 	public static final String CAN_NOT_DEFINE_MULTIPART_TEMPORARY_LOCATION = "Unable to create multipart temporary directory with: {1}.";
