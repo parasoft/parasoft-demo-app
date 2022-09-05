@@ -59,7 +59,6 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
             if(items.length === 0){
                 if(checkedRegions) {
                     category.showNoResultText = true;
-                    console.log(category.showNoResultText);
                 } else {
                     $rootScope.emptyContentError = true;
                     category.emptyContentsMessage = true;
