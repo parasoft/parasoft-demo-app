@@ -84,9 +84,10 @@ public class ResetEntranceSpringTest {
         RegionType region = RegionType.LOCATION_1;
         String location = "xxx";
         String receiverId = "xxx";
+        String shippingType = "xxx";
         String eventId = "xxx";
         String eventNumber = "xxx";
-        OrderEntity order = orderService.addNewOrder(user.getId(), user.getUsername(), region, location, receiverId, eventId, eventNumber);
+        OrderEntity order = orderService.addNewOrder(user.getId(), user.getUsername(), region, location, shippingType, receiverId, eventId, eventNumber);
 
         // make sure all data is saved into database.
         assertNotNull(category);

@@ -41,7 +41,7 @@ public class OrderServiceSpringTest2 {
 
     /**
 	 * <p>
-	 * Test for addNewOrder(Long, String, RegionType, String, String, String, String) with transaction.<br/>
+	 * Test for addNewOrder(Long, String, RegionType, String, String, String, String, String) with transaction.<br/>
 	 * Exception happens when clearing shopping cart, validate the database whether it is rollback or not.<br/>
 	 * This test doesn't run automatically, we need insert a RuntimeException(or an exception that is tracked by a transaction)
 	 * into business code(before return statement).
@@ -57,7 +57,7 @@ public class OrderServiceSpringTest2 {
      *  }
 	 * </pre>
 	 * Uncomment&nbsp;@Test and&nbsp;@RunWith(SpringJUnit4ClassRunner.class), then run this test.
-	 * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String)
+	 * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String)
 	 */
     //@Test
     public void testAddNewOrder_rollbackWhenExceptionHappens() throws Throwable {
@@ -76,10 +76,11 @@ public class OrderServiceSpringTest2 {
             // When
             RegionType region = RegionType.JAPAN;
             String location = "JAPAN 82.8628° S, 135.0000° E";
+            String shippingType = "Standard (1 - 2 weeks)";
             String receiverId = "345-6789-21";
             String eventId = "45833-ORG-7834";
             String eventNumber = "55-444-33-22";
-            underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
+            underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
         }catch(Exception e) {
         	e.printStackTrace();
         } finally {
