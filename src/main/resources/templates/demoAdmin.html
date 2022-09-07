@@ -50,13 +50,19 @@
                         </div>
                         <div class="section_body">
                             <div class="database_operation_buttons">
-                                <button class="btn btn-default operation_button" data-toggle="modal" data-target="#database_reset_confirm_modal"
-                                        ng-click="demo.showDatabaseOperationConfirmModal('reset')">
-                                    <span name="reset" class="industry_font" translate="RESET"></span>
+                                <button class="btn btn-default operation_button industry_font"
+                                        name="reset"
+                                        data-toggle="modal"
+                                        data-target="#database_reset_confirm_modal"
+                                        ng-click="demo.showDatabaseOperationConfirmModal('reset')"
+                                        translate="RESET">
                                 </button>
-                                <button class="btn btn-default operation_button" data-toggle="modal" data-target="#database_reset_confirm_modal"
-                                        ng-click="demo.showDatabaseOperationConfirmModal('clear')">
-                                    <span name="clear" class="industry_font" translate="CLEAR"></span>
+                                <button class="btn btn-default operation_button industry_font"
+                                        name="clear"
+                                        data-toggle="modal"
+                                        data-target="#database_reset_confirm_modal"
+                                        ng-click="demo.showDatabaseOperationConfirmModal('clear')"
+                                        translate="CLEAR">
                                 </button>
                             </div>
 
@@ -104,8 +110,9 @@
                                                class="form-control" placeholder="{{'ENDPOINT_URL_FOR_CATEGORIES'|translate}} {{demo.end_point_for_categories}}"
                                                ng-model="options.restEndpoints.categoriesRestEndpointUrl"  ng-trim="false"
                                                ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.categoriesRestEndpointUrl, 'categories');"/>
-                                        <button class="btn btn-default industry_button labels_reset_btn" ng-click="options.resetEndpoint('categories')">
-                                            <span translate="RESET_ENDPOINT"></span>
+                                        <button class="btn btn-default industry_button labels_reset_btn"
+                                                ng-click="options.resetEndpoint('categories')"
+                                                translate="RESET_ENDPOINT">
                                         </button>
                                     </div>
                                 </div>
@@ -117,8 +124,9 @@
                                                class="form-control" placeholder="{{'ENDPOINT_URL_FOR_ITEMS'|translate}} {{demo.end_point_for_items}}"
                                                ng-model="options.restEndpoints.itemsRestEndpointUrl"  ng-trim="false"
                                                ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.itemsRestEndpointUrl, 'items')"/>
-                                        <button class="btn btn-default industry_button labels_reset_btn" ng-click="options.resetEndpoint('items')">
-                                            <span translate="RESET_ENDPOINT"></span>
+                                        <button class="btn btn-default industry_button labels_reset_btn"
+                                                ng-click="options.resetEndpoint('items')"
+                                                translate="RESET_ENDPOINT">
                                         </button>
                                     </div>
                                 </div>
@@ -130,8 +138,9 @@
                                                class="form-control" placeholder="{{'ENDPOINT_URL_FOR_CARTITEMS'|translate}} {{demo.end_point_for_cartItems}}"
                                                ng-model="options.restEndpoints.cartItemsRestEndpointUrl"  ng-trim="false"
                                                ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.cartItemsRestEndpointUrl, 'cart')"/>
-                                        <button class="btn btn-default labels_reset_btn" ng-click="options.resetEndpoint('cart')">
-                                            <span translate="RESET_ENDPOINT"></span>
+                                        <button class="btn btn-default labels_reset_btn"
+                                                ng-click="options.resetEndpoint('cart')"
+                                                translate="RESET_ENDPOINT">
                                         </button>
                                     </div>
                                 </div>
@@ -143,8 +152,9 @@
                                                class="form-control" placeholder="{{'ENDPOINT_URL_FOR_ORDERS'|translate}} {{demo.end_point_for_orders}}"
                                                ng-model="options.restEndpoints.ordersRestEndpointUrl"  ng-trim="false"
                                                ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.ordersRestEndpointUrl, 'orders')"/>
-                                        <button class="btn btn-default labels_reset_btn" ng-click="options.resetEndpoint('orders')">
-                                            <span translate="RESET_ENDPOINT"></span>
+                                        <button class="btn btn-default labels_reset_btn"
+                                                ng-click="options.resetEndpoint('orders')"
+                                                translate="RESET_ENDPOINT">
                                         </button>
                                     </div>
                                 </div>
@@ -156,8 +166,9 @@
                                                class="form-control" placeholder="{{'ENDPOINT_URL_FOR_LOCATIONS'|translate}} {{demo.end_point_for_locations}}"
                                                ng-model="options.restEndpoints.locationsRestEndpointUrl"  ng-trim="false"
                                                ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.locationsRestEndpointUrl, 'locations')"/>
-                                        <button class="btn btn-default labels_reset_btn" ng-click="options.resetEndpoint('locations')">
-                                            <span translate="RESET_ENDPOINT"></span>
+                                        <button class="btn btn-default labels_reset_btn"
+                                                ng-click="options.resetEndpoint('locations')"
+                                                translate="RESET_ENDPOINT">
                                         </button>
                                     </div>
                                 </div>
@@ -294,8 +305,8 @@
                         <div class="section_container">
                             <button id="save_changes_button" class="btn save-changes-button button-primary"
                                     data-toggle="modal" data-target="#saving_modal" ng-click="demo.saveAll()"
-                                    ng-disabled="demo.disableSaveChangesButton()">
-                                <span translate="SAVE_CHANGES"></span>
+                                    ng-disabled="demo.disableSaveChangesButton()"
+                                    translate="SAVE_CHANGES">
                             </button>
                             <div id="saving_modal" class="modal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
                                 <div class="modal-dialog">
@@ -556,8 +567,8 @@
                         </form>
                         <div class="section_container">
                             <button id="save_labels_changes_button" class="btn save-changes-button button-primary"
-                                    data-toggle="modal" data-target="#saving_modal" ng-click="demo.saveOverridedLabels()">
-                                <span translate="SAVE_CHANGES"></span>
+                                    data-toggle="modal" data-target="#saving_modal" ng-click="demo.saveOverridedLabels()"
+                                    translate="SAVE_CHANGES">
                             </button>
                         </div>
                     </div>

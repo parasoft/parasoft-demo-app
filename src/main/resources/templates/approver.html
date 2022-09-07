@@ -4,246 +4,245 @@
     <meta charset="UTF-8">
     <title translate="PROJECT_NAME"></title>
 
-	<link rel="icon" href="/common/images/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/common/images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="/lib/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="/lib/toastr/toastr.min.css"/>
-	<link rel="stylesheet" type="text/css" th:href="'/common/css/common.css'">
-	<link rel="stylesheet" type="text/css" href="/common/css/approver.css">
-	<link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/common.css'">
+    <link rel="stylesheet" type="text/css" th:href="'/common/css/common.css'">
+    <link rel="stylesheet" type="text/css" href="/common/css/approver.css">
+    <link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/common.css'">
     <link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/approver.css'">
 </head>
 <body>
-	<input type="hidden" id="current_username" th:value="${#authentication.principal.username}">
-	<input type="hidden" id="current_rolename" th:value="${#authentication.principal.role.name}">
-	<div ng-controller="headerController"></div> <!-- To obtain industry information -->
-	<div class="page-container industry_font" ng-controller="approverHomePageController as approver">
-		<div class="header-section">
-			<div id="header-container">
-				<div class="header-title">
-					<a href="/"><span class="header_title_link" translate="APPROVALS"></span></a>
-				</div>
-				<div class="header-menu">
-					<nav>
-						<ul>
-							<li id="setting-button">
-								<a href="/demoAdmin" class="button-body full-fill-center" title="{{'HEADER_DEMO_ADMIN_TITLE'|translate}}">
-									<span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
-								</a>
-							</li>
-							<li id="username-button">
-								<div class="dropdown full-fill-center">
-									<div class="button-body dropdown-toggle full-fill-center" data-toggle="dropdown">
-										<div class="role-title">
-											<span class="account_text text-center"> {{ username }}</span>
-										</div>
-									</div>
-									<ul class="dropdown-menu dropdown-menu-right">
-										<li class="dropdown-item">
-											<a class="logout" href="/logout" translate="SIGN_OUT"></a>
-										</li>
-									</ul>
-								</div>
-							</li>
-						</ul>
-					</nav>
-				</div>
-			</div>
-		</div>
-		<div class="page-content-section">
-			<span class="content-title" translate="ORDER_REQUESTS"></span>
-			<div class="content-container">
-				<div class="order-request-lists">
-					<table class="table table-bordered table-striped common_industry">
-						<thead>
-							<tr class="order_title">
-								<th class="number"></th>
-								<th class="status" translate="STATUS"></th>
-								<th class="requisition_number" translate="REQ"></th>
-								<th class="submission_date" translate="SUBMISSION_DATE"></th>
-								<th class="time" translate="TIME"></th>
-								<th class="requested_by" translate="REQUESTED_BY"></th>
-							</tr>
-						</thead>
-						<tbody>
-						<tr class="order_content" ng-repeat="order in approver.orders track by $index"  ng-if="!approver.ordersLoadError">
-							<td>
-								<span class="new-status-label" translate="NEW" ng-if="approver.showNewLabel[order.orderNumber] && order !== ''"></span>
-								<span ng-bind="order === '' ? '' : $index+1+(approver.currentPage-1)*10"></span>
-							</td>
-							<td ng-bind="order.status === 'SUBMITTED' ? 'Open' : (order === '' ? '' : 'Close')"></td>
-							<td><a ng-bind="order.orderNumber" ng-click="approver.openOrderDetail(order.orderNumber)"></a></td>
-							<td ng-bind="order.submissionDate.substring(0,order.submissionDate.indexOf('T'))"></td>
-							<td ng-bind="order.submissionDate.substring(order.submissionDate.indexOf('T')+1,
+<input type="hidden" id="current_username" th:value="${#authentication.principal.username}">
+<input type="hidden" id="current_rolename" th:value="${#authentication.principal.role.name}">
+<div ng-controller="headerController"></div> <!-- To obtain industry information -->
+<div class="page-container industry_font" ng-controller="approverHomePageController as approver">
+    <div class="header-section">
+        <div id="header-container">
+            <div class="header-title">
+                <a href="/"><span class="header_title_link" translate="APPROVALS"></span></a>
+            </div>
+            <div class="header-menu">
+                <nav>
+                    <ul>
+                        <li id="setting-button">
+                            <a href="/demoAdmin" class="button-body full-fill-center" title="{{'HEADER_DEMO_ADMIN_TITLE'|translate}}">
+                                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                            </a>
+                        </li>
+                        <li id="username-button">
+                            <div class="dropdown full-fill-center">
+                                <div class="button-body dropdown-toggle full-fill-center" data-toggle="dropdown">
+                                    <div class="role-title">
+                                        <span class="account_text text-center"> {{ username }}</span>
+                                    </div>
+                                </div>
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    <li class="dropdown-item">
+                                        <a class="logout" href="/logout" translate="SIGN_OUT"></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <div class="page-content-section">
+        <span class="content-title" translate="ORDER_REQUESTS"></span>
+        <div class="content-container">
+            <div class="order-request-lists">
+                <table class="table table-bordered table-striped common_industry">
+                    <thead>
+                    <tr class="order_title">
+                        <th class="number"></th>
+                        <th class="status" translate="STATUS"></th>
+                        <th class="requisition_number" translate="REQ"></th>
+                        <th class="submission_date" translate="SUBMISSION_DATE"></th>
+                        <th class="time" translate="TIME"></th>
+                        <th class="requested_by" translate="REQUESTED_BY"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="order_content" ng-repeat="order in approver.orders track by $index"  ng-if="!approver.ordersLoadError">
+                        <td>
+                            <span class="new-status-label" translate="NEW" ng-if="approver.showNewLabel[order.orderNumber] && order !== ''"></span>
+                            <span ng-bind="order === '' ? '' : $index+1+(approver.currentPage-1)*10"></span>
+                        </td>
+                        <td ng-bind="order.status === 'SUBMITTED' ? 'Open' : (order === '' ? '' : 'Close')"></td>
+                        <td><a ng-bind="order.orderNumber" ng-click="approver.openOrderDetail(order.orderNumber)"></a></td>
+                        <td ng-bind="order.submissionDate.substring(0,order.submissionDate.indexOf('T'))"></td>
+                        <td ng-bind="order.submissionDate.substring(order.submissionDate.indexOf('T')+1,
 									order.submissionDate.lastIndexOf('.'))"></td>
-							<td>
-								<span title="{{order.requestedBy}}" class="requested_by_content" ng-bind="order.requestedBy"></span>
-							</td>
-						</tr>
-						</tbody>
-					</table>
-					<div id="order_buttons" class="common_industry">
-						<a role="button" class="pre_btn btn" ng-disabled="approver.currentPage <= 1 ? true : false">
-							<img ng-src="/{{industry}}/images/approver_order_left.svg" ng-click="approver.prev(approver.currentPage)">
-						</a>
-						<div id="page_number" class="common_industry">
-							<span ng-bind="approver.currentPage"></span>
-							<span ng-bind="'of'"></span>
-							<span ng-bind="approver.totalPages"></span>
-						</div>
-						<a role="button" class="next_btn btn" ng-disabled="approver.currentPage === approver.totalPages ? true : false">
-							<img ng-src="/{{industry}}/images/approver_order_right.svg"
-								 ng-click="approver.next(approver.currentPage)">
-						</a>
-					</div>
-					<div class="approver_empty_content_message empty_error_message" ng-include="'/common/pages/emptyContentMessage.html'"
-						 ng-if="approver.emptyContentsMessage || approver.ordersLoadError"></div>
-				</div>
-				<div id="map" class="common_industry">
-					<img ng-src="/{{industry}}/images/world_map.jpg">
-				</div>
-			</div>
-		</div>
+                        <td>
+                            <span title="{{order.requestedBy}}" class="requested_by_content" ng-bind="order.requestedBy"></span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div id="order_buttons" class="common_industry">
+                    <a role="button" class="pre_btn btn" ng-disabled="approver.currentPage <= 1 ? true : false">
+                        <img ng-src="/{{industry}}/images/approver_order_left.svg" ng-click="approver.prev(approver.currentPage)">
+                    </a>
+                    <div id="page_number" class="common_industry">
+                        <span ng-bind="approver.currentPage"></span>
+                        <span ng-bind="'of'"></span>
+                        <span ng-bind="approver.totalPages"></span>
+                    </div>
+                    <a role="button" class="next_btn btn" ng-disabled="approver.currentPage === approver.totalPages ? true : false">
+                        <img ng-src="/{{industry}}/images/approver_order_right.svg"
+                             ng-click="approver.next(approver.currentPage)">
+                    </a>
+                </div>
+                <div class="approver_empty_content_message empty_error_message" ng-include="'/common/pages/emptyContentMessage.html'"
+                     ng-if="approver.emptyContentsMessage || approver.ordersLoadError"></div>
+            </div>
+            <div id="map" class="common_industry">
+                <img ng-src="/{{industry}}/images/world_map.jpg">
+            </div>
+        </div>
+    </div>
 
-		<div class="order-detail-container" ng-if="approver.showOrderDetail['show']">
-			<div class="order-detail-section">
-				<div id="order_detail_box" class="common_industry approver_order_detail_box_img">
-					<div class="dialog-title common_industry">
-						<div class="common_text">
-							<span translate="ORDER_DETAIL_HEADER"></span>
-							<span ng-bind="'#'+approver.orderDetail.orderNumber" style="font-weight:700;"></span>
-						</div>
-						<div id="close-btn" class="common_industry" ng-click="approver.closeOrderDetail()">
-							<span ng-bind="'X'"></span>
-						</div>
-					</div>
-					<div class="order-detail">
-						<div class="left-panel">
-							<div id="order_detail_region" class="common_industry order_detail_label">
-								<span translate="DEPLOY_ASSETS_TO"></span><span>: </span>
-							</div>
-							<div class="common_industry">
-								<div class="order_detail_summary_title_and_content">
-									<span class="order_detail_summary_title" translate="LOCATION_OPTIONS"></span><span>: </span>
-									<span class="order_detail_summary_content" translate="{{approver.orderDetail.region}}" title="{{approver.orderDetail.region|translate}}"></span>
-								</div>
-								<div class="order_detail_summary_title_and_content">
-									<span class="order_detail_summary_title" translate="RECEIVER_NAME"></span><span>: </span>
-									<span class="order_detail_summary_content" ng-bind="approver.orderDetail.receiverId" title="{{approver.orderDetail.receiverId}}"></span>
-								</div>
-								<div class="order_detail_summary_title_and_content">
-									<span class="order_detail_summary_title" translate="GPS_COORDINATES"></span><span>: </span>
-									<span class="order_detail_summary_content" ng-bind="approver.orderDetail.location" title="{{approver.orderDetail.location}}"></span>
-								</div>
-							</div>
-							<div id="order_detail_assigned_campaign" class="order_detail_label">
-								<span translate="ASSIGNMENT_STEP_IN_WIZARD"></span><span>: </span>
-							</div>
-							<div class="common_industry">
-								<div class="order_detail_summary_title_and_content">
-									<span class="order_detail_summary_title" translate="INVOICE_NUMBER"></span><span>: </span>
-									<span class="order_detail_summary_content" ng-bind="approver.orderDetail.eventId" title="{{approver.orderDetail.eventId}}"></span>
-								</div>
+    <div class="order-detail-container" ng-if="approver.showOrderDetail['show']">
+        <div class="order-detail-section">
+            <div id="order_detail_box" class="common_industry approver_order_detail_box_img">
+                <div class="dialog-title common_industry">
+                    <div class="common_text">
+                        <span translate="ORDER_DETAIL_HEADER"></span>
+                        <span ng-bind="'#'+approver.orderDetail.orderNumber" style="font-weight:700;"></span>
+                    </div>
+                    <div id="close-btn" class="common_industry" ng-click="approver.closeOrderDetail()">
+                        <span ng-bind="'X'"></span>
+                    </div>
+                </div>
+                <div class="order-detail">
+                    <div class="left-panel">
+                        <div id="order_detail_region" class="common_industry order_detail_label">
+                            <span translate="DEPLOY_ASSETS_TO"></span><span>: </span>
+                        </div>
+                        <div class="common_industry">
+                            <div class="order_detail_summary_title_and_content">
+                                <span class="order_detail_summary_title" translate="LOCATION_OPTIONS"></span><span>: </span>
+                                <span class="order_detail_summary_content" translate="{{approver.orderDetail.region}}" title="{{approver.orderDetail.region|translate}}"></span>
+                            </div>
+                            <div class="order_detail_summary_title_and_content">
+                                <span class="order_detail_summary_title" translate="RECEIVER_NAME"></span><span>: </span>
+                                <span class="order_detail_summary_content" ng-bind="approver.orderDetail.receiverId" title="{{approver.orderDetail.receiverId}}"></span>
+                            </div>
+                            <div class="order_detail_summary_title_and_content">
+                                <span class="order_detail_summary_title" translate="GPS_COORDINATES"></span><span>: </span>
+                                <span class="order_detail_summary_content" ng-bind="approver.orderDetail.location" title="{{approver.orderDetail.location}}"></span>
+                            </div>
+                        </div>
+                        <div id="order_detail_assigned_campaign" class="order_detail_label">
+                            <span translate="ASSIGNMENT_STEP_IN_WIZARD"></span><span>: </span>
+                        </div>
+                        <div class="common_industry">
+                            <div class="order_detail_summary_title_and_content">
+                                <span class="order_detail_summary_title" translate="INVOICE_NUMBER"></span><span>: </span>
+                                <span class="order_detail_summary_content" ng-bind="approver.orderDetail.eventId" title="{{approver.orderDetail.eventId}}"></span>
+                            </div>
 
-								<div class="order_detail_summary_title_and_content">
-									<span class="order_detail_summary_title" translate="UNIQUE_NUMBER"></span><span>: </span>
-									<span class="order_detail_summary_content" ng-bind="approver.orderDetail.eventNumber" title="{{approver.orderDetail.eventNumber}}"></span>
-								</div>
-							</div>
-							<div id="order_detail_map" class="common_industry">
-								<img ng-src="{{approver.orderDetail.orderImage}}">
-							</div>
-						</div>
-						<div class="right-panel order_detail_right_panel">
-							<div class="upper-panel">
-								<div class="requested_assets common_industry order_detail_label">
-									<span translate="REQUESTED_ASSETS"></span><span>: </span>
-									<span ng-bind="approver.calItemsAmount(approver.orderDetail.orderItems)"></span>
-								</div>
-								<div id="order_items" class="common_industry">
-									<div class="order-items-section" ng-repeat="orderItem in approver.orderDetail.orderItems track by $index">
-										<div class="order-items-left-panel">
-											<div class="item_img">
-												<img ng-src="{{orderItem.image}}">
-											</div>
-											<div class="item_img">
-												<img ng-src="/{{industry}}/images/category_dark_overlay.svg">
-											</div>
-										</div>
-										<div class="order-items-middle-panel">
-											<div class="item_title">
-												<span class="order-content" ng-bind="orderItem.name"></span>
-											</div>
-											<div class="order_item_description">
-												<span class="order-content" ng-bind="orderItem.description"></span>
-											</div>
-										</div>
-										<div class="order-items-right-panel item_quantity">
-											<span ng-bind="'x'"></span><span ng-bind="orderItem.quantity"></span>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="lower-panel">
-								<form id="order_response_form">
-									<div id="requisition_response" class="common_industry">
-										<div id="response_title">
-											<span translate="REQUISITION_RESPONSE"></span><span>: </span>
-										</div>
-										<select id="response_select" name="status" class="form-control"
-												ng-change="approver.response.toggleElements()"
-												ng-show="approver.response.showResponseSelect"
-												ng-model="approver.response.responseSelectValue">
-											<option value="">-</option>
-											<option value="APPROVED" translate="APPROVE"></option>
-											<option value="DECLINED" translate="DENY"></option>
-										</select>
-										<span class="operated_order operated_order_{{approver.orderDetail.status}}"
-											  translate="{{approver.orderDetail.status}}"
-											  ng-show="approver.response.showResponseResult"></span>
-									</div>
-									<div id="comments" class="common_industry">
-										<div id="comments_title" class="common_industry"
-											 ng-show="approver.response.showResponseCommentsLabel"><span translate="COMMENTS"></span><span>: </span></div>
-										<textarea id="comments_content" name="comments" class="form-control"
-												  ng-change="approver.response.toggleElements()"
-												  ng-show="approver.response.showResponseCommentsTextarea"
-												  ng-model="approver.response.responseCommentsTextarea"></textarea>
-										<span class="operated_order reject_reason" ng-show="approver.response.showResponseCommentsResult"
-											  ng-bind="approver.orderDetail.comments === '' ? '-' : approver.orderDetail.comments"></span>
-									</div>
-								</form>
-							</div>
-						</div>
-					</div>
-					<div class="order-actions common_industry" ng-show="approver.response.showResponseSaveAndCancel">
-						<div class="left-panel">
-							<button id="cancel_btn" class="btn" ng-click="approver.closeOrderDetail()">
-								<span translate="CANCEL"></span>
-							</button>
-						</div>
-						<div class="right-panel">
-							<button id="save_btn" class="btn default-btn" ng-click="approver.sendResponse(approver.orderDetail.orderNumber)"
-									ng-disabled="approver.response.saveButtonDisabled">
-								<span translate="SAVE_AND_SEND_RESPONSE"></span>
-							</button>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="order-detail-shadow" ng-click="approver.closeOrderDetail()"></div>
-		</div>
-		<footer ng-include="'/common/pages/footer.html'"></footer>
-	</div>
+                            <div class="order_detail_summary_title_and_content">
+                                <span class="order_detail_summary_title" translate="UNIQUE_NUMBER"></span><span>: </span>
+                                <span class="order_detail_summary_content" ng-bind="approver.orderDetail.eventNumber" title="{{approver.orderDetail.eventNumber}}"></span>
+                            </div>
+                        </div>
+                        <div id="order_detail_map" class="common_industry">
+                            <img ng-src="{{approver.orderDetail.orderImage}}">
+                        </div>
+                    </div>
+                    <div class="right-panel order_detail_right_panel">
+                        <div class="upper-panel">
+                            <div class="requested_assets common_industry order_detail_label">
+                                <span translate="REQUESTED_ASSETS"></span><span>: </span>
+                                <span ng-bind="approver.calItemsAmount(approver.orderDetail.orderItems)"></span>
+                            </div>
+                            <div id="order_items" class="common_industry">
+                                <div class="order-items-section" ng-repeat="orderItem in approver.orderDetail.orderItems track by $index">
+                                    <div class="order-items-left-panel">
+                                        <div class="item_img">
+                                            <img ng-src="{{orderItem.image}}">
+                                        </div>
+                                        <div class="item_img">
+                                            <img ng-src="/{{industry}}/images/category_dark_overlay.svg">
+                                        </div>
+                                    </div>
+                                    <div class="order-items-middle-panel">
+                                        <div class="item_title">
+                                            <span class="order-content" ng-bind="orderItem.name"></span>
+                                        </div>
+                                        <div class="order_item_description">
+                                            <span class="order-content" ng-bind="orderItem.description"></span>
+                                        </div>
+                                    </div>
+                                    <div class="order-items-right-panel item_quantity">
+                                        <span ng-bind="'x'"></span><span ng-bind="orderItem.quantity"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lower-panel">
+                            <form id="order_response_form">
+                                <div id="requisition_response" class="common_industry">
+                                    <div id="response_title">
+                                        <span translate="REQUISITION_RESPONSE"></span><span>: </span>
+                                    </div>
+                                    <select id="response_select" name="status" class="form-control"
+                                            ng-change="approver.response.toggleElements()"
+                                            ng-show="approver.response.showResponseSelect"
+                                            ng-model="approver.response.responseSelectValue">
+                                        <option value="">-</option>
+                                        <option value="APPROVED" translate="APPROVE"></option>
+                                        <option value="DECLINED" translate="DENY"></option>
+                                    </select>
+                                    <span class="operated_order operated_order_{{approver.orderDetail.status}}"
+                                          translate="{{approver.orderDetail.status}}"
+                                          ng-show="approver.response.showResponseResult"></span>
+                                </div>
+                                <div id="comments" class="common_industry">
+                                    <div id="comments_title" class="common_industry"
+                                         ng-show="approver.response.showResponseCommentsLabel"><span translate="COMMENTS"></span><span>: </span></div>
+                                    <textarea id="comments_content" name="comments" class="form-control"
+                                              ng-change="approver.response.toggleElements()"
+                                              ng-show="approver.response.showResponseCommentsTextarea"
+                                              ng-model="approver.response.responseCommentsTextarea"></textarea>
+                                    <span class="operated_order reject_reason" ng-show="approver.response.showResponseCommentsResult"
+                                          ng-bind="approver.orderDetail.comments === '' ? '-' : approver.orderDetail.comments"></span>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="order-actions common_industry" ng-show="approver.response.showResponseSaveAndCancel">
+                    <div class="left-panel">
+                        <button id="cancel_btn" class="btn" ng-click="approver.closeOrderDetail()" translate="CANCEL"></button>
+                    </div>
+                    <div class="right-panel">
+                        <button id="save_btn" class="btn default-btn"
+                                ng-click="approver.sendResponse(approver.orderDetail.orderNumber)"
+                                ng-disabled="approver.response.saveButtonDisabled"
+                                translate="SAVE_AND_SEND_RESPONSE">
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="order-detail-shadow" ng-click="approver.closeOrderDetail()"></div>
+    </div>
+    <footer ng-include="'/common/pages/footer.html'"></footer>
+</div>
 
-	<script type="text/javascript" src="/lib/jquery/jquery-3.3.1.min.js"></script>
-	<script type="text/javascript" src="/lib/jquery/jquery.serializejson.min.js"></script>
-	<script type="text/javascript" src="/lib/bootstrap/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="/lib/angularjs/angular.min.js"></script>
-	<script type="text/javascript" src="/lib/angularjs/angular-translate.min.js"></script>
-	<script type="text/javascript" src="/lib/angularjs/angular-translate-loader-url.min.js"></script>
-	<script type="text/javascript" src="/lib/toastr/toastr.min.js"></script>
-	<script type="text/javascript" src="/lib/stomp/stomp.min.js"></script>
-	<script type="text/javascript" src="/common/js/common.js"></script>
-	<script type="text/javascript" src="/common/js/approver.js"></script>
+<script type="text/javascript" src="/lib/jquery/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="/lib/jquery/jquery.serializejson.min.js"></script>
+<script type="text/javascript" src="/lib/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/lib/angularjs/angular.min.js"></script>
+<script type="text/javascript" src="/lib/angularjs/angular-translate.min.js"></script>
+<script type="text/javascript" src="/lib/angularjs/angular-translate-loader-url.min.js"></script>
+<script type="text/javascript" src="/lib/toastr/toastr.min.js"></script>
+<script type="text/javascript" src="/lib/stomp/stomp.min.js"></script>
+<script type="text/javascript" src="/common/js/common.js"></script>
+<script type="text/javascript" src="/common/js/approver.js"></script>
 </body>
 </html>
