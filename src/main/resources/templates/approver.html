@@ -217,14 +217,13 @@
                 </div>
                 <div class="order-actions common_industry" ng-show="approver.response.showResponseSaveAndCancel">
                     <div class="left-panel">
-                        <button id="cancel_btn" class="btn" ng-click="approver.closeOrderDetail()">
-                            <span translate="CANCEL"></span>
-                        </button>
+                        <button id="cancel_btn" class="btn" ng-click="approver.closeOrderDetail()" translate="CANCEL"></button>
                     </div>
                     <div class="right-panel">
-                        <button id="save_btn" class="btn default-btn" ng-click="approver.sendResponse(approver.orderDetail.orderNumber)"
-                                ng-disabled="approver.response.saveButtonDisabled">
-                            <span translate="SAVE_AND_SEND_RESPONSE"></span>
+                        <button id="save_btn" class="btn default-btn"
+                                ng-click="approver.sendResponse(approver.orderDetail.orderNumber)"
+                                ng-disabled="approver.response.saveButtonDisabled"
+                                translate="SAVE_AND_SEND_RESPONSE">
                         </button>
                     </div>
                 </div>
