@@ -585,22 +585,11 @@ function getUnreviewedAmount($http,$rootScope,$filter){
     setTimeout(function(){
         $http({
             method: 'GET',
-            url: '/proxy/v1/orders'
+            url: '/proxy/v1/orders/unreviewedNumber'
         }).then(function(result) {
-            var orders = result.data.data.content;
-            var unreviewedNumByPRCH = 0;
-            var unreviewedNumByAPV = 0;
-
-            $.each(orders,function(i,order){
-                if(!order.reviewedByPRCH){
-                    unreviewedNumByPRCH += 1;
-                }else if(!order.reviewedByAPV){
-                    unreviewedNumByAPV += 1;
-                }
-            });
-
-            $rootScope.unreviewedNumByPRCH = unreviewedNumByPRCH;
-            $rootScope.unreviewedNumByAPV = unreviewedNumByAPV;
+            const numbers = result.data.data;
+            $rootScope.unreviewedNumByPRCH = numbers.unreviewedByPurchaser;
+            $rootScope.unreviewedNumByAPV = numbers.unreviewedByApprover;
         }).catch(function(result) {
             console.log(result);
             $rootScope.unreviewedNumByPRCH = 0;
