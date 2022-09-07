@@ -15,4 +15,8 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
 	List<OrderEntity> findAllByRequestedBy(String requestedBy);
 
     Page<OrderEntity> findAllByRequestedBy(String requestedBy, Pageable pageable);
+
+    int countByReviewedByPRCH(boolean b);
+
+    int countByReviewedByAPV(boolean b);
 }
