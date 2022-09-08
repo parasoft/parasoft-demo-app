@@ -1,17 +1,20 @@
 package com.parasoft.demoapp.config;
 
-import com.parasoft.demoapp.config.datasource.DataSourceConfigurationProperties;
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
+import java.util.Properties;
+
 import org.hsqldb.Server;
 import org.hsqldb.persist.HsqlProperties;
 import org.hsqldb.server.ServerAcl.AclFormatException;
 import org.hsqldb.server.ServerConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.SmartLifecycle;
 import org.springframework.context.annotation.Configuration;
 
-import java.io.IOException;
-import java.util.Properties;
+import com.parasoft.demoapp.config.datasource.DataSourceConfigurationProperties;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Configuration
@@ -20,8 +23,11 @@ public class HyperSqlDbServerConfig implements SmartLifecycle {
     private Server server;
     private boolean running = false;
 
+    @Value("${hsqldb.port}")
+    private int serverPort;
+
     public HyperSqlDbServerConfig() {
-        this.properties = null;
+        properties = null;
     }
 
     @Autowired
@@ -47,8 +53,9 @@ public class HyperSqlDbServerConfig implements SmartLifecycle {
 
     @Override
     public boolean isRunning() {
-        if(server != null)
+        if(server != null) {
             server.checkRunning(running);
+        }
         return running;
     }
 
@@ -62,6 +69,7 @@ public class HyperSqlDbServerConfig implements SmartLifecycle {
                 server.setRestartOnShutdown(false);
                 server.setNoSystemExit(true);
                 server.setProperties(properties);
+                server.setPort(serverPort);
                 server.start();
                 running = true;
                 log.info("HSQL Server listening on " + server.getPort());
