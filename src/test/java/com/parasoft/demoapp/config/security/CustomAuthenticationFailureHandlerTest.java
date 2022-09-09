@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  *
  * @see com.parasoft.demoapp.config.security.CustomAuthenticationFailureHandler
  */
-class CustomAuthenticationFailureHandlerTest {
+public class CustomAuthenticationFailureHandlerTest {
 
     CustomAuthenticationFailureHandler underTest = new CustomAuthenticationFailureHandler();
 
@@ -27,7 +27,7 @@ class CustomAuthenticationFailureHandlerTest {
      * @see com.parasoft.demoapp.config.security.CustomAuthenticationFailureHandler#onAuthenticationFailure(HttpServletRequest, HttpServletResponse, AuthenticationException)
      */
     @Test
-    void onAuthenticationFailure() throws ServletException, IOException {
+    public void onAuthenticationFailure() throws ServletException, IOException {
         // Given
         MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
         MockHttpServletResponse httpServletResponse = new MockHttpServletResponse();
