@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-class ParasoftJDBCProxyValidateInterceptorTest {
+public class ParasoftJDBCProxyValidateInterceptorTest {
 
     @InjectMocks
     ParasoftJDBCProxyValidateInterceptor underTest;
@@ -51,7 +51,7 @@ class ParasoftJDBCProxyValidateInterceptorTest {
      * @see com.parasoft.demoapp.config.interceptor.ParasoftJDBCProxyValidateInterceptor#preHandle(HttpServletRequest, HttpServletResponse, Object)
      */
     @Test
-    void preHandle_notUseParasoftJDBCProxy() throws Exception {
+    public void preHandle_notUseParasoftJDBCProxy() throws Exception {
         // Given
         IndustryRoutingDataSource.useParasoftJDBCProxy = false;
 
@@ -76,7 +76,7 @@ class ParasoftJDBCProxyValidateInterceptorTest {
      * @see com.parasoft.demoapp.config.interceptor.ParasoftJDBCProxyValidateInterceptor#preHandle(HttpServletRequest, HttpServletResponse, Object)
      */
     @Test
-    void preHandle_useParasoftJDBCProxy_failToConnect() throws Exception {
+    public void preHandle_useParasoftJDBCProxy_failToConnect() throws Exception {
         // Given
         IndustryRoutingDataSource.useParasoftJDBCProxy = true;
         doThrow(new VirtualizeServerUrlException("Refuse to connect")).when(parasoftJDBCProxyService).validateVirtualizeServerUrl(anyString());
@@ -104,7 +104,7 @@ class ParasoftJDBCProxyValidateInterceptorTest {
      * @see com.parasoft.demoapp.config.interceptor.ParasoftJDBCProxyValidateInterceptor#preHandle(HttpServletRequest, HttpServletResponse, Object)
      */
     @Test
-    void preHandle_useParasoftJDBCProxy_successToConnect_needToRefreshProxyDataSource() throws Exception {
+    public void preHandle_useParasoftJDBCProxy_successToConnect_needToRefreshProxyDataSource() throws Exception {
         // Given
         IndustryRoutingDataSource.useParasoftJDBCProxy = true;
         doNothing().when(parasoftJDBCProxyService).validateVirtualizeServerUrl(anyString());
@@ -139,7 +139,7 @@ class ParasoftJDBCProxyValidateInterceptorTest {
      * @see com.parasoft.demoapp.config.interceptor.ParasoftJDBCProxyValidateInterceptor#preHandle(HttpServletRequest, HttpServletResponse, Object)
      */
     @Test
-    void preHandle_useParasoftJDBCProxy_successToConnect_noNeedToRefreshProxyDataSource() throws Exception {
+    public void preHandle_useParasoftJDBCProxy_successToConnect_noNeedToRefreshProxyDataSource() throws Exception {
         // Given
         IndustryRoutingDataSource.useParasoftJDBCProxy = true;
         doNothing().when(parasoftJDBCProxyService).validateVirtualizeServerUrl(anyString());

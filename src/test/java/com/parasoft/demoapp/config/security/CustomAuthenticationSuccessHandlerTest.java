@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * @see com.parasoft.demoapp.config.security.CustomAuthenticationSuccessHandler
  */
-class CustomAuthenticationSuccessHandlerTest {
+public class CustomAuthenticationSuccessHandlerTest {
 
     CustomAuthenticationSuccessHandler underTest = new CustomAuthenticationSuccessHandler();
 
@@ -44,7 +44,7 @@ class CustomAuthenticationSuccessHandlerTest {
      * @see com.parasoft.demoapp.config.security.CustomAuthenticationSuccessHandler#onAuthenticationSuccess(HttpServletRequest, HttpServletResponse, Authentication)
      */
     @Test
-    void onAuthenticationSuccess_loginWithPurchaserUserOnAndroidDevice() throws IOException {
+    public void onAuthenticationSuccess_loginWithPurchaserUserOnAndroidDevice() throws IOException {
         // Given
         httpServletRequest = new MockHttpServletRequest();
         httpServletResponse = new MockHttpServletResponse();
@@ -73,7 +73,7 @@ class CustomAuthenticationSuccessHandlerTest {
      * @see com.parasoft.demoapp.config.security.CustomAuthenticationSuccessHandler#onAuthenticationSuccess(HttpServletRequest, HttpServletResponse, Authentication)
      */
     @Test
-    void onAuthenticationSuccess_loginWithApproverUserOnAndroidDevice() throws IOException {
+    public void onAuthenticationSuccess_loginWithApproverUserOnAndroidDevice() throws IOException {
         // Given
         httpServletRequest = new MockHttpServletRequest();
         httpServletResponse = new MockHttpServletResponse();
@@ -104,7 +104,7 @@ class CustomAuthenticationSuccessHandlerTest {
      * @see com.parasoft.demoapp.config.security.CustomAuthenticationSuccessHandler#onAuthenticationSuccess(HttpServletRequest, HttpServletResponse, Authentication)
      */
     @Test
-    void onAuthenticationSuccess_loginWithPurchaserUserOnNonAndroidDevice() throws IOException {
+    public void onAuthenticationSuccess_loginWithPurchaserUserOnNonAndroidDevice() throws IOException {
         // Given
         httpServletRequest = new MockHttpServletRequest();
         httpServletResponse = new MockHttpServletResponse();
@@ -133,7 +133,7 @@ class CustomAuthenticationSuccessHandlerTest {
      * @see com.parasoft.demoapp.config.security.CustomAuthenticationSuccessHandler#onAuthenticationSuccess(HttpServletRequest, HttpServletResponse, Authentication)
      */
     @Test
-    void onAuthenticationSuccess_loginWithApproverUserOnNonAndroidDevice() throws IOException {
+    public void onAuthenticationSuccess_loginWithApproverUserOnNonAndroidDevice() throws IOException {
         // Given
         httpServletRequest = new MockHttpServletRequest();
         httpServletResponse = new MockHttpServletResponse();

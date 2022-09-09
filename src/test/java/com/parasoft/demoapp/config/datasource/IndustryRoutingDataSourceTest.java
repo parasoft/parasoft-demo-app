@@ -11,7 +11,7 @@ import java.util.HashMap;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-class IndustryRoutingDataSourceTest {
+public class IndustryRoutingDataSourceTest {
 
     /**
      * Test for determineTargetDataSource()
@@ -19,7 +19,7 @@ class IndustryRoutingDataSourceTest {
      * @see IndustryRoutingDataSource#determineTargetDataSource()
      */
     @Test
-    void testDetermineTargetDataSource_exception_IllegalStateException() throws Exception {
+    public void testDetermineTargetDataSource_exception_IllegalStateException() throws Exception {
         // Given
         IndustryRoutingDataSource underTest = new IndustryRoutingDataSource();
         underTest.setTargetDataSources(new HashMap<>()); // No datasource
