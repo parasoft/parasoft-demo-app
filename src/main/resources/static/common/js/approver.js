@@ -216,6 +216,19 @@ app.controller('approverHomePageController', function($rootScope, $http, $filter
             approver.ordersLoadError = true;
         });
     }
+
+    approver.parseOrderStatus = function(status) {
+        switch (status) {
+            case 'SUBMITTED':
+                return 'Open';
+            case 'APPROVED':
+                return 'Approved';
+            case 'DECLINED':
+                return 'Denied';
+            default:
+                return '';
+        }
+    }
     
     // Set time out for avoiding to get the key when using $filter('translate') filter.
     setTimeout(function(){
