@@ -12,7 +12,7 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class CustomAccessDeniedHandlerTest {
+public class CustomAccessDeniedHandlerTest {
 
     CustomAccessDeniedHandler underTest = new CustomAccessDeniedHandler();
 
@@ -22,7 +22,7 @@ class CustomAccessDeniedHandlerTest {
      * @see com.parasoft.demoapp.config.security.CustomAccessDeniedHandler#handle(HttpServletRequest, HttpServletResponse, AccessDeniedException)
      */
     @Test
-    void handle_restApiRequest() throws ServletException, IOException {
+    public void handle_restApiRequest() throws ServletException, IOException {
         // Given
         MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
         MockHttpServletResponse httpServletResponse = new MockHttpServletResponse();
@@ -43,7 +43,7 @@ class CustomAccessDeniedHandlerTest {
      * @see com.parasoft.demoapp.config.security.CustomAccessDeniedHandler#handle(HttpServletRequest, HttpServletResponse, AccessDeniedException)
      */
     @Test
-    void handle_noRestApiRequest() throws ServletException, IOException {
+    public void handle_noRestApiRequest() throws ServletException, IOException {
         // Given
         MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
         MockHttpServletResponse httpServletResponse = new MockHttpServletResponse();

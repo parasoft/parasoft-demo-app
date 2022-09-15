@@ -70,7 +70,7 @@
                             <span class="new-status-label" translate="NEW" ng-if="approver.showNewLabel[order.orderNumber] && order !== ''"></span>
                             <span ng-bind="order === '' ? '' : $index+1+(approver.currentPage-1)*10"></span>
                         </td>
-                        <td ng-bind="order.status === 'SUBMITTED' ? 'Open' : (order === '' ? '' : 'Close')"></td>
+                        <td ng-bind="approver.parseOrderStatus(order.status)"></td>
                         <td><a ng-bind="order.orderNumber" ng-click="approver.openOrderDetail(order.orderNumber)"></a></td>
                         <td ng-bind="order.submissionDate.substring(0,order.submissionDate.indexOf('T'))"></td>
                         <td ng-bind="order.submissionDate.substring(order.submissionDate.indexOf('T')+1,
