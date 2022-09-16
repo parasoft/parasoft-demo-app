@@ -89,9 +89,8 @@
 							<div>
 								<span ng-bind="'ORDER'|translate|uppercase"></span>
 									<span ng-bind="'#'+history.order.orderNumber"></span>
-									<span ng-if="history.order.status === 'APPROVED'" translate="APPROVED_AND"></span>
 									<span ng-if="history.order.status !== 'SUBMITTED'">
-										<span ng-bind="history.order.status+'_STATUS_MODAL'|translate|uppercase"></span>
+										<span ng-bind="history.order.status|translate|uppercase"></span>
 										<span ng-bind="'!'"></span>
 									</span>
 							</div>
