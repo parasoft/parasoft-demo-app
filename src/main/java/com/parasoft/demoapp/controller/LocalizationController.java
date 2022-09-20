@@ -6,10 +6,7 @@ import com.parasoft.demoapp.model.global.LocalizationLanguageType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import com.parasoft.demoapp.service.LocalizationService;
 
@@ -18,7 +15,7 @@ import com.parasoft.demoapp.service.LocalizationService;
 public class LocalizationController {
 	@Autowired
 	private LocalizationService localizationService;
-	
+
 	@GetMapping("/localize")
 	@ResponseBody
 	public ResponseResult<String> getLocalization(@RequestParam(value = "lang") LocalizationLanguageType languageType)
@@ -28,6 +25,21 @@ public class LocalizationController {
 				ResponseResult.getInstance(ResponseResult.STATUS_OK, ResponseResult.MESSAGE_OK);
 
 		String localization = localizationService.getLocalization(languageType);
+		response.setData(localization);
+
+		return response;
+	}
+
+	@GetMapping("/localize/{lang}/{key}")
+	@ResponseBody
+	public ResponseResult<String> getLocalization(@PathVariable("key") String key,
+												  @PathVariable(value = "lang") LocalizationLanguageType languageType)
+																	throws LocalizationException, ParameterException {
+
+		ResponseResult<String> response =
+				ResponseResult.getInstance(ResponseResult.STATUS_OK, ResponseResult.MESSAGE_OK);
+
+		String localization = localizationService.getLocalization(key, languageType);
 		response.setData(localization);
 
 		return response;

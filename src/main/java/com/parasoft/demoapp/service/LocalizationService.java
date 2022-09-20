@@ -35,6 +35,11 @@ public class LocalizationService {
 		return getJSON(languageType);
 	}
 
+	public String getLocalization(String key, LocalizationLanguageType languageType) throws LocalizationException, ParameterException {
+
+		return loadAllProperties(languageType, false).get(key);
+	}
+
 	/**
 	 * to get the content of corresponding properties files according to incoming language, like: 'en','zh', etc.
 	 * @param languageType {@link LocalizationLanguageType}
