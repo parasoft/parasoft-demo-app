@@ -26,6 +26,8 @@ public class GlobalPreferencesMessages extends Messages {
     public static final String ILLEGAL_LABEL_NAME = "Illegal label name: {0}.";
     public static final String LABEL_OVERRIDED_CANNOT_BE_NULL = "LabelOverrided cannot be null.";
 
+    public static final String LABEL_CANNOT_BE_FOUND = "Label key {0} cannot be found.";
+
     public GlobalPreferencesMessages() {
         super("i18n/messages");
     }

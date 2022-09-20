@@ -5,12 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 import java.util.regex.Matcher;
@@ -189,4 +190,54 @@ public class LocalizationServiceTest {
 
 		assertEquals(GlobalPreferencesMessages.LOCALIZATION_LANGUAGE_TYPE_CANNOT_BE_NULL, message);
 	}
+
+	/**
+	 * Test for getLocalization(String, LocalizationLanguageType) with ResourceNotFoundException
+	 *
+	 * @see com.parasoft.demoapp.service.LocalizationService#getLocalization(String, LocalizationLanguageType)
+	 */
+	@Test
+	public void testGetLocalizationForKey() throws Throwable {
+		LocalizationService underTestSpy = spy(underTest);
+
+		// Given
+		HashMap<String, String> properties = new HashMap<>();
+		String key = "TEST";
+		String value = "test";
+		properties.put(key, value);
+		doReturn(properties).when(underTestSpy).loadAllProperties(any(LocalizationLanguageType.class), anyBoolean());
+
+		// When
+		LocalizationLanguageType language = LocalizationLanguageType.EN;
+		String result = underTestSpy.getLocalization(key, language);
+
+		assertEquals(value, result);
+	}
+
+	/**
+	 * Test for getLocalization(String, LocalizationLanguageType)
+	 *
+	 * @see com.parasoft.demoapp.service.LocalizationService#getLocalization(String, LocalizationLanguageType)
+	 */
+	@Test
+	public void testGetLocalizationForKey_ResourceNotFoundException() throws Throwable {
+		LocalizationService underTestSpy = spy(underTest);
+
+		// Given
+		doReturn(new HashMap<String, String>()).when(underTestSpy).loadAllProperties(any(LocalizationLanguageType.class), anyBoolean());
+		String key = "TEST";
+
+		// When
+		String message = "";
+		LocalizationLanguageType language = LocalizationLanguageType.EN;
+		try{
+			underTestSpy.getLocalization(key, language);
+		}catch (Exception e){
+			e.printStackTrace();
+			message = e.getMessage();
+		}
+
+		assertEquals(MessageFormat.format(GlobalPreferencesMessages.LABEL_CANNOT_BE_FOUND, key), message);
+	}
+
 }

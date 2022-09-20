@@ -2,6 +2,7 @@ package com.parasoft.demoapp.controller;
 
 import com.parasoft.demoapp.exception.LocalizationException;
 import com.parasoft.demoapp.exception.ParameterException;
+import com.parasoft.demoapp.exception.ResourceNotFoundException;
 import com.parasoft.demoapp.model.global.LocalizationLanguageType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -34,15 +35,14 @@ public class LocalizationController {
 	@ResponseBody
 	public ResponseResult<String> getLocalization(@PathVariable("key") String key,
 												  @PathVariable(value = "lang") LocalizationLanguageType languageType)
-																	throws LocalizationException, ParameterException {
+												 throws LocalizationException, ParameterException, ResourceNotFoundException {
 
 		ResponseResult<String> response =
 				ResponseResult.getInstance(ResponseResult.STATUS_OK, ResponseResult.MESSAGE_OK);
 
-		String localization = localizationService.getLocalization(key, languageType);
-		response.setData(localization);
+		String localizedValue = localizationService.getLocalization(key, languageType);
+		response.setData(localizedValue);
 
 		return response;
 	}
-
 }
