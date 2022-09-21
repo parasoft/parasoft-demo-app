@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
 import com.parasoft.demoapp.exception.LocalizationException;
 import com.parasoft.demoapp.exception.ParameterException;
+import com.parasoft.demoapp.exception.ResourceNotFoundException;
 import com.parasoft.demoapp.messages.GlobalPreferencesMessages;
 import com.parasoft.demoapp.messages.LocalizationMessages;
 import com.parasoft.demoapp.model.global.LocalizationLanguageType;
@@ -14,9 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
+import java.text.MessageFormat;
 import java.util.*;
 import java.util.Map.Entry;
-
 
 @Service
 public class LocalizationService {
@@ -35,9 +36,16 @@ public class LocalizationService {
 		return getJSON(languageType);
 	}
 
-	public String getLocalization(String key, LocalizationLanguageType languageType) throws LocalizationException, ParameterException {
+	public String getLocalization(String key, LocalizationLanguageType languageType) throws LocalizationException,
+																							ParameterException,
+																							ResourceNotFoundException {
 
-		return loadAllProperties(languageType, false).get(key);
+		String value = loadAllProperties(languageType, false).get(key);
+		if(value == null) {
+			throw new ResourceNotFoundException(MessageFormat.format(GlobalPreferencesMessages.LABEL_CANNOT_BE_FOUND, key));
+		}
+
+		return value;
 	}
 
 	/**
