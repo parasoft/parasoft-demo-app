@@ -200,6 +200,8 @@ app.controller('approverHomePageController', function($rootScope, $http, $filter
             approver.showNewLabel = {};
             $.each(ordersList,function(i,order){
                 approver.showNewLabel[order.orderNumber] = !order.reviewedByAPV;
+                // Convert the time to local time
+                order.submissionDate = moment.utc(order.submissionDate).local().format('YYYY-MM-DDTHH:mm:ss.SSSZ');
             });
             
             if(ordersList.length < 1){
