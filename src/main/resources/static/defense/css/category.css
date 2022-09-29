@@ -41,14 +41,6 @@
     background-image: url(/defense/images/requisition_dark_overlay.svg);
 }
 
-#requisition_detail_title {
-    width: 234px;
-}
-
-#search_button {
-    margin-top: -36px
-}
-
 .assets_category_description {
     margin-bottom: 10px;
 }

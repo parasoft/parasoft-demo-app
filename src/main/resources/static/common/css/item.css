@@ -14,10 +14,13 @@
 #item_detail_breadcrumb .item_navigation_bar {
     margin: 0px;
     padding: 20px 0px 0px 41px;
+    display: flex;
+    align-items: center;
 }
 
 .item_navigation_bar li {
     display: inline-block;
+    max-width: 1020px;
 }
 
 .item_navigation_bar>li+li:before {

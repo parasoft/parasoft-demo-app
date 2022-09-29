@@ -373,3 +373,26 @@ a, a:hover, a:focus {
     box-shadow: 1px 1px 1px rgb(0 0 0);
     font-style: normal;
 }
+
+.retract_format {
+    word-break: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: normal;
+    white-space: nowrap;
+}
+
+.requisition_item_title .retract_format, .order_item_title .retract_format, .in_requisition_request.retract_format {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    white-space: normal;
+}
+
+.in_requisition_request.retract_format {
+    -webkit-line-clamp: 2;
+}
+
+.regions {
+    max-height: 28px;
+}

@@ -275,6 +275,7 @@
 .order_item_info_container{
     margin-left: 10px;
     margin-right: 5px;
+    max-width: 300px;
 }
 
 .order_item_title {
@@ -393,13 +394,6 @@
 
 .location_container>div {
     margin: auto;
-}
-
-.retract_format {
-    display: inline-block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 
 .requested_assets {
