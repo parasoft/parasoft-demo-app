@@ -107,7 +107,7 @@
                                     <div class="invalid_message" ng-show="demo.endpointError_categories" translate={{'INVALID_ENDPOINT_URL'|translate}}></div>
                                     <div class="input-wrapper">
                                         <input id="categories_rest_endpoint" type="text" name="categoriesRestEndpoint"
-                                               class="form-control" placeholder="{{'ENDPOINT_URL_FOR_CATEGORIES'|translate}} {{demo.end_point_for_categories}}"
+                                               class="form-control retract_format" placeholder="{{'ENDPOINT_URL_FOR_CATEGORIES'|translate}} {{demo.end_point_for_categories}}"
                                                ng-model="options.restEndpoints.categoriesRestEndpointUrl"  ng-trim="false"
                                                ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.categoriesRestEndpointUrl, 'categories');"/>
                                         <button class="btn btn-default industry_button labels_reset_btn"
@@ -121,7 +121,7 @@
                                     <div class="invalid_message" ng-show="demo.endpointError_items" translate={{'INVALID_ENDPOINT_URL'|translate}}></div>
                                     <div class="input-wrapper">
                                         <input id="items_rest_endpoint" type="text" name="itemsRestEndpoint"
-                                               class="form-control" placeholder="{{'ENDPOINT_URL_FOR_ITEMS'|translate}} {{demo.end_point_for_items}}"
+                                               class="form-control retract_format" placeholder="{{'ENDPOINT_URL_FOR_ITEMS'|translate}} {{demo.end_point_for_items}}"
                                                ng-model="options.restEndpoints.itemsRestEndpointUrl"  ng-trim="false"
                                                ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.itemsRestEndpointUrl, 'items')"/>
                                         <button class="btn btn-default industry_button labels_reset_btn"
@@ -135,7 +135,7 @@
                                     <div class="invalid_message" ng-show="demo.endpointError_cart" translate={{'INVALID_ENDPOINT_URL'|translate}}></div>
                                     <div class="input-wrapper">
                                         <input id="cart_items_rest_endpoint" type="text" name="cartItemsRestEndpoint"
-                                               class="form-control" placeholder="{{'ENDPOINT_URL_FOR_CARTITEMS'|translate}} {{demo.end_point_for_cartItems}}"
+                                               class="form-control retract_format" placeholder="{{'ENDPOINT_URL_FOR_CARTITEMS'|translate}} {{demo.end_point_for_cartItems}}"
                                                ng-model="options.restEndpoints.cartItemsRestEndpointUrl"  ng-trim="false"
                                                ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.cartItemsRestEndpointUrl, 'cart')"/>
                                         <button class="btn btn-default labels_reset_btn"
@@ -149,7 +149,7 @@
                                     <div class="invalid_message" ng-show="demo.endpointError_orders" translate={{'INVALID_ENDPOINT_URL'|translate}}></div>
                                     <div class="input-wrapper">
                                         <input id="orders_rest_endpoint" type="text" name="ordersRestEndpoint"
-                                               class="form-control" placeholder="{{'ENDPOINT_URL_FOR_ORDERS'|translate}} {{demo.end_point_for_orders}}"
+                                               class="form-control retract_format" placeholder="{{'ENDPOINT_URL_FOR_ORDERS'|translate}} {{demo.end_point_for_orders}}"
                                                ng-model="options.restEndpoints.ordersRestEndpointUrl"  ng-trim="false"
                                                ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.ordersRestEndpointUrl, 'orders')"/>
                                         <button class="btn btn-default labels_reset_btn"
@@ -163,7 +163,7 @@
                                     <div class="invalid_message" ng-show="demo.endpointError_locations" translate={{'INVALID_ENDPOINT_URL'|translate}}></div>
                                     <div class="input-wrapper">
                                         <input id="locations_rest_endpoint" type="text" name="locationsRestEndpoint"
-                                               class="form-control" placeholder="{{'ENDPOINT_URL_FOR_LOCATIONS'|translate}} {{demo.end_point_for_locations}}"
+                                               class="form-control retract_format" placeholder="{{'ENDPOINT_URL_FOR_LOCATIONS'|translate}} {{demo.end_point_for_locations}}"
                                                ng-model="options.restEndpoints.locationsRestEndpointUrl"  ng-trim="false"
                                                ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.locationsRestEndpointUrl, 'locations')"/>
                                         <button class="btn btn-default labels_reset_btn"
@@ -198,7 +198,7 @@
                                             <span ng-show="demo.isVirtualizeServerUrlTesting" translate={{'TESTING'|translate}}></span>
                                         </span>
                                     <div class="input-wrapper">
-                                        <input type="text" id="parasoft_virtualize_server_url" class="form-control" ng-model="options.parasoftVirtualizeServerUrl" ng-trim="false"
+                                        <input type="text" id="parasoft_virtualize_server_url" class="form-control retract_format" ng-model="options.parasoftVirtualizeServerUrl" ng-trim="false"
                                                ng-disabled="!options.useParasoftJDBCProxy" ng-change="demo.validateVirtualizeServerUrlWellForm(options.parasoftVirtualizeServerUrl)">
                                         <button class="btn btn-default industry_button labels_reset_btn" translate="RESET_URL"
                                                 ng-click="options.resetVirtualizeServerUrl();demo.clearVirtualizeServerUrlTestMessage();"
@@ -213,7 +213,7 @@
                                     <input type="hidden" name="parasoftVirtualizeServerPath" ng-value="options.parasoftVirtualizeServerPath">
                                     <span class="invalid_message" ng-show="demo.invalidVirtualizeServerPath" translate={{'INVALID_VIRTUALIZE_SERVER_PATH'|translate}}></span>
                                     <div class="input-wrapper">
-                                        <input type="text" id="parasoft_virtualize_server_path" class="form-control" ng-model="options.parasoftVirtualizeServerPath" ng-trim="false"
+                                        <input type="text" id="parasoft_virtualize_server_path" class="form-control retract_format" ng-model="options.parasoftVirtualizeServerPath" ng-trim="false"
                                                ng-disabled="!options.useParasoftJDBCProxy" ng-change="options.fullfilPath();demo.validateVirtualizeServerPathWellForm(options.parasoftVirtualizeServerPath);">
                                         <button class="btn btn-default industry_button labels_reset_btn" translate="RESET_PATH"
                                                 ng-click="options.resetVirtualizeServerPath();demo.clearVirtualizeServerPathTestMessage();"
@@ -225,7 +225,7 @@
                                     <input type="hidden" name="parasoftVirtualizeGroupId" ng-value="options.parasoftVirtualizeGroupId">
                                     <span class="invalid_message" ng-show="demo.invalidVirtualizeGroupId" translate={{'INVALID_VIRTUALIZE_GROUP_ID'|translate}}></span>
                                     <div class="input-wrapper">
-                                        <input type="text" id="parasoft_virtualize_gourp_id" class="form-control" ng-model="options.parasoftVirtualizeGroupId" ng-trim="false"
+                                        <input type="text" id="parasoft_virtualize_gourp_id" class="form-control retract_format" ng-model="options.parasoftVirtualizeGroupId" ng-trim="false"
                                                ng-disabled="!options.useParasoftJDBCProxy" ng-change="demo.validateVirtualizeGroupIdWellForm(options.parasoftVirtualizeGroupId)">
                                         <button class="btn btn-default industry_button labels_reset_btn" translate="RESET_GROUP_ID"
                                                 ng-click="options.resetVirtualizeGroupId();demo.clearVirtualizeGroupIdTestMessage();"

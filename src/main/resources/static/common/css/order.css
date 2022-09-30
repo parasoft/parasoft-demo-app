@@ -274,12 +274,13 @@
 
 .order_item_info_container{
     margin-left: 10px;
-    margin-right: 5px;
+    margin-right: 10px;
     max-width: 300px;
 }
 
 .order_item_title {
     width: fit-content;
+    max-width: 260px;
 }
 
 .order_item_description {

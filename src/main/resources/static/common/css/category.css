@@ -317,6 +317,8 @@
 .in_requisition_request {
     font-size: 14px;
     margin: auto;
+    width: fit-content;
+    max-width: 170px;
 }
 
 .requisition_detail_buttons {

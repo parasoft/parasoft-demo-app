@@ -297,6 +297,11 @@ a, a:hover, a:focus {
     font-weight: 800;
 }
 
+.requisition_item_title a {
+    width: fit-content;
+    max-width: 660px;
+}
+
 .requisition_item_description  {
     width: 270px;
     height: 65px;
@@ -375,22 +380,12 @@ a, a:hover, a:focus {
 }
 
 .retract_format {
+    display: inline-block;
     word-break: break-word;
     overflow: hidden;
     text-overflow: ellipsis;
     line-height: normal;
     white-space: nowrap;
-}
-
-.requisition_item_title .retract_format, .order_item_title .retract_format, .in_requisition_request.retract_format {
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    white-space: normal;
-}
-
-.in_requisition_request.retract_format {
-    -webkit-line-clamp: 2;
 }
 
 .regions {
