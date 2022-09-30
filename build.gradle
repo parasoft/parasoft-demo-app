@@ -20,10 +20,10 @@ if (project.hasProperty("gitCommitHash")) {
 }
 
 if(!project.hasProperty("port"))
-    project.ext.set("port", 8080)
+	project.ext.set("port", 8080)
 
 bootRun {
-    args += ["--server.port=${project.port}"]
+	args += ["--server.port=${project.port}"]
 }
 
 configurations {
@@ -147,8 +147,8 @@ springBoot {
 bootWar {
 	manifest {
 		attributes(
-			'Main-Class': 'org.springframework.boot.loader.PropertiesLauncher',
-			'Loader-Path': 'WEB-INF/lib-provided,WEB-INF/lib,WEB-INF/classes,file:lib/'
+				'Main-Class': 'org.springframework.boot.loader.PropertiesLauncher',
+				'Loader-Path': 'WEB-INF/lib-provided,WEB-INF/lib,WEB-INF/classes,file:lib/'
 		)
 	}
 }
