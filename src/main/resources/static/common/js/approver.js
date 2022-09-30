@@ -222,11 +222,11 @@ app.controller('approverHomePageController', function($rootScope, $http, $filter
     approver.parseOrderStatus = function(status) {
         switch (status) {
             case 'SUBMITTED':
-                return 'Open';
+                return $filter('translate')('OPEN_STATUS');
             case 'APPROVED':
-                return 'Approved';
+                return $filter('translate')('APPROVED_STATUS');
             case 'DECLINED':
-                return 'Denied';
+                return $filter('translate')('DECLINED_STATUS');
             default:
                 return '';
         }
