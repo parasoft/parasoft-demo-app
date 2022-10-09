@@ -56,7 +56,7 @@
                     <form class="category_filter_container industry_font">
                         <div id="availability_region">
                             <div id="availability_region_box" class="industry_font">
-                                <div id="availability_region_title">
+                                <div id="availability_region_title" class="retract_format">
                                     <span translate="AVAILABILITY_LOCATIONS"></span>
                                 </div>
                                 <div id="availability_region_content">
@@ -143,10 +143,10 @@
                                                     <span ng-bind="category.currentItem.inStock"></span>
                                                     <span translate="IN_STOCK"></span>
                                                 </p>
-                                                <p class="in_requisition_request retract_format"
+                                                <p class="in_requisition_request"
                                                    ng-show="category.currentItem.inRequisition !== 0">
                                                     (<span ng-bind="category.currentItem.inRequisition"></span>
-                                                    <span translate="IN_CART"></span>)
+                                                    <span class="retract_format" translate="IN_CART"></span>)
                                                 </p>
                                             </div>
                                             <div class="loading" ng-show="category.loadingAnimation">
@@ -176,7 +176,7 @@
                                                 </div>
                                             </div>
                                             <div id="confirm_button" class="industry_font">
-                                                <button type="button"
+                                                <button type="button" class="retract_format"
                                                         ng-click="category.addItemToRequisition(category.currentItem.id, category.remainingNumber, category.currentItem.inStock, category.currentItem.inRequisition)"
                                                         ng-disabled="category.addToBtnDisabled"
                                                         ng-style="category.btnDisabled" translate="ADD_TO_CART">

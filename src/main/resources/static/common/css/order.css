@@ -37,6 +37,10 @@
     margin-bottom: 20px;
 }
 
+.table-title .retract_format{
+    max-width: 1140px;
+}
+
 .table-title>span {
     line-height: 55px;
 }
@@ -52,7 +56,7 @@
 }
 
 .requisition_number {
-    width: 153px;
+    max-width: 153px;
 }
 
 .submission_date {
@@ -82,6 +86,9 @@
 .table-bordered>tbody>tr>td, .table-bordered>tbody>tr>th {
     text-align: center;
     border-color: #ccc;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .table-bordered>tbody>tr>th>a {
@@ -196,6 +203,10 @@
     text-align: center;
 }
 
+.order_detail_title .retract_format {
+    max-width: 650px;
+}
+
 .order_detail_body_container {
     margin-top: 10px;
     padding: 5px 10px;
@@ -303,6 +314,10 @@
     margin-top: 20px;
 }
 
+.order_detail_assigned_campaign .retract_format, .order_detail_region .retract_format {
+    max-width: 430px;
+}
+
 .order_detail_region {
     width: 450px;
     height: 23px;
@@ -405,4 +420,8 @@
 
 .order-content {
     line-height: normal;
+}
+
+.order_detail_summary_title.retract_format{
+    max-width: 220px;
 }

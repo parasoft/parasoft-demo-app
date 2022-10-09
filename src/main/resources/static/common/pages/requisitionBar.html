@@ -5,7 +5,7 @@
                 <span>X</span>
             </div>
             <div id="requisition_title" class="industry_color_2">
-                <span translate="CART_TITLE"></span>
+                <span class="retract_format" translate="CART_TITLE"></span>
             </div>
             <div class="common_industry">
                 <button id="requisition_submit_button" class="btn industry_font " ng-click="requisition.checkItems()"
@@ -13,7 +13,8 @@
                 </button>
             </div>
             <div id="assets_to_deploy" class="industry_color_2">
-                <p><span translate="ASSETS_TO_DEPLOY"></span><span>: </span><span id="assets_amount" ng-bind="totalAmount"></span></p>
+                <p><span class="retract_format" translate="ASSETS_TO_DEPLOY"></span>
+                    <span>: </span><span id="assets_amount" ng-bind="totalAmount"></span></p>
             </div>
         </div>
         <div id="shopping_cart" ng-style="shoppingCart">

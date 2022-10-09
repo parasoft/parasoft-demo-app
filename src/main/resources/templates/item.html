@@ -65,7 +65,8 @@
                                 </div>
                             </div>
                             <div id="item_add_to_cart_button" class="industry_font">
-                                <button ng-style="btnDisabled" ng-disabled="addToBtnDisabled"
+                                <button class="retract_format"
+                                        ng-style="btnDisabled" ng-disabled="addToBtnDisabled"
                                         ng-click="itemDetail.addItemToReqisition(itemNum,itemInventory,inRequisition)"
                                         translate="ADD_TO_CART">
                                 </button>
@@ -76,9 +77,9 @@
                                         <span ng-bind="itemInventory"></span>
                                         <span translate="IN_STOCK"></span>
                                     </div>
-                                    <div ng-show="inRequisition !== 0">
+                                    <div class="in_requisition" ng-show="inRequisition !== 0">
                                         (<span ng-bind="inRequisition"></span>
-                                        <span translate="IN_CART"></span>)
+                                        <span translate="IN_CART" class="retract_format"></span>)
                                     </div>
                                 </div>
                                 <div class="item_loading" ng-show="itemDetail.loadingAnimation">

@@ -46,6 +46,10 @@ a, a:hover, a:focus {
     font-size: 12px;
 }
 
+.buildInfo .retract_format {
+    max-width: 990px;
+}
+
 #header-container {
     z-index: 1000;
     border-width: 0;
@@ -63,6 +67,10 @@ a, a:hover, a:focus {
 .header-title {
     margin-left: 40px;
     font-size: 36px;
+}
+
+.header_title_link {
+    max-width: 850px;
 }
 
 .header-menu nav>ul {
@@ -259,8 +267,13 @@ a, a:hover, a:focus {
     font-size: 20px;
 }
 
+#assets_to_deploy .retract_format {
+    max-width: 600px;
+}
+
 #assets_amount {
     font-weight:700;
+    margin-left: 5px;
 }
 
 #shopping_cart {
@@ -297,7 +310,7 @@ a, a:hover, a:focus {
     font-weight: 800;
 }
 
-.requisition_item_title a {
+#requisition_title span, .requisition_item_title a {
     width: fit-content;
     max-width: 660px;
 }
@@ -311,6 +324,7 @@ a, a:hover, a:focus {
     font-size: 12px;
     font-weight: 400;
     line-height: 15px;
+    word-break: break-word;
 }
 
 .requisition-item-number-operations {
@@ -386,6 +400,7 @@ a, a:hover, a:focus {
     text-overflow: ellipsis;
     line-height: normal;
     white-space: nowrap;
+    vertical-align: text-top;
 }
 
 .regions {
