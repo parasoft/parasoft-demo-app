@@ -135,7 +135,7 @@ app.controller('approverHomePageController', function($rootScope, $http, $filter
             var errMsg;
             switch (errCode) {
                 case 400:
-                    errMsg = $filter('translate')('NON_REPEATABLE_OPERATIONS');
+                    errMsg = $filter('translate')('UPDATING_REQUEST_ERROR');
                     break;
                 case 401:
                     errMsg = $filter('translate')('NO_AUTHORIZATION_TO_UPDATE_ORDER');
@@ -147,7 +147,7 @@ app.controller('approverHomePageController', function($rootScope, $http, $filter
                     errMsg = $filter('translate')('ORDER_NOT_FOUND');
                     break;
                 default:
-                    errMsg = $filter('translate')('COMMENTS_TOO_LONG');
+                    errMsg = $filter('translate')('UPDATING_ERROR');
             }
             toastr.error(errMsg);
         });
