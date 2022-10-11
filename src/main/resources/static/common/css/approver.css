@@ -206,6 +206,10 @@ body {
     margin-bottom: 18px;
 }
 
+.dialog-title .retract_format {
+    max-width: 610px;
+}
+
 .left-panel {
     margin-left: 50px;
     width: 44%;
@@ -236,6 +240,10 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+#order_detail_region .retract_format, #order_detail_assigned_campaign .retract_format {
+    max-width: 365px;
 }
 
 #order_detail_assigned_campaign {

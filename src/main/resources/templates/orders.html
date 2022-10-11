@@ -25,7 +25,7 @@
 				</div>
 				<div class="table-container">
 					<div class="table-title industry_font">
-						<span translate="ORDER_PAGE_TITLE"></span>
+						<span translate="ORDER_PAGE_TITLE" class="retract_format"></span>
 					</div>
 					<div class="table-body">
 						<table class="table table-bordered">
@@ -87,7 +87,7 @@
 						</div>
 						<div class="order_detail_title industry_font">
 							<div>
-								<span ng-bind="'ORDER'|translate|uppercase"></span>
+								<span ng-bind="'ORDER'|translate|uppercase" class="retract_format"></span>
 									<span ng-bind="'#'+history.order.orderNumber"></span>
 									<span ng-if="history.order.status !== 'SUBMITTED'">
 										<span ng-bind="history.order.status|translate|uppercase"></span>
@@ -121,31 +121,31 @@
 								</div>
 							</div>
 							<div class="order_detail_assigned_campaign industry_font" ng-if="!isAerospace">
-								<span translate="ASSIGNMENT_STEP_IN_WIZARD"></span><span>:</span>
+								<span translate="ASSIGNMENT_STEP_IN_WIZARD" class="retract_format"></span><span>:</span>
 							</div>
 							<div class="order_detail_assigned_campaign_summary industry_font">
 								<div class="order_detail_summary_title_and_content industry_font">
-									<span class="order_detail_summary_title" translate="INVOICE_NUMBER"></span>
+									<span class="order_detail_summary_title retract_format" translate="INVOICE_NUMBER"></span>
 									<span>: </span>
 									<span class="order_detail_summary_content" ng-bind="history.order.eventId" title="{{history.order.eventId}}"></span>
 								</div>
 								<div class="order_detail_summary_title_and_content industry_font">
-									<span class="order_detail_summary_title" translate="UNIQUE_NUMBER"></span>
+									<span class="order_detail_summary_title retract_format" translate="UNIQUE_NUMBER"></span>
 									<span>: </span>
 									<span class="order_detail_summary_content" ng-bind="history.order.eventNumber" title="{{history.order.eventNumber}}"></span>
 								</div>
 							</div>
 							<div class="order_detail_region_summary industry_font" ng-if="isAerospace">
 								<div class="order_detail_summary_title_and_content industry_font">
-									<span class="order_detail_summary_title" translate="LOCATION_OPTIONS"></span><span>: </span>
+									<span class="order_detail_summary_title retract_format" translate="LOCATION_OPTIONS"></span><span>: </span>
 									<span class="order_detail_summary_content" translate="{{history.order.region}}" title="{{ history.order.region|translate}}"></span>
 								</div>
 								<div class="order_detail_summary_title_and_content industry_font">
-									<span class="order_detail_summary_title" translate="RECEIVER_NAME"></span><span>: </span>
+									<span class="order_detail_summary_title retract_format" translate="RECEIVER_NAME"></span><span>: </span>
 									<span class="order_detail_summary_content" ng-bind="history.order.receiverId" title="{{history.order.receiverId}}"></span>
 								</div>
 								<div class="order_detail_summary_title_and_content industry_font">
-									<span class="order_detail_summary_title" translate="GPS_COORDINATES"></span><span>: </span>
+									<span class="order_detail_summary_title retract_format" translate="GPS_COORDINATES"></span><span>: </span>
 									<span class="order_detail_summary_content" ng-bind="history.order.location" title="{{history.order.location}}"></span>
 								</div>
 							</div>
@@ -164,20 +164,20 @@
 							</div>
 							<div ng-if="!isAerospace">
 								<div class="order_detail_region industry_font" >
-									<span translate="DEPLOY_ASSETS_TO"></span>
+									<span translate="DEPLOY_ASSETS_TO" class="retract_format"></span>
 									<span>: </span>
 								</div>
 								<div class="order_detail_region_summary industry_font">
 									<div class="order_detail_summary_title_and_content industry_font">
-										<span class="order_detail_summary_title" translate="LOCATION_OPTIONS"></span><span>: </span>
+										<span class="order_detail_summary_title retract_format" translate="LOCATION_OPTIONS"></span><span>: </span>
 										<span class="order_detail_summary_content" translate="{{history.order.region}}" title="{{ history.order.region|translate}}"></span>
 									</div>
 									<div class="industry_font order_detail_summary_title_and_content">
-										<span class="order_detail_summary_title" translate="RECEIVER_NAME"></span><span>: </span>
+										<span class="order_detail_summary_title retract_format" translate="RECEIVER_NAME"></span><span>: </span>
 										<span class="order_detail_summary_content" ng-bind="history.order.receiverId" title="{{history.order.receiverId}}"></span>
 									</div>
 									<div class="industry_font order_detail_summary_title_and_content">
-										<span class="order_detail_summary_title" translate="GPS_COORDINATES"></span><span>: </span>
+										<span class="order_detail_summary_title retract_format" translate="GPS_COORDINATES"></span><span>: </span>
 										<span class="order_detail_summary_content" ng-bind="history.order.location" title="{{history.order.location}}"></span>
 									</div>
 								</div>

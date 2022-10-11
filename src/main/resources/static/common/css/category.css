@@ -78,6 +78,7 @@
     font-size: 36px;
     width: 510px;
     margin-left: 30px;
+    height: 40px;
 }
 
 #availability_region {
@@ -250,6 +251,7 @@
 .requisition_title_and_close_button {
     display: flex;
     justify-content: space-between;
+    padding-left: 15px;
 }
 
 .requisition_img_and_description {
@@ -259,9 +261,9 @@
 
 #requisition_detail_title {
     font-size: 20px;
-    text-align: right;
+    text-align: center;
     font-weight: 700;
-    width: 284px;
+    width: 345px;
 }
 
 .requisition_detail_overlay_img {
@@ -315,6 +317,15 @@
 .in_requisition_request {
     font-size: 14px;
     margin: auto;
+    width: fit-content;
+    max-width: 170px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.in_requisition_request .retract_format {
+    margin-left: 5px;
 }
 
 .requisition_detail_buttons {
