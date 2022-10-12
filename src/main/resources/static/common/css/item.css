@@ -14,10 +14,13 @@
 #item_detail_breadcrumb .item_navigation_bar {
     margin: 0px;
     padding: 20px 0px 0px 41px;
+    display: flex;
+    align-items: center;
 }
 
 .item_navigation_bar li {
     display: inline-block;
+    max-width: 1020px;
 }
 
 .item_navigation_bar>li+li:before {
@@ -108,6 +111,17 @@
     font-size: 15px;
     font-weight: 700;
     text-align: center;
+    width: 185px;
+}
+
+.in_requisition {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.in_requisition .retract_format {
+    margin-left: 5px;
 }
 
 #item_description {

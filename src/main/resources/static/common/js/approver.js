@@ -34,7 +34,7 @@ app.controller('approverHomePageController', function($rootScope, $http, $filter
             console.log(result);
         });
     }
-    
+
     function handleOrderDetail(orderDetail){
         approver.orderDetail = orderDetail;
         var orderStatus = approver.orderDetail.status;
@@ -131,7 +131,25 @@ app.controller('approverHomePageController', function($rootScope, $http, $filter
             approver.selectPage(approver.currentPage);
             approver.showOrderDetail['show'] = false;
         }).catch(function(result) {
-            console.log(result);
+            var errCode = result.status;
+            var errMsg;
+            switch (errCode) {
+                case 400:
+                    errMsg = $filter('translate')('UPDATING_REQUEST_ERROR');
+                    break;
+                case 401:
+                    errMsg = $filter('translate')('NO_AUTHORIZATION_TO_UPDATE_ORDER');
+                    break;
+                case 403:
+                    errMsg = $filter('translate')('NO_PERMISSION_TO_UPDATE_ORDER');
+                    break;
+                case 404:
+                    errMsg = $filter('translate')('ORDER_NOT_FOUND');
+                    break;
+                default:
+                    errMsg = $filter('translate')('UPDATING_ERROR');
+            }
+            toastr.error(errMsg);
         });
     }
     

@@ -27,7 +27,7 @@
                 </ol>
                 <form class="category_filter_container industry_font">
                     <div class="search_container">
-                        <div id="asset_type">
+                        <div id="asset_type" class="retract_format">
                             <!-- to get category dynamically -->
                             <span title="{{category.title|uppercase}}"
                                   class="category_item_title orderContent category_item_title_width"
@@ -56,7 +56,7 @@
                     <form class="category_filter_container industry_font">
                         <div id="availability_region">
                             <div id="availability_region_box" class="industry_font">
-                                <div id="availability_region_title">
+                                <div id="availability_region_title" class="retract_format">
                                     <span translate="AVAILABILITY_LOCATIONS"></span>
                                 </div>
                                 <div id="availability_region_content">
@@ -67,7 +67,7 @@
                                         </p>
                                     </div>
                                     <div ng-repeat="region in category.regions" class="regions">
-                                        <label class="region_label" for="{{region}}">
+                                        <label class="region_label retract_format" for="{{region}}">
                                             <input type="checkbox"
                                                    name="regions[]"
                                                    id="{{region}}"
@@ -116,7 +116,7 @@
                                 <div id="requisition_detail">
                                     <div id="requisition_detail_box">
                                         <div class="requisition_title_and_close_button">
-                                            <div id="requisition_detail_title" class="industry_font">
+                                            <div id="requisition_detail_title" class="retract_format industry_font">
                                             <span title="{{category.currentItem.name}}"
                                                   class="category_item_title"
                                                   ng-bind="category.currentItem.name">
@@ -146,7 +146,7 @@
                                                 <p class="in_requisition_request"
                                                    ng-show="category.currentItem.inRequisition !== 0">
                                                     (<span ng-bind="category.currentItem.inRequisition"></span>
-                                                    <span translate="IN_CART"></span>)
+                                                    <span class="retract_format" translate="IN_CART"></span>)
                                                 </p>
                                             </div>
                                             <div class="loading" ng-show="category.loadingAnimation">
@@ -176,7 +176,7 @@
                                                 </div>
                                             </div>
                                             <div id="confirm_button" class="industry_font">
-                                                <button type="button"
+                                                <button type="button" class="retract_format"
                                                         ng-click="category.addItemToRequisition(category.currentItem.id, category.remainingNumber, category.currentItem.inStock, category.currentItem.inRequisition)"
                                                         ng-disabled="category.addToBtnDisabled"
                                                         ng-style="category.btnDisabled" translate="ADD_TO_CART">
