@@ -99,15 +99,8 @@ input:checked::after {
     padding: 6px 6px 6px 10px;
 }
 
-#requisition_detail_title {
-    width: 243px;
-}
 .requisition_dark_overlay {
 	background-image: url(/aerospace/images/requisition_dark_overlay.svg);
-}
-
-#search_button {
-    margin-top: -37px;
 }
 
 .assets_category_title a span {

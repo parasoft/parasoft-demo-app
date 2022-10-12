@@ -5,6 +5,10 @@
 	padding: 17px 0 0 41px;
 }
 
+#order_title .retract_format {
+    max-width: 1140px;
+}
+
 #return_to_home {
     margin: 0;
     padding: 20px 0 0 41px;
@@ -20,6 +24,10 @@
 	font-size: 20px;
 }
 
+.wizard_title .retract_format {
+    max-width: 360px;
+}
+
 #step {
     margin-top: 35px;
 }
@@ -28,6 +36,10 @@
     margin: 25px 0 0 20px;
 	height: 20px;
 	font-size: 14px;
+}
+
+.deploy_inf .retract_format {
+    max-width: 300px;
 }
 
 .deploy_input {
@@ -148,8 +160,16 @@
     position: relative;
 }
 
+#region_summary .retract_format, #assigned_campaign_summary .retract_format {
+    max-width: 376px;
+}
+
 .order_info_format {
     position: relative;
+}
+
+.order_info_format .retract_format {
+    max-width: 150px;
 }
 
 .summary_title1, .summary_title2, .summary_title3, .summary_title4 {
@@ -163,7 +183,7 @@
 
 #assigned_campaign_summary {
     padding-top: 54px;
-	font-size: 20px
+	font-size: 20px;
 }
 
 .review_info {
@@ -184,6 +204,10 @@
 
 #submit_status{
 	font-size: 20px;
+}
+
+#submit_status .retract_format {
+    max-width: 690px;
 }
 
 .order_wizard_wrapper {
@@ -210,6 +234,10 @@
 	background-color: #f5f5f500;
 	font-size: 20px;
 	padding-left: 0;
+}
+
+.breadcrumb .retract_format {
+    max-width: 300px;
 }
 
 .breadcrumb>.active {
@@ -247,7 +275,7 @@
 	font-size: 13px;
 }
 
-.summary_title2, .summary_title3, .summary_title4 {
+.summary_title2, .summary_title3 {
 	top: 0;
 }
 

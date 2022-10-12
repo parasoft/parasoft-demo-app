@@ -37,6 +37,10 @@
     margin-bottom: 20px;
 }
 
+.table-title .retract_format{
+    max-width: 1140px;
+}
+
 .table-title>span {
     line-height: 55px;
 }
@@ -52,7 +56,7 @@
 }
 
 .requisition_number {
-    width: 153px;
+    max-width: 153px;
 }
 
 .submission_date {
@@ -82,6 +86,9 @@
 .table-bordered>tbody>tr>td, .table-bordered>tbody>tr>th {
     text-align: center;
     border-color: #ccc;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .table-bordered>tbody>tr>th>a {
@@ -196,6 +203,10 @@
     text-align: center;
 }
 
+.order_detail_title .retract_format {
+    max-width: 650px;
+}
+
 .order_detail_body_container {
     margin-top: 10px;
     padding: 5px 10px;
@@ -274,11 +285,13 @@
 
 .order_item_info_container{
     margin-left: 10px;
-    margin-right: 5px;
+    margin-right: 10px;
+    max-width: 300px;
 }
 
 .order_item_title {
     width: fit-content;
+    max-width: 260px;
 }
 
 .order_item_description {
@@ -299,6 +312,10 @@
     height: 23px;
     font-size: 20px;
     margin-top: 20px;
+}
+
+.order_detail_assigned_campaign .retract_format, .order_detail_region .retract_format {
+    max-width: 430px;
 }
 
 .order_detail_region {
@@ -395,13 +412,6 @@
     margin: auto;
 }
 
-.retract_format {
-    display: inline-block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
 .requested_assets {
     width: 270px;
     height: 23px;
@@ -410,4 +420,8 @@
 
 .order-content {
     line-height: normal;
+}
+
+.order_detail_summary_title.retract_format{
+    max-width: 220px;
 }
