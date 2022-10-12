@@ -607,7 +607,8 @@
                     <div class="modal-body">
                         <span ng-if="!demo.isCategory" class="warning_text" translate="REMOVE_ITEM_OR_NOT"></span>
                         <span ng-if="demo.isCategory" class="warning_text" translate="REMOVE_CATEGORY_OR_NOT"></span>
-                        <span class="warning_text">{{demo.selected_item.name}} ?</span>
+                        <span class="warning_text retract_format">{{demo.selected_item.name}}</span>
+                        <span class="warning_text"> ?</span>
                     </div>
                     <div class="modal-footer">
                         <button ng-if="demo.isCategory" type="button" class="btn button-primary modal_confirm_btn"
