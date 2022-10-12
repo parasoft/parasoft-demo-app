@@ -162,17 +162,16 @@ app.controller('orderWizardController', function($scope, $rootScope, $http, $fil
 	}
 
 	//Whether the area info is not be null when change the value of the id (Platoon ID)
-	$scope.checkAreaInfo = function(landmark){
+	$scope.checkAreaInfo = function(){
 		//Control for process button
-		if($scope.selectedArea === null || $scope.selectedArea === '' || $scope.positionId === undefined || $scope.positionId === ''
-			|| $scope.getPositionInfo === false){
-			$scope.isAreaInfoNotReady = true;
-		}else {
+		if($scope.selectedArea && $scope.positionId && $scope.getPositionInfo){
 			$scope.isAreaInfoNotReady = false;
+		}else{
+			$scope.isAreaInfoNotReady = true;
 		}
 
 		//Control for get location button
-		if($scope.selectedArea !== null && $scope.selectedArea !== '' && $scope.positionId !== undefined && $scope.positionId !== ''){
+		if($scope.selectedArea && $scope.positionId){
 			$scope.getLocationButton = false;
 		}else{
 			$scope.getLocationButton = true;
