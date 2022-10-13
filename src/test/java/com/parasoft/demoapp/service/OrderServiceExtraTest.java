@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 public class OrderServiceExtraTest {
@@ -27,11 +28,11 @@ public class OrderServiceExtraTest {
     @Test
     public void testGetUnreviewedOrderNumber() {
         // Given
-        when(orderRepository.countByReviewedByPRCH(false)).thenReturn(1);
+        when(orderRepository.countByReviewedByPRCH(anyString())).thenReturn(1);
         when(orderRepository.countByReviewedByAPV(false)).thenReturn(2);
 
         // When
-        UnreviewedOrderNumberResponseDTO result = underTest.getUnreviewedOrderNumber();
+        UnreviewedOrderNumberResponseDTO result = underTest.getUnreviewedOrderNumber(anyString());
 
         // Then
         assertNotNull(result);
