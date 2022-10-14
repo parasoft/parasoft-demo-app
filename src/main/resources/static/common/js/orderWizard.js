@@ -130,18 +130,27 @@ app.controller('orderWizardController', function($scope, $rootScope, $http, $fil
 
 	    	var response = result.data.data;
 	        $scope.orderNumber = response.orderNumber;
-	    }, function error(response) {
-	    	if(response.status === 400){
-	    		toastr.error($filter('translate')('INSUFFICIENT_INVENTORY'));
-	    	}else if(response.status === 404){
-	    		if(response.data.message.indexOf("No message available") > -1){
-	    			displayLoadError(response,$rootScope,$filter,$http,true,"orders");
-	    		}else{
-	    			toastr.error($filter('translate')('NO_SUCH_ITEMS'));
-	    		}
-	    	}
 	    }).catch(function(result) {
-	    	$scope.isSubmitted = false;
+	        var errCode = result.status;
+	        var errMsg;
+	        switch (errCode) {
+	            case -1:
+	                errMsg = $filter('translate')('ERR_CONNECTION_REFUSED');
+	                break;
+	            case 400:
+	                errMsg = $filter('translate')('INSUFFICIENT_INVENTORY');
+	                break;
+	            case 404:
+	                if(result.data.message.indexOf("No message available") > -1){
+	                    displayLoadError(response,$rootScope,$filter,$http,true,"orders");
+	                }else{
+	                    errMsg = $filter('translate')('NO_SUCH_ITEMS');
+	                }
+	                break;
+	            default:
+	                errMsg = $filter('translate')('SUBMIT_ERROR');
+	        }
+	        toastr.error(errMsg);
 	    });
 	}
 

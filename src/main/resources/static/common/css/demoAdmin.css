@@ -239,6 +239,10 @@ label {
     color: #9c4141;
 }
 
+.warning_text.retract_format {
+    max-width: 400px;
+}
+
 .modal_confirm_btn {
     margin-right: 100px;
     width: 97px;
