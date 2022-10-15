@@ -4,6 +4,7 @@ import com.parasoft.demoapp.exception.LocalizationException;
 import com.parasoft.demoapp.exception.ParameterException;
 import com.parasoft.demoapp.exception.ResourceNotFoundException;
 import com.parasoft.demoapp.model.global.LocalizationLanguageType;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.parasoft.demoapp.service.LocalizationService;
 
+@Hidden
 @Controller
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public class LocalizationController {
@@ -31,7 +33,7 @@ public class LocalizationController {
 		return response;
 	}
 
-	@GetMapping("/localize/{lang}/{key}")
+	@GetMapping("/v1/localize/{lang}/{key}")
 	@ResponseBody
 	public ResponseResult<String> getLocalization(@PathVariable("key") String key,
 												  @PathVariable(value = "lang") LocalizationLanguageType languageType)

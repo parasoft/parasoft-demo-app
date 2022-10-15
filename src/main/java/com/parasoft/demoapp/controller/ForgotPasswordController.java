@@ -4,6 +4,7 @@ import com.parasoft.demoapp.dto.ForgotPasswordResponseDTO;
 import com.parasoft.demoapp.exception.UserNotFoundException;
 import com.parasoft.demoapp.model.global.RoleType;
 import com.parasoft.demoapp.service.UserService;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -14,9 +15,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@Hidden
 @Controller
-@RequestMapping(value = {"/forgotPassword"}, produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = {"/v1/forgotPassword"}, produces = MediaType.APPLICATION_JSON_VALUE)
 public class ForgotPasswordController {
 
     @Autowired

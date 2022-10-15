@@ -17,7 +17,7 @@ loginApp.controller('loginController', function($rootScope, $location, $window, 
 
 		$http({
 			method: 'POST',
-			url: '/login',
+			url: '/v1/login',
 			data: loginFormData,
 			headers: {'Content-Type': undefined},
 		}).then(function(result) {
@@ -41,7 +41,7 @@ loginApp.controller('loginController', function($rootScope, $location, $window, 
     login.forgotPassword = () => {
         $http({
             method: 'GET',
-            url: '/forgotPassword'
+            url: '/v1/forgotPassword'
         }).then(function(result) {
             login.primaryUsersInformation = result.data.data;
         }).catch(function(error) {

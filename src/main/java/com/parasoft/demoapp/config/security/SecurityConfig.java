@@ -51,7 +51,7 @@ public class SecurityConfig {
             // like "/api/v1/**" and "/api/v2/**".
             // And we can configure REST API security with a single `antMatcher("/api/**")`
             http
-                .antMatcher("/v1/**")
+                .regexMatcher("/v1/(?!(login$|logout$)).*") // Include all '/v1/**' urls except '/v1/login' and '/v1/logout'.
                 .authorizeRequests()
                     .antMatchers(HttpMethod.GET, "/v1/demoAdmin/**").permitAll()
                     .antMatchers("/v1/demoAdmin/**").authenticated()
@@ -104,12 +104,12 @@ public class SecurityConfig {
                 .and()
                     .formLogin()
                         .loginPage("/loginPage")
-                        .loginProcessingUrl("/login")
+                        .loginProcessingUrl("/v1/login")
                         .failureHandler(customAuthenticationFailureHandler)
                         .successHandler(customAuthenticationSuccessHandler)
                 .and()
                     .logout()
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/v1/logout", "GET"))
                         .logoutSuccessHandler(customLogoutSuccessHandler)
                 .and()
                     .csrf()
