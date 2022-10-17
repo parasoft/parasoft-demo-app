@@ -9,6 +9,7 @@ import lombok.Data;
 public class OrderMQMessageDTO {
 
     private String orderNumber;
+    private String requestedBy;
     private OrderStatus status;
     private String information;
 
