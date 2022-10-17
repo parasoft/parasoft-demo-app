@@ -428,9 +428,24 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
     		localStorage.setItem("status", "true");
     		localStorage.setItem("save_succeeded", $filter('translate')('SAVING_SUCCEEDS'));
     		$window.location.reload();
-    	}), function error(response) {
-    		console.info(response);
-    	}
+    	}, function error(response) {
+            console.info(response);
+            const errorCode = response.status;
+            let errMsg;
+            switch (errorCode) {
+                case 400:
+                    errMsg = $filter('translate')('UPDATE_LABEL_REQUEST_ERROR');
+                    break;
+                case 401:
+                    errMsg = $filter('translate')('NO_AUTHORIZATION_TO_UPDATE_LABEL');
+                    break;
+                default:
+                    errMsg = $filter('translate')('UPDATE_LABEL_ERROR');
+            }
+            toastr.error(errMsg, $filter('translate')('SAVING_FAILS'));
+    	}).catch(function(result) {
+            console.info(result);
+        });
     }
 
     if(databaseResetFlag === "true"){
