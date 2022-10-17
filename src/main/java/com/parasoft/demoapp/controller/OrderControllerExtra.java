@@ -2,6 +2,7 @@ package com.parasoft.demoapp.controller;
 
 import com.parasoft.demoapp.dto.UnreviewedOrderNumberResponseDTO;
 import com.parasoft.demoapp.service.OrderServiceExtra;
+import com.parasoft.demoapp.util.AuthenticationUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,12 +35,13 @@ public class OrderControllerExtra {
     })
     @GetMapping("/unreviewedNumber")
     @ResponseBody
-    public ResponseResult<UnreviewedOrderNumberResponseDTO> unreviewedOrderNumber() {
+    public ResponseResult<UnreviewedOrderNumberResponseDTO> unreviewedOrderNumber(Authentication auth) {
 
         ResponseResult<UnreviewedOrderNumberResponseDTO> response = ResponseResult.getInstance(ResponseResult.STATUS_OK,
                 ResponseResult.MESSAGE_OK);
 
-        UnreviewedOrderNumberResponseDTO result = orderServiceExtra.getUnreviewedOrderNumber();
+        String currentUsername = AuthenticationUtil.getUsernameInAuthentication(auth);
+        UnreviewedOrderNumberResponseDTO result = orderServiceExtra.getUnreviewedOrderNumber(currentUsername);
 
         response.setData(result);
 
