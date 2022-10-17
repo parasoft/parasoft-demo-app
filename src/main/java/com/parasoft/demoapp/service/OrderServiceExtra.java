@@ -14,7 +14,7 @@ public class OrderServiceExtra {
     private OrderRepository orderRepository;
 
     public UnreviewedOrderNumberResponseDTO getUnreviewedOrderNumber(String currentUsername) {
-        int unreviewedByPurchaserOrderNumber = orderRepository.countByReviewedByPRCH(currentUsername);
+        int unreviewedByPurchaserOrderNumber = orderRepository.countByRequestedByAndReviewedByPRCH(currentUsername, false);
         int unreviewedByApproverOrderNumber = orderRepository.countByReviewedByAPV(false);
         return new UnreviewedOrderNumberResponseDTO(unreviewedByApproverOrderNumber, unreviewedByPurchaserOrderNumber);
     }

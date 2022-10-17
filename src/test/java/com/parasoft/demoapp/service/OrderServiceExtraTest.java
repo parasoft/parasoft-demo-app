@@ -28,7 +28,7 @@ public class OrderServiceExtraTest {
     @Test
     public void testGetUnreviewedOrderNumber() {
         // Given
-        when(orderRepository.countByReviewedByPRCH(anyString())).thenReturn(1);
+        when(orderRepository.countByRequestedByAndReviewedByPRCH(anyString(), false)).thenReturn(1);
         when(orderRepository.countByReviewedByAPV(false)).thenReturn(2);
 
         // When
