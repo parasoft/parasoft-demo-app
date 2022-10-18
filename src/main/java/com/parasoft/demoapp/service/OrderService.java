@@ -227,7 +227,7 @@ public class OrderService {
         // send message to MQ topic
         if(publicToMQ && !originalOrder.getStatus().equals(newOrder.getStatus())){
             OrderMQMessageDTO message =
-                    new OrderMQMessageDTO(newOrder.getOrderNumber(), newOrder.getStatus(), OrderMessages.ORDER_STATUS_CHANGED);
+                    new OrderMQMessageDTO(newOrder.getOrderNumber(), newOrder.getRequestedBy(), newOrder.getStatus(), OrderMessages.ORDER_STATUS_CHANGED);
             orderMQService.sendToPurchaser(message);
         }
 

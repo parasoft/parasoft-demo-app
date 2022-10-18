@@ -68,7 +68,7 @@ public class OrderController {
         response.setData(order);
 
         OrderMQMessageDTO message =
-                new OrderMQMessageDTO(order.getOrderNumber(), order.getStatus(), OrderMessages.ORDER_STATUS_CHANGED);
+                new OrderMQMessageDTO(order.getOrderNumber(), order.getRequestedBy(), order.getStatus(), OrderMessages.ORDER_STATUS_CHANGED);
         orderMQService.sendToApprover(message);
 
         return response;

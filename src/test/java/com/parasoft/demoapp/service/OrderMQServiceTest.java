@@ -44,9 +44,10 @@ public class OrderMQServiceTest {
 
 		// When
 		String orderNumber = "23-456-001";
+		String requestedBy = "purchaser";
 		OrderStatus status = OrderStatus.SUBMITTED;
 		String information = "Order 23-456-001 is submitted";
-		OrderMQMessageDTO messageDto = new OrderMQMessageDTO(orderNumber, status, information);
+		OrderMQMessageDTO messageDto = new OrderMQMessageDTO(orderNumber, requestedBy, status, information);
 		underTest.sendToApprover(messageDto);
 	}
 
@@ -62,9 +63,10 @@ public class OrderMQServiceTest {
 
 		// When
 		String orderNumber = "23-456-001";
+		String requestedBy = "purchaser";
 		OrderStatus status = OrderStatus.SUBMITTED;
 		String information = "Order 23-456-001 is submitted";
-		OrderMQMessageDTO messageDto = new OrderMQMessageDTO(orderNumber, status, information);
+		OrderMQMessageDTO messageDto = new OrderMQMessageDTO(orderNumber, requestedBy, status, information);
 		underTest.sendToPurchaser(messageDto);
 	}
 }
