@@ -623,15 +623,17 @@ function connectAndSubscribeMQ(role, $http, $rootScope, $filter, mqConsumeCallba
                 var status = translatedStatus(msgObject.status, $filter);
 
                 if(role === ROLE_PURCHASER){    // purchaser produced this message to this topic
-                     toastr.success(requisition+' '+msgObject.orderNumber+' '+status+'!', '', {timeOut: 4000});
-                     if(mqProduceCallback){mqProduceCallback();}
+                     if (msgObject.requestedBy === CURRENT_USERNAME) {
+                         toastr.success(requisition+' '+msgObject.orderNumber+' '+status+'!', '', {timeOut: 4000});
+                         if(mqProduceCallback){mqProduceCallback();}
+                         // update the number on the icon
+                         getUnreviewedAmount($http,$rootScope,$filter);
+                         $rootScope.totalAmount = 0;
+                     }
                 }else if(role === ROLE_APPROVER){ // approver consume this message from this topic
                      toastr.info(requisition+' '+msgObject.orderNumber+' '+status+'!', '', {timeOut: 0});
                      if(mqConsumeCallback){mqConsumeCallback();}
                 }
-                // update the number on the icon
-                getUnreviewedAmount($http,$rootScope,$filter);
-                $rootScope.totalAmount = 0;
                 $rootScope.emptyContentError = false;
             });
 
@@ -646,12 +648,13 @@ function connectAndSubscribeMQ(role, $http, $rootScope, $filter, mqConsumeCallba
                      toastr.success(requisition+' '+msgObject.orderNumber+' '+status+'!', '', {timeOut: 4000});
                      if(mqProduceCallback){mqProduceCallback();}
                  }else if(role === ROLE_PURCHASER){    // purchaser consume this message from this topic
-                     toastr.info(requisition+' '+msgObject.orderNumber+' '+status+'!', '', {timeOut: 0});
-                     if(mqConsumeCallback){mqConsumeCallback();}
+                     if (msgObject.requestedBy === CURRENT_USERNAME){
+                         toastr.info(requisition+' '+msgObject.orderNumber+' '+status+'!', '', {timeOut: 0});
+                         if(mqConsumeCallback){mqConsumeCallback();}
+                         // update the number on the icon
+                         getUnreviewedAmount($http,$rootScope,$filter);
+                     }
                  }
-
-                 // update the number on the icon
-                 getUnreviewedAmount($http,$rootScope,$filter);
             });
 
              // subscribe industry change topic
