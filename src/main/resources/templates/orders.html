@@ -49,7 +49,7 @@
 									<th>
 										<a class="industry_color_1"
 											 ng-bind="order.orderNumber"
-											 ng-click="history.openOrderDetail($index+1,order.status,order.orderNumber,order.reviewedByAPV,order.reviewedByPRCH)">
+											 ng-click="history.openOrderDetail($index+1, order.orderNumber)">
 										</a>
 									</th>
 									<td ng-bind="order.submissionDate.substring(0,order.submissionDate.indexOf('T'))"></td>
