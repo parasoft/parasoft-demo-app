@@ -62,7 +62,7 @@ public class ActiveMQConfig {
         DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
         configurer.configure(factory, connectionFactory);
         factory.setConnectionFactory(connectionFactory);
-        factory.setErrorHandler((Throwable throwable) -> log.error("jms error", throwable));
+        factory.setErrorHandler((Throwable throwable) -> log.error("JMS error", throwable));
         factory.setPubSubDomain(false);
         return factory;
     }
