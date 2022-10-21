@@ -26,10 +26,13 @@ public class OutdoorIndustryAssetsCreator extends AbstractDataCreator implements
 	protected DataSource industryDataSource;
 
 	@Value("classpath:sql/defaultdata/outdoor/tbl_category-defaultData.sql")
-	protected Resource aerospaceDefaultCategoriesSql;
+	protected Resource outdoorDefaultCategoriesSql;
 
 	@Value("classpath:sql/defaultdata/outdoor/tbl_item-defaultData.sql")
-	protected Resource aerospaceDefaultItemsSql;
+	protected Resource outdoorDefaultItemsSql;
+
+	@Value("classpath:sql/defaultdata/outdoor/tbl_item_inventory-defaultData.sql")
+	protected Resource outdoorDefaultItemInventorySql;
 
 	@Override
 	public void switchIndustry() {
@@ -46,10 +49,13 @@ public class OutdoorIndustryAssetsCreator extends AbstractDataCreator implements
 				messages.getString(DatabaseOperationMessages.WRITE_DEFAULT_CATEGORIES_ITEMS), IndustryType.OUTDOOR));
 
 		// create categories
-		dataInitialize(industryDataSource, aerospaceDefaultCategoriesSql);
+		dataInitialize(industryDataSource, outdoorDefaultCategoriesSql);
 
 		// create items
-		dataInitialize(industryDataSource, aerospaceDefaultItemsSql);
+		dataInitialize(industryDataSource, outdoorDefaultItemsSql);
+
+		// create item inventory
+		dataInitialize(industryDataSource, outdoorDefaultItemInventorySql);
 
 		log.info(messages.getString(DatabaseOperationMessages.WRITE_DONE));
 	}

@@ -34,6 +34,9 @@ public class DefenseAssetsCreator extends AbstractDataCreator implements DataRec
 	@Value("classpath:sql/defaultdata/defense/tbl_item-defaultData.sql")
 	protected Resource defenseDefaultItemsSql;
 
+	@Value("classpath:sql/defaultdata/defense/tbl_item_inventory-defaultData.sql")
+	protected Resource defenseDefaultItemInventorySql;
+
 	@Override
 	public void switchIndustry() {
 		log.info(MessageFormat.format(
@@ -52,6 +55,9 @@ public class DefenseAssetsCreator extends AbstractDataCreator implements DataRec
 
 		// create items
 		dataInitialize(industryDataSource, defenseDefaultItemsSql);
+
+		// create item inventory
+		dataInitialize(industryDataSource, defenseDefaultItemInventorySql);
 
 		log.info(assetMessages.getString(DatabaseOperationMessages.WRITE_DONE));
 	}
