@@ -457,18 +457,14 @@ function initToastr(){
 }
 
 function toastrService(){
+    var error = function(content, title) {
+        return toastr.error(content, title, {timeOut: 0,extendedTimeOut: 0});
+    }
     var service = {
-      error: error,
+        error: error,
     };
     return service;
 
-    function error(content, title) {
-      var config = {
-        timeOut: 0,
-        extendedTimeOut: 0,
-      };
-      return toastr.error(content, title, config);
-    }
 }
 
 function sum(requisitionNums){
