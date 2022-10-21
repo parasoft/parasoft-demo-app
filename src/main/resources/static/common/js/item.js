@@ -140,7 +140,7 @@ app.controller('itemDetailController', function($rootScope, $http, $location, $f
 		if(inventory - quantity === 0){
 			return;
 		}else if(total > inventory){
-			toastr.error($filter('translate')('ADD_TO_CART_FAIL')+$filter('translate')('EXCEED_INVENTORY_ERROR'));
+			toastrService().error($filter('translate')('ADD_TO_CART_FAIL')+$filter('translate')('EXCEED_INVENTORY_ERROR'));
 			return;
 		}
 

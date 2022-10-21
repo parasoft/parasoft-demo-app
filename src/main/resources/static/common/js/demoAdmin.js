@@ -410,7 +410,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 
             $('#saving_modal').modal('hide');
             localStorage.setItem("status", "false");
-            toastr.error($filter('translate')('SAVING_FAILS') + '<br/>' + errorMessage);
+            toastrService().error($filter('translate')('SAVING_FAILS') + '<br/>' + errorMessage);
         }).catch(function(result) {
             console.info(result);
         });
@@ -442,7 +442,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
                 default:
                     errMsg = $filter('translate')('UPDATE_LABEL_ERROR');
             }
-            toastr.error(errMsg, $filter('translate')('SAVING_FAILS'));
+            toastrService().error(errMsg, $filter('translate')('SAVING_FAILS'));
     	}).catch(function(result) {
             console.info(result);
         });
@@ -463,7 +463,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
         }, function error(response) {
             console.info(response);
             localStorage.setItem("databaseResetStatus", "false");
-            toastr.error($filter('translate')('DATABASE_RESET_FAILS'));
+            toastrService().error($filter('translate')('DATABASE_RESET_FAILS'));
         }).catch(function(result) {
             console.info(result);
         });
@@ -480,7 +480,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
         }, function error(response) {
             console.info(response);
             localStorage.setItem("databaseResetStatus", "false");
-            toastr.error($filter('translate')('DATABASE_CLEAR_FAILS'));
+            toastrService().error($filter('translate')('DATABASE_CLEAR_FAILS'));
         }).catch(function(result) {
             console.info(result);
         });
@@ -847,7 +847,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 			toastr.success($filter('translate')('ITEMS_REMOVED_SUCCESSFULLY'));
 		}, function error(response) {
 			console.info(response);
-			toastr.error($filter('translate')('ITEMS_FAILED_TO_REMOVE'));
+			toastrService().error($filter('translate')('ITEMS_FAILED_TO_REMOVE'));
 		}).catch(function(result) {
 			console.info(result);
 		});
@@ -1148,7 +1148,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
                 toastr.success($filter('translate')('CATEGORY_SUCCESSFULLY_REMOVED'));
     	    }, function error(response) {
     	        console.log(response);
-    	        toastr.error($filter('translate')('CATEGORY_FAILED_TO_REMOVE'));
+    	        toastrService().error($filter('translate')('CATEGORY_FAILED_TO_REMOVE'));
     	    }).catch(function(result) {
     	        console.log(result);
     	    });
@@ -1195,7 +1195,7 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
         options.parasoftVirtualizeGroupId = data.parasoftVirtualizeGroupId;
 
     }).catch(function(result) {
-        toastr.error($filter('translate')('LOADING_DATA_FAILS'));
+        toastrService().error($filter('translate')('LOADING_DATA_FAILS'));
         console.log(result);
     });
 
