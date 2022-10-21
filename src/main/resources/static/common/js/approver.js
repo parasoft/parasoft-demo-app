@@ -149,7 +149,7 @@ app.controller('approverHomePageController', function($rootScope, $http, $filter
                 default:
                     errMsg = $filter('translate')('UPDATING_ERROR');
             }
-            toastr.error(errMsg);
+            toastrService().error(errMsg);
         });
     }
     

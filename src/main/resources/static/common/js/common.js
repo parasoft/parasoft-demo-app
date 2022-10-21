@@ -284,14 +284,14 @@ function initRequisitionBarController(app){
             }).then(function(result) {
                 var cartItems = result.data.data;
                 if(cartItems.length < 1){
-                    toastr.error($filter('translate')('NO_SUBMIT_ITEM_ERROR'));
+                    toastrService().error($filter('translate')('NO_SUBMIT_ITEM_ERROR'));
                 }else{
                     for(var i = 0; i < cartItems.length; i++){
                         var inventory = cartItems[i].realInStock;
                         var quantity = cartItems[i].quantity;
 
                         if(inventory === 0 || quantity > inventory){
-                            toastr.error($filter('translate')('SUBMIT_ITEM_FAIL'));
+                            toastrService().error($filter('translate')('SUBMIT_ITEM_FAIL'));
                             return;
                         }
                     }
@@ -454,6 +454,21 @@ function initToastr(){
         showMethod: "fadeIn",
         hideMethod: "fadeOut"
     };
+}
+
+function toastrService(){
+    var service = {
+      error: error,
+    };
+    return service;
+
+    function error(content, title) {
+      var config = {
+        timeOut: 0,
+        extendedTimeOut: 0,
+      };
+      return toastr.error(content, title, config);
+    }
 }
 
 function sum(requisitionNums){
@@ -828,7 +843,7 @@ function handleJDBCErrorMessage($rootScope,$filter,url,errorType,showToastr){
         errorMessage = JDBCError + url + ' ' + $filter('translate')('UNAVAILABLE_TO_CONNECT');
         if(showToastr && $.inArray(tostrErrorMessage,errorMessages) < 0){
             errorMessages.push(tostrErrorMessage);
-            toastr.error(tostrErrorMessage,'', {timeOut: 0,extendedTimeOut: 0});
+            toastrService().error(tostrErrorMessage);
         }
     }
 
@@ -836,7 +851,7 @@ function handleJDBCErrorMessage($rootScope,$filter,url,errorType,showToastr){
         errorMessage = JDBCError + $filter('translate')('COULD_NOT_EXECUTE_QUERY');
         if(showToastr && $.inArray(errorMessage,errorMessages) < 0){
             errorMessages.push(errorMessage);
-            toastr.error(errorMessage,'', {timeOut: 0,extendedTimeOut: 0});
+            toastrService().error(errorMessage);
         }
     }
 
@@ -870,7 +885,7 @@ function handleMessageAccordingToType($rootScope,$filter,errorMessage,errorType,
 
         if(showToastr && $.inArray(errorMessage,errorMessages) < 0){
             errorMessages.push(errorMessage);
-            toastr.error(errorMessage,'', {timeOut: 0,extendedTimeOut: 0});
+            toastrService().error(errorMessage);
         }
 }
 
