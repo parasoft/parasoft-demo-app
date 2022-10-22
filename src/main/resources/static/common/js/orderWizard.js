@@ -150,7 +150,7 @@ app.controller('orderWizardController', function($scope, $rootScope, $http, $fil
 	            default:
 	                errMsg = $filter('translate')('SUBMIT_ERROR');
 	        }
-	        toastr.error(errMsg);
+	        toastrService().error(errMsg);
 	    });
 	}
 
