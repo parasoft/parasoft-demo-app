@@ -2,10 +2,16 @@ package com.parasoft.demoapp.service;
 
 import com.google.gson.Gson;
 import com.parasoft.demoapp.config.activemq.ActiveMQConfig;
+import com.parasoft.demoapp.config.activemq.ActiveMQMessage.InventoryInfo;
+import com.parasoft.demoapp.config.activemq.ActiveMQMessage.InventoryOperation;
+import com.parasoft.demoapp.config.activemq.ActiveMQMessage.InventoryOperationRequestMessage;
 import com.parasoft.demoapp.dto.OrderMQMessageDTO;
+import com.parasoft.demoapp.model.industry.OrderItemEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class OrderMQService {
@@ -23,4 +29,14 @@ public class OrderMQService {
         jmsMessagingTemplate.convertAndSend(ActiveMQConfig.TOPIC_ORDER_PURCHASER, gson.toJson(messageDto));
     }
 
+    public void sendToInventoryRequestQueue(InventoryOperation operation, String orderNUmber, List<OrderItemEntity> orderItems) {
+        sendToInventoryRequestQueue(operation, orderNUmber, orderItems, null);
+    }
+
+    public void sendToInventoryRequestQueue(InventoryOperation operation, String orderNUmber, List<OrderItemEntity> orderItems, String info) {
+        jmsMessagingTemplate.convertAndSend(ActiveMQConfig.inventoryRequestActiveMqQueue,
+                new InventoryOperationRequestMessage(operation, orderNUmber,
+                        InventoryInfo.convertFrom(orderItems), info));
+    }
+    
 }
