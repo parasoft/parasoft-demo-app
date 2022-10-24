@@ -1148,7 +1148,18 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
                 toastr.success($filter('translate')('CATEGORY_SUCCESSFULLY_REMOVED'));
     	    }, function error(response) {
     	        console.log(response);
-    	        toastrService().error($filter('translate')('CATEGORY_FAILED_TO_REMOVE'));
+                let errMsg = "";
+                switch (response.status) {
+                    case 400:
+                        errMsg = $filter('translate')('CATEGORY_FAILED_TO_REMOVE_WITH_CONFLICT');
+                        break;
+                    case 404:
+                        errMsg = $filter('translate')('CATEGORY_NOT_FOUND');
+                        break;
+                    default:
+                        errMsg = $filter('translate')('CATEGORY_FAILED_TO_REMOVE');
+                }
+                toastrService().error(errMsg);
     	    }).catch(function(result) {
     	        console.log(result);
     	    });

@@ -1,6 +1,6 @@
 package com.parasoft.demoapp.controller;
 
-import com.parasoft.demoapp.config.ActiveMQConfig;
+import com.parasoft.demoapp.config.activemq.ActiveMQConfig;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

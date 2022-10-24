@@ -31,6 +31,9 @@ public class AerospaceAssetsCreator extends AbstractDataCreator implements DataR
 	@Value("classpath:sql/defaultdata/aerospace/tbl_item-defaultData.sql")
 	protected Resource aerospaceDefaultItemsSql;
 
+	@Value("classpath:sql/defaultdata/aerospace/tbl_item_inventory-defaultData.sql")
+	protected Resource aerospaceDefaultItemInventorySql;
+
 	@Override
 	public void switchIndustry() {
 		log.info(MessageFormat.format(
@@ -50,6 +53,9 @@ public class AerospaceAssetsCreator extends AbstractDataCreator implements DataR
 
 		// create items
 		dataInitialize(industryDataSource, aerospaceDefaultItemsSql);
+
+		// create item inventory
+		dataInitialize(industryDataSource, aerospaceDefaultItemInventorySql);
 
 		log.info(messages.getString(DatabaseOperationMessages.WRITE_DONE));
 	}
