@@ -1,12 +1,10 @@
 package com.parasoft.demoapp.service;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.nullable;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
-import com.parasoft.demoapp.config.activemq.ActiveMQMessage.InventoryOperationRequestMessage;
-import com.parasoft.demoapp.config.activemq.ActiveMQMessage.InventoryOperation;
+import com.parasoft.demoapp.dto.InventoryOperationRequestMessageDTO;
+import com.parasoft.demoapp.model.industry.InventoryOperation;
 import com.parasoft.demoapp.model.industry.OrderItemEntity;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.junit.Before;
@@ -81,12 +79,12 @@ public class OrderMQServiceTest {
 	}
 
     /**
-     * Test for sendToInventoryRequestQueue(InventoryOperation, String, List<OrderItemEntity>, String)
+     * Test for sendToInventoryRequestQueue(InventoryOperation, String, List<OrderItemEntity>)
      *
-     * @see com.parasoft.demoapp.service.OrderMQService#sendToInventoryRequestQueue(InventoryOperation, String, List<OrderItemEntity>, String)
+     * @see com.parasoft.demoapp.service.OrderMQService#sendToInventoryRequestQueue(InventoryOperation, String, List<OrderItemEntity>)
      */
     @Test
-    public void testSendToInventoryRequestQueue() {
+    public void testSendToInventoryRequestQueue_without_info() {
         // Given
         String orderNumber = "11-234-567";
         OrderItemEntity orderItem = new OrderItemEntity("name", "description", "imagePath", 1);
@@ -95,9 +93,31 @@ public class OrderMQServiceTest {
         orderItems.add(orderItem);
 
         // When
-        underTest.sendToInventoryRequestQueue(InventoryOperation.DECREASE_FOR_ORDER_CREATION, orderNumber, orderItems, null);
+        underTest.sendToInventoryRequestQueue(InventoryOperation.DECREASE_FOR_ORDER_CREATION, orderNumber, orderItems);
+
 
         // Then
-        Mockito.verify(jmsMessagingTemplate, times(1)).convertAndSend(any(ActiveMQQueue.class), any(InventoryOperationRequestMessage.class));
+        Mockito.verify(jmsMessagingTemplate, times(1)).convertAndSend(any(ActiveMQQueue.class), any(InventoryOperationRequestMessageDTO.class));
+    }
+
+    /**
+     * Test for sendToInventoryRequestQueue(InventoryOperation, String, List<OrderItemEntity>, String)
+     *
+     * @see com.parasoft.demoapp.service.OrderMQService#sendToInventoryRequestQueue(InventoryOperation, String, List<OrderItemEntity>, String)
+     */
+    @Test
+    public void testSendToInventoryRequestQueue_with_info() {
+        // Given
+        String orderNumber = "11-234-567";
+        OrderItemEntity orderItem = new OrderItemEntity("name", "description", "imagePath", 1);
+        orderItem.setItemId(1L);
+        List<OrderItemEntity> orderItems = new ArrayList<>();
+        orderItems.add(orderItem);
+
+        // When
+        underTest.sendToInventoryRequestQueue(InventoryOperation.DECREASE_FOR_ORDER_CREATION, orderNumber, orderItems, "test");
+
+        // Then
+        Mockito.verify(jmsMessagingTemplate, times(1)).convertAndSend(any(ActiveMQQueue.class), any(InventoryOperationRequestMessageDTO.class));
     }
 }

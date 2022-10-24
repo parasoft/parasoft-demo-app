@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.parasoft.demoapp.model.industry.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
@@ -31,15 +32,7 @@ import com.parasoft.demoapp.exception.LocationNotFoundException;
 import com.parasoft.demoapp.messages.AssetMessages;
 import com.parasoft.demoapp.messages.OrderMessages;
 import com.parasoft.demoapp.model.global.RoleType;
-import com.parasoft.demoapp.model.industry.CartItemEntity;
-import com.parasoft.demoapp.model.industry.ItemEntity;
-import com.parasoft.demoapp.model.industry.LocationEntity;
-import com.parasoft.demoapp.model.industry.OrderEntity;
-import com.parasoft.demoapp.model.industry.OrderItemEntity;
-import com.parasoft.demoapp.model.industry.OrderStatus;
-import com.parasoft.demoapp.model.industry.RegionType;
 import com.parasoft.demoapp.repository.industry.OrderRepository;
-import com.parasoft.demoapp.config.activemq.ActiveMQMessage.InventoryOperation;
 
 /**
  * Test class for OrderService
@@ -111,9 +104,10 @@ public class OrderServiceTest {
 
         OrderEntity saveResult = new OrderEntity(requestedBy, region, location, receiverId, eventId, eventNumber);
         saveResult.setId(orderId);
-        saveResult.setStatus(OrderStatus.CREATED);
+        saveResult.setStatus(OrderStatus.SUBMITTED);
         saveResult.setOrderItems(orderItems);
         saveResult.setSubmissionDate(submissionDate);
+
         saveResult.setOrderImage(imagePath);
         orderItem.setOrder(saveResult);
 
@@ -133,8 +127,8 @@ public class OrderServiceTest {
         // Then
         assertNotNull(result);
         assertEquals(requestedBy, result.getRequestedBy());
-        assertEquals(OrderStatus.CREATED.getStatus(), result.getStatus().getStatus());
-        assertEquals(OrderStatus.CREATED.getCode(), result.getStatus().getCode());
+        assertEquals(OrderStatus.SUBMITTED.getStatus(), result.getStatus().getStatus());
+        assertEquals(OrderStatus.SUBMITTED.getCode(), result.getStatus().getCode());
         assertEquals(1, result.getOrderItems().size());
         assertEquals(RegionType.JAPAN, result.getRegion());
         assertEquals(receiverId, result.getReceiverId());

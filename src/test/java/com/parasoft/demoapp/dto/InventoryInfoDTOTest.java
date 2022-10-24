@@ -1,4 +1,4 @@
-package com.parasoft.demoapp.config.activemq;
+package com.parasoft.demoapp.dto;
 
 import com.parasoft.demoapp.model.industry.OrderItemEntity;
 import org.junit.Test;
@@ -8,10 +8,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ActiveMQMessageTest {
+public class InventoryInfoDTOTest {
 
     @Test
-    public void test_InventoryInfo_convertFrom() {
+    public void testConvertFrom() {
         // Given
         OrderItemEntity orderItem = new OrderItemEntity("name", "description", "imagePath", 1);
         orderItem.setItemId(1L);
@@ -19,7 +19,7 @@ public class ActiveMQMessageTest {
         orderItems.add(orderItem);
 
         // When
-        List<ActiveMQMessage.InventoryInfo> result = ActiveMQMessage.InventoryInfo.convertFrom(orderItems);
+        List<InventoryInfoDTO> result = InventoryInfoDTO.convertFrom(orderItems);
 
         // Then
         assertEquals(result.size(), orderItems.size());

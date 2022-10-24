@@ -7,7 +7,6 @@ import com.parasoft.demoapp.messages.OrderMessages;
 import com.parasoft.demoapp.model.global.RoleType;
 import com.parasoft.demoapp.model.industry.*;
 import com.parasoft.demoapp.repository.industry.OrderRepository;
-import com.parasoft.demoapp.config.activemq.ActiveMQMessage.InventoryOperation;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +69,7 @@ public class OrderService {
 
         OrderEntity order = new OrderEntity();
         order.setRequestedBy(username);
-        order.setStatus(OrderStatus.CREATED);
+        order.setStatus(OrderStatus.SUBMITTED);
         order.setRegion(region);
         order.setLocation(location);
         order.setOrderImage(locationEntity.getLocationImage());

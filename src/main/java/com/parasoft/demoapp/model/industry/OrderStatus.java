@@ -2,9 +2,9 @@ package com.parasoft.demoapp.model.industry;
 
 public enum OrderStatus {
 
-    CREATED("Created", 0),
-    FAILED("Failed", 1),
-    SUBMITTED("Submitted", 1),
+    SUBMITTED("Submitted", 0),
+    PROCESSED("Processed", 1),
+    CANCELED("Canceled", 1),
     APPROVED("Approved", 2),
     DECLINED("Declined", 2);
 
