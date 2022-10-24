@@ -5,7 +5,7 @@ import com.parasoft.demoapp.config.activemq.ActiveMQConfig;
 import com.parasoft.demoapp.dto.InventoryInfoDTO;
 import com.parasoft.demoapp.dto.InventoryOperationRequestMessageDTO;
 import com.parasoft.demoapp.dto.OrderMQMessageDTO;
-import com.parasoft.demoapp.model.industry.InventoryOperation;
+import com.parasoft.demoapp.dto.InventoryOperation;
 import com.parasoft.demoapp.model.industry.OrderItemEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsMessagingTemplate;

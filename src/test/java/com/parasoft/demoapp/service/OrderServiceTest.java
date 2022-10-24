@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.parasoft.demoapp.dto.InventoryOperation;
 import com.parasoft.demoapp.model.industry.*;
 import org.junit.Before;
 import org.junit.Test;

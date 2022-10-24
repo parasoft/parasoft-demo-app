@@ -1,6 +1,5 @@
 package com.parasoft.demoapp.dto;
 
-import com.parasoft.demoapp.model.industry.InventoryOperation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

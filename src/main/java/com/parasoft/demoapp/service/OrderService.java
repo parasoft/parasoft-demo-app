@@ -1,5 +1,6 @@
 package com.parasoft.demoapp.service;
 
+import com.parasoft.demoapp.dto.InventoryOperation;
 import com.parasoft.demoapp.dto.OrderMQMessageDTO;
 import com.parasoft.demoapp.exception.*;
 import com.parasoft.demoapp.messages.AssetMessages;

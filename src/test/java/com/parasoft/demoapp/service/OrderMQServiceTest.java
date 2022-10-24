@@ -4,7 +4,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import com.parasoft.demoapp.dto.InventoryOperationRequestMessageDTO;
-import com.parasoft.demoapp.model.industry.InventoryOperation;
+import com.parasoft.demoapp.dto.InventoryOperation;
 import com.parasoft.demoapp.model.industry.OrderItemEntity;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.junit.Before;
