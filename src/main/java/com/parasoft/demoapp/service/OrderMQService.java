@@ -29,13 +29,13 @@ public class OrderMQService {
         jmsMessagingTemplate.convertAndSend(ActiveMQConfig.TOPIC_ORDER_PURCHASER, gson.toJson(messageDto));
     }
 
-    public void sendToInventoryRequestQueue(InventoryOperation operation, String orderNUmber, List<OrderItemEntity> orderItems) {
-        sendToInventoryRequestQueue(operation, orderNUmber, orderItems, null);
+    public void sendToInventoryRequestQueue(InventoryOperation operation, String orderNumber, List<OrderItemEntity> orderItems) {
+        sendToInventoryRequestQueue(operation, orderNumber, orderItems, null);
     }
 
-    public void sendToInventoryRequestQueue(InventoryOperation operation, String orderNUmber, List<OrderItemEntity> orderItems, String info) {
+    public void sendToInventoryRequestQueue(InventoryOperation operation, String orderNumber, List<OrderItemEntity> orderItems, String info) {
         jmsMessagingTemplate.convertAndSend(ActiveMQConfig.inventoryRequestActiveMqQueue,
-                new InventoryOperationRequestMessageDTO(operation, orderNUmber,
+                new InventoryOperationRequestMessageDTO(operation, orderNumber,
                         InventoryInfoDTO.convertFrom(orderItems), info));
     }
     
