@@ -1,7 +1,7 @@
 package com.parasoft.demoapp.service;
 
 import com.google.gson.Gson;
-import com.parasoft.demoapp.config.ActiveMQConfig;
+import com.parasoft.demoapp.config.activemq.ActiveMQConfig;
 import com.parasoft.demoapp.dto.OrderMQMessageDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsMessagingTemplate;
