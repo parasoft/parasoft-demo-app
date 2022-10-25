@@ -15,6 +15,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.List;
 
 import static com.parasoft.demoapp.dto.InventoryOperation.DECREASE;
+import static com.parasoft.demoapp.dto.InventoryOperation.INCREASE;
 import static com.parasoft.demoapp.dto.InventoryOperationStatus.FAIL;
 import static com.parasoft.demoapp.dto.InventoryOperationStatus.SUCCESS;
 
@@ -38,6 +39,10 @@ public class ItemInventoryService {
 
         if (operation == DECREASE) {
             return decrease(requestedItems, resultMessage);
+        }
+
+        if (operation == INCREASE) {
+            System.out.println(requestMessage);
         }
 
         return null;
