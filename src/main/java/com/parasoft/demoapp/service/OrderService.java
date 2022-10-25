@@ -1,5 +1,6 @@
 package com.parasoft.demoapp.service;
 
+import com.parasoft.demoapp.dto.InventoryOperation;
 import com.parasoft.demoapp.dto.OrderMQMessageDTO;
 import com.parasoft.demoapp.exception.*;
 import com.parasoft.demoapp.messages.AssetMessages;
@@ -7,7 +8,6 @@ import com.parasoft.demoapp.messages.OrderMessages;
 import com.parasoft.demoapp.model.global.RoleType;
 import com.parasoft.demoapp.model.industry.*;
 import com.parasoft.demoapp.repository.industry.OrderRepository;
-
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,15 +82,18 @@ public class OrderService {
         order.setReviewedByPRCH(true);
 
         List<OrderItemEntity> orderItemEntities = cartItemsToOrderItems(userId);
+
         for(OrderItemEntity orderItem : orderItemEntities) {
-        	orderItem.setOrder(order);
-        	}
+            orderItem.setOrder(order);
+        }
         order.setOrderItems(orderItemEntities);
 
         order = orderRepository.save(order);
-        order.setOrderNumber(generateOrderNumberAccordingToId(order.getId()));
+        String orderNumber = generateOrderNumberAccordingToId(order.getId());
+        order.setOrderNumber(orderNumber);
         order = orderRepository.save(order);
         shoppingCartService.clearShoppingCart(userId);
+        orderMQService.sendToInventoryRequestQueue(InventoryOperation.DECREASE, orderNumber, order.getOrderItems());
 
         return order;
     }
@@ -121,14 +124,8 @@ public class OrderService {
             orderItem.setDescription(item.getDescription());
             orderItem.setImage(item.getImage());
             orderItem.setItemId(item.getId());
+            orderItem.setQuantity(cartItem.getQuantity());
 
-            if (cartItem.getQuantity() > item.getInStock()) {
-                throw new ParameterException(
-                        MessageFormat.format(AssetMessages.IN_STOCK_OF_ITEM_IS_INSUFFICIENT, item.getName()));
-            } else {
-                orderItem.setQuantity(cartItem.getQuantity());
-                itemService.updateItemInStock(item.getId(), item.getInStock() - cartItem.getQuantity());
-            }
             orderItems.add(orderItem);
         }
 

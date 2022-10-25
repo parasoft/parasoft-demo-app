@@ -9,20 +9,21 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.nullable;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.parasoft.demoapp.dto.InventoryOperation;
+import com.parasoft.demoapp.model.industry.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -32,13 +33,6 @@ import com.parasoft.demoapp.exception.LocationNotFoundException;
 import com.parasoft.demoapp.messages.AssetMessages;
 import com.parasoft.demoapp.messages.OrderMessages;
 import com.parasoft.demoapp.model.global.RoleType;
-import com.parasoft.demoapp.model.industry.CartItemEntity;
-import com.parasoft.demoapp.model.industry.ItemEntity;
-import com.parasoft.demoapp.model.industry.LocationEntity;
-import com.parasoft.demoapp.model.industry.OrderEntity;
-import com.parasoft.demoapp.model.industry.OrderItemEntity;
-import com.parasoft.demoapp.model.industry.OrderStatus;
-import com.parasoft.demoapp.model.industry.RegionType;
 import com.parasoft.demoapp.repository.industry.OrderRepository;
 
 /**
@@ -65,6 +59,9 @@ public class OrderServiceTest {
 
     @Mock
     LocationService locationService;
+
+    @Mock
+    OrderMQService orderMQService;
 
     @Before
     public void setupMocks() {
@@ -111,6 +108,7 @@ public class OrderServiceTest {
         saveResult.setStatus(OrderStatus.SUBMITTED);
         saveResult.setOrderItems(orderItems);
         saveResult.setSubmissionDate(submissionDate);
+
         saveResult.setOrderImage(imagePath);
         orderItem.setOrder(saveResult);
 
@@ -131,6 +129,7 @@ public class OrderServiceTest {
         assertNotNull(result);
         assertEquals(requestedBy, result.getRequestedBy());
         assertEquals(OrderStatus.SUBMITTED.getStatus(), result.getStatus().getStatus());
+        assertEquals(OrderStatus.SUBMITTED.getPriority(), result.getStatus().getPriority());
         assertEquals(1, result.getOrderItems().size());
         assertEquals(RegionType.JAPAN, result.getRegion());
         assertEquals(receiverId, result.getReceiverId());
@@ -140,6 +139,7 @@ public class OrderServiceTest {
         assertEquals(eventNumber, result.getEventNumber());
         assertEquals("23-456-010", result.getOrderNumber());
         assertEquals(submissionDate, result.getSubmissionDate());
+        Mockito.verify(orderMQService).sendToInventoryRequestQueue(InventoryOperation.DECREASE, "23-456-010", orderItems);
     }
 
     /**
@@ -170,6 +170,7 @@ public class OrderServiceTest {
 
         // Then
         Assertions.assertEquals(MessageFormat.format(OrderMessages.LOCATION_NOT_FOUND_FOR_REGION, region.toString()), message);
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
     }
 
     /**
@@ -203,6 +204,7 @@ public class OrderServiceTest {
 
         // Then
         Assertions.assertEquals(AssetMessages.NO_CART_ITEMS, message);
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
     }
 
     /**
@@ -231,6 +233,7 @@ public class OrderServiceTest {
 
         // Then
         Assertions.assertEquals(OrderMessages.USER_ID_CANNOT_BE_NULL, message);
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
     }
 
     /**
@@ -259,6 +262,7 @@ public class OrderServiceTest {
 
         // Then
         Assertions.assertEquals(OrderMessages.USERNAME_CANNOT_BE_NULL, message);
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
     }
 
     /**
@@ -287,6 +291,7 @@ public class OrderServiceTest {
 
         // Then
         Assertions.assertEquals(OrderMessages.REGION_CANNOT_BE_NULL, message);
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
     }
 
     /**
@@ -315,6 +320,8 @@ public class OrderServiceTest {
 
         // Then
         Assertions.assertEquals(OrderMessages.RECEIVER_ID_CANNOT_BE_BLANK, message);
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
+
     }
 
     /**
@@ -343,6 +350,8 @@ public class OrderServiceTest {
 
         // Then
         Assertions.assertEquals(OrderMessages.RECEIVER_ID_CANNOT_BE_BLANK, message);
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
+
     }
 
     /**
@@ -371,6 +380,8 @@ public class OrderServiceTest {
 
         // Then
         Assertions.assertEquals(OrderMessages.EVENT_ID_CANNOT_BE_BLANK, message);
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
+
     }
 
     /**
@@ -399,6 +410,8 @@ public class OrderServiceTest {
 
         // Then
         Assertions.assertEquals(OrderMessages.EVENT_ID_CANNOT_BE_BLANK, message);
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
+
     }
 
     /**
@@ -427,6 +440,8 @@ public class OrderServiceTest {
 
         // Then
         Assertions.assertEquals(OrderMessages.EVENT_NUMBER_CANNOT_BE_BLANK, message);
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
+
     }
 
     /**
@@ -455,6 +470,8 @@ public class OrderServiceTest {
 
         // Then
         Assertions.assertEquals(OrderMessages.EVENT_NUMBER_CANNOT_BE_BLANK, message);
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
+
     }
 
     /**
@@ -483,6 +500,8 @@ public class OrderServiceTest {
 
         // Then
         Assertions.assertEquals(OrderMessages.LOCATION_CANNOT_BE_BLANK, message);
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
+
     }
 
     /**
@@ -511,50 +530,8 @@ public class OrderServiceTest {
 
         // Then
         Assertions.assertEquals(OrderMessages.LOCATION_CANNOT_BE_BLANK, message);
-    }
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
 
-    /**
-     * Test for addNewOrder(Long, String, RegionType, String, String, String, String)
-     *
-     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String)
-     */
-    @Test
-    public void testAddNewOrder_exception_overQuantity() throws Throwable {
-        // Given
-        Long userId = 1L;
-        String requestedBy = "testUser";
-        Long categoryId = 1L;
-        ItemEntity item = new ItemEntity("name", "description", categoryId, 10, "iamgePath", RegionType.JAPAN, new Date());
-        item.setId(1L);
-        List<ItemEntity> items = new ArrayList<>();
-        items.add(item);
-
-        CartItemEntity cartItem = new CartItemEntity(userId, item, 11);
-        List<CartItemEntity> cartItems = new ArrayList<>();
-        cartItems.add(cartItem);
-
-        RegionType region = RegionType.JAPAN;
-        String location = "JAPAN 82.8628° S, 135.0000° E";
-        String receiverId = "345-6789-21";
-        String eventId = "45833-ORG-7834";
-        String eventNumber = "55-444-33-22";
-
-        LocationEntity locationEntity = mock(LocationEntity.class);
-        when(locationService.getLocationByRegion(any(RegionType.class))).thenReturn(locationEntity);
-        when(shoppingCartService.getCartItemsByUserId(anyLong())).thenReturn(cartItems);
-        when(itemService.getItemById(anyLong())).thenReturn(item);
-
-        // When
-        String message = "";
-        try {
-            underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
-        } catch (Exception e) {
-            message = e.getMessage();
-        }
-
-        // Then
-        Assertions.assertEquals(
-                MessageFormat.format(AssetMessages.IN_STOCK_OF_ITEM_IS_INSUFFICIENT, item.getName()), message);
     }
 
     /**
