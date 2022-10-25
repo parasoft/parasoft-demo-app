@@ -675,7 +675,7 @@ function connectAndSubscribeMQ(role, $http, $rootScope, $filter, mqConsumeCallba
                  var currentIndustryOnPage = $rootScope.industry.toLowerCase();
                  var currentIndustryOnServer = msgObject.currentIndustry.toLowerCase();
 
-                 if(msgObject.isIndustryChanged === true && currentIndustryOnPage !== currentIndustryOnServer){
+                 if(msgObject.industryChanged === true && currentIndustryOnPage !== currentIndustryOnServer){
                     localStorage.setItem("removeRegionFilterInCookie",true);
                     mqClient.disconnect(function() {
                         var industryIsChangedInfo = $filter('translate')('INDUSTRY_IS_CHANGED');
