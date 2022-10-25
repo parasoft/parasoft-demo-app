@@ -10,18 +10,18 @@ public enum OrderStatus {
 
     private String status;
 
-    private int code;
+    private int priority;
 
-    OrderStatus(String status, int code) {
+    OrderStatus(String status, int priority) {
         this.status = status;
-        this.code = code;
+        this.priority = priority;
     }
 
     public String getStatus() {
         return status;
     }
 
-    public int getCode() {
-        return code;
+    public int getPriority() {
+        return priority;
     }
 }

@@ -93,7 +93,7 @@ public class OrderMQServiceTest {
         orderItems.add(orderItem);
 
         // When
-        underTest.sendToInventoryRequestQueue(InventoryOperation.DECREASE_FOR_ORDER_CREATION, orderNumber, orderItems);
+        underTest.sendToInventoryRequestQueue(InventoryOperation.DECREASE, orderNumber, orderItems);
 
 
         // Then
@@ -115,7 +115,7 @@ public class OrderMQServiceTest {
         orderItems.add(orderItem);
 
         // When
-        underTest.sendToInventoryRequestQueue(InventoryOperation.DECREASE_FOR_ORDER_CREATION, orderNumber, orderItems, "test");
+        underTest.sendToInventoryRequestQueue(InventoryOperation.DECREASE, orderNumber, orderItems, "test");
 
         // Then
         Mockito.verify(jmsMessagingTemplate, times(1)).convertAndSend(any(ActiveMQQueue.class), any(InventoryOperationRequestMessageDTO.class));

@@ -129,7 +129,7 @@ public class OrderServiceTest {
         assertNotNull(result);
         assertEquals(requestedBy, result.getRequestedBy());
         assertEquals(OrderStatus.SUBMITTED.getStatus(), result.getStatus().getStatus());
-        assertEquals(OrderStatus.SUBMITTED.getCode(), result.getStatus().getCode());
+        assertEquals(OrderStatus.SUBMITTED.getPriority(), result.getStatus().getPriority());
         assertEquals(1, result.getOrderItems().size());
         assertEquals(RegionType.JAPAN, result.getRegion());
         assertEquals(receiverId, result.getReceiverId());
@@ -139,7 +139,7 @@ public class OrderServiceTest {
         assertEquals(eventNumber, result.getEventNumber());
         assertEquals("23-456-010", result.getOrderNumber());
         assertEquals(submissionDate, result.getSubmissionDate());
-        Mockito.verify(orderMQService).sendToInventoryRequestQueue(InventoryOperation.DECREASE_FOR_ORDER_CREATION, "23-456-010", orderItems);
+        Mockito.verify(orderMQService).sendToInventoryRequestQueue(InventoryOperation.DECREASE, "23-456-010", orderItems);
     }
 
     /**

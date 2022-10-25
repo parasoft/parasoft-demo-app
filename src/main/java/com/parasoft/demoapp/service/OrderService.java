@@ -93,7 +93,7 @@ public class OrderService {
         order.setOrderNumber(orderNumber);
         order = orderRepository.save(order);
         shoppingCartService.clearShoppingCart(userId);
-        orderMQService.sendToInventoryRequestQueue(InventoryOperation.DECREASE_FOR_ORDER_CREATION, orderNumber, order.getOrderItems());
+        orderMQService.sendToInventoryRequestQueue(InventoryOperation.DECREASE, orderNumber, order.getOrderItems());
 
         return order;
     }
