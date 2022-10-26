@@ -43,14 +43,14 @@ public class ItemInventoryService {
         return null;
     }
 
-    private InventoryOperationResultMessageDTO decrease(List<InventoryInfoDTO> requestedItems,
+    private synchronized InventoryOperationResultMessageDTO decrease(List<InventoryInfoDTO> requestedItems,
                                                         InventoryOperationResultMessageDTO resultMessage) {
-        Pair<Boolean, String> statusInfoPair = checkItemStockBeforeDecrease(requestedItems);
-        if (statusInfoPair.getFirst()) {
+        String errorMessage = validateItemStockBeforeDecrease(requestedItems);
+        if (errorMessage.isEmpty()) {
             requestedItems.forEach(this::decreaseItemStock);
             resultMessage.setStatus(SUCCESS);
         } else {
-            resultMessage.setInfo(statusInfoPair.getSecond());
+            resultMessage.setInfo(errorMessage);
             resultMessage.setStatus(FAIL);
         }
         return resultMessage;
@@ -62,16 +62,16 @@ public class ItemInventoryService {
         itemInventoryRepository.save(inventoryItem);
     }
 
-    private Pair<Boolean, String> checkItemStockBeforeDecrease(List<InventoryInfoDTO> requestedItems) {
+    private String validateItemStockBeforeDecrease(List<InventoryInfoDTO> requestedItems) {
         for (InventoryInfoDTO requestedItem : requestedItems) {
             Long itemId = requestedItem.getItemId();
             ItemInventoryEntity inventoryItem = itemInventoryRepository.findByItemId(itemId);
             if (inventoryItem == null) {
-                return Pair.of(Boolean.FALSE, "Inventory item with id " + itemId + " doesn't exist.");
+                return String.format("Inventory item with id %d doesn't exist.", itemId);
             } else if (inventoryItem.getInStock() < requestedItem.getQuantity()) {
-                return Pair.of(Boolean.FALSE, "Inventory item with id " + itemId + " is out of stock.");
+                return String.format("Inventory item with id %d is out of stock.", itemId);
             }
         }
-        return Pair.of(Boolean.TRUE, "");
+        return "";
     }
 }
