@@ -198,7 +198,7 @@ public class OrderService {
         if(!originalOrder.getStatus().equals(newStatus)) {
         	newOrder.setComments(comments == null ? "" : comments);
             if(OrderStatus.DECLINED.equals(newStatus)) {
-                itemInventoryMQService.sendToRequestQueue(InventoryOperation.INCREASE,
+                orderMQService.sendToInventoryRequestQueue(InventoryOperation.INCREASE,
                         originalOrder.getOrderNumber(),
                         originalOrder.getOrderItems());
             }

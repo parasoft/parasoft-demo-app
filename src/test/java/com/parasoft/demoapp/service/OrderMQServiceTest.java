@@ -3,8 +3,7 @@ package com.parasoft.demoapp.service;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-import com.parasoft.demoapp.dto.InventoryOperationRequestMessageDTO;
-import com.parasoft.demoapp.dto.InventoryOperation;
+import com.parasoft.demoapp.dto.*;
 import com.parasoft.demoapp.model.industry.OrderItemEntity;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.junit.Before;
@@ -15,7 +14,6 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.jms.core.JmsMessagingTemplate;
 
-import com.parasoft.demoapp.dto.OrderMQMessageDTO;
 import com.parasoft.demoapp.model.industry.OrderStatus;
 
 import java.util.ArrayList;
