@@ -17,7 +17,8 @@ import java.util.Arrays;
 import static com.parasoft.demoapp.dto.InventoryOperation.DECREASE;
 import static com.parasoft.demoapp.dto.InventoryOperationStatus.FAIL;
 import static com.parasoft.demoapp.dto.InventoryOperationStatus.SUCCESS;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 
 public class ItemInventoryServiceTest {
@@ -42,7 +43,8 @@ public class ItemInventoryServiceTest {
         when(itemInventoryRepository.findByItemId(2L)).thenReturn(new ItemInventoryEntity(2L, 3));
 
         // When
-        InventoryOperationResultMessageDTO resultMessage = itemInventoryService.receiveFromRequestQueue(requestMessage);
+        InventoryOperationResultMessageDTO resultMessage =
+                itemInventoryService.handleMessageFromRequestQueue(requestMessage);
 
         // Then
         InventoryOperationResultMessageDTO expectedResultMessage =
@@ -59,7 +61,8 @@ public class ItemInventoryServiceTest {
         when(itemInventoryRepository.findByItemId(2L)).thenReturn(null);
 
         // When
-        InventoryOperationResultMessageDTO resultMessage = itemInventoryService.receiveFromRequestQueue(requestMessage);
+        InventoryOperationResultMessageDTO resultMessage =
+                itemInventoryService.handleMessageFromRequestQueue(requestMessage);
 
         // Then
         InventoryOperationResultMessageDTO expectedResultMessage =
@@ -77,7 +80,8 @@ public class ItemInventoryServiceTest {
         when(itemInventoryRepository.findByItemId(2L)).thenReturn(new ItemInventoryEntity(2L, 1));
 
         // When
-        InventoryOperationResultMessageDTO resultMessage = itemInventoryService.receiveFromRequestQueue(requestMessage);
+        InventoryOperationResultMessageDTO resultMessage =
+                itemInventoryService.handleMessageFromRequestQueue(requestMessage);
 
         // Then
         InventoryOperationResultMessageDTO expectedResultMessage =
@@ -94,7 +98,8 @@ public class ItemInventoryServiceTest {
                         new ArrayList<>(), null);
 
         // When
-        InventoryOperationResultMessageDTO resultMessage = itemInventoryService.receiveFromRequestQueue(requestMessage);
+        InventoryOperationResultMessageDTO resultMessage =
+                itemInventoryService.handleMessageFromRequestQueue(requestMessage);
 
         // Then
         assertNull(resultMessage);

@@ -38,7 +38,7 @@ public class InventoryRequestQueueListener extends RefreshableMessageListener {
         try {
             Object object = jmsMessageConverter.fromMessage(message);
             InventoryOperationResultMessageDTO messageToReply = itemInventoryService.
-                    receiveFromRequestQueue((InventoryOperationRequestMessageDTO) object);
+                    handleMessageFromRequestQueue((InventoryOperationRequestMessageDTO) object);
             if(messageToReply == null) {
                 return;
             }

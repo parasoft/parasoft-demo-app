@@ -7,7 +7,6 @@ import com.parasoft.demoapp.dto.InventoryOperationResultMessageDTO;
 import com.parasoft.demoapp.model.industry.ItemInventoryEntity;
 import com.parasoft.demoapp.repository.industry.ItemInventoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -25,7 +24,8 @@ public class ItemInventoryService {
     private ItemInventoryRepository itemInventoryRepository;
 
     @Transactional
-    public InventoryOperationResultMessageDTO receiveFromRequestQueue(InventoryOperationRequestMessageDTO requestMessage) {
+    public InventoryOperationResultMessageDTO handleMessageFromRequestQueue(InventoryOperationRequestMessageDTO
+                                                                                        requestMessage) {
         InventoryOperationResultMessageDTO resultMessage = new InventoryOperationResultMessageDTO();
 
         InventoryOperation operation = requestMessage.getOperation();
