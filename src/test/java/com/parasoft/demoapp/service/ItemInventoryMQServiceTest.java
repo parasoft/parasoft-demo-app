@@ -1,9 +1,8 @@
 package com.parasoft.demoapp.service;
 
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-
-import com.parasoft.demoapp.dto.*;
+import com.parasoft.demoapp.dto.InventoryOperation;
+import com.parasoft.demoapp.dto.InventoryOperationResultMessageDTO;
+import com.parasoft.demoapp.dto.InventoryOperationStatus;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,6 +13,11 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.jms.core.JmsMessagingTemplate;
 
 import javax.jms.Destination;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.nullable;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
 
 /**
  * Test class for ItemInventoryMQService
@@ -35,7 +39,7 @@ public class ItemInventoryMQServiceTest {
     }
 
     /**
-     * Test for sendToResponseQueue(InventoryOperationResultMessageDTO)
+     * Test for sendToInventoryResponseQueue(InventoryOperationResultMessageDTO)
      *
      * @see com.parasoft.demoapp.service.ItemInventoryMQService#sendToInventoryResponseQueue(InventoryOperationResultMessageDTO)
      */
@@ -55,7 +59,7 @@ public class ItemInventoryMQServiceTest {
     }
 
     /**
-     * sendToRequestQueue(InventoryOperationRequestMessageDTO)
+     * send(Destination, InventoryOperationResultMessageDTO)
      *
      * @see com.parasoft.demoapp.service.ItemInventoryMQService#send(Destination, InventoryOperationResultMessageDTO)
      */

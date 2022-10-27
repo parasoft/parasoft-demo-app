@@ -1,7 +1,6 @@
 package com.parasoft.demoapp.service;
 
-import com.parasoft.demoapp.dto.InventoryOperation;
-import com.parasoft.demoapp.dto.OrderMQMessageDTO;
+import com.parasoft.demoapp.dto.*;
 import com.parasoft.demoapp.exception.*;
 import com.parasoft.demoapp.messages.AssetMessages;
 import com.parasoft.demoapp.messages.OrderMessages;
@@ -9,7 +8,6 @@ import com.parasoft.demoapp.model.global.RoleType;
 import com.parasoft.demoapp.model.industry.*;
 import com.parasoft.demoapp.repository.industry.OrderRepository;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -39,10 +37,56 @@ public class OrderService {
     private OrderMQService orderMQService;
 
     @Autowired
-    private ItemInventoryMQService itemInventoryMQService;
-
-    @Autowired
     private LocationService locationService;
+
+    @Transactional
+    public InventoryOperationRequestMessageDTO handleMessageFromResponseQueue(InventoryOperationResultMessageDTO operationResult) {
+        OrderEntity order = null;
+        String orderNumber = operationResult.getOrderNumber();
+        try {
+            order = getOrderByOrderNumber(orderNumber);
+            if(operationResult.getOperation() == InventoryOperation.DECREASE) {
+                switch (operationResult.getStatus()) {
+                    case SUCCESS:
+                        order = updateOrderStatus(orderNumber, OrderStatus.PROCESSED);
+                        OrderMQMessageDTO message =
+                                new OrderMQMessageDTO(orderNumber, order.getRequestedBy(), order.getStatus(), OrderMessages.THE_ORDER_IS_PROCESSED);
+                        orderMQService.sendToApprover(message);
+                        break;
+                    case FAIL:
+                        updateOrderStatus(orderNumber, OrderStatus.CANCELED);
+                        break;
+                    default:
+                        log.error(operationResult.getStatus() + " status is not supported");
+                }
+            }
+            return null;
+        } catch (OrderNotFoundException e) {
+            // TODO will be handled in separate task(rollback the inventory)
+            log.error("Order Not Found Exception:", e);
+            return new InventoryOperationRequestMessageDTO(InventoryOperation.INCREASE,
+                    operationResult.getOrderNumber(),
+                    null,
+                    e.getMessage());
+        } catch (ParameterException e) {
+            log.error("Parameter Exception:", e);
+            assert order != null;
+            return new InventoryOperationRequestMessageDTO(InventoryOperation.INCREASE,
+                    operationResult.getOrderNumber(),
+                    InventoryInfoDTO.convertFrom(order.getOrderItems()),
+                    e.getMessage());
+        }
+    }
+
+    private OrderEntity updateOrderStatus(String orderNumber, OrderStatus status) throws OrderNotFoundException, ParameterException {
+        OrderEntity order = getOrderByOrderNumber(orderNumber);
+        if(order.getStatus().getPriority() < status.getPriority()) {
+            order.setStatus(status);
+            return orderRepository.save(order);
+        }
+
+        throw new ParameterException("Can not change order status from " + order.getStatus() + " to " + status);
+    }
 
     public synchronized OrderEntity addNewOrderSynchronized(Long userId, String username, RegionType region, String location,
                                                             String receiverId, String eventId, String eventNumber)
