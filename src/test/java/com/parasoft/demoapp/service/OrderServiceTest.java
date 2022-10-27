@@ -63,6 +63,9 @@ public class OrderServiceTest {
     @Mock
     OrderMQService orderMQService;
 
+    @Mock
+    ItemInventoryMQService itemInventoryMQService;
+
     @Before
     public void setupMocks() {
         MockitoAnnotations.initMocks(this);
@@ -649,6 +652,7 @@ public class OrderServiceTest {
 
         // Then
         Assertions.assertEquals(OrderMessages.STATUS_CANNOT_BE_NULL, message);
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
     }
 
     /**
@@ -679,6 +683,7 @@ public class OrderServiceTest {
 
         // Then
         Assertions.assertEquals(OrderMessages.ORDER_NUMBER_CANNOT_BE_BLANK, message);
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
     }
 
     /**
@@ -709,6 +714,7 @@ public class OrderServiceTest {
 
         // Then
         Assertions.assertEquals(OrderMessages.ORDER_NUMBER_CANNOT_BE_BLANK, message);
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
     }
 
     /**
@@ -944,6 +950,7 @@ public class OrderServiceTest {
         assertNotNull(result);
         assertEquals(true, result.getReviewedByPRCH());
         assertEquals(false, result.getReviewedByAPV());
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
     }
 
     /**
@@ -980,6 +987,7 @@ public class OrderServiceTest {
 
         // Then
         assertEquals(MessageFormat.format(OrderMessages.NO_PERMISSION_TO_CHANGE_TO_ORDER_STATUS, newStatus), message);
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
     }
 
     /**
@@ -1016,6 +1024,7 @@ public class OrderServiceTest {
 
         // Then
         assertEquals(OrderMessages.CANNOT_SET_TRUE_TO_FALSE, message);
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
     }
 
     /**
@@ -1052,6 +1061,7 @@ public class OrderServiceTest {
 
         // Then
         assertEquals(OrderMessages.ORDER_REVIEW_STATUS_OF_PURCHASER_SHOULD_NOT_BE_NULL, message);
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
     }
 
     /**
@@ -1088,6 +1098,38 @@ public class OrderServiceTest {
 
         // Then
         assertEquals(OrderMessages.ORDER_REVIEW_STATUS_OF_APPROVER_SHOULD_NOT_BE_NULL, message);
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
+    }
+
+    /**
+     * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean) declined
+     *
+     * @see com.parasoft.demoapp.service.OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
+     */
+    @Test
+    public void testUpdateOrderByOrderNumber_declined_normal() throws Throwable {
+        // Given
+        String orderNumber = "11-234-567";
+        OrderEntity order = prepareOrderWithIgnoringSubmmitedStatusHelper();
+        order.setStatus(OrderStatus.SUBMITTED);
+        order.setOrderNumber(orderNumber);
+        order.setReviewedByPRCH(true);
+        order.setReviewedByAPV(false);
+        OrderStatus newStatus = OrderStatus.DECLINED;
+        String userRoleName = RoleType.ROLE_APPROVER.toString();
+        Boolean reviewedByPRCH = true;
+        Boolean reviewedByAPV = null;
+        String respondedBy = null;
+        String comments = "";
+        boolean publicToMQ = true;
+        doReturn(order).when(orderRepository).findOrderByOrderNumber(orderNumber);
+        doReturn(order).when(orderRepository).save(any());
+
+        // When
+        underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus,
+                reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
+        // Then
+        Mockito.verify(orderMQService).sendToInventoryRequestQueue(InventoryOperation.INCREASE, "11-234-567", null);
     }
 
     /**
