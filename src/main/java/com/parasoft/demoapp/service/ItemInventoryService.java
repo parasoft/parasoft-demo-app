@@ -14,6 +14,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.List;
 
 import static com.parasoft.demoapp.dto.InventoryOperation.DECREASE;
+import static com.parasoft.demoapp.dto.InventoryOperation.INCREASE;
 import static com.parasoft.demoapp.dto.InventoryOperationStatus.FAIL;
 import static com.parasoft.demoapp.dto.InventoryOperationStatus.SUCCESS;
 
@@ -40,6 +41,10 @@ public class ItemInventoryService {
             return decrease(requestedItems, resultMessage);
         }
 
+        if (operation == INCREASE) {
+            return increase(requestedItems, resultMessage);
+        }
+
         return null;
     }
 
@@ -56,9 +61,28 @@ public class ItemInventoryService {
         return resultMessage;
     }
 
+    private synchronized InventoryOperationResultMessageDTO increase(List<InventoryInfoDTO> requestedItems,
+                                                                     InventoryOperationResultMessageDTO resultMessage) {
+        String errorMessage = validateItemStockBeforeIncrease(requestedItems);
+        if (errorMessage.isEmpty()) {
+            requestedItems.forEach(this::increaseItemStock);
+            resultMessage.setStatus(SUCCESS);
+        } else {
+            resultMessage.setInfo(errorMessage);
+            resultMessage.setStatus(FAIL);
+        }
+        return resultMessage;
+    }
+
     private void decreaseItemStock(InventoryInfoDTO requestedItem) {
         ItemInventoryEntity inventoryItem = itemInventoryRepository.findByItemId(requestedItem.getItemId());
         inventoryItem.setInStock(inventoryItem.getInStock() - requestedItem.getQuantity());
+        itemInventoryRepository.save(inventoryItem);
+    }
+
+    private void increaseItemStock(InventoryInfoDTO requestedItem) {
+        ItemInventoryEntity inventoryItem = itemInventoryRepository.findByItemId(requestedItem.getItemId());
+        inventoryItem.setInStock(inventoryItem.getInStock() + requestedItem.getQuantity());
         itemInventoryRepository.save(inventoryItem);
     }
 
@@ -70,6 +94,17 @@ public class ItemInventoryService {
                 return String.format("Inventory item with id %d doesn't exist.", itemId);
             } else if (inventoryItem.getInStock() < requestedItem.getQuantity()) {
                 return String.format("Inventory item with id %d is out of stock.", itemId);
+            }
+        }
+        return "";
+    }
+
+    private String validateItemStockBeforeIncrease(List<InventoryInfoDTO> requestedItems) {
+        for (InventoryInfoDTO requestedItem : requestedItems) {
+            Long itemId = requestedItem.getItemId();
+            ItemInventoryEntity inventoryItem = itemInventoryRepository.findByItemId(itemId);
+            if (inventoryItem == null) {
+                return String.format("Inventory item with id %d doesn't exist.", itemId);
             }
         }
         return "";
