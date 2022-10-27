@@ -37,9 +37,6 @@ public class OrderService {
     private OrderMQService orderMQService;
 
     @Autowired
-    private ItemInventoryMQService itemInventoryMQService;
-
-    @Autowired
     private LocationService locationService;
 
     @Transactional
