@@ -29,16 +29,15 @@ public class OrderMQService {
     }
 
     public void sendToInventoryRequestQueue(InventoryOperation operation, String orderNumber, List<OrderItemEntity> orderItems, String info) {
-        jmsMessagingTemplate.convertAndSend(ActiveMQConfig.inventoryRequestActiveMqQueue,
-                new InventoryOperationRequestMessageDTO(operation, orderNumber, InventoryInfoDTO.convertFrom(orderItems), info));
+        sendToInventoryRequestQueue(new InventoryOperationRequestMessageDTO(operation, orderNumber, InventoryInfoDTO.convertFrom(orderItems), info));
     }
 
-    public void sendToRequestQueue(InventoryOperationRequestMessageDTO message) {
+    public void sendToInventoryRequestQueue(InventoryOperationRequestMessageDTO message) {
         jmsMessagingTemplate.convertAndSend(ActiveMQConfig.inventoryRequestActiveMqQueue, message);
     }
 
     public void send(Destination destination, InventoryOperationRequestMessageDTO message) {
         jmsMessagingTemplate.convertAndSend(destination, message);
     }
-    
+
 }

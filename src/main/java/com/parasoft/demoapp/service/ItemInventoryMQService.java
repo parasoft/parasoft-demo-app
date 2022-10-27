@@ -14,7 +14,7 @@ public class ItemInventoryMQService {
     @Autowired
     private JmsMessagingTemplate jmsMessagingTemplate;
 
-    public void sendToResponseQueue(InventoryOperationResultMessageDTO message) {
+    public void sendToInventoryResponseQueue(InventoryOperationResultMessageDTO message) {
         jmsMessagingTemplate.convertAndSend(ActiveMQConfig.inventoryResponseActiveMqQueue, message);
     }
 

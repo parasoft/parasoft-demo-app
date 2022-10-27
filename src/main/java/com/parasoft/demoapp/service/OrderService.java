@@ -37,6 +37,9 @@ public class OrderService {
     private OrderMQService orderMQService;
 
     @Autowired
+    private ItemInventoryMQService itemInventoryMQService;
+
+    @Autowired
     private LocationService locationService;
 
     @Transactional
@@ -242,21 +245,9 @@ public class OrderService {
         if(!originalOrder.getStatus().equals(newStatus)) {
         	newOrder.setComments(comments == null ? "" : comments);
             if(OrderStatus.DECLINED.equals(newStatus)) {
-                List<OrderItemEntity> orderItems = originalOrder.getOrderItems();
-                for(OrderItemEntity orderItem: orderItems) {
-                    try {
-                        Integer originalInStock = itemService.getInStockById(orderItem.getItemId());
-                        if(originalInStock != null) {
-                            // We'll ignore 'update' operation for in stock when item is removed before
-                            // returning the quantity into in stock.
-                            itemService.updateItemInStock(orderItem.getItemId(),
-                                                                originalInStock + orderItem.getQuantity());
-                        }
-                    }catch(ItemNotFoundException e){
-                        // Normally, it can't reach here since we avoid the exception by 'if' statement.
-                        log.info(OrderMessages.ITEM_HAS_ALREADY_BEEN_REMOVED);
-                    }
-                }
+                orderMQService.sendToInventoryRequestQueue(InventoryOperation.INCREASE,
+                        originalOrder.getOrderNumber(),
+                        originalOrder.getOrderItems());
             }
 
             newOrder.setApproverReplyDate(new Date());
