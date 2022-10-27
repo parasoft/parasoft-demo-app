@@ -47,7 +47,7 @@ public class InventoryRequestQueueListener extends RefreshableMessageListener {
             if(replyToDestination != null) {
                 itemInventoryMQService.send(replyToDestination, messageToReply);
             } else {
-                itemInventoryMQService.sendToResponseQueue(messageToReply);
+                itemInventoryMQService.sendToInventoryResponseQueue(messageToReply);
             }
         } catch (MessageConversionException e) {
             log.error("Invalid message from inventory request queue:", e);
