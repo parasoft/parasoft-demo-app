@@ -40,7 +40,7 @@ public class OrderService {
     private LocationService locationService;
 
     @Transactional
-    public InventoryOperationRequestMessageDTO handleResponseQueue(InventoryOperationResultMessageDTO operationResult) {
+    public InventoryOperationRequestMessageDTO handleMessageFromResponseQueue(InventoryOperationResultMessageDTO operationResult) {
         OrderEntity order = null;
         String orderNumber = operationResult.getOrderNumber();
         try {

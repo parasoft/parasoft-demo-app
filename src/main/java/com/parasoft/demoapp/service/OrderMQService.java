@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.stereotype.Component;
 
+import javax.jms.Destination;
 import java.util.List;
 
 @Component
@@ -30,6 +31,14 @@ public class OrderMQService {
     public void sendToInventoryRequestQueue(InventoryOperation operation, String orderNumber, List<OrderItemEntity> orderItems, String info) {
         jmsMessagingTemplate.convertAndSend(ActiveMQConfig.inventoryRequestActiveMqQueue,
                 new InventoryOperationRequestMessageDTO(operation, orderNumber, InventoryInfoDTO.convertFrom(orderItems), info));
+    }
+
+    public void sendToRequestQueue(InventoryOperationRequestMessageDTO message) {
+        jmsMessagingTemplate.convertAndSend(ActiveMQConfig.inventoryRequestActiveMqQueue, message);
+    }
+
+    public void send(Destination destination, InventoryOperationRequestMessageDTO message) {
+        jmsMessagingTemplate.convertAndSend(destination, message);
     }
     
 }

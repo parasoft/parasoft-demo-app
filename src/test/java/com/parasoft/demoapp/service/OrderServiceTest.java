@@ -67,9 +67,9 @@ public class OrderServiceTest {
     }
 
     /**
-     * Test for handleResponseQueue(InventoryOperationResultMessageDTO)
+     * Test for handleMessageFromResponseQueue(InventoryOperationResultMessageDTO)
      *
-     * @see OrderService#handleResponseQueue(InventoryOperationResultMessageDTO)
+     * @see OrderService#handleMessageFromResponseQueue(InventoryOperationResultMessageDTO)
      */
     @Test
     public void testDecrease_normal_inventorySuccess() {
@@ -82,7 +82,7 @@ public class OrderServiceTest {
         when(orderRepository.save((OrderEntity) any())).thenReturn(order);
 
         // When
-        InventoryOperationRequestMessageDTO requestMessage = underTest.handleResponseQueue(
+        InventoryOperationRequestMessageDTO requestMessage = underTest.handleMessageFromResponseQueue(
                 new InventoryOperationResultMessageDTO(InventoryOperation.DECREASE, orderNumber, InventoryOperationStatus.SUCCESS, null));
 
         // Then
@@ -92,9 +92,9 @@ public class OrderServiceTest {
     }
 
     /**
-     * Test for handleResponseQueue(InventoryOperationResultMessageDTO)
+     * Test for handleMessageFromResponseQueue(InventoryOperationResultMessageDTO)
      *
-     * @see OrderService#handleResponseQueue(InventoryOperationResultMessageDTO)
+     * @see OrderService#handleMessageFromResponseQueue(InventoryOperationResultMessageDTO)
      */
     @Test
     public void testDecrease_normal_inventoryFail() {
@@ -107,7 +107,7 @@ public class OrderServiceTest {
         when(orderRepository.save((OrderEntity) any())).thenReturn(order);
 
         // When
-        InventoryOperationRequestMessageDTO requestMessage = underTest.handleResponseQueue(
+        InventoryOperationRequestMessageDTO requestMessage = underTest.handleMessageFromResponseQueue(
                 new InventoryOperationResultMessageDTO(InventoryOperation.DECREASE, orderNumber, InventoryOperationStatus.FAIL, null));
 
         // Then
@@ -117,9 +117,9 @@ public class OrderServiceTest {
     }
 
     /**
-     * Test for handleResponseQueue(InventoryOperationResultMessageDTO)
+     * Test for handleMessageFromResponseQueue(InventoryOperationResultMessageDTO)
      *
-     * @see OrderService#handleResponseQueue(InventoryOperationResultMessageDTO)
+     * @see OrderService#handleMessageFromResponseQueue(InventoryOperationResultMessageDTO)
      */
     @Test
     public void testDecrease_reversedProcessException() {
@@ -133,7 +133,7 @@ public class OrderServiceTest {
         when(orderRepository.save((OrderEntity) any())).thenReturn(order);
 
         // When
-        InventoryOperationRequestMessageDTO requestMessage = underTest.handleResponseQueue(
+        InventoryOperationRequestMessageDTO requestMessage = underTest.handleMessageFromResponseQueue(
                 new InventoryOperationResultMessageDTO(InventoryOperation.DECREASE, orderNumber, InventoryOperationStatus.SUCCESS, null));
 
         // Then
@@ -145,9 +145,9 @@ public class OrderServiceTest {
     }
 
     /**
-     * Test for handleResponseQueue(InventoryOperationResultMessageDTO)
+     * Test for handleMessageFromResponseQueue(InventoryOperationResultMessageDTO)
      *
-     * @see OrderService#handleResponseQueue(InventoryOperationResultMessageDTO)
+     * @see OrderService#handleMessageFromResponseQueue(InventoryOperationResultMessageDTO)
      */
     @Test
     public void testDecrease_itemNotExist() {
@@ -156,7 +156,7 @@ public class OrderServiceTest {
         when(orderRepository.findOrderByOrderNumber(anyString())).thenReturn(null);
 
         // When
-        InventoryOperationRequestMessageDTO requestMessage = underTest.handleResponseQueue(
+        InventoryOperationRequestMessageDTO requestMessage = underTest.handleMessageFromResponseQueue(
                 new InventoryOperationResultMessageDTO(InventoryOperation.DECREASE, orderNumber, InventoryOperationStatus.SUCCESS, null));
 
         // Then
