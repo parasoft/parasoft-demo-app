@@ -27,9 +27,6 @@ public interface ItemRepository extends JpaRepository<ItemEntity, Long>, JpaSpec
 
     long countByCategoryId(Long categoryId);
 
-    @Query("select inStock FROM ItemEntity where id=?1")
-    Integer findInStockById(Long id);
-
     Page<ItemEntity> findAllByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
             String nameKey, String descriptionKey, Pageable pageable);
 

@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -38,7 +39,11 @@ public class ItemService {
 
     @Autowired
     private LocationService locationService;
-    
+
+    @Autowired
+    private ItemInventoryService itemInventoryService;
+
+    @Transactional
     public ItemEntity addNewItem(
             String name, String description, Long categoryId, Integer inStock, String imagePath, RegionType region)
             throws ItemNameExistsAlreadyException, CategoryNotFoundException, ParameterException, GlobalPreferencesNotFoundException, 
@@ -70,10 +75,13 @@ public class ItemService {
         }
         
         ItemEntity item = new ItemEntity(name, description, categoryId, inStock, imagePath, region, new Date());
+        ItemEntity result = itemRepository.save(item);
+        result.setInStock(itemInventoryService.saveItemInStock(result.getId(), result.getInStock()).getInStock());
 
-        return itemRepository.save(item);
+        return result;
     }
 
+    @Transactional
     public void removeItemById(Long itemId) throws ItemNotFoundException, ParameterException {
         ParameterValidator.requireNonNull(itemId, AssetMessages.ITEM_ID_CANNOT_BE_NULL);
 
@@ -93,6 +101,7 @@ public class ItemService {
             e.printStackTrace();
         }
 
+        itemInventoryService.removeItemInventoryByItemId(itemId);
         itemRepository.deleteById(itemId);
     }
 
@@ -109,6 +118,7 @@ public class ItemService {
         removeItemById(item.getId());
     }
 
+    @Transactional
     public ItemEntity updateItem(Long itemId, String name, String description, Long categoryId,
                                  Integer inStock, String imagePath, RegionType region)
             throws ItemNameExistsAlreadyException, CategoryNotFoundException, ItemNotFoundException,
@@ -153,18 +163,22 @@ public class ItemService {
         itemEntity.setRegion(region);
         itemEntity.setLastAccessedDate(new Date());
 
-        return itemRepository.save(itemEntity);
+        ItemEntity item = itemRepository.save(itemEntity);
+        item.setInStock(itemInventoryService.saveItemInStock(itemId, inStock).getInStock());
+
+        return item;
     }
 
+    @Transactional
     public ItemEntity updateItemInStock(Long itemId, Integer newInStock)
             throws ParameterException, ItemNotFoundException {
         ParameterValidator.requireNonNull(newInStock, AssetMessages.IN_STOCK_CANNOT_BE_NULL);
         ParameterValidator.requireNonNegative(newInStock, AssetMessages.IN_STOCK_CANNOT_BE_A_NEGATIVE_NUMBER);
 
         ItemEntity item = getItemById(itemId);
-        item.setInStock(newInStock);
+        item.setInStock(itemInventoryService.saveItemInStock(itemId, newInStock).getInStock());
 
-        return itemRepository.save(item);
+        return item;
     }
 
     public List<ItemEntity> getAllItems() throws ItemNotFoundException{
@@ -173,6 +187,10 @@ public class ItemService {
         if (items.size() == 0) {
             throw new ItemNotFoundException(AssetMessages.NO_ITEMS);
         }
+
+        items.forEach(item -> {
+            item.setInStock(itemInventoryService.getInStockByItemId(item.getId()));
+        });
 
         return items;
     }
@@ -196,6 +214,10 @@ public class ItemService {
         if (items.getSize() == 0) {
             throw new ItemNotFoundException(AssetMessages.NO_ITEMS);
         }
+
+        items.forEach(item -> {
+            item.setInStock(itemInventoryService.getInStockByItemId(item.getId()));
+        });
 
         return items;
     }
@@ -247,6 +269,7 @@ public class ItemService {
         }
 
     }
+
     public ItemEntity getItemById(Long id) throws ItemNotFoundException, ParameterException {
         ParameterValidator.requireNonNull(id, AssetMessages.ITEM_ID_CANNOT_BE_NULL);
 
@@ -255,7 +278,10 @@ public class ItemService {
             throw new ItemNotFoundException(MessageFormat.format(AssetMessages.ITEM_ID_NOT_FOUND, id));
         }
 
-        return optional.get();
+        ItemEntity item = optional.get();
+        item.setInStock(itemInventoryService.getInStockByItemId(item.getId()));
+
+        return item;
     }
 
     public ItemEntity getItemByName(String name) throws ItemNotFoundException, ParameterException {
@@ -265,18 +291,17 @@ public class ItemService {
         if (item == null) {
             throw new ItemNotFoundException(MessageFormat.format(AssetMessages.ITEM_NAME_NOT_FOUND, name));
         }
-
+        item.setInStock(itemInventoryService.getInStockByItemId(item.getId()));
         return item;
-    }
-
-    public Integer getInStockById(Long id){
-       return itemRepository.findInStockById(id);
     }
 
     public Page<ItemEntity> searchItemsByNameOrDescription(String key, Pageable pageable) throws ParameterException {
         ParameterValidator.requireNonBlank(key, AssetMessages.SEARCH_FIELD_CANNOT_BE_BLANK);
 
-        return itemRepository.findAllByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(key, key, pageable);
+        Page<ItemEntity> items = itemRepository.findAllByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(key, key, pageable);
+        items.forEach(item -> item.setInStock(itemInventoryService.getInStockByItemId(item.getId())));
+
+        return items;
     }
 
     public long numberOfImageUsedInItems(String imagePathOfItem){

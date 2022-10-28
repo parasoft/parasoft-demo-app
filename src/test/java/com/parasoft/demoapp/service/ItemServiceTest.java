@@ -6,11 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.nullable;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -18,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import com.parasoft.demoapp.model.industry.ItemInventoryEntity;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -57,6 +54,9 @@ public class ItemServiceTest {
 	@Mock
 	LocationService locationService;
 
+	@Mock
+    ItemInventoryService itemInventoryService;
+
 	@Before
 	public void setupMocks() {
 		MockitoAnnotations.initMocks(this);
@@ -80,9 +80,11 @@ public class ItemServiceTest {
 		Date lastAccessedDate = new Date();
 		ItemEntity saveResult = new ItemEntity(name, description, categoryId, inStock, imagePath, region,
 				lastAccessedDate);
+		ItemInventoryEntity itemInventory = new ItemInventoryEntity(0L, inStock);
 		doReturn(saveResult).when(itemRepository).save((ItemEntity) any());
 		doReturn(true).when(categoryService).existsByCategoryId(anyLong());
 		doReturn(true).when(locationService).isCorrectRegionInCurrentIndustry(region);
+		doReturn(itemInventory).when(itemInventoryService).saveItemInStock(nullable(Long.class), any());
 
 		// When
 		ItemEntity result = underTest.addNewItem(name, description, categoryId, inStock, imagePath, region);
@@ -461,6 +463,9 @@ public class ItemServiceTest {
 		// When
 		Long itemId = 0L;
 		underTest.removeItemById(itemId);
+
+		// Then
+		verify(itemInventoryService, times(1)).removeItemInventoryByItemId(itemId);
 	}
 
 	/**
@@ -664,12 +669,14 @@ public class ItemServiceTest {
 		Date lastAccessedDate = new Date();
 		ItemEntity saveResult = new ItemEntity(name, description, categoryId, inStock, imagePath, region,
 				lastAccessedDate);
+		ItemInventoryEntity itemInventory = new ItemInventoryEntity(itemId, inStock);
 
 		Optional<ItemEntity> optional = Optional.of(saveResult);
 		doReturn(true).when(categoryService).existsByCategoryId(anyLong());
 		doReturn(optional).when(itemRepository).findById(anyLong());
 		doReturn(saveResult).when(itemRepository).save((ItemEntity) any());
 		doReturn(true).when(locationService).isCorrectRegionInCurrentIndustry(region);
+		doReturn(itemInventory).when(itemInventoryService).saveItemInStock(anyLong(), any());
 
 		// When
 		ItemEntity result = underTest.updateItem(itemId, name, description, categoryId, inStock, imagePath, region);
@@ -681,6 +688,7 @@ public class ItemServiceTest {
 		assertEquals(inStock, result.getInStock());
 		assertEquals(imagePath, result.getImage());
 		assertEquals(region, result.getRegion());
+		verify(itemInventoryService, times(1)).saveItemInStock(itemId, inStock);
 	}
 
 	/**
@@ -702,6 +710,7 @@ public class ItemServiceTest {
 		Date lastAccessedDate = new Date();
 		ItemEntity saveResult = new ItemEntity(name, description, categoryId, inStock, imagePath, region,
 				lastAccessedDate);
+		ItemInventoryEntity itemInventory = new ItemInventoryEntity(itemId, inStock);
 
 		Optional<ItemEntity> optional = Optional.of(saveResult);
 		doReturn(true).when(categoryService).existsByCategoryId(anyLong());
@@ -709,6 +718,7 @@ public class ItemServiceTest {
 		doReturn(saveResult).when(itemRepository).save((ItemEntity) any());
 		doReturn(false).when(itemRepository).existsByName(anyString());
 		doReturn(true).when(locationService).isCorrectRegionInCurrentIndustry(region);
+        doReturn(itemInventory).when(itemInventoryService).saveItemInStock(anyLong(), nullable(Integer.class));
 
 		// When
 		ItemEntity result = underTest.updateItem(itemId, differentName, description, categoryId, inStock, imagePath,
@@ -721,6 +731,7 @@ public class ItemServiceTest {
 		assertEquals(inStock, result.getInStock());
 		assertEquals(imagePath, result.getImage());
 		assertEquals(region, result.getRegion());
+        verify(itemInventoryService, times(1)).saveItemInStock(itemId, inStock);
 	}
 
 	/**
@@ -1101,8 +1112,9 @@ public class ItemServiceTest {
 		ItemEntity item = new ItemEntity(name, description, categoryId, inStock, imagePath, region, lastAccessedDate);
 		Optional<ItemEntity> optional = Optional.of(item);
 		Integer newInStock = 10;
+        ItemInventoryEntity itemInventory = new ItemInventoryEntity(itemId, newInStock);
 		doReturn(optional).when(itemRepository).findById(itemId);
-		doReturn(item).when(itemRepository).save(item);
+		doReturn(itemInventory).when(itemInventoryService).saveItemInStock(itemId, newInStock);
 
 		// When
 		ItemEntity result = underTest.updateItemInStock(itemId, newInStock);
@@ -1110,6 +1122,7 @@ public class ItemServiceTest {
 		// Then
 		assertNotNull(result);
 		assertEquals(newInStock, result.getInStock());
+		verify(itemInventoryService, times(1)).saveItemInStock(itemId, newInStock);
 	}
 
 	/**
@@ -1176,6 +1189,7 @@ public class ItemServiceTest {
 		ItemEntity entity = new ItemEntity(name, description, categoryId, inStock, imagePath, region, lastAccessedDate);
 		Optional<ItemEntity> optional = Optional.of(entity);
 		doReturn(optional).when(itemRepository).findById(nullable(Long.class));
+		doReturn(inStock).when(itemInventoryService).getInStockByItemId(nullable(Long.class));
 
 		// When
 		Long id = 0L;
@@ -1256,6 +1270,7 @@ public class ItemServiceTest {
 
 		// Then
 		assertNotNull(result);
+		verify(itemInventoryService, times(1)).getInStockByItemId(nullable(Long.class));
 	}
 
 	/**
@@ -1343,6 +1358,7 @@ public class ItemServiceTest {
 		// Then
 		assertNotNull(result);
 		assertEquals(1, result.size());
+		verify(itemInventoryService, times(findAllResult.size())).getInStockByItemId(nullable(Long.class));
 	}
 
 	/**
@@ -1391,6 +1407,7 @@ public class ItemServiceTest {
 
 		Page<ItemEntity> findAllResult = new PageImpl<>(itemList);
 		doReturn(findAllResult).when(itemRepository).findAll((Specification<ItemEntity>) any(), (Pageable) any());
+		doReturn(inStock).when(itemInventoryService).getInStockByItemId(any());
 
 		// When
 		String searchName = null;
@@ -1401,6 +1418,7 @@ public class ItemServiceTest {
 		// Then
 		assertNotNull(result);
 		assertEquals(1, result.getSize());
+        verify(itemInventoryService, times(itemList.size())).getInStockByItemId(nullable(Long.class));
 	}
 
 	/**
@@ -1428,38 +1446,7 @@ public class ItemServiceTest {
 
 		// Then
 		assertEquals(AssetMessages.NO_ITEMS, message);
-	}
-
-	/**
-	 * Test for getInStockById(Long)
-	 *
-	 * @see com.parasoft.demoapp.service.ItemService#getInStockById(Long)
-	 */
-	@Test
-	public void testGetInStockById_returnNull() throws Throwable {
-
-		// When
-		Long id = null;
-		Integer result = underTest.getInStockById(id);
-
-		// Then
-		assertEquals(0, result.intValue());
-	}
-	
-	/**
-	 * Test for getInStockById(Long)
-	 *
-	 * @see com.parasoft.demoapp.service.ItemService#getInStockById(Long)
-	 */
-	@Test
-	public void testGetInStockById_returnNotNull() throws Throwable {
-
-		// When
-		Long id = null;
-		Integer result = underTest.getInStockById(id);
-
-		// Then
-		assertEquals(0, result.intValue());
+        verify(itemInventoryService, times(0)).getInStockByItemId(nullable(Long.class));
 	}
 
 	/**
@@ -1488,6 +1475,7 @@ public class ItemServiceTest {
 		assertNotNull(result);
 		assertEquals(totalElement, result.getTotalElements());
 		assertEquals(content, result.getContent());
+        verify(itemInventoryService, times(content.size())).getInStockByItemId(nullable(Long.class));
 	}
 	
 	/**

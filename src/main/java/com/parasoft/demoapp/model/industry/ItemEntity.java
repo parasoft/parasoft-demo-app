@@ -25,7 +25,7 @@ public class ItemEntity {
     private String description;
 
     @Setter
-    @Column(name = "in_stock")
+    @Transient
     private Integer inStock;
 
     @Setter

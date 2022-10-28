@@ -54,6 +54,9 @@ public class OrderServiceSpringTest4 {
     @Autowired
     GlobalPreferencesService globalPreferencesService;
 
+    @Autowired
+    ItemInventoryService itemInventoryService;
+
     /**
      * Test for updateOrderByOrderNumberSynchronized(String, String, OrderStatus, Boolean, Boolean, String, String, boolean) under concurrency condition.
      *
@@ -111,7 +114,6 @@ public class OrderServiceSpringTest4 {
             // Then
             assertEquals(1, orderRepository.findAll().size());
             assertEquals(OrderStatus.DECLINED, orderRepository.findOrderByOrderNumber(order.getOrderNumber()).getStatus());
-            assertEquals(30, (int)itemService.getInStockById(item.getId()));
             itemService.removeItemById(item.getId());
             categoryService.removeCategory(category.getId());
             orderRepository.deleteAll();

@@ -7,7 +7,6 @@ import com.parasoft.demoapp.dto.InventoryOperationResultMessageDTO;
 import com.parasoft.demoapp.model.industry.ItemInventoryEntity;
 import com.parasoft.demoapp.repository.industry.ItemInventoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -73,5 +72,23 @@ public class ItemInventoryService {
             }
         }
         return "";
+    }
+
+    public ItemInventoryEntity saveItemInStock(Long itemId, Integer inStock) {
+        return itemInventoryRepository.save(new ItemInventoryEntity(itemId, inStock));
+    }
+
+    public Integer getInStockByItemId(Long id){
+        return itemInventoryRepository.findInStockByItemId(id);
+    }
+
+    public void removeItemInventoryByItemId(Long id) {
+        if (itemInventoryExistById(id)){
+            itemInventoryRepository.deleteById(id);
+        }
+    }
+
+    public boolean itemInventoryExistById(Long itemId) {
+        return itemInventoryRepository.existsById(itemId);
     }
 }

@@ -53,6 +53,9 @@ public class OrderServiceSpringTest {
     @Autowired
     OrderService underTest;
 
+    @Autowired
+    ItemInventoryService itemInventoryService;
+
     /**
      * Test for addNewOrder(Long, String, RegionType, String, String, String, String)
      *
@@ -142,7 +145,6 @@ public class OrderServiceSpringTest {
             assertEquals(newStatus, result.getStatus());
             assertEquals(comments, result.getComments());
             assertEquals(respondedBy, result.getRespondedBy());
-            assertEquals(30, (int)itemService.getInStockById(item.getId()));
 
             // When
             shoppingCartService.addCartItemInShoppingCart(userId, item.getId(), 20);
@@ -157,7 +159,6 @@ public class OrderServiceSpringTest {
             assertEquals(newStatus, result2.getStatus());
             assertEquals(comments, result2.getComments());
             assertEquals(respondedBy, result2.getRespondedBy());
-            assertEquals(10, (int)itemService.getInStockById(item.getId()));
         } finally {
             itemService.removeItemById(item.getId());
             categoryService.removeCategory(category.getId());
@@ -492,7 +493,6 @@ public class OrderServiceSpringTest {
         assertEquals(false, result.getReviewedByPRCH());
         assertEquals(true, result.getReviewedByAPV());
         assertEquals(respondedBy, result.getRespondedBy());
-        assertEquals(30, (int)itemService.getInStockById(item.getId()));
         assertEquals(comments, result.getComments());
 
         // When
@@ -533,7 +533,6 @@ public class OrderServiceSpringTest {
         assertEquals(false, result.getReviewedByPRCH());
         assertEquals(true, result.getReviewedByAPV());
         assertEquals(respondedBy, result.getRespondedBy());
-        assertEquals(30, (int)itemService.getInStockById(item.getId()));
 
         // When
         userRoleName = RoleType.ROLE_PURCHASER.toString(); // test point
@@ -547,7 +546,6 @@ public class OrderServiceSpringTest {
         assertEquals(true, result.getReviewedByPRCH());
         assertEquals(true, result.getReviewedByAPV());
         assertEquals(respondedBy, result.getRespondedBy());
-        assertEquals(30, (int)itemService.getInStockById(item.getId()));
 
         // When
         try {
@@ -571,7 +569,6 @@ public class OrderServiceSpringTest {
         assertEquals(OrderStatus.DECLINED, result.getStatus());
         assertEquals(true, result.getReviewedByPRCH());
         assertEquals(true, result.getReviewedByAPV());
-        assertEquals(30, (int)itemService.getInStockById(item.getId()));
 
         // When
         try {
@@ -669,7 +666,6 @@ public class OrderServiceSpringTest {
         assertEquals(false, result.getReviewedByPRCH());
         assertEquals(true, result.getReviewedByAPV());
         assertEquals(respondedBy, result.getRespondedBy());
-        assertEquals(30, (int)itemService.getInStockById(item.getId()));
 
         // When
         try {
@@ -709,7 +705,6 @@ public class OrderServiceSpringTest {
         assertEquals(false, result.getReviewedByPRCH());
         assertEquals(true, result.getReviewedByAPV());
         assertEquals(respondedBy, result.getRespondedBy());
-        assertEquals(30, (int)itemService.getInStockById(item.getId()));
 
         // When
         userRoleName = RoleType.ROLE_PURCHASER.toString(); // test point
@@ -723,7 +718,6 @@ public class OrderServiceSpringTest {
         assertEquals(true, result.getReviewedByPRCH());
         assertEquals(true, result.getReviewedByAPV());
         assertEquals(respondedBy, result.getRespondedBy());
-        assertEquals(30, (int)itemService.getInStockById(item.getId()));
 
         // When
         try {
@@ -748,7 +742,6 @@ public class OrderServiceSpringTest {
         assertEquals(true, result.getReviewedByPRCH());
         assertEquals(true, result.getReviewedByAPV());
         assertEquals(respondedBy, result.getRespondedBy());
-        assertEquals(30, (int)itemService.getInStockById(item.getId()));
 
         // When
         try {

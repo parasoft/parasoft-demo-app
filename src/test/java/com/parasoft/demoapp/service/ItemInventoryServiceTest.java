@@ -18,7 +18,7 @@ import static com.parasoft.demoapp.dto.InventoryOperation.DECREASE;
 import static com.parasoft.demoapp.dto.InventoryOperationStatus.FAIL;
 import static com.parasoft.demoapp.dto.InventoryOperationStatus.SUCCESS;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class ItemInventoryServiceTest {
 
@@ -105,5 +105,106 @@ public class ItemInventoryServiceTest {
                 Arrays.asList(
                         new InventoryInfoDTO(1L, 1),
                         new InventoryInfoDTO(2L, 2)), null);
+    }
+
+    @Test
+    public void testSaveItemInStock() {
+        // Given
+        Long itemId = 1L;
+        Integer inStock = 10;
+
+        when(itemInventoryRepository.save(new ItemInventoryEntity(itemId, inStock))).thenReturn(new ItemInventoryEntity(itemId, inStock));
+
+        // When
+        ItemInventoryEntity res = itemInventoryService.saveItemInStock(itemId, inStock);
+
+        // Then
+        assertEquals(itemId, res.getItemId());
+        assertEquals(inStock, res.getInStock());
+    }
+
+    @Test
+    public void testGetInStockByItemId() {
+        // Given
+        Long itemId = 1L;
+        Integer inStock = 10;
+
+        when(itemInventoryRepository.findInStockByItemId(itemId)).thenReturn(inStock);
+
+        // When
+        Integer res = itemInventoryService.getInStockByItemId(itemId);
+
+        // Then
+        assertEquals(inStock, res);
+    }
+
+    @Test
+    public void testGetInStockByItemId_ItemIdNotExist() {
+        // Given
+        Long itemId = 1L;
+
+        when(itemInventoryRepository.findInStockByItemId(itemId)).thenReturn(null);
+
+        // When
+        Integer res = itemInventoryService.getInStockByItemId(itemId);
+
+        // Then
+        assertNull(res);
+    }
+
+    @Test
+    public void testRemoveItemInventoryByItemId_normal() {
+        // Given
+        Long itemId = 1L;
+
+        when(itemInventoryService.itemInventoryExistById(itemId)).thenReturn(true);
+
+        // When
+        itemInventoryService.removeItemInventoryByItemId(itemId);
+
+        // Then
+        verify(itemInventoryRepository, times(1)).deleteById(itemId);
+    }
+
+    @Test
+    public void testRemoveItemInventoryByItemId_itemInventoryNotExist() {
+        // Given
+        Long itemId = 1L;
+
+        when(itemInventoryService.itemInventoryExistById(itemId)).thenReturn(false);
+
+        // When
+        itemInventoryService.removeItemInventoryByItemId(itemId);
+
+        // Then
+        verify(itemInventoryRepository, times(0)).deleteById(itemId);
+    }
+
+    @Test
+    public void testItemInventoryExistById_exist() {
+        // Given
+        Long itemId = 1L;
+
+        when(itemInventoryRepository.existsById(itemId)).thenReturn(true);
+
+        // When
+        Boolean res = itemInventoryService.itemInventoryExistById(itemId);
+
+        // Then
+        assertTrue(res);
+    }
+
+    @Test
+    public void testItemInventoryExistById_notExist() {
+        // Given
+        Long itemId = 1L;
+
+        when(itemInventoryRepository.existsById(itemId)).thenReturn(false);
+
+        // When
+        Boolean res = itemInventoryService.itemInventoryExistById(itemId);
+
+        // Then
+        assertFalse(res);
     }
 }

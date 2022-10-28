@@ -41,6 +41,9 @@ public class OrderService {
     @Autowired
     private LocationService locationService;
 
+    @Autowired
+    private ItemInventoryService itemInventoryService;
+
     public synchronized OrderEntity addNewOrderSynchronized(Long userId, String username, RegionType region, String location,
                                                             String receiverId, String eventId, String eventNumber)
             throws ParameterException, ItemNotFoundException, CartItemNotFoundException {
@@ -198,7 +201,7 @@ public class OrderService {
                 List<OrderItemEntity> orderItems = originalOrder.getOrderItems();
                 for(OrderItemEntity orderItem: orderItems) {
                     try {
-                        Integer originalInStock = itemService.getInStockById(orderItem.getItemId());
+                        Integer originalInStock = itemInventoryService.getInStockByItemId(orderItem.getItemId());
                         if(originalInStock != null) {
                             // We'll ignore 'update' operation for in stock when item is removed before
                             // returning the quantity into in stock.

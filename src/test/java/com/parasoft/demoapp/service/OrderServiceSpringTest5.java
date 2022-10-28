@@ -45,6 +45,9 @@ public class OrderServiceSpringTest5 {
     @Autowired
     OrderService underTest;
 
+    @Autowired
+    ItemInventoryService itemInventoryService;
+
     /**
      * <p>
      * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean) with transaction.<br/>
@@ -108,7 +111,7 @@ public class OrderServiceSpringTest5 {
             // Then
             assertEquals(1, orderRepository.findAll().size());
             assertEquals(OrderStatus.SUBMITTED, orderRepository.findOrderByOrderNumber(order.getOrderNumber()).getStatus());
-            assertEquals(10, (int)itemService.getInStockById(item.getId()));
+            assertEquals(10, (int)itemInventoryService.getInStockByItemId(item.getId()));
             itemService.removeItemById(item.getId());
             categoryService.removeCategory(category.getId());
             orderRepository.deleteAll();
