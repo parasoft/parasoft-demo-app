@@ -225,7 +225,7 @@ public class OrderService {
             }
         }else if(RoleType.ROLE_APPROVER.toString().equals(userRoleName)){
             if(!originalOrder.getStatus().equals(newStatus)) {
-                checkOrderStatusChangedByApproverButOriginalStatusIsNotSubmitted(originalOrder);
+                checkOrderIsOepnToApprover(originalOrder);
                 newOrder.setStatus(newStatus);
                 newOrder.setReviewedByPRCH(false);
                 newOrder.setReviewedByAPV(true);
@@ -276,9 +276,8 @@ public class OrderService {
     	}
 	}
 
-	private void checkOrderStatusChangedByApproverButOriginalStatusIsNotSubmitted(OrderEntity order)
-                                                                                throws IncorrectOperationException {
-    	if(!OrderStatus.PROCESSED.equals(order.getStatus())) {
+	private void checkOrderIsOepnToApprover(OrderEntity order) throws IncorrectOperationException {
+        if(!OrderStatus.PROCESSED.equals(order.getStatus())) {
 			throw new IncorrectOperationException(OrderMessages.ALREADY_MODIFIED_THIS_ORDER);
 		}
 	}
