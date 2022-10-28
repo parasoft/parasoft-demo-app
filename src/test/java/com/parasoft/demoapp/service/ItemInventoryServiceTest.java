@@ -15,8 +15,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import static com.parasoft.demoapp.dto.InventoryOperation.DECREASE;
+import static com.parasoft.demoapp.dto.InventoryOperation.INCREASE;
 import static com.parasoft.demoapp.dto.InventoryOperationStatus.FAIL;
 import static com.parasoft.demoapp.dto.InventoryOperationStatus.SUCCESS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.when;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -42,7 +46,8 @@ public class ItemInventoryServiceTest {
         when(itemInventoryRepository.findByItemId(2L)).thenReturn(new ItemInventoryEntity(2L, 3));
 
         // When
-        InventoryOperationResultMessageDTO resultMessage = itemInventoryService.receiveFromRequestQueue(requestMessage);
+        InventoryOperationResultMessageDTO resultMessage =
+                itemInventoryService.handleMessageFromRequestQueue(requestMessage);
 
         // Then
         InventoryOperationResultMessageDTO expectedResultMessage =
@@ -59,7 +64,8 @@ public class ItemInventoryServiceTest {
         when(itemInventoryRepository.findByItemId(2L)).thenReturn(null);
 
         // When
-        InventoryOperationResultMessageDTO resultMessage = itemInventoryService.receiveFromRequestQueue(requestMessage);
+        InventoryOperationResultMessageDTO resultMessage =
+                itemInventoryService.handleMessageFromRequestQueue(requestMessage);
 
         // Then
         InventoryOperationResultMessageDTO expectedResultMessage =
@@ -77,7 +83,8 @@ public class ItemInventoryServiceTest {
         when(itemInventoryRepository.findByItemId(2L)).thenReturn(new ItemInventoryEntity(2L, 1));
 
         // When
-        InventoryOperationResultMessageDTO resultMessage = itemInventoryService.receiveFromRequestQueue(requestMessage);
+        InventoryOperationResultMessageDTO resultMessage =
+                itemInventoryService.handleMessageFromRequestQueue(requestMessage);
 
         // Then
         InventoryOperationResultMessageDTO expectedResultMessage =
@@ -94,7 +101,8 @@ public class ItemInventoryServiceTest {
                         new ArrayList<>(), null);
 
         // When
-        InventoryOperationResultMessageDTO resultMessage = itemInventoryService.receiveFromRequestQueue(requestMessage);
+        InventoryOperationResultMessageDTO resultMessage =
+                itemInventoryService.handleMessageFromRequestQueue(requestMessage);
 
         // Then
         assertNull(resultMessage);
@@ -106,6 +114,66 @@ public class ItemInventoryServiceTest {
                         new InventoryInfoDTO(1L, 1),
                         new InventoryInfoDTO(2L, 2)), null);
     }
+
+    @Test
+    public void testIncrease_normal() {
+        // Given
+        InventoryOperationRequestMessageDTO requestMessage = createRequestMessageForIncrease();
+
+        when(itemInventoryRepository.findByItemId(1L)).thenReturn(new ItemInventoryEntity(1L, 1));
+        when(itemInventoryRepository.findByItemId(2L)).thenReturn(new ItemInventoryEntity(2L, 3));
+
+        // When
+        InventoryOperationResultMessageDTO resultMessage =
+                itemInventoryService.handleMessageFromRequestQueue(requestMessage);
+
+        // Then
+        InventoryOperationResultMessageDTO expectedResultMessage =
+                new InventoryOperationResultMessageDTO(INCREASE, requestMessage.getOrderNumber(), SUCCESS, null);
+        assertEquals(expectedResultMessage, resultMessage);
+    }
+
+    @Test
+    public void testIncrease_itemNotExist() {
+        // Given
+        InventoryOperationRequestMessageDTO requestMessage = createRequestMessageForIncrease();
+
+        when(itemInventoryRepository.findByItemId(1L)).thenReturn(new ItemInventoryEntity(1L, 1));
+        when(itemInventoryRepository.findByItemId(2L)).thenReturn(null);
+
+        // When
+        InventoryOperationResultMessageDTO resultMessage =
+                itemInventoryService.handleMessageFromRequestQueue(requestMessage);
+
+        // Then
+        InventoryOperationResultMessageDTO expectedResultMessage =
+                new InventoryOperationResultMessageDTO(INCREASE, requestMessage.getOrderNumber(), FAIL,
+                        "Inventory item with id 2 doesn't exist.");
+        assertEquals(expectedResultMessage, resultMessage);
+    }
+
+    @Test
+    public void testIncrease_noRequestItem() {
+        // Given
+        InventoryOperationRequestMessageDTO requestMessage =
+                new InventoryOperationRequestMessageDTO(INCREASE, "23-456-002",
+                        new ArrayList<>(), null);
+
+        // When
+        InventoryOperationResultMessageDTO resultMessage =
+                itemInventoryService.handleMessageFromRequestQueue(requestMessage);
+
+        // Then
+        assertNull(resultMessage);
+    }
+
+    private static InventoryOperationRequestMessageDTO createRequestMessageForIncrease() {
+        return new InventoryOperationRequestMessageDTO(INCREASE, "23-456-002",
+                Arrays.asList(
+                        new InventoryInfoDTO(1L, 1),
+                        new InventoryInfoDTO(2L, 2)), null);
+    }
+
 
     @Test
     public void testSaveItemInStock() {

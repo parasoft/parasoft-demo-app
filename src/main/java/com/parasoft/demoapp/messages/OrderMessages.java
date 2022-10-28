@@ -25,6 +25,7 @@ public class OrderMessages extends Messages {
 	public static final String FAILED_TO_INTRODUCES_INCORRECT_LOCATION_BUG = "Failed to introduce demo bug: {0}.";
     public static final String HAVE_NOT_IMPLEMENTED_BUG_FOR_CURRENT_INDUSTRY = "Have not implemented bug {0} for current industry.";
     public static final String USERNAME_CANNOT_BE_NULL = "Username should not be null.";
+    public static final String THE_ORDER_IS_PROCESSED = "The order is processed.";
 
     public OrderMessages() {
 		super("i18n/messages");
