@@ -927,7 +927,7 @@ public class OrderServiceTest {
         int totalElement = 2;
         Page<OrderEntity> page = new PageImpl<>(content, pageable, totalElement);
 
-        doReturn(page).when(orderRepository).findAll(nullable(Pageable.class));
+        doReturn(page).when(orderRepository).findAllByStatusNotAndStatusNot(any(), any(), nullable(Pageable.class));
 
         //doReturn(page).when(orderRepository).findAllByUserId(nullable(Long.class),
         //		nullable(Pageable.class));
@@ -1209,7 +1209,7 @@ public class OrderServiceTest {
         // Given
         String orderNumber = "11-234-567";
         OrderEntity order = prepareOrderWithIgnoringSubmmitedStatusHelper();
-        order.setStatus(OrderStatus.SUBMITTED);
+        order.setStatus(OrderStatus.PROCESSED);
         order.setOrderNumber(orderNumber);
         order.setReviewedByPRCH(true);
         order.setReviewedByAPV(false);
