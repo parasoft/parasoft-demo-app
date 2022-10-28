@@ -406,3 +406,9 @@ a, a:hover, a:focus {
 .regions {
     max-height: 28px;
 }
+
+.info-icon {
+    font-size: initial;
+    color: #0093d2;
+    vertical-align: text-top;
+}

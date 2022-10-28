@@ -305,6 +305,10 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
     	}
     }
 
+    demo.showToolTip = function() {
+        alert("TODO: PDA-1204 UI - Add a tooltip for PARASOFT JMS/MQ PROXY");
+    }
+
     validatePathWellForm = function(virtualizeServerPath){
 
     	if(virtualizeServerPath === null || virtualizeServerPath === ""){
