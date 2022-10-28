@@ -72,12 +72,37 @@ public class GlobalPreferencesEntity {
     @JsonIgnore
     private boolean labelsOverrided = false;
 
+    @Setter
+    @Column(name = "active_mq_enabled")
+    private Boolean activeMqEnabled;
+
+    @Setter
+    @Column(name = "order_service_destination_queue")
+    private String orderServiceDestinationQueue;
+
+    @Setter
+    @Column(name = "order_service_reply_to_queue")
+    private String orderServiceReplyToQueue;
+
+    @Setter
+    @Column(name = "inventory_service_destination_queue")
+    private String inventoryServiceDestinationQueue;
+
+    @Setter
+    @Column(name = "inventory_service_reply_to_queue")
+    private String inventoryServiceReplyToQueue;
+
     public GlobalPreferencesEntity(DataAccessMode dataAccessMode, String soapEndpoint,
                                    Set<RestEndpointEntity> restEndpoints,
                                    IndustryType industryType, Set<DemoBugEntity> demoBugs,
                                    Boolean advertisingEnabled, Boolean useParasoftJDBCProxy,
                                    String parasoftVirtualizeServerUrl, String parasoftVirtualizeServerPath,
-                                   String parasoftVirtualizeGroupId) {
+                                   String parasoftVirtualizeGroupId,
+                                   Boolean activeMqEnabled,
+                                   String orderServiceDestinationQueue,
+                                   String orderServiceReplyToQueue,
+                                   String inventoryServiceDestinationQueue,
+                                   String inventoryServiceReplyToQueue) {
         this.dataAccessMode = dataAccessMode;
         this.soapEndPoint = soapEndpoint;
         this.restEndPoints = restEndpoints;
@@ -88,6 +113,11 @@ public class GlobalPreferencesEntity {
         this.parasoftVirtualizeServerUrl = parasoftVirtualizeServerUrl;
         this.parasoftVirtualizeServerPath = parasoftVirtualizeServerPath;
         this.parasoftVirtualizeGroupId = parasoftVirtualizeGroupId;
+        this.activeMqEnabled = activeMqEnabled;
+        this.orderServiceDestinationQueue = orderServiceDestinationQueue;
+        this.orderServiceReplyToQueue = orderServiceReplyToQueue;
+        this.inventoryServiceDestinationQueue = inventoryServiceDestinationQueue;
+        this.inventoryServiceReplyToQueue = inventoryServiceReplyToQueue;
     }
 
 }

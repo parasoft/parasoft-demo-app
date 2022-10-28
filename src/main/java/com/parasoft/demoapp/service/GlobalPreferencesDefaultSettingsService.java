@@ -4,6 +4,7 @@ import static com.parasoft.demoapp.config.ParasoftJDBCProxyConfig.*;
 
 import java.util.*;
 
+import com.parasoft.demoapp.config.activemq.ActiveMQConfig;
 import com.parasoft.demoapp.model.industry.RegionType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -61,6 +62,12 @@ public class GlobalPreferencesDefaultSettingsService {
         String parasoftVirtualizeServerUrl = defaultParasoftVirtualizeServerUrl();
         String parasoftVirtualizeServerPath = defaultParasoftVirtualizeServerPath();
         String parasoftVirtualizeGroupId = defaultParasoftVirtualizeGroupId();
+        Boolean activeMqProxyEnabled = defaultActiveMqProxyEnabled();
+        String orderServiceDestinationQueue = defaultOrderServiceDestinationQueue();
+        String orderServiceReplyToQueue = defaultOrderServiceReplyToQueue();
+        String inventoryServiceDestinationQueue = defaultInventoryServiceDestinationQueue();
+        String ietInventoryServiceReplyToQueue = defaultInventoryServiceReplyToQueue();
+
 
         defaultPreferences.setDataAccessMode(dataAccessMode);
         defaultPreferences.setSoapEndPoint(soapEndPoint);
@@ -72,6 +79,12 @@ public class GlobalPreferencesDefaultSettingsService {
         defaultPreferences.setParasoftVirtualizeServerUrl(parasoftVirtualizeServerUrl);
         defaultPreferences.setParasoftVirtualizeServerPath(parasoftVirtualizeServerPath);
         defaultPreferences.setParasoftVirtualizeGroupId(parasoftVirtualizeGroupId);
+
+        defaultPreferences.setActiveMqEnabled(activeMqProxyEnabled);
+        defaultPreferences.setOrderServiceDestinationQueue(orderServiceDestinationQueue);
+        defaultPreferences.setOrderServiceReplyToQueue(orderServiceReplyToQueue);
+        defaultPreferences.setInventoryServiceDestinationQueue(inventoryServiceDestinationQueue);
+        defaultPreferences.setInventoryServiceReplyToQueue(ietInventoryServiceReplyToQueue);
 
         return defaultPreferences;
     }
@@ -251,5 +264,25 @@ public class GlobalPreferencesDefaultSettingsService {
         names.add("ORDER_REQUESTS");
 
         return names;
+    }
+
+    public boolean defaultActiveMqProxyEnabled(){
+        return false;
+    }
+
+    public String defaultOrderServiceDestinationQueue() {
+        return ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST;
+    }
+
+    public String defaultOrderServiceReplyToQueue() {
+        return ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE;
+    }
+
+    public String defaultInventoryServiceDestinationQueue() {
+        return ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST;
+    }
+
+    public String defaultInventoryServiceReplyToQueue() {
+        return ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE;
     }
 }

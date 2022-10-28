@@ -11,19 +11,19 @@ public class DatabaseOperationUtil {
 
 	public static void executeSqlScript(final DataSource dataSource, final Resource script) {
 		final DataSourceInitializer initializer = new DataSourceInitializer();
-		
+
 		initializer.setDataSource(dataSource);
 		initializer.setDatabasePopulator(databasePopulator(script));
 		initializer.afterPropertiesSet();
 	}
-	
+
     private static DatabasePopulator databasePopulator(final Resource script) {
         final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
 
         populator.addScripts(script);
-        populator.setSeparator("$$");
+        populator.setSeparator(";");
         populator.setSqlScriptEncoding("UTF-8");
         return populator;
     }
-    
+
 }

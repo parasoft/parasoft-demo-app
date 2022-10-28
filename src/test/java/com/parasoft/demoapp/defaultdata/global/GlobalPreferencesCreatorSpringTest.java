@@ -1,10 +1,6 @@
 package com.parasoft.demoapp.defaultdata.global;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
+import com.parasoft.demoapp.config.activemq.ActiveMQConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +12,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.parasoft.demoapp.model.global.preferences.GlobalPreferencesEntity;
 import com.parasoft.demoapp.model.global.preferences.IndustryType;
 import com.parasoft.demoapp.service.GlobalPreferencesService;
+
+import static org.junit.Assert.*;
 
 /**
  * test class GlobalPreferencesCreator
@@ -49,6 +47,11 @@ public class GlobalPreferencesCreatorSpringTest {
         assertEquals(IndustryType.OUTDOOR, currentGlobalPreferences.getIndustryType());
         assertEquals(2, currentGlobalPreferences.getDemoBugs().size());
         assertTrue(currentGlobalPreferences.getAdvertisingEnabled());
+        assertFalse(currentGlobalPreferences.getActiveMqEnabled());
+        assertEquals(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST, currentGlobalPreferences.getOrderServiceDestinationQueue());
+        assertEquals(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE, currentGlobalPreferences.getOrderServiceReplyToQueue());
+        assertEquals(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST, currentGlobalPreferences.getInventoryServiceDestinationQueue());
+        assertEquals(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE, currentGlobalPreferences.getInventoryServiceReplyToQueue());
     }
 
 }

@@ -54,7 +54,12 @@ public class GlobalPreferencesCreator extends AbstractDataCreator {
                             defaultPreferences.getAdvertisingEnabled(), defaultPreferences.getUseParasoftJDBCProxy(),
                             defaultPreferences.getParasoftVirtualizeServerUrl(),
                             defaultPreferences.getParasoftVirtualizeServerPath(),
-                            defaultPreferences.getParasoftVirtualizeGroupId());
+                            defaultPreferences.getParasoftVirtualizeGroupId(),
+                            defaultPreferences.getActiveMqEnabled(),
+                            defaultPreferences.getOrderServiceDestinationQueue(),
+                            defaultPreferences.getOrderServiceReplyToQueue(),
+                            defaultPreferences.getInventoryServiceDestinationQueue(),
+                            defaultPreferences.getInventoryServiceReplyToQueue());
 
             for(RestEndpointEntity restEndpointEntity : restEndpointService.getAllEndpoints()){
                 restEndpointEntity.setGlobalPreferences(defaultPreferences);
