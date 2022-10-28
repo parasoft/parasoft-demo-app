@@ -278,7 +278,7 @@ public class OrderService {
 
 	private void checkOrderStatusChangedByApproverButOriginalStatusIsNotSubmitted(OrderEntity order)
                                                                                 throws IncorrectOperationException {
-    	if(!OrderStatus.SUBMITTED.equals(order.getStatus())) {
+    	if(!OrderStatus.PROCESSED.equals(order.getStatus())) {
 			throw new IncorrectOperationException(OrderMessages.ALREADY_MODIFIED_THIS_ORDER);
 		}
 	}
@@ -313,7 +313,7 @@ public class OrderService {
 
         Page<OrderEntity> page = new PageImpl<>(new ArrayList<>(), pageable,  0);
         if(RoleType.ROLE_APPROVER.toString().equals(userRoleName)) {
-            page = orderRepository.findAll(pageable);
+            page = orderRepository.findAllByStatusNotAndStatusNot(OrderStatus.SUBMITTED, OrderStatus.CANCELED, pageable);
 
         }else if (RoleType.ROLE_PURCHASER.toString().equals(userRoleName)) {
             page = orderRepository.findAllByRequestedBy(requestedBy, pageable);

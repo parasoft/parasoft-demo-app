@@ -695,14 +695,25 @@ function connectAndSubscribeMQ(role, $http, $rootScope, $filter, mqConsumeCallba
 }
 
 function translatedStatus(status, $filter) {
-    if(status === 'SUBMITTED'){
-        status = 'IS_SUBMITTED';
-    }else if(status === 'APPROVED'){
-        status = 'IS_APPROVED';
-    }else if(status === 'DECLINED'){
-        status = 'IS_DECLINED';
-    }else if(status === 'DECLINED_WITH_REASON'){
-        status = 'IS_DECLINED';
+    switch (status) {
+        case 'SUBMITTED':
+            status = 'IS_SUBMITTED';
+            break;
+        case 'PROCESSED':
+            if (angular.equals(CURRENT_ROLE, ROLE_APPROVER)) {
+                status = 'IS_SUBMITTED';
+            } else {
+                status = 'IS_PROCESSED';
+            }
+            break;
+        case 'CANCELED':
+            status = 'IS_CANCELED';
+            break;
+        case 'APPROVED':
+            status = 'IS_APPROVED';
+            break;
+        case 'DECLINED':
+            status = 'IS_DECLINED';
     }
     return $filter('translate')(status);
 }
