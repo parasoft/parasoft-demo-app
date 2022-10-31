@@ -18,6 +18,7 @@ import org.springframework.jms.support.converter.MessageConverter;
 import org.springframework.jms.support.converter.MessageType;
 
 import javax.jms.ConnectionFactory;
+import javax.jms.JMSException;
 import java.net.URI;
 
 @Configuration
@@ -91,5 +92,26 @@ public class ActiveMQConfig {
         broker.addConnector(wsConnector);
 
         return broker;
+    }
+
+    public static synchronized ActiveMQQueue getInventoryRequestActiveMqQueue() {
+        return inventoryRequestActiveMqQueue;
+    }
+
+    public static synchronized void setInventoryRequestActiveMqQueue(ActiveMQQueue inventoryRequestActiveMqQueue) {
+        ActiveMQConfig.inventoryRequestActiveMqQueue = inventoryRequestActiveMqQueue;
+    }
+
+    public static synchronized ActiveMQQueue getInventoryResponseActiveMqQueue() {
+        return inventoryResponseActiveMqQueue;
+    }
+
+    public static synchronized void setInventoryResponseActiveMqQueue(ActiveMQQueue inventoryResponseActiveMqQueue) {
+        ActiveMQConfig.inventoryResponseActiveMqQueue = inventoryResponseActiveMqQueue;
+    }
+
+    public static synchronized void resetInventoryActiveMqQueues() {
+        inventoryRequestActiveMqQueue = new ActiveMQQueue(DEFAULT_QUEUE_INVENTORY_REQUEST);
+        inventoryResponseActiveMqQueue = new ActiveMQQueue(DEFAULT_QUEUE_INVENTORY_RESPONSE);
     }
 }
