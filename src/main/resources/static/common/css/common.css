@@ -407,8 +407,14 @@ a, a:hover, a:focus {
     max-height: 28px;
 }
 
+.align-to-icon {
+    vertical-align: middle;
+    line-height: 3rem;
+}
+
 .info-icon {
     font-size: initial;
-    color: #0093d2;
-    vertical-align: text-top;
+    color: #0366AE;
+    vertical-align: middle;
+    line-height: 3rem;
 }
