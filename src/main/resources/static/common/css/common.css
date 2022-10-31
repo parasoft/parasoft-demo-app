@@ -417,4 +417,5 @@ a, a:hover, a:focus {
     color: #0366AE;
     vertical-align: middle;
     line-height: 3rem;
+    cursor: pointer;
 }
