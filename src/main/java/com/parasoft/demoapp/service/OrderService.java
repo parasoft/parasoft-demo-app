@@ -44,8 +44,8 @@ public class OrderService {
         OrderEntity order = null;
         String orderNumber = operationResult.getOrderNumber();
         try {
-            order = getOrderByOrderNumber(orderNumber);
             if(operationResult.getOperation() == InventoryOperation.DECREASE) {
+                order = getOrderByOrderNumber(orderNumber);
                 switch (operationResult.getStatus()) {
                     case SUCCESS:
                         order = updateOrderStatus(orderNumber, OrderStatus.PROCESSED);
@@ -61,15 +61,13 @@ public class OrderService {
                 }
             }
             return null;
-        } catch (OrderNotFoundException e) {
-            // TODO will be handled in separate task(rollback the inventory)
+        } catch (OrderNotFoundException | ParameterException e) {
             log.error("Order Not Found Exception:", e);
-            return new InventoryOperationRequestMessageDTO(InventoryOperation.INCREASE,
+            return new InventoryOperationRequestMessageDTO(InventoryOperation.NONE,
                     operationResult.getOrderNumber(),
-                    null,
                     e.getMessage());
-        } catch (ParameterException e) {
-            log.error("Parameter Exception:", e);
+        } catch (OrderStatusException e) {
+            log.error("Order Status Exception:", e);
             assert order != null;
             return new InventoryOperationRequestMessageDTO(InventoryOperation.INCREASE,
                     operationResult.getOrderNumber(),
@@ -78,14 +76,14 @@ public class OrderService {
         }
     }
 
-    private OrderEntity updateOrderStatus(String orderNumber, OrderStatus status) throws OrderNotFoundException, ParameterException {
+    private OrderEntity updateOrderStatus(String orderNumber, OrderStatus status) throws OrderNotFoundException, ParameterException, OrderStatusException {
         OrderEntity order = getOrderByOrderNumber(orderNumber);
         if(order.getStatus().getPriority() < status.getPriority()) {
             order.setStatus(status);
             return orderRepository.save(order);
         }
 
-        throw new ParameterException("Can not change order status from " + order.getStatus() + " to " + status);
+        throw new OrderStatusException("Can not change order status from " + order.getStatus() + " to " + status);
     }
 
     public synchronized OrderEntity addNewOrderSynchronized(Long userId, String username, RegionType region, String location,

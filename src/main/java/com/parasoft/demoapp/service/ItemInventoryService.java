@@ -15,6 +15,7 @@ import java.util.List;
 
 import static com.parasoft.demoapp.dto.InventoryOperation.DECREASE;
 import static com.parasoft.demoapp.dto.InventoryOperation.INCREASE;
+import static com.parasoft.demoapp.dto.InventoryOperation.NONE;
 import static com.parasoft.demoapp.dto.InventoryOperationStatus.FAIL;
 import static com.parasoft.demoapp.dto.InventoryOperationStatus.SUCCESS;
 
@@ -27,9 +28,12 @@ public class ItemInventoryService {
     @Transactional
     public InventoryOperationResultMessageDTO handleMessageFromRequestQueue(InventoryOperationRequestMessageDTO
                                                                                         requestMessage) {
-        InventoryOperationResultMessageDTO resultMessage = new InventoryOperationResultMessageDTO();
-
         InventoryOperation operation = requestMessage.getOperation();
+        if (operation == NONE) {
+            return null;
+        }
+
+        InventoryOperationResultMessageDTO resultMessage = new InventoryOperationResultMessageDTO();
         resultMessage.setOperation(operation);
         resultMessage.setOrderNumber(requestMessage.getOrderNumber());
         List<InventoryInfoDTO> requestedItems = requestMessage.getInventoryInfos();

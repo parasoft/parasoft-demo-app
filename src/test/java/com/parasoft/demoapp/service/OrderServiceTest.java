@@ -164,7 +164,7 @@ public class OrderServiceTest {
 
         // Then
         InventoryOperationRequestMessageDTO expectedRequestMessage =
-                new InventoryOperationRequestMessageDTO(InventoryOperation.INCREASE, orderNumber, null,
+                new InventoryOperationRequestMessageDTO(InventoryOperation.NONE, orderNumber,
                         "There is no order corresponding to " + orderNumber + ".");
         assertEquals(requestMessage, expectedRequestMessage);
     }
