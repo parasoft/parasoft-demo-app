@@ -53,4 +53,13 @@ public class ItemEntity {
         this.region = region;
         this.lastAccessedDate = lastAccessedDate;
     }
+
+    public ItemEntity(String name, String description, Long categoryId, String image, RegionType region, Date lastAccessedDate) {
+        this.name = name;
+        this.description = description;
+        this.categoryId = categoryId;
+        this.image = image;
+        this.region = region;
+        this.lastAccessedDate = lastAccessedDate;
+    }
 }

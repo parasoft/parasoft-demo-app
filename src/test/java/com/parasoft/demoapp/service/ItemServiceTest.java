@@ -80,7 +80,7 @@ public class ItemServiceTest {
 		Date lastAccessedDate = new Date();
 		ItemEntity saveResult = new ItemEntity(name, description, categoryId, inStock, imagePath, region,
 				lastAccessedDate);
-		ItemInventoryEntity itemInventory = new ItemInventoryEntity(0L, inStock);
+		ItemInventoryEntity itemInventory = new ItemInventoryEntity(null, inStock);
 		doReturn(saveResult).when(itemRepository).save((ItemEntity) any());
 		doReturn(true).when(categoryService).existsByCategoryId(anyLong());
 		doReturn(true).when(locationService).isCorrectRegionInCurrentIndustry(region);
@@ -97,6 +97,7 @@ public class ItemServiceTest {
 		assertEquals(imagePath, result.getImage());
 		assertEquals(region.getDisplayName(), result.getRegion().getDisplayName());
 		assertEquals(lastAccessedDate, result.getLastAccessedDate());
+		verify(itemInventoryService, times(1)).saveItemInStock(null, inStock);
 	}
 
 	/**

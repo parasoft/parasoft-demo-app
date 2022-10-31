@@ -43,7 +43,7 @@ public class ItemService {
     @Autowired
     private ItemInventoryService itemInventoryService;
 
-    @Transactional
+    @Transactional(value = "industryTransactionManager")
     public ItemEntity addNewItem(
             String name, String description, Long categoryId, Integer inStock, String imagePath, RegionType region)
             throws ItemNameExistsAlreadyException, CategoryNotFoundException, ParameterException, GlobalPreferencesNotFoundException, 
@@ -74,14 +74,15 @@ public class ItemService {
         	throw new UnsupportedOperationInCurrentIndustryException(AssetMessages.INCORRECT_REGION_IN_CURRENT_INDUSTRY);
         }
         
-        ItemEntity item = new ItemEntity(name, description, categoryId, inStock, imagePath, region, new Date());
+        ItemEntity item = new ItemEntity(name, description, categoryId, imagePath, region, new Date());
         ItemEntity result = itemRepository.save(item);
-        itemInventoryService.saveItemInStock(result.getId(), item.getInStock());
+        Integer itemInstock = itemInventoryService.saveItemInStock(result.getId(), inStock).getInStock();
+        result.setInStock(itemInstock);
 
         return result;
     }
 
-    @Transactional
+    @Transactional(value = "industryTransactionManager")
     public void removeItemById(Long itemId) throws ItemNotFoundException, ParameterException {
         ParameterValidator.requireNonNull(itemId, AssetMessages.ITEM_ID_CANNOT_BE_NULL);
 
@@ -118,7 +119,7 @@ public class ItemService {
         removeItemById(item.getId());
     }
 
-    @Transactional
+    @Transactional(value = "industryTransactionManager")
     public ItemEntity updateItem(Long itemId, String name, String description, Long categoryId,
                                  Integer inStock, String imagePath, RegionType region)
             throws ItemNameExistsAlreadyException, CategoryNotFoundException, ItemNotFoundException,
@@ -158,18 +159,18 @@ public class ItemService {
         
         itemEntity.setDescription(description);
         itemEntity.setCategoryId(categoryId);
-        itemEntity.setInStock(inStock);
         itemEntity.setImage(imagePath);
         itemEntity.setRegion(region);
         itemEntity.setLastAccessedDate(new Date());
 
         ItemEntity item = itemRepository.save(itemEntity);
-        item.setInStock(itemInventoryService.saveItemInStock(itemId, inStock).getInStock());
+        Integer itemInStock = itemInventoryService.saveItemInStock(itemId, inStock).getInStock();
+        item.setInStock(itemInStock);
 
         return item;
     }
 
-    @Transactional
+    @Transactional(value = "industryTransactionManager")
     public ItemEntity updateItemInStock(Long itemId, Integer newInStock)
             throws ParameterException, ItemNotFoundException {
         ParameterValidator.requireNonNull(newInStock, AssetMessages.IN_STOCK_CANNOT_BE_NULL);

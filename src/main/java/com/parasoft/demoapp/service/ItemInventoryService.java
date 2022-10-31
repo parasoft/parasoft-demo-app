@@ -27,7 +27,7 @@ public class ItemInventoryService {
     @Autowired
     private ItemInventoryRepository itemInventoryRepository;
 
-    @Transactional
+    @Transactional(value = "industryTransactionManager")
     public InventoryOperationResultMessageDTO handleMessageFromRequestQueue(InventoryOperationRequestMessageDTO
                                                                                         requestMessage) {
         InventoryOperationResultMessageDTO resultMessage = new InventoryOperationResultMessageDTO();
