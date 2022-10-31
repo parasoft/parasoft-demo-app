@@ -8,6 +8,7 @@ import javax.persistence.*;
 @Entity
 @Table(name="tbl_item_inventory")
 @NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode
 @ToString
 public class ItemInventoryEntity {

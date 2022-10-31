@@ -64,7 +64,7 @@ app.controller('approverHomePageController', function($rootScope, $http, $filter
             },
         };
         
-        if(orderStatus === 'SUBMITTED'){
+        if(orderStatus === 'PROCESSED'){
             approver.response.showResponseSelect = true;
             approver.response.showResponseCommentsTextarea = true;
             approver.response.showResponseSaveAndCancel = true;

@@ -1,15 +1,13 @@
 package com.parasoft.demoapp.service;
 
-import com.parasoft.demoapp.dto.OrderMQMessageDTO;
+import com.parasoft.demoapp.dto.*;
 import com.parasoft.demoapp.exception.*;
 import com.parasoft.demoapp.messages.AssetMessages;
 import com.parasoft.demoapp.messages.OrderMessages;
 import com.parasoft.demoapp.model.global.RoleType;
 import com.parasoft.demoapp.model.industry.*;
 import com.parasoft.demoapp.repository.industry.OrderRepository;
-
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -40,6 +38,55 @@ public class OrderService {
 
     @Autowired
     private LocationService locationService;
+
+    @Transactional
+    public InventoryOperationRequestMessageDTO handleMessageFromResponseQueue(InventoryOperationResultMessageDTO operationResult) {
+        OrderEntity order = null;
+        String orderNumber = operationResult.getOrderNumber();
+        try {
+            order = getOrderByOrderNumber(orderNumber);
+            if(operationResult.getOperation() == InventoryOperation.DECREASE) {
+                switch (operationResult.getStatus()) {
+                    case SUCCESS:
+                        order = updateOrderStatus(orderNumber, OrderStatus.PROCESSED);
+                        OrderMQMessageDTO message =
+                                new OrderMQMessageDTO(orderNumber, order.getRequestedBy(), order.getStatus(), OrderMessages.THE_ORDER_IS_PROCESSED);
+                        orderMQService.sendToApprover(message);
+                        break;
+                    case FAIL:
+                        updateOrderStatus(orderNumber, OrderStatus.CANCELED);
+                        break;
+                    default:
+                        log.error(operationResult.getStatus() + " status is not supported");
+                }
+            }
+            return null;
+        } catch (OrderNotFoundException e) {
+            // TODO will be handled in separate task(rollback the inventory)
+            log.error("Order Not Found Exception:", e);
+            return new InventoryOperationRequestMessageDTO(InventoryOperation.INCREASE,
+                    operationResult.getOrderNumber(),
+                    null,
+                    e.getMessage());
+        } catch (ParameterException e) {
+            log.error("Parameter Exception:", e);
+            assert order != null;
+            return new InventoryOperationRequestMessageDTO(InventoryOperation.INCREASE,
+                    operationResult.getOrderNumber(),
+                    InventoryInfoDTO.convertFrom(order.getOrderItems()),
+                    e.getMessage());
+        }
+    }
+
+    private OrderEntity updateOrderStatus(String orderNumber, OrderStatus status) throws OrderNotFoundException, ParameterException {
+        OrderEntity order = getOrderByOrderNumber(orderNumber);
+        if(order.getStatus().getPriority() < status.getPriority()) {
+            order.setStatus(status);
+            return orderRepository.save(order);
+        }
+
+        throw new ParameterException("Can not change order status from " + order.getStatus() + " to " + status);
+    }
 
     public synchronized OrderEntity addNewOrderSynchronized(Long userId, String username, RegionType region, String location,
                                                             String receiverId, String eventId, String eventNumber)
@@ -82,15 +129,18 @@ public class OrderService {
         order.setReviewedByPRCH(true);
 
         List<OrderItemEntity> orderItemEntities = cartItemsToOrderItems(userId);
+
         for(OrderItemEntity orderItem : orderItemEntities) {
-        	orderItem.setOrder(order);
-        	}
+            orderItem.setOrder(order);
+        }
         order.setOrderItems(orderItemEntities);
 
         order = orderRepository.save(order);
-        order.setOrderNumber(generateOrderNumberAccordingToId(order.getId()));
+        String orderNumber = generateOrderNumberAccordingToId(order.getId());
+        order.setOrderNumber(orderNumber);
         order = orderRepository.save(order);
         shoppingCartService.clearShoppingCart(userId);
+        orderMQService.sendToInventoryRequestQueue(InventoryOperation.DECREASE, orderNumber, order.getOrderItems());
 
         return order;
     }
@@ -121,14 +171,8 @@ public class OrderService {
             orderItem.setDescription(item.getDescription());
             orderItem.setImage(item.getImage());
             orderItem.setItemId(item.getId());
+            orderItem.setQuantity(cartItem.getQuantity());
 
-            if (cartItem.getQuantity() > item.getInStock()) {
-                throw new ParameterException(
-                        MessageFormat.format(AssetMessages.IN_STOCK_OF_ITEM_IS_INSUFFICIENT, item.getName()));
-            } else {
-                orderItem.setQuantity(cartItem.getQuantity());
-                itemService.updateItemInStock(item.getId(), item.getInStock() - cartItem.getQuantity());
-            }
             orderItems.add(orderItem);
         }
 
@@ -181,7 +225,7 @@ public class OrderService {
             }
         }else if(RoleType.ROLE_APPROVER.toString().equals(userRoleName)){
             if(!originalOrder.getStatus().equals(newStatus)) {
-                checkOrderStatusChangedByApproverButOriginalStatusIsNotSubmitted(originalOrder);
+                checkOrderIsOepnToApprover(originalOrder);
                 newOrder.setStatus(newStatus);
                 newOrder.setReviewedByPRCH(false);
                 newOrder.setReviewedByAPV(true);
@@ -198,21 +242,9 @@ public class OrderService {
         if(!originalOrder.getStatus().equals(newStatus)) {
         	newOrder.setComments(comments == null ? "" : comments);
             if(OrderStatus.DECLINED.equals(newStatus)) {
-                List<OrderItemEntity> orderItems = originalOrder.getOrderItems();
-                for(OrderItemEntity orderItem: orderItems) {
-                    try {
-                        Integer originalInStock = itemService.getInStockById(orderItem.getItemId());
-                        if(originalInStock != null) {
-                            // We'll ignore 'update' operation for in stock when item is removed before
-                            // returning the quantity into in stock.
-                            itemService.updateItemInStock(orderItem.getItemId(),
-                                                                originalInStock + orderItem.getQuantity());
-                        }
-                    }catch(ItemNotFoundException e){
-                        // Normally, it can't reach here since we avoid the exception by 'if' statement.
-                        log.info(OrderMessages.ITEM_HAS_ALREADY_BEEN_REMOVED);
-                    }
-                }
+                orderMQService.sendToInventoryRequestQueue(InventoryOperation.INCREASE,
+                        originalOrder.getOrderNumber(),
+                        originalOrder.getOrderItems());
             }
 
             newOrder.setApproverReplyDate(new Date());
@@ -244,9 +276,8 @@ public class OrderService {
     	}
 	}
 
-	private void checkOrderStatusChangedByApproverButOriginalStatusIsNotSubmitted(OrderEntity order)
-                                                                                throws IncorrectOperationException {
-    	if(!OrderStatus.SUBMITTED.equals(order.getStatus())) {
+	private void checkOrderIsOepnToApprover(OrderEntity order) throws IncorrectOperationException {
+        if(!OrderStatus.PROCESSED.equals(order.getStatus())) {
 			throw new IncorrectOperationException(OrderMessages.ALREADY_MODIFIED_THIS_ORDER);
 		}
 	}

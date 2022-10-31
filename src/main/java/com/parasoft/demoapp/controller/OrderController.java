@@ -1,10 +1,8 @@
 package com.parasoft.demoapp.controller;
 
 import com.parasoft.demoapp.dto.OrderDTO;
-import com.parasoft.demoapp.dto.OrderMQMessageDTO;
 import com.parasoft.demoapp.dto.OrderStatusDTO;
 import com.parasoft.demoapp.exception.*;
-import com.parasoft.demoapp.messages.OrderMessages;
 import com.parasoft.demoapp.model.industry.OrderEntity;
 import com.parasoft.demoapp.service.DemoBugService;
 import com.parasoft.demoapp.service.OrderMQService;
@@ -66,10 +64,6 @@ public class OrderController {
         OrderEntity order = orderService.addNewOrderSynchronized(currentUserId, currentUserName, orderDto.getRegion(), orderDto.getLocation(),
                 orderDto.getReceiverId(), orderDto.getEventId(), orderDto.getEventNumber());
         response.setData(order);
-
-        OrderMQMessageDTO message =
-                new OrderMQMessageDTO(order.getOrderNumber(), order.getRequestedBy(), order.getStatus(), OrderMessages.ORDER_STATUS_CHANGED);
-        orderMQService.sendToApprover(message);
 
         return response;
     }
