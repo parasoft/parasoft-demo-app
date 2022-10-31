@@ -41,7 +41,7 @@ app.controller('orderHistoryController', function($rootScope, $http, $filter) {
             case 'PROCESSED':
                 return $filter('translate')('PROCESSED_STATUS');
             case 'CANCELED':
-                return $filter('translate')('CANCELED_STATUS');
+                return $filter('translate')('CANCELLED_STATUS');
             case 'APPROVED':
                 return $filter('translate')('APPROVED_STATUS');
             case 'DECLINED':

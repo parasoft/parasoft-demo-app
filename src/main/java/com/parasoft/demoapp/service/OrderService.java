@@ -312,7 +312,10 @@ public class OrderService {
 
         Page<OrderEntity> page = new PageImpl<>(new ArrayList<>(), pageable,  0);
         if(RoleType.ROLE_APPROVER.toString().equals(userRoleName)) {
-            page = orderRepository.findAllByStatusNotAndStatusNot(OrderStatus.SUBMITTED, OrderStatus.CANCELED, pageable);
+            List<OrderStatus> orderStatues = new ArrayList<>();
+            orderStatues.add(OrderStatus.SUBMITTED);
+            orderStatues.add(OrderStatus.CANCELED);
+            page = orderRepository.findAllByStatusNotIn(orderStatues, pageable);
 
         }else if (RoleType.ROLE_PURCHASER.toString().equals(userRoleName)) {
             page = orderRepository.findAllByRequestedBy(requestedBy, pageable);

@@ -927,7 +927,7 @@ public class OrderServiceTest {
         int totalElement = 2;
         Page<OrderEntity> page = new PageImpl<>(content, pageable, totalElement);
 
-        doReturn(page).when(orderRepository).findAllByStatusNotAndStatusNot(any(), any(), nullable(Pageable.class));
+        doReturn(page).when(orderRepository).findAllByStatusNotIn(any(), nullable(Pageable.class));
 
         //doReturn(page).when(orderRepository).findAllByUserId(nullable(Long.class),
         //		nullable(Pageable.class));

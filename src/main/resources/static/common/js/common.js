@@ -707,7 +707,7 @@ function translatedStatus(status, $filter) {
             }
             break;
         case 'CANCELED':
-            status = 'IS_CANCELED';
+            status = 'IS_CANCELLED';
             break;
         case 'APPROVED':
             status = 'IS_APPROVED';
