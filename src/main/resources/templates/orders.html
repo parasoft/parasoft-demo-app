@@ -44,7 +44,7 @@
 											<span class="new_label new_label{{$index+1}}" translate="NEW" ng-if="isPurchaser" ng-show="!order.reviewedByPRCH"></span>
 										</div>
 										<!-- <span class="new_label" translate="NEW" ng-if="isApprover" ng-show="!order.reviewedByAPV"></span> -->
-										<span ng-class="!order.reviewedByPRCH ? 'order_status' : ''" translate="{{order.status+'_STATUS'}}"></span>
+										<span ng-class="!order.reviewedByPRCH ? 'order_status' : ''" ng-bind="history.parseOrderStatus(order.status)"></span>
 									</td>
 									<th>
 										<a class="industry_color_1"
@@ -89,8 +89,8 @@
 							<div>
 								<span ng-bind="'ORDER'|translate|uppercase" class="retract_format"></span>
 									<span ng-bind="'#'+history.order.orderNumber"></span>
-									<span ng-if="history.order.status !== 'SUBMITTED'">
-										<span ng-bind="history.order.status|translate|uppercase"></span>
+									<span ng-if="history.order.status !== 'SUBMITTED' && history.order.status !== 'PROCESSED'">
+										<span ng-bind="history.parseOrderStatus(history.order.status)|uppercase"></span>
 										<span ng-bind="'!'"></span>
 									</span>
 							</div>
@@ -149,7 +149,7 @@
 									<span class="order_detail_summary_content" ng-bind="history.order.location" title="{{history.order.location}}"></span>
 								</div>
 							</div>
-							<div class="order_rejected_reason industry_font" ng-if="!isAerospace" ng-show="history.order.status !== 'SUBMITTED'">
+							<div class="order_rejected_reason industry_font" ng-if="!isAerospace" ng-show="history.order.status === 'APPROVED' || history.order.status === 'DECLINED'">
 								<div>
 									<span translate="COMMENTS"></span><span>: </span>
 								</div>
@@ -182,7 +182,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="order_rejected_reason industry_font" ng-if="isAerospace" ng-show="history.order.status !== 'SUBMITTED'">
+							<div class="order_rejected_reason industry_font" ng-if="isAerospace" ng-show="history.order.status === 'APPROVED' || history.order.status === 'DECLINED'">
 								<div>
 									<span translate="COMMENTS"></span><span>: </span>
 								</div>
