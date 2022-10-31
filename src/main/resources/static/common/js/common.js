@@ -624,26 +624,34 @@ function connectAndSubscribeMQ(role, $http, $rootScope, $filter, mqConsumeCallba
         mqClient.heartbeat.incoming = 10000;
 
         var on_connect = function(x) {
-            var requisition = $filter('translate')('ORDER');
+            var orderProcessMsg;
 
              // subscribe approver topic
             mqClient.subscribe("/topic/order.approver", function(data) {
                 var msgString = data.body;
                 var msgObject = $.parseJSON(msgString);
+                var isCancelledStatus = "CANCELED" === msgObject.status;
 
                 var status = translatedStatus(msgObject.status, $filter);
+                orderProcessMsg = $filter('translate')('ORDER') + ' ' + msgObject.orderNumber + ' ' + status + '!';
 
                 if(role === ROLE_PURCHASER){    // purchaser produced this message to this topic
-                     if (msgObject.requestedBy === CURRENT_USERNAME) {
-                         toastr.success(requisition+' '+msgObject.orderNumber+' '+status+'!', '', {timeOut: 4000});
-                         if(mqProduceCallback){mqProduceCallback();}
-                         // update the number on the icon
-                         getUnreviewedAmount($http,$rootScope,$filter);
-                         $rootScope.totalAmount = 0;
-                     }
+                    if(msgObject.requestedBy === CURRENT_USERNAME){
+                        if(isCancelledStatus){
+                            toastr.info(orderProcessMsg, '', {timeOut: 4000});
+                        }else{
+                            toastr.success(orderProcessMsg, '', {timeOut: 4000});
+                        }
+                        if(mqProduceCallback){mqProduceCallback();}
+                        // update the number on the icon
+                        getUnreviewedAmount($http,$rootScope,$filter);
+                        $rootScope.totalAmount = 0;
+                    }
                 }else if(role === ROLE_APPROVER){ // approver consume this message from this topic
-                     toastr.info(requisition+' '+msgObject.orderNumber+' '+status+'!', '', {timeOut: 0});
-                     if(mqConsumeCallback){mqConsumeCallback();}
+                    if(!isCancelledStatus){
+                        toastr.info(orderProcessMsg, '', {timeOut: 0});
+                        if(mqConsumeCallback){mqConsumeCallback();}
+                    }
                 }
                 $rootScope.emptyContentError = false;
             });
@@ -654,13 +662,14 @@ function connectAndSubscribeMQ(role, $http, $rootScope, $filter, mqConsumeCallba
                  var msgObject = $.parseJSON(msgString);
 
                  var status = translatedStatus(msgObject.status, $filter);
+                 orderProcessMsg = $filter('translate')('ORDER') + ' ' + msgObject.orderNumber + ' ' + status + '!';
 
                  if(role === ROLE_APPROVER){        // approver produced this message to this topic
-                     toastr.success(requisition+' '+msgObject.orderNumber+' '+status+'!', '', {timeOut: 4000});
+                     toastr.success(orderProcessMsg, '', {timeOut: 4000});
                      if(mqProduceCallback){mqProduceCallback();}
                  }else if(role === ROLE_PURCHASER){    // purchaser consume this message from this topic
-                     if (msgObject.requestedBy === CURRENT_USERNAME){
-                         toastr.info(requisition+' '+msgObject.orderNumber+' '+status+'!', '', {timeOut: 0});
+                     if(msgObject.requestedBy === CURRENT_USERNAME){
+                         toastr.info(orderProcessMsg, '', {timeOut: 0});
                          if(mqConsumeCallback){mqConsumeCallback();}
                          // update the number on the icon
                          getUnreviewedAmount($http,$rootScope,$filter);

@@ -114,7 +114,7 @@ public class OrderServiceTest {
                 new InventoryOperationResultMessageDTO(InventoryOperation.DECREASE, orderNumber, InventoryOperationStatus.FAIL, null));
 
         // Then
-        Mockito.verify(orderMQService, times(0)).sendToApprover(any());
+        Mockito.verify(orderMQService, times(1)).sendToApprover(any());
         assertEquals(requestMessage, null);
         assertEquals(OrderStatus.CANCELED, order.getStatus());
     }
