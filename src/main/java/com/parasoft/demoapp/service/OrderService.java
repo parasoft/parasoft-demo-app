@@ -62,7 +62,7 @@ public class OrderService {
             }
             return null;
         } catch (OrderNotFoundException | ParameterException e) {
-            log.error("Order Not Found Exception:", e);
+            log.error("Order Exception:", e);
             return new InventoryOperationRequestMessageDTO(InventoryOperation.NONE,
                     operationResult.getOrderNumber(),
                     e.getMessage());

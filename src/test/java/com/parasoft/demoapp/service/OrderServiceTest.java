@@ -153,7 +153,7 @@ public class OrderServiceTest {
      * @see OrderService#handleMessageFromResponseQueue(InventoryOperationResultMessageDTO)
      */
     @Test
-    public void testDecrease_itemNotExist() {
+    public void testDecrease_OrderNotExist() {
         // Given
         String orderNumber = "123-456-789";
         when(orderRepository.findOrderByOrderNumber(anyString())).thenReturn(null);
