@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.parasoft.demoapp.utilfortest.OrderUtilForTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,6 +91,7 @@ public class OrderServiceSpringTest4 {
             String eventId = "45833-ORG-7834";
             String eventNumber = "55-444-33-22";
             order = underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
+            OrderUtilForTest.waitChangeForOrderStatus(order.getOrderNumber(), orderRepository, OrderStatus.SUBMITTED, 5);
 
             String orderNumber = order.getOrderNumber();
             String userRoleName = RoleType.ROLE_APPROVER.toString();

@@ -46,7 +46,7 @@ public class ItemService {
     @Transactional(value = "industryTransactionManager")
     public ItemEntity addNewItem(
             String name, String description, Long categoryId, Integer inStock, String imagePath, RegionType region)
-            throws ItemNameExistsAlreadyException, CategoryNotFoundException, ParameterException, GlobalPreferencesNotFoundException, 
+            throws ItemNameExistsAlreadyException, CategoryNotFoundException, ParameterException, GlobalPreferencesNotFoundException,
             GlobalPreferencesMoreThanOneException, UnsupportedOperationInCurrentIndustryException {
 
         ParameterValidator.requireNonBlank(name, AssetMessages.ITEM_NAME_CANNOT_BE_BLANK);
@@ -73,11 +73,11 @@ public class ItemService {
         if(!locationService.isCorrectRegionInCurrentIndustry(region)) {
         	throw new UnsupportedOperationInCurrentIndustryException(AssetMessages.INCORRECT_REGION_IN_CURRENT_INDUSTRY);
         }
-        
+
         ItemEntity item = new ItemEntity(name, description, categoryId, imagePath, region, new Date());
         ItemEntity result = itemRepository.save(item);
-        Integer itemInstock = itemInventoryService.saveItemInStock(result.getId(), inStock).getInStock();
-        result.setInStock(itemInstock);
+        Integer itemInStock = itemInventoryService.saveItemInStock(result.getId(), inStock).getInStock();
+        result.setInStock(itemInStock);
 
         return result;
     }
@@ -156,7 +156,7 @@ public class ItemService {
         if(!locationService.isCorrectRegionInCurrentIndustry(region)) {
         	throw new UnsupportedOperationInCurrentIndustryException(AssetMessages.INCORRECT_REGION_IN_CURRENT_INDUSTRY);
         }
-        
+
         itemEntity.setDescription(description);
         itemEntity.setCategoryId(categoryId);
         itemEntity.setImage(imagePath);

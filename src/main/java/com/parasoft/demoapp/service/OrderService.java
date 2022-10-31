@@ -239,12 +239,11 @@ public class OrderService {
             }
         }
 
+        boolean sendRequestToIncreaseInventory = false;
         if(!originalOrder.getStatus().equals(newStatus)) {
         	newOrder.setComments(comments == null ? "" : comments);
             if(OrderStatus.DECLINED.equals(newStatus)) {
-                orderMQService.sendToInventoryRequestQueue(InventoryOperation.INCREASE,
-                        originalOrder.getOrderNumber(),
-                        originalOrder.getOrderItems());
+                sendRequestToIncreaseInventory = true;
             }
 
             newOrder.setApproverReplyDate(new Date());
@@ -253,6 +252,12 @@ public class OrderService {
         }
 
         newOrder = orderRepository.save(newOrder);
+
+        if(sendRequestToIncreaseInventory) {
+            orderMQService.sendToInventoryRequestQueue(InventoryOperation.INCREASE,
+                    newOrder.getOrderNumber(),
+                    newOrder.getOrderItems());
+        }
 
         // send message to MQ topic
         if(publicToMQ && !originalOrder.getStatus().equals(newOrder.getStatus())){

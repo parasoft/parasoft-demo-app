@@ -50,7 +50,7 @@ public class ItemServiceTest {
 
 	@Mock
 	ImageService imageService;
-	
+
 	@Mock
 	LocationService locationService;
 
@@ -76,11 +76,12 @@ public class ItemServiceTest {
 		Integer inStock = 10;
 		String imagePath = "/image/item/path";
 		RegionType region = RegionType.UNITED_STATES;
-		
+
 		Date lastAccessedDate = new Date();
 		ItemEntity saveResult = new ItemEntity(name, description, categoryId, inStock, imagePath, region,
 				lastAccessedDate);
-		ItemInventoryEntity itemInventory = new ItemInventoryEntity(null, inStock);
+		saveResult.setId(1L);
+		ItemInventoryEntity itemInventory = new ItemInventoryEntity(2L, inStock);
 		doReturn(saveResult).when(itemRepository).save((ItemEntity) any());
 		doReturn(true).when(categoryService).existsByCategoryId(anyLong());
 		doReturn(true).when(locationService).isCorrectRegionInCurrentIndustry(region);
@@ -97,7 +98,7 @@ public class ItemServiceTest {
 		assertEquals(imagePath, result.getImage());
 		assertEquals(region.getDisplayName(), result.getRegion().getDisplayName());
 		assertEquals(lastAccessedDate, result.getLastAccessedDate());
-		verify(itemInventoryService, times(1)).saveItemInStock(null, inStock);
+		verify(itemInventoryService, times(1)).saveItemInStock(1L, inStock);
 	}
 
 	/**
@@ -435,7 +436,7 @@ public class ItemServiceTest {
 		RegionType region = RegionType.EARTH;
 		doReturn(true).when(categoryService).existsByCategoryId(anyLong());
 		doReturn(false).when(locationService).isCorrectRegionInCurrentIndustry(region);
-		
+
 		// When
 		String message = "";
 		try {
@@ -447,7 +448,7 @@ public class ItemServiceTest {
 		// Then
 		assertEquals(AssetMessages.INCORRECT_REGION_IN_CURRENT_INDUSTRY, message);
 	}
-	
+
 	/**
 	 * test for removeItemById(Long) with normal
 	 *
@@ -763,7 +764,7 @@ public class ItemServiceTest {
 		// Then
 		assertEquals(AssetMessages.ITEM_ID_CANNOT_BE_NULL, message);
 	}
-	
+
 	/**
 	 * test for updateItem(Long, String, String, Long, int, String, RegionType, Date) with NullItemIdException
 	 *
@@ -781,7 +782,7 @@ public class ItemServiceTest {
 		RegionType region = RegionType.EARTH;
 		doReturn(true).when(categoryService).existsByCategoryId(anyLong());
 		doReturn(false).when(locationService).isCorrectRegionInCurrentIndustry(region);
-		
+
 		// When
 		String message = "";
 		try {
@@ -793,7 +794,7 @@ public class ItemServiceTest {
 		// Then
 		assertEquals(AssetMessages.INCORRECT_REGION_IN_CURRENT_INDUSTRY, message);
 	}
-	
+
 
 	/**
 	 * test for updateItem(Long, String, String, Long, int, String, RegionType, Date) with NullNameException
@@ -1462,7 +1463,7 @@ public class ItemServiceTest {
 		content.add(new ItemEntity());
 		Pageable pageable = Pageable.unpaged();
 		int totalElement = 2;
-		
+
 		Page<ItemEntity> page = new PageImpl<>(content, pageable, totalElement);
 		doReturn(page).when(itemRepository)
 				.findAllByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(nullable(String.class),
@@ -1478,7 +1479,7 @@ public class ItemServiceTest {
 		assertEquals(content, result.getContent());
         verify(itemInventoryService, times(content.size())).getInStockByItemId(nullable(Long.class));
 	}
-	
+
 	/**
 	 * Test for searchItemsByNameOrDescription(String, Pageable)
 	 *
@@ -1501,7 +1502,7 @@ public class ItemServiceTest {
 		// Then
 		assertEquals(AssetMessages.SEARCH_FIELD_CANNOT_BE_BLANK, message);
 	}
-	
+
 	/**
 	 * Test for searchItemsByNameOrDescription(String, Pageable)
 	 *
