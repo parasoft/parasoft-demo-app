@@ -39,9 +39,6 @@ public class OrderService {
     @Autowired
     private LocationService locationService;
 
-    @Autowired
-    private ItemInventoryService itemInventoryService;
-
     @Transactional
     public InventoryOperationRequestMessageDTO handleMessageFromResponseQueue(InventoryOperationResultMessageDTO operationResult) {
         OrderEntity order = null;

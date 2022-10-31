@@ -76,7 +76,7 @@ public class ItemService {
         
         ItemEntity item = new ItemEntity(name, description, categoryId, inStock, imagePath, region, new Date());
         ItemEntity result = itemRepository.save(item);
-        result.setInStock(itemInventoryService.saveItemInStock(result.getId(), result.getInStock()).getInStock());
+        itemInventoryService.saveItemInStock(result.getId(), item.getInStock());
 
         return result;
     }
@@ -189,7 +189,11 @@ public class ItemService {
         }
 
         items.forEach(item -> {
-            item.setInStock(itemInventoryService.getInStockByItemId(item.getId()));
+            try {
+                item.setInStock(itemInventoryService.getInStockByItemId(item.getId()));
+            } catch (ParameterException e) {
+                e.printStackTrace();
+            }
         });
 
         return items;
@@ -216,7 +220,11 @@ public class ItemService {
         }
 
         items.forEach(item -> {
-            item.setInStock(itemInventoryService.getInStockByItemId(item.getId()));
+            try {
+                item.setInStock(itemInventoryService.getInStockByItemId(item.getId()));
+            } catch (ParameterException e) {
+                e.printStackTrace();
+            }
         });
 
         return items;
@@ -299,7 +307,13 @@ public class ItemService {
         ParameterValidator.requireNonBlank(key, AssetMessages.SEARCH_FIELD_CANNOT_BE_BLANK);
 
         Page<ItemEntity> items = itemRepository.findAllByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(key, key, pageable);
-        items.forEach(item -> item.setInStock(itemInventoryService.getInStockByItemId(item.getId())));
+        items.forEach(item -> {
+            try {
+                item.setInStock(itemInventoryService.getInStockByItemId(item.getId()));
+            } catch (ParameterException e) {
+                e.printStackTrace();
+            }
+        });
 
         return items;
     }

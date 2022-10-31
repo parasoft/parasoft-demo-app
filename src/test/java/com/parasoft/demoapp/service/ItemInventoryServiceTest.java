@@ -3,6 +3,8 @@ package com.parasoft.demoapp.service;
 import com.parasoft.demoapp.dto.InventoryInfoDTO;
 import com.parasoft.demoapp.dto.InventoryOperationRequestMessageDTO;
 import com.parasoft.demoapp.dto.InventoryOperationResultMessageDTO;
+import com.parasoft.demoapp.exception.ParameterException;
+import com.parasoft.demoapp.messages.AssetMessages;
 import com.parasoft.demoapp.model.industry.ItemInventoryEntity;
 import com.parasoft.demoapp.repository.industry.ItemInventoryRepository;
 import org.junit.Before;
@@ -21,7 +23,6 @@ import static com.parasoft.demoapp.dto.InventoryOperationStatus.SUCCESS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class ItemInventoryServiceTest {
@@ -176,7 +177,7 @@ public class ItemInventoryServiceTest {
 
 
     @Test
-    public void testSaveItemInStock() {
+    public void testSaveItemInStock_normal() {
         // Given
         Long itemId = 1L;
         Integer inStock = 10;
@@ -184,7 +185,13 @@ public class ItemInventoryServiceTest {
         when(itemInventoryRepository.save(new ItemInventoryEntity(itemId, inStock))).thenReturn(new ItemInventoryEntity(itemId, inStock));
 
         // When
-        ItemInventoryEntity res = itemInventoryService.saveItemInStock(itemId, inStock);
+        ItemInventoryEntity res = null;
+
+        try {
+            res = itemInventoryService.saveItemInStock(itemId, inStock);
+        } catch (ParameterException e) {
+            e.printStackTrace();
+        }
 
         // Then
         assertEquals(itemId, res.getItemId());
@@ -192,7 +199,70 @@ public class ItemInventoryServiceTest {
     }
 
     @Test
-    public void testGetInStockByItemId() {
+    public void testSaveItemInStock_nullItemId() {
+        // Given
+        Long itemId = null;
+        Integer inStock = 10;
+
+        when(itemInventoryRepository.save(new ItemInventoryEntity(itemId, inStock))).thenReturn(new ItemInventoryEntity(itemId, inStock));
+
+        // When
+        String message = "";
+
+        try {
+            itemInventoryService.saveItemInStock(itemId, inStock);
+        } catch (ParameterException e) {
+            message = e.getMessage();
+        }
+
+        // Then
+        assertEquals(AssetMessages.ITEM_ID_CANNOT_BE_NULL, message);
+    }
+
+    @Test
+    public void testSaveItemInStock_nullInStock() {
+        // Given
+        Long itemId = 1L;
+        Integer inStock = null;
+
+        when(itemInventoryRepository.save(new ItemInventoryEntity(itemId, inStock))).thenReturn(new ItemInventoryEntity(itemId, inStock));
+
+        // When
+        String message = "";
+
+        try {
+            itemInventoryService.saveItemInStock(itemId, inStock);
+        } catch (ParameterException e) {
+            message = e.getMessage();
+        }
+
+        // Then
+        assertEquals(AssetMessages.IN_STOCK_CANNOT_BE_NULL, message);
+    }
+
+    @Test
+    public void testSaveItemInStock_negativeInStock() {
+        // Given
+        Long itemId = 1L;
+        Integer inStock = -10;
+
+        when(itemInventoryRepository.save(new ItemInventoryEntity(itemId, inStock))).thenReturn(new ItemInventoryEntity(itemId, inStock));
+
+        // When
+        String message = "";
+
+        try {
+            itemInventoryService.saveItemInStock(itemId, inStock);
+        } catch (ParameterException e) {
+            message = e.getMessage();
+        }
+
+        // Then
+        assertEquals(AssetMessages.IN_STOCK_CANNOT_BE_A_NEGATIVE_NUMBER, message);
+    }
+
+    @Test
+    public void testGetInStockByItemId_normal() {
         // Given
         Long itemId = 1L;
         Integer inStock = 10;
@@ -200,24 +270,58 @@ public class ItemInventoryServiceTest {
         when(itemInventoryRepository.findInStockByItemId(itemId)).thenReturn(inStock);
 
         // When
-        Integer res = itemInventoryService.getInStockByItemId(itemId);
+        Integer res = null;
+
+        try {
+            res = itemInventoryService.getInStockByItemId(itemId);
+        } catch (ParameterException e) {
+            e.printStackTrace();
+        }
 
         // Then
         assertEquals(inStock, res);
     }
 
     @Test
-    public void testGetInStockByItemId_ItemIdNotExist() {
+    public void testGetInStockByItemId_nullItemId() {
+        // Given
+        Long itemId = null;
+        Integer inStock = 10;
+
+        when(itemInventoryRepository.findInStockByItemId(itemId)).thenReturn(inStock);
+
+        // When
+        String message = "";
+
+        try {
+            itemInventoryService.getInStockByItemId(itemId);
+        } catch (ParameterException e) {
+            message = e.getMessage();
+        }
+
+        // Then
+        assertEquals(AssetMessages.ITEM_ID_CANNOT_BE_NULL, message);
+    }
+
+    @Test
+    public void testGetInStockByItemId_ItemInventoryNotExist() {
         // Given
         Long itemId = 1L;
+        Integer expected = 0;
 
         when(itemInventoryRepository.findInStockByItemId(itemId)).thenReturn(null);
 
         // When
-        Integer res = itemInventoryService.getInStockByItemId(itemId);
+        Integer res = null;
+
+        try {
+            res = itemInventoryService.getInStockByItemId(itemId);
+        } catch (ParameterException e) {
+            e.printStackTrace();
+        }
 
         // Then
-        assertNull(res);
+        assertEquals(expected, res);
     }
 
     @Test
@@ -225,10 +329,14 @@ public class ItemInventoryServiceTest {
         // Given
         Long itemId = 1L;
 
-        when(itemInventoryService.itemInventoryExistById(itemId)).thenReturn(true);
+        when(itemInventoryRepository.existsById(itemId)).thenReturn(true);
 
         // When
-        itemInventoryService.removeItemInventoryByItemId(itemId);
+        try {
+            itemInventoryService.removeItemInventoryByItemId(itemId);
+        } catch (ParameterException e) {
+            e.printStackTrace();
+        }
 
         // Then
         verify(itemInventoryRepository, times(1)).deleteById(itemId);
@@ -239,40 +347,37 @@ public class ItemInventoryServiceTest {
         // Given
         Long itemId = 1L;
 
-        when(itemInventoryService.itemInventoryExistById(itemId)).thenReturn(false);
+        when(itemInventoryRepository.existsById(itemId)).thenReturn(false);
 
         // When
-        itemInventoryService.removeItemInventoryByItemId(itemId);
+        try {
+            itemInventoryService.removeItemInventoryByItemId(itemId);
+        } catch (ParameterException e) {
+            e.printStackTrace();
+        }
 
         // Then
         verify(itemInventoryRepository, times(0)).deleteById(itemId);
     }
 
     @Test
-    public void testItemInventoryExistById_exist() {
+    public void testRemoveItemInventoryByItemId_nullItemId() {
         // Given
-        Long itemId = 1L;
+        Long itemId = null;
 
         when(itemInventoryRepository.existsById(itemId)).thenReturn(true);
 
         // When
-        Boolean res = itemInventoryService.itemInventoryExistById(itemId);
+        String message = "";
+
+        try {
+            itemInventoryService.removeItemInventoryByItemId(itemId);
+        } catch (ParameterException e) {
+            message = e.getMessage();
+        }
 
         // Then
-        assertTrue(res);
-    }
-
-    @Test
-    public void testItemInventoryExistById_notExist() {
-        // Given
-        Long itemId = 1L;
-
-        when(itemInventoryRepository.existsById(itemId)).thenReturn(false);
-
-        // When
-        Boolean res = itemInventoryService.itemInventoryExistById(itemId);
-
-        // Then
-        assertFalse(res);
+        assertEquals(AssetMessages.ITEM_ID_CANNOT_BE_NULL, message);
+        verify(itemInventoryRepository, times(0)).deleteById(itemId);
     }
 }

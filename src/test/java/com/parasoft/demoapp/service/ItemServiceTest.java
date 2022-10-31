@@ -1427,7 +1427,7 @@ public class ItemServiceTest {
 	 * @see ItemService#getItems(Long, RegionType[], String, Pageable)
 	 */
 	@Test
-	public void testGetItems_noItems() {
+	public void testGetItems_noItems() throws Throwable {
 		// Given
 		Long CategoryId = 0L;
 		RegionType[] regions = {RegionType.GERMANY, RegionType.JAPAN};
