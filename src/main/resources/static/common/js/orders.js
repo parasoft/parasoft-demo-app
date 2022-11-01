@@ -87,7 +87,7 @@ app.controller('orderHistoryController', function($rootScope, $http, $filter) {
 	            }
 	        });
 
-            if(introduceIncorrectNumberBug && history.order.status === "SUBMITTED"){
+            if(introduceIncorrectNumberBug && history.order.status === "PROCESSED"){
             	history.totalItemQuantity = 0;
             }else{
             	var totalAmount = 0;
