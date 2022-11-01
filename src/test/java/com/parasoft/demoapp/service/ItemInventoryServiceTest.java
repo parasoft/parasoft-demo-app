@@ -307,7 +307,7 @@ public class ItemInventoryServiceTest {
     public void testGetInStockByItemId_ItemInventoryNotExist() {
         // Given
         Long itemId = 1L;
-        Integer expected = 0;
+        Integer expected = null;
 
         when(itemInventoryRepository.findInStockByItemId(itemId)).thenReturn(null);
 
