@@ -54,7 +54,10 @@ public class OrderService {
                         orderMQService.sendToApprover(message);
                         break;
                     case FAIL:
-                        updateOrderStatus(orderNumber, OrderStatus.CANCELED);
+                        order = updateOrderStatus(orderNumber, OrderStatus.CANCELED);
+                        OrderMQMessageDTO msg =
+                                new OrderMQMessageDTO(orderNumber, order.getRequestedBy(), order.getStatus(), OrderMessages.THE_ORDER_IS_CANCELLED);
+                        orderMQService.sendToApprover(msg);
                         break;
                     default:
                         log.error(operationResult.getStatus() + " status is not supported");
@@ -317,7 +320,10 @@ public class OrderService {
 
         Page<OrderEntity> page = new PageImpl<>(new ArrayList<>(), pageable,  0);
         if(RoleType.ROLE_APPROVER.toString().equals(userRoleName)) {
-            page = orderRepository.findAll(pageable);
+            List<OrderStatus> orderStatues = new ArrayList<>();
+            orderStatues.add(OrderStatus.SUBMITTED);
+            orderStatues.add(OrderStatus.CANCELED);
+            page = orderRepository.findAllByStatusNotIn(orderStatues, pageable);
 
         }else if (RoleType.ROLE_PURCHASER.toString().equals(userRoleName)) {
             page = orderRepository.findAllByRequestedBy(requestedBy, pageable);

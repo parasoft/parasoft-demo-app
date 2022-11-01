@@ -114,7 +114,7 @@ public class OrderServiceTest {
                 new InventoryOperationResultMessageDTO(InventoryOperation.DECREASE, orderNumber, InventoryOperationStatus.FAIL, null));
 
         // Then
-        Mockito.verify(orderMQService, times(0)).sendToApprover(any());
+        Mockito.verify(orderMQService, times(1)).sendToApprover(any());
         assertEquals(requestMessage, null);
         assertEquals(OrderStatus.CANCELED, order.getStatus());
     }
@@ -927,7 +927,7 @@ public class OrderServiceTest {
         int totalElement = 2;
         Page<OrderEntity> page = new PageImpl<>(content, pageable, totalElement);
 
-        doReturn(page).when(orderRepository).findAll(nullable(Pageable.class));
+        doReturn(page).when(orderRepository).findAllByStatusNotIn(any(), nullable(Pageable.class));
 
         //doReturn(page).when(orderRepository).findAllByUserId(nullable(Long.class),
         //		nullable(Pageable.class));

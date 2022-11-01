@@ -4,18 +4,14 @@ import static com.parasoft.demoapp.config.ParasoftJDBCProxyConfig.*;
 
 import java.util.*;
 
+import com.parasoft.demoapp.config.activemq.ActiveMQConfig;
+import com.parasoft.demoapp.model.global.preferences.*;
 import com.parasoft.demoapp.model.industry.RegionType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.parasoft.demoapp.config.WebConfig;
 import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
-import com.parasoft.demoapp.model.global.preferences.DataAccessMode;
-import com.parasoft.demoapp.model.global.preferences.DemoBugEntity;
-import com.parasoft.demoapp.model.global.preferences.DemoBugsType;
-import com.parasoft.demoapp.model.global.preferences.GlobalPreferencesEntity;
-import com.parasoft.demoapp.model.global.preferences.IndustryType;
-import com.parasoft.demoapp.model.global.preferences.RestEndpointEntity;
 import com.parasoft.demoapp.util.BugsTypeSortOfDemoBugs;
 import com.parasoft.demoapp.util.RouteIdSortOfRestEndpoint;
 
@@ -61,6 +57,13 @@ public class GlobalPreferencesDefaultSettingsService {
         String parasoftVirtualizeServerUrl = defaultParasoftVirtualizeServerUrl();
         String parasoftVirtualizeServerPath = defaultParasoftVirtualizeServerPath();
         String parasoftVirtualizeGroupId = defaultParasoftVirtualizeGroupId();
+        Boolean mqProxyEnabled = defaultMqProxyEnabled();
+        MqType mqType = defaultMqType();
+        String orderServiceDestinationQueue = defaultOrderServiceDestinationQueue();
+        String orderServiceReplyToQueue = defaultOrderServiceReplyToQueue();
+        String inventoryServiceDestinationQueue = defaultInventoryServiceDestinationQueue();
+        String ietInventoryServiceReplyToQueue = defaultInventoryServiceReplyToQueue();
+
 
         defaultPreferences.setDataAccessMode(dataAccessMode);
         defaultPreferences.setSoapEndPoint(soapEndPoint);
@@ -72,6 +75,13 @@ public class GlobalPreferencesDefaultSettingsService {
         defaultPreferences.setParasoftVirtualizeServerUrl(parasoftVirtualizeServerUrl);
         defaultPreferences.setParasoftVirtualizeServerPath(parasoftVirtualizeServerPath);
         defaultPreferences.setParasoftVirtualizeGroupId(parasoftVirtualizeGroupId);
+
+        defaultPreferences.setMqProxyEnabled(mqProxyEnabled);
+        defaultPreferences.setMqType(mqType);
+        defaultPreferences.setOrderServiceDestinationQueue(orderServiceDestinationQueue);
+        defaultPreferences.setOrderServiceReplyToQueue(orderServiceReplyToQueue);
+        defaultPreferences.setInventoryServiceDestinationQueue(inventoryServiceDestinationQueue);
+        defaultPreferences.setInventoryServiceReplyToQueue(ietInventoryServiceReplyToQueue);
 
         return defaultPreferences;
     }
@@ -251,5 +261,29 @@ public class GlobalPreferencesDefaultSettingsService {
         names.add("ORDER_REQUESTS");
 
         return names;
+    }
+
+    public boolean defaultMqProxyEnabled(){
+        return false;
+    }
+
+    public MqType defaultMqType() {
+        return MqType.ACTIVE_MQ;
+    }
+
+    public String defaultOrderServiceDestinationQueue() {
+        return ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST;
+    }
+
+    public String defaultOrderServiceReplyToQueue() {
+        return ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE;
+    }
+
+    public String defaultInventoryServiceDestinationQueue() {
+        return ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST;
+    }
+
+    public String defaultInventoryServiceReplyToQueue() {
+        return ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE;
     }
 }

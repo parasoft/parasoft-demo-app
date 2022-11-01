@@ -33,7 +33,7 @@ public class OrderMQService {
     }
 
     public void sendToInventoryRequestQueue(InventoryOperationRequestMessageDTO message) {
-        jmsMessagingTemplate.convertAndSend(ActiveMQConfig.inventoryRequestActiveMqQueue, message);
+        jmsMessagingTemplate.convertAndSend(ActiveMQConfig.getInventoryRequestActiveMqQueue(), message);
     }
 
     public void send(Destination destination, InventoryOperationRequestMessageDTO message) {

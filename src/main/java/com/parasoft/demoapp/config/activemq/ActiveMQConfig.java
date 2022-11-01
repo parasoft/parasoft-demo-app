@@ -18,6 +18,7 @@ import org.springframework.jms.support.converter.MessageConverter;
 import org.springframework.jms.support.converter.MessageType;
 
 import javax.jms.ConnectionFactory;
+import javax.jms.JMSException;
 import java.net.URI;
 
 @Configuration
@@ -29,11 +30,11 @@ public class ActiveMQConfig {
     public static final String TOPIC_ORDER_APPROVER = "order.approver";
     public static final String TOPIC_ORDER_PURCHASER = "order.purchaser";
     public static final String TOPIC_INDUSTRY_CHANGE = "globalPreferences.industryChange";
-    public static volatile String DEFAULT_QUEUE_INVENTORY_REQUEST = "queue.inventory.request";
-    public static volatile String DEFAULT_QUEUE_INVENTORY_RESPONSE = "queue.inventory.response";
+    public static final String DEFAULT_QUEUE_INVENTORY_REQUEST = "queue.inventory.request";
+    public static final String DEFAULT_QUEUE_INVENTORY_RESPONSE = "queue.inventory.response";
 
-    public static volatile ActiveMQQueue inventoryRequestActiveMqQueue = new ActiveMQQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
-    public static volatile ActiveMQQueue inventoryResponseActiveMqQueue = new ActiveMQQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE);
+    private static ActiveMQQueue inventoryRequestActiveMqQueue = new ActiveMQQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
+    private static ActiveMQQueue inventoryResponseActiveMqQueue = new ActiveMQQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE);
 
     @Value("${spring.activemq.broker-url}")
     private String embeddedBrokerUrl;
@@ -91,5 +92,26 @@ public class ActiveMQConfig {
         broker.addConnector(wsConnector);
 
         return broker;
+    }
+
+    public static synchronized ActiveMQQueue getInventoryRequestActiveMqQueue() {
+        return inventoryRequestActiveMqQueue;
+    }
+
+    public static synchronized void setInventoryRequestActiveMqQueue(ActiveMQQueue inventoryRequestActiveMqQueue) {
+        ActiveMQConfig.inventoryRequestActiveMqQueue = inventoryRequestActiveMqQueue;
+    }
+
+    public static synchronized ActiveMQQueue getInventoryResponseActiveMqQueue() {
+        return inventoryResponseActiveMqQueue;
+    }
+
+    public static synchronized void setInventoryResponseActiveMqQueue(ActiveMQQueue inventoryResponseActiveMqQueue) {
+        ActiveMQConfig.inventoryResponseActiveMqQueue = inventoryResponseActiveMqQueue;
+    }
+
+    public static synchronized void resetInventoryActiveMqQueues() {
+        inventoryRequestActiveMqQueue = new ActiveMQQueue(DEFAULT_QUEUE_INVENTORY_REQUEST);
+        inventoryResponseActiveMqQueue = new ActiveMQQueue(DEFAULT_QUEUE_INVENTORY_RESPONSE);
     }
 }
