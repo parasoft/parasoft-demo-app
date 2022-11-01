@@ -124,9 +124,7 @@ public class ItemInventoryService {
     public Integer getInStockByItemId(Long itemId) throws ParameterException {
         ParameterValidator.requireNonNull(itemId, AssetMessages.ITEM_ID_CANNOT_BE_NULL);
 
-        Integer res = itemInventoryRepository.findInStockByItemId(itemId);
-
-        return res == null ? 0 : res;
+        return itemInventoryRepository.findInStockByItemId(itemId);
     }
 
     public void removeItemInventoryByItemId(Long itemId) throws ParameterException {
