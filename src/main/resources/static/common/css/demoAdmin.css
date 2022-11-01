@@ -437,4 +437,31 @@ textarea {
     margin: 10px 0;
 }
 
+.jms_or_mq_proxy_tooltip_content {
+    width: 560px;
+}
+
+.tooltip_info_table {
+    margin: 0 auto;
+}
+
+.tooltip_info_table th{
+    text-align: start;
+    font-size: 15px;
+    font-weight: normal;
+    padding-bottom: 7px;
+}
+
+.tooltip_info_value {
+    padding-left: 10px;
+}
+
+.tooltip_info_modal_header {
+    padding-bottom: 0;
+}
+
+.tooltip_info_modal_body {
+    padding-top: 0;
+}
+
 /* LABELS tab */

@@ -114,3 +114,7 @@ button.close, button.close:hover {
 .item_description_input {
     color: #555
 }
+
+.jms_or_mq_proxy_tooltip_content {
+    width: 673px;
+}

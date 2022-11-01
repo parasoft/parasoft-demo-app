@@ -178,8 +178,30 @@
                         <div class="section_container">
                             <div class="section_title">
                                 <span class="align-to-icon" translate="PARASOFT_JMS_MQ_PROXY"></span>
-                                <i class="fa fa-info-circle info-icon" ng-click="demo.showToolTip()"></i>
+                                <i class="fa fa-info-circle info-icon" data-toggle="modal" data-target="#jms_or_mq_proxy_tooltip_modal"></i>
                             </div>
+
+                            <div id="jms_or_mq_proxy_tooltip_modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+                                <div class="modal-dialog">
+                                    <div class="modal-content industry_font jms_or_mq_proxy_tooltip_content">
+                                        <div class="modal-header tooltip_info_modal_header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                        </div>
+
+                                        <div class="modal-body tooltip_info_modal_body">
+                                            <table class="tooltip_info_table">
+                                                <tbody>
+                                                    <tr ng-repeat="tooltipInfo in demo.tooltipInfoList">
+                                                        <th translate="{{ tooltipInfo.label }}"></th>
+                                                        <th class="tooltip_info_value" ng-bind="tooltipInfo.value"></th>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="section_body">
                                 <div class="form-group">
                                     <label>
