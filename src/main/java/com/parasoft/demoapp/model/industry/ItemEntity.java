@@ -25,7 +25,7 @@ public class ItemEntity {
     private String description;
 
     @Setter
-    @Column(name = "in_stock")
+    @Transient
     private Integer inStock;
 
     @Setter
@@ -50,6 +50,15 @@ public class ItemEntity {
         this.categoryId = categoryId;
         this.image = image;
         this.inStock = inStock;
+        this.region = region;
+        this.lastAccessedDate = lastAccessedDate;
+    }
+
+    public ItemEntity(String name, String description, Long categoryId, String image, RegionType region, Date lastAccessedDate) {
+        this.name = name;
+        this.description = description;
+        this.categoryId = categoryId;
+        this.image = image;
         this.region = region;
         this.lastAccessedDate = lastAccessedDate;
     }

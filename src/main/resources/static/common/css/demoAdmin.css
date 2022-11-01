@@ -432,4 +432,9 @@ textarea {
     height: 136px;
 }
 
+.connection-label {
+    font-weight: bold;
+    margin: 10px 0;
+}
+
 /* LABELS tab */
