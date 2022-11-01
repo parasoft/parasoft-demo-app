@@ -141,7 +141,7 @@ public class OrderServiceTest {
 
         // Then
         InventoryOperationRequestMessageDTO expectedRequestMessage =
-                new InventoryOperationRequestMessageDTO(InventoryOperation.INCREASE, orderNumber, InventoryInfoDTO.convertFrom(order.getOrderItems()),
+                new InventoryOperationRequestMessageDTO(InventoryOperation.NONE, orderNumber,
                         "Can not change order status from CANCELED to PROCESSED");
         assertEquals(requestMessage, expectedRequestMessage);
         assertEquals(OrderStatus.CANCELED, order.getStatus());
@@ -153,7 +153,7 @@ public class OrderServiceTest {
      * @see OrderService#handleMessageFromResponseQueue(InventoryOperationResultMessageDTO)
      */
     @Test
-    public void testDecrease_itemNotExist() {
+    public void testDecrease_OrderNotExist() {
         // Given
         String orderNumber = "123-456-789";
         when(orderRepository.findOrderByOrderNumber(anyString())).thenReturn(null);
@@ -164,7 +164,7 @@ public class OrderServiceTest {
 
         // Then
         InventoryOperationRequestMessageDTO expectedRequestMessage =
-                new InventoryOperationRequestMessageDTO(InventoryOperation.INCREASE, orderNumber, null,
+                new InventoryOperationRequestMessageDTO(InventoryOperation.NONE, orderNumber,
                         "There is no order corresponding to " + orderNumber + ".");
         assertEquals(requestMessage, expectedRequestMessage);
     }

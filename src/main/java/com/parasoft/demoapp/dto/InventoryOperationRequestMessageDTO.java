@@ -16,4 +16,10 @@ public class InventoryOperationRequestMessageDTO {
     private String orderNumber;
     private List<InventoryInfoDTO> inventoryInfos;
     private String info;
+
+    public InventoryOperationRequestMessageDTO(InventoryOperation operation, String orderNumber, String info) {
+        this.operation = operation;
+        this.orderNumber = orderNumber;
+        this.info = info;
+    }
 }
