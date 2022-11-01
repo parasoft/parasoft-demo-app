@@ -36,6 +36,25 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 
     demo.GENERAL = "active";
 
+    demo.tooltipInfoList = [
+        {
+            label: $filter('translate')('PROVIDER_URL_LABEL'),
+            value: "tcp://localhost:61626"
+        }, {
+            label: $filter('translate')('INITIAL_CONTEXT_CLASS_LABEL'),
+            value: "org.apache.activemq.jndi.ActiveMQInitialContextFactory"
+        }, {
+            label: $filter('translate')('CONNECTION_FACTORY_LABEL'),
+            value: "ConnectionFactory"
+        }, {
+            label: $filter('translate')('USER_NAME_LABEL'),
+            value: "admin"
+        }, {
+            label: $filter('translate')('PASSWORD_LABEL'),
+            value: "admin"
+        }
+    ];
+
     //Get regions
     getAllRegions();
 
@@ -303,10 +322,6 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
     	if(!validateUrlWellForm(virtualizeServerUrl)){
     		demo.invalidVirtualizeServerUrl = true;
     	}
-    }
-
-    demo.showToolTip = function() {
-        alert("TODO: PDA-1204 UI - Add a tooltip for PARASOFT JMS/MQ PROXY");
     }
 
     validatePathWellForm = function(virtualizeServerPath){
