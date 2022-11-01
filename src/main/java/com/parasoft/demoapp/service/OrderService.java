@@ -111,7 +111,7 @@ public class OrderService {
         ParameterValidator.requireNonBlank(eventId, OrderMessages.EVENT_ID_CANNOT_BE_BLANK);
         ParameterValidator.requireNonBlank(eventNumber, OrderMessages.EVENT_NUMBER_CANNOT_BE_BLANK);
 
-        LocationEntity locationEntity = null;
+        LocationEntity locationEntity;
         try {
             locationEntity = locationService.getLocationByRegion(region);
         } catch (LocationNotFoundException e) {
@@ -196,8 +196,8 @@ public class OrderService {
     }
 
     public synchronized OrderEntity updateOrderByOrderNumberSynchronized(String orderNumber, String userRoleName,
-                                            OrderStatus newStatus, Boolean reviewedByPRCH, Boolean reviewedByAPV,
-                                                             String respondedBy, String comments, boolean publicToMQ)
+                                                                         OrderStatus newStatus, Boolean reviewedByPRCH, Boolean reviewedByAPV,
+                                                                         String respondedBy, String comments, boolean publicToMQ)
             throws IncorrectOperationException, OrderNotFoundException, NoPermissionException, ParameterException {
 
         return updateOrderByOrderNumber(
@@ -206,16 +206,29 @@ public class OrderService {
 
     @Transactional(value = "industryTransactionManager")
     public OrderEntity updateOrderByOrderNumber(String orderNumber, String userRoleName, OrderStatus newStatus,
-                                                                Boolean reviewedByPRCH, Boolean reviewedByAPV,
-                                                                String respondedBy, String comments,
-                                                                boolean publicToMQ)
+                                                Boolean reviewedByPRCH, Boolean reviewedByAPV,
+                                                String respondedBy, String comments,
+                                                boolean publicToMQ)
             throws ParameterException, OrderNotFoundException, NoPermissionException, IncorrectOperationException {
 
-    	ParameterValidator.requireNonNull(newStatus, OrderMessages.STATUS_CANNOT_BE_NULL);
+        ParameterValidator.requireNonNull(newStatus, OrderMessages.STATUS_CANNOT_BE_NULL);
         ParameterValidator.requireNonBlank(orderNumber, OrderMessages.ORDER_NUMBER_CANNOT_BE_BLANK);
         ParameterValidator.requireNonBlank(userRoleName, OrderMessages.USER_ROLE_NAME_CANNOT_BE_BLANK);
 
         OrderEntity originalOrder = getOrderByOrderNumber(orderNumber);
+
+        if(originalOrder.getStatus() == OrderStatus.CANCELED) {
+            throw new ParameterException(OrderMessages.ORDER_INFO_CANNOT_CHANGE_FROM_CANCELED);
+        }
+
+        if(originalOrder.getStatus() == OrderStatus.SUBMITTED) {
+            throw new ParameterException(OrderMessages.ORDER_INFO_CANNOT_CHANGE_FROM_SUBMITTED);
+        }
+
+        if(newStatus != originalOrder.getStatus() && newStatus.getPriority() <= OrderStatus.PROCESSED.getPriority()) {
+            throw new ParameterException(MessageFormat.format(OrderMessages.ORDER_STATUS_CHANGED_BACK_ERROR, originalOrder.getStatus(), newStatus));
+        }
+
         OrderEntity newOrder = originalOrder.copy();
 
         if(RoleType.ROLE_PURCHASER.toString().equals(userRoleName)){
@@ -228,7 +241,7 @@ public class OrderService {
             }
         }else if(RoleType.ROLE_APPROVER.toString().equals(userRoleName)){
             if(!originalOrder.getStatus().equals(newStatus)) {
-                checkOrderIsOepnToApprover(originalOrder);
+                checkOrderIsOpenToApprover(originalOrder);
                 newOrder.setStatus(newStatus);
                 newOrder.setReviewedByPRCH(false);
                 newOrder.setReviewedByAPV(true);
@@ -244,7 +257,7 @@ public class OrderService {
 
         boolean sendRequestToIncreaseInventory = false;
         if(!originalOrder.getStatus().equals(newStatus)) {
-        	newOrder.setComments(comments == null ? "" : comments);
+            newOrder.setComments(comments == null ? "" : comments);
             if(OrderStatus.DECLINED.equals(newStatus)) {
                 sendRequestToIncreaseInventory = true;
             }
@@ -273,32 +286,32 @@ public class OrderService {
     }
 
     private void checkOrderIsAlreadyReviewed(String userRoleName, OrderEntity order) throws IncorrectOperationException {
-    	if(RoleType.ROLE_PURCHASER.toString().equals(userRoleName)){
-    		if(order.getReviewedByPRCH()) {
-    			throw new IncorrectOperationException(OrderMessages.CANNOT_SET_TRUE_TO_FALSE);
-    		}
-    	}else if(RoleType.ROLE_APPROVER.toString().equals(userRoleName)) {
-    		if(order.getReviewedByAPV()) {
-    			throw new IncorrectOperationException(OrderMessages.CANNOT_SET_TRUE_TO_FALSE);
-    		}
-    	}
-	}
+        if(RoleType.ROLE_PURCHASER.toString().equals(userRoleName)){
+            if(order.getReviewedByPRCH()) {
+                throw new IncorrectOperationException(OrderMessages.CANNOT_SET_TRUE_TO_FALSE);
+            }
+        }else if(RoleType.ROLE_APPROVER.toString().equals(userRoleName)) {
+            if(order.getReviewedByAPV()) {
+                throw new IncorrectOperationException(OrderMessages.CANNOT_SET_TRUE_TO_FALSE);
+            }
+        }
+    }
 
-	private void checkOrderIsOepnToApprover(OrderEntity order) throws IncorrectOperationException {
+    private void checkOrderIsOpenToApprover(OrderEntity order) throws IncorrectOperationException {
         if(!OrderStatus.PROCESSED.equals(order.getStatus())) {
-			throw new IncorrectOperationException(OrderMessages.ALREADY_MODIFIED_THIS_ORDER);
-		}
-	}
+            throw new IncorrectOperationException(OrderMessages.ALREADY_MODIFIED_THIS_ORDER);
+        }
+    }
 
-	private void checkOrderStatusChangedByPurchaser(OrderEntity order, OrderStatus newStatus)
-                                                                                throws NoPermissionException {
-    	if(!order.getStatus().equals(newStatus)) {
-    		throw new NoPermissionException(
+    private void checkOrderStatusChangedByPurchaser(OrderEntity order, OrderStatus newStatus)
+            throws NoPermissionException {
+        if(!order.getStatus().equals(newStatus)) {
+            throw new NoPermissionException(
                     MessageFormat.format(OrderMessages.NO_PERMISSION_TO_CHANGE_TO_ORDER_STATUS, newStatus));
-    	}
-	}
+        }
+    }
 
-	public List<OrderEntity> getAllOrders(String requestedBy, String userRoleName) throws ParameterException {
+    public List<OrderEntity> getAllOrders(String requestedBy, String userRoleName) throws ParameterException {
         ParameterValidator.requireNonNull(requestedBy, OrderMessages.USERNAME_CANNOT_BE_NULL);
         ParameterValidator.requireNonBlank(userRoleName, OrderMessages.USER_ROLE_NAME_CANNOT_BE_BLANK);
 
