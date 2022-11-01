@@ -64,17 +64,10 @@ public class OrderService {
                 }
             }
             return null;
-        } catch (OrderNotFoundException | ParameterException e) {
+        } catch (OrderNotFoundException | ParameterException | OrderStatusException e) {
             log.error("Order Exception:", e);
             return new InventoryOperationRequestMessageDTO(InventoryOperation.NONE,
                     operationResult.getOrderNumber(),
-                    e.getMessage());
-        } catch (OrderStatusException e) {
-            log.error("Order Status Exception:", e);
-            assert order != null;
-            return new InventoryOperationRequestMessageDTO(InventoryOperation.INCREASE,
-                    operationResult.getOrderNumber(),
-                    InventoryInfoDTO.convertFrom(order.getOrderItems()),
                     e.getMessage());
         }
     }

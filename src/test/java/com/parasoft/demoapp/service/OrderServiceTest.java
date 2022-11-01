@@ -141,7 +141,7 @@ public class OrderServiceTest {
 
         // Then
         InventoryOperationRequestMessageDTO expectedRequestMessage =
-                new InventoryOperationRequestMessageDTO(InventoryOperation.INCREASE, orderNumber, InventoryInfoDTO.convertFrom(order.getOrderItems()),
+                new InventoryOperationRequestMessageDTO(InventoryOperation.NONE, orderNumber,
                         "Can not change order status from CANCELED to PROCESSED");
         assertEquals(requestMessage, expectedRequestMessage);
         assertEquals(OrderStatus.CANCELED, order.getStatus());
