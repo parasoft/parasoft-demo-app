@@ -4,6 +4,8 @@ import com.parasoft.demoapp.dto.InventoryInfoDTO;
 import com.parasoft.demoapp.dto.InventoryOperation;
 import com.parasoft.demoapp.dto.InventoryOperationRequestMessageDTO;
 import com.parasoft.demoapp.dto.InventoryOperationResultMessageDTO;
+import com.parasoft.demoapp.exception.ParameterException;
+import com.parasoft.demoapp.messages.AssetMessages;
 import com.parasoft.demoapp.model.industry.ItemInventoryEntity;
 import com.parasoft.demoapp.repository.industry.ItemInventoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +13,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 import static com.parasoft.demoapp.dto.InventoryOperation.DECREASE;
 import static com.parasoft.demoapp.dto.InventoryOperation.INCREASE;
+import static com.parasoft.demoapp.dto.InventoryOperation.NONE;
 import static com.parasoft.demoapp.dto.InventoryOperationStatus.FAIL;
 import static com.parasoft.demoapp.dto.InventoryOperationStatus.SUCCESS;
 
@@ -24,12 +28,15 @@ public class ItemInventoryService {
     @Autowired
     private ItemInventoryRepository itemInventoryRepository;
 
-    @Transactional
+    @Transactional(value = "industryTransactionManager")
     public InventoryOperationResultMessageDTO handleMessageFromRequestQueue(InventoryOperationRequestMessageDTO
                                                                                         requestMessage) {
-        InventoryOperationResultMessageDTO resultMessage = new InventoryOperationResultMessageDTO();
-
         InventoryOperation operation = requestMessage.getOperation();
+        if (operation == NONE) {
+            return null;
+        }
+
+        InventoryOperationResultMessageDTO resultMessage = new InventoryOperationResultMessageDTO();
         resultMessage.setOperation(operation);
         resultMessage.setOrderNumber(requestMessage.getOrderNumber());
         List<InventoryInfoDTO> requestedItems = requestMessage.getInventoryInfos();
@@ -108,5 +115,31 @@ public class ItemInventoryService {
             }
         }
         return "";
+    }
+
+    public ItemInventoryEntity saveItemInStock(Long itemId, Integer inStock) throws ParameterException {
+        ParameterValidator.requireNonNull(itemId, AssetMessages.ITEM_ID_CANNOT_BE_NULL);
+        ParameterValidator.requireNonNull(inStock, AssetMessages.IN_STOCK_CANNOT_BE_NULL);
+        ParameterValidator.requireNonNegative(inStock, MessageFormat.format(AssetMessages.IN_STOCK_CANNOT_BE_A_NEGATIVE_NUMBER, inStock));
+
+        return itemInventoryRepository.save(new ItemInventoryEntity(itemId, inStock));
+    }
+
+    public Integer getInStockByItemId(Long itemId) throws ParameterException {
+        ParameterValidator.requireNonNull(itemId, AssetMessages.ITEM_ID_CANNOT_BE_NULL);
+
+        return itemInventoryRepository.findInStockByItemId(itemId);
+    }
+
+    public void removeItemInventoryByItemId(Long itemId) throws ParameterException {
+        ParameterValidator.requireNonNull(itemId, AssetMessages.ITEM_ID_CANNOT_BE_NULL);
+
+        if (itemInventoryExistById(itemId)){
+            itemInventoryRepository.deleteById(itemId);
+        }
+    }
+
+    private boolean itemInventoryExistById(Long itemId) {
+        return itemInventoryRepository.existsById(itemId);
     }
 }

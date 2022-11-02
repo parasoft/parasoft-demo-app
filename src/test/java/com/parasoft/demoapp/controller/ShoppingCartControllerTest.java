@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.parasoft.demoapp.controller;
 
@@ -14,6 +14,7 @@ import static org.mockito.Mockito.mock;
 
 import java.util.List;
 
+import com.parasoft.demoapp.exception.InventoryNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -64,10 +65,10 @@ public class ShoppingCartControllerTest {
 		ShoppingCartDTO shoppingCartDto = mock(ShoppingCartDTO.class);
 		CartItemEntity getCartItemByCartIdResult = mock(CartItemEntity.class);
 		doReturn(getCartItemByCartIdResult).when(shoppingCartService).addCartItemInShoppingCart(anyLong(), anyLong(), anyInt());
-		
+
 		// When
 		ResponseResult<CartItemEntity> result = underTest.addItemInCart(auth, shoppingCartDto);
-		
+
 		// Then
 		assertNotNull(result);
 		assertNotNull(result.getData());
@@ -89,11 +90,30 @@ public class ShoppingCartControllerTest {
 		doReturn(userEntity).when(auth).getPrincipal();
 		ShoppingCartDTO shoppingCartDto = mock(ShoppingCartDTO.class);
 		doThrow(ItemNotFoundException.class).when(shoppingCartService).addCartItemInShoppingCart(anyLong(), anyLong(), anyInt());
-		
+
 		// When
 		underTest.addItemInCart(auth, shoppingCartDto);
 	}
-	
+
+	/**
+	 * Test for addItemInCart(Authentication, ShoppingCartDTO) with ItemNotFoundException
+	 *
+	 * @see ShoppingCartController#addItemInCart(Authentication, ShoppingCartDTO)
+	 */
+	@Test(expected = InventoryNotFoundException.class)
+	public void testAddItemInCart_exception_InventoryNotFoundException() throws Throwable {
+		// Given
+		Authentication auth = mock(Authentication.class);
+		UserEntity userEntity = new UserEntity();
+		userEntity.setId(1L);
+		doReturn(userEntity).when(auth).getPrincipal();
+		ShoppingCartDTO shoppingCartDto = mock(ShoppingCartDTO.class);
+		doThrow(InventoryNotFoundException.class).when(shoppingCartService).addCartItemInShoppingCart(anyLong(), anyLong(), anyInt());
+
+		// When
+		underTest.addItemInCart(auth, shoppingCartDto);
+	}
+
 	/**
 	 * Test for addItemInCart(Authentication, ShoppingCartDTO) with ParameterException
 	 *
@@ -108,7 +128,7 @@ public class ShoppingCartControllerTest {
 		doReturn(userEntity).when(auth).getPrincipal();
 		ShoppingCartDTO shoppingCartDto = mock(ShoppingCartDTO.class);
 		doThrow(ParameterException.class).when(shoppingCartService).addCartItemInShoppingCart(anyLong(), anyLong(), anyInt());
-		
+
 		// When
 		underTest.addItemInCart(auth, shoppingCartDto);
 	}
@@ -127,10 +147,10 @@ public class ShoppingCartControllerTest {
 		doReturn(userEntity).when(auth).getPrincipal();
 		CartItemEntity getCartItemByCartIdResult = mock(CartItemEntity.class);
 		doReturn(getCartItemByCartIdResult).when(shoppingCartService).addCartItemInShoppingCart(anyLong(), anyLong(), anyInt());
-		
+
 		// When
 		ResponseResult<List<CartItemEntity>> result = underTest.getCartItems(auth);
-		
+
 		// Then
 		assertNotNull(result);
 		assertNotNull(result.getData());
@@ -197,10 +217,10 @@ public class ShoppingCartControllerTest {
 		userEntity.setId(1L);
 		doReturn(userEntity).when(auth).getPrincipal();
 		doNothing().when(shoppingCartService).clearShoppingCart(anyLong());
-		
+
 		// When
 		ResponseResult<Boolean> result = underTest.removeAllCartItems(auth);
-		
+
 		// Then
 		assertNotNull(result);
 		assertEquals(ResponseResult.STATUS_OK, result.getStatus());
@@ -239,7 +259,7 @@ public class ShoppingCartControllerTest {
 		doReturn(userEntity).when(auth).getPrincipal();
 		Long itemId = 0L;
 		doNothing().when(shoppingCartService).removeCartItemByUserIdAndItemId(anyLong(), anyLong());
-		
+
 		// When
 		ResponseResult<Boolean> result = underTest.removeCartItem(auth, itemId);
 
@@ -248,7 +268,7 @@ public class ShoppingCartControllerTest {
 		assertEquals(ResponseResult.STATUS_OK, result.getStatus());
 		assertEquals(ResponseResult.MESSAGE_OK, result.getMessage());
 	}
-	
+
 	/**
 	 * Test for removeCartItem(Authentication. Long) with CartItemNotFoundException
 	 *
@@ -263,7 +283,7 @@ public class ShoppingCartControllerTest {
 		doReturn(userEntity).when(auth).getPrincipal();
 		Long itemId = 0L;
 		doThrow(CartItemNotFoundException.class).when(shoppingCartService).removeCartItemByUserIdAndItemId(anyLong(), anyLong());
-		
+
 		// When
 		underTest.removeCartItem(auth, itemId);
 	}
@@ -282,7 +302,7 @@ public class ShoppingCartControllerTest {
 		doReturn(userEntity).when(auth).getPrincipal();
 		Long itemId = 0L;
 		doThrow(ParameterException.class).when(shoppingCartService).removeCartItemByUserIdAndItemId(anyLong(), anyLong());
-		
+
 		// When
 		underTest.removeCartItem(auth, itemId);
 	}
@@ -312,7 +332,7 @@ public class ShoppingCartControllerTest {
 		assertEquals(ResponseResult.STATUS_OK, result.getStatus());
 		assertEquals(ResponseResult.MESSAGE_OK, result.getMessage());
 	}
-	
+
 	/**
 	 * Test for updateCartItemQuantity(Authentication, Long, Integer) with ItemNotFoundException
 	 *
@@ -328,7 +348,7 @@ public class ShoppingCartControllerTest {
 		Long itemId = -1L;
 		ShoppingCartDTO shoppingCartDto = mock(ShoppingCartDTO.class);
 		doThrow(ItemNotFoundException.class).when(shoppingCartService).updateCartItemQuantity(anyLong(), anyLong(), anyInt());
-		
+
 		// When
 		underTest.updateCartItemQuantity(auth, itemId, shoppingCartDto);
 	}
@@ -368,10 +388,10 @@ public class ShoppingCartControllerTest {
 		Long itemId = 0L;
 		ShoppingCartDTO shoppingCartDto = mock(ShoppingCartDTO.class);
 		doThrow(ParameterException.class).when(shoppingCartService).updateCartItemQuantity(anyLong(), anyLong(), anyInt());
-		
+
 		// When
 		underTest.updateCartItemQuantity(auth, itemId, shoppingCartDto);
 	}
 
-	
+
 }

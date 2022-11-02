@@ -2,6 +2,9 @@ package com.parasoft.demoapp.service;
 
 import static org.junit.Assert.assertEquals;
 
+import com.parasoft.demoapp.utilfortest.OrderUtilForTest;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
@@ -16,6 +19,7 @@ import com.parasoft.demoapp.model.industry.OrderEntity;
 import com.parasoft.demoapp.model.industry.OrderStatus;
 import com.parasoft.demoapp.model.industry.RegionType;
 import com.parasoft.demoapp.repository.industry.OrderRepository;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Test for OrderService
@@ -44,6 +48,9 @@ public class OrderServiceSpringTest5 {
 
     @Autowired
     OrderService underTest;
+
+    @Autowired
+    ItemInventoryService itemInventoryService;
 
     /**
      * <p>
@@ -77,18 +84,19 @@ public class OrderServiceSpringTest5 {
             userId = user.getId();
             requestedBy = user.getUsername();
             category = categoryService.addNewCategory("name", "description", "imagePath");
-            item = itemService.addNewItem("name", "description", category.getId(), 30, "imagePath", RegionType.JAPAN);
+            item = itemService.addNewItem("name", "description", category.getId(), 30, "imagePath", RegionType.LOCATION_1);
             // add item into cart, the quantity of item is 20.
             shoppingCartService.addCartItemInShoppingCart(userId, item.getId(), 20);
 
             // When
-            RegionType region = RegionType.JAPAN;
+            RegionType region = RegionType.LOCATION_1;
             String location = "JAPAN 82.8628° S, 135.0000° E";
             String receiverId = "345-6789-21";
             String eventId = "45833-ORG-7834";
             String eventNumber = "55-444-33-22";
             // after add a new order, the in stock of item is 10.
             order = underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
+            OrderUtilForTest.waitChangeForOrderStatus(order.getOrderNumber(), orderRepository, OrderStatus.SUBMITTED, 5);
 
             String orderNumber = order.getOrderNumber();
             String userRoleName = RoleType.ROLE_APPROVER.toString();
@@ -107,8 +115,7 @@ public class OrderServiceSpringTest5 {
         }finally {
             // Then
             assertEquals(1, orderRepository.findAll().size());
-            assertEquals(OrderStatus.SUBMITTED, orderRepository.findOrderByOrderNumber(order.getOrderNumber()).getStatus());
-            assertEquals(10, (int)itemService.getInStockById(item.getId()));
+            assertEquals(OrderStatus.PROCESSED, orderRepository.findOrderByOrderNumber(order.getOrderNumber()).getStatus());
             itemService.removeItemById(item.getId());
             categoryService.removeCategory(category.getId());
             orderRepository.deleteAll();

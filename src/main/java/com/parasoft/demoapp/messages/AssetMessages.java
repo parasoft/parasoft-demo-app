@@ -1,7 +1,7 @@
 package com.parasoft.demoapp.messages;
 
 public class AssetMessages extends Messages {
-	
+
 	public static final String NO_CATEGORIES = "No categories.";
 	public static final String CATEGORY_ID_NOT_FOUND = "Category with ID {0} is not found.";
 	public static final String CATEGORY_NAME_NOT_FOUND = "Category with name {0} is not found.";
@@ -33,9 +33,10 @@ public class AssetMessages extends Messages {
 	public static final String NO_CART_ITEMS = "No cart items.";
 	public static final String THERE_IS_NO_CART_ITEM_CORRESPONDING_TO = "There is no cart item corresponding to {0}.";
 	public static final String SEARCH_FIELD_CANNOT_BE_BLANK = "Search field cannot be an empty string(null, '' or '  ').";
+	public static final String INVENTORY_NOT_FOUND_WITH_ITEM_ID = "Inventory not found with item id {0}.";
 
     public AssetMessages() {
 		super("i18n/messages");
 	}
-    
+
 }

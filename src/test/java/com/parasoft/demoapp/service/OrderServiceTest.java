@@ -114,7 +114,7 @@ public class OrderServiceTest {
                 new InventoryOperationResultMessageDTO(InventoryOperation.DECREASE, orderNumber, InventoryOperationStatus.FAIL, null));
 
         // Then
-        Mockito.verify(orderMQService, times(0)).sendToApprover(any());
+        Mockito.verify(orderMQService, times(1)).sendToApprover(any());
         assertEquals(requestMessage, null);
         assertEquals(OrderStatus.CANCELED, order.getStatus());
     }
@@ -141,7 +141,7 @@ public class OrderServiceTest {
 
         // Then
         InventoryOperationRequestMessageDTO expectedRequestMessage =
-                new InventoryOperationRequestMessageDTO(InventoryOperation.INCREASE, orderNumber, InventoryInfoDTO.convertFrom(order.getOrderItems()),
+                new InventoryOperationRequestMessageDTO(InventoryOperation.NONE, orderNumber,
                         "Can not change order status from CANCELED to PROCESSED");
         assertEquals(requestMessage, expectedRequestMessage);
         assertEquals(OrderStatus.CANCELED, order.getStatus());
@@ -153,7 +153,7 @@ public class OrderServiceTest {
      * @see OrderService#handleMessageFromResponseQueue(InventoryOperationResultMessageDTO)
      */
     @Test
-    public void testDecrease_itemNotExist() {
+    public void testDecrease_OrderNotExist() {
         // Given
         String orderNumber = "123-456-789";
         when(orderRepository.findOrderByOrderNumber(anyString())).thenReturn(null);
@@ -164,7 +164,7 @@ public class OrderServiceTest {
 
         // Then
         InventoryOperationRequestMessageDTO expectedRequestMessage =
-                new InventoryOperationRequestMessageDTO(InventoryOperation.INCREASE, orderNumber, null,
+                new InventoryOperationRequestMessageDTO(InventoryOperation.NONE, orderNumber,
                         "There is no order corresponding to " + orderNumber + ".");
         assertEquals(requestMessage, expectedRequestMessage);
     }
@@ -927,7 +927,7 @@ public class OrderServiceTest {
         int totalElement = 2;
         Page<OrderEntity> page = new PageImpl<>(content, pageable, totalElement);
 
-        doReturn(page).when(orderRepository).findAll(nullable(Pageable.class));
+        doReturn(page).when(orderRepository).findAllByStatusNotIn(any(), nullable(Pageable.class));
 
         //doReturn(page).when(orderRepository).findAllByUserId(nullable(Long.class),
         //		nullable(Pageable.class));
@@ -1026,11 +1026,11 @@ public class OrderServiceTest {
     public void testUpdateOrderByOrderNumber_purchaser_normal() throws Throwable {
         // Given
         OrderEntity order = prepareOrderWithIgnoringSubmmitedStatusHelper();
-        order.setStatus(OrderStatus.SUBMITTED);
+        order.setStatus(OrderStatus.PROCESSED);
         order.setReviewedByPRCH(true);
         order.setReviewedByAPV(false);
         String orderNumber = "11-234-567";
-        OrderStatus newStatus = OrderStatus.SUBMITTED;
+        OrderStatus newStatus = OrderStatus.PROCESSED;
         String userRoleName = RoleType.ROLE_PURCHASER.toString();
         Boolean reviewedByPRCH = true;
         Boolean reviewedByAPV = false;
@@ -1060,7 +1060,7 @@ public class OrderServiceTest {
     public void testUpdateOrderByOrderNumber_purchaser_exception_NoPermissionException() throws Throwable {
         // Given
         OrderEntity order = prepareOrderWithIgnoringSubmmitedStatusHelper();
-        order.setStatus(OrderStatus.SUBMITTED);
+        order.setStatus(OrderStatus.PROCESSED);
         order.setReviewedByPRCH(true);
         order.setReviewedByAPV(false);
         String orderNumber = "11-234-567";
@@ -1097,11 +1097,11 @@ public class OrderServiceTest {
     public void testUpdateOrderByOrderNumber_purchaser_exception_IncorrectOperationExcetion() throws Throwable {
         // Given
         OrderEntity order = prepareOrderWithIgnoringSubmmitedStatusHelper();
-        order.setStatus(OrderStatus.SUBMITTED);
+        order.setStatus(OrderStatus.PROCESSED);
         order.setReviewedByPRCH(true);
         order.setReviewedByAPV(false);
         String orderNumber = "11-234-567";
-        OrderStatus newStatus = OrderStatus.SUBMITTED;
+        OrderStatus newStatus = OrderStatus.PROCESSED;
         String userRoleName = RoleType.ROLE_PURCHASER.toString();
         Boolean reviewedByPRCH = false;
         Boolean reviewedByAPV = false;
@@ -1134,11 +1134,11 @@ public class OrderServiceTest {
     public void testUpdateOrderByOrderNumber_exception_ParameterException_reviewedByPRCH() throws Throwable {
         // Given
         OrderEntity order = prepareOrderWithIgnoringSubmmitedStatusHelper();
-        order.setStatus(OrderStatus.SUBMITTED);
+        order.setStatus(OrderStatus.PROCESSED);
         order.setReviewedByPRCH(true);
         order.setReviewedByAPV(false);
         String orderNumber = "11-234-567";
-        OrderStatus newStatus = OrderStatus.SUBMITTED;
+        OrderStatus newStatus = OrderStatus.PROCESSED;
         String userRoleName = RoleType.ROLE_PURCHASER.toString();
         Boolean reviewedByPRCH = null; // test point
         Boolean reviewedByAPV = false;
@@ -1171,11 +1171,11 @@ public class OrderServiceTest {
     public void testUpdateOrderByOrderNumber_exception_ParameterException_reviewedByAPV() throws Throwable {
         // Given
         OrderEntity order = prepareOrderWithIgnoringSubmmitedStatusHelper();
-        order.setStatus(OrderStatus.SUBMITTED);
+        order.setStatus(OrderStatus.PROCESSED);
         order.setReviewedByPRCH(true);
         order.setReviewedByAPV(false);
         String orderNumber = "11-234-567";
-        OrderStatus newStatus = OrderStatus.SUBMITTED;
+        OrderStatus newStatus = OrderStatus.PROCESSED;
         String userRoleName = RoleType.ROLE_APPROVER.toString();
         Boolean reviewedByPRCH = true;
         Boolean reviewedByAPV = null; // test point
@@ -1200,6 +1200,162 @@ public class OrderServiceTest {
     }
 
     /**
+     * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean) with ParameterException
+     *
+     * @see com.parasoft.demoapp.service.OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
+     */
+    @Test
+    public void testUpdateOrderByOrderNumber_exception_ParameterException_orderHasBeenCancelled() throws Throwable {
+        // Given
+        OrderEntity order = prepareOrderWithIgnoringSubmmitedStatusHelper();
+        order.setStatus(OrderStatus.CANCELED); // test point
+        order.setReviewedByPRCH(true);
+        order.setReviewedByAPV(false);
+        String orderNumber = "11-234-567";
+        OrderStatus newStatus = OrderStatus.APPROVED;
+        String userRoleName = RoleType.ROLE_APPROVER.toString();
+        Boolean reviewedByPRCH = true;
+        Boolean reviewedByAPV = false;
+        String respondedBy = null;
+        String comments = "";
+        boolean publicToMQ = true;
+        doReturn(order).when(orderRepository).findOrderByOrderNumber(orderNumber);
+
+        // When
+        String message = "";
+        try {
+            underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus,
+                    reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
+        } catch (Exception e){
+            message = e.getMessage();
+        }
+
+        // Then
+        assertEquals(OrderMessages.ORDER_INFO_CANNOT_CHANGE_FROM_CANCELED, message);
+        Mockito.verify(orderRepository, times(1)).findOrderByOrderNumber(anyString());
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
+    }
+
+    /**
+     * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean) with ParameterException
+     *
+     * @see com.parasoft.demoapp.service.OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
+     */
+    @Test
+    public void testUpdateOrderByOrderNumber_exception_ParameterException_orderHasNotPrepared() throws Throwable {
+        // Given
+        OrderEntity order = prepareOrderWithIgnoringSubmmitedStatusHelper();
+        order.setStatus(OrderStatus.SUBMITTED); // test point
+        order.setReviewedByPRCH(true);
+        order.setReviewedByAPV(false);
+        String orderNumber = "11-234-567";
+        OrderStatus newStatus = OrderStatus.APPROVED;
+        String userRoleName = RoleType.ROLE_APPROVER.toString();
+        Boolean reviewedByPRCH = true;
+        Boolean reviewedByAPV = false;
+        String respondedBy = null;
+        String comments = "";
+        boolean publicToMQ = true;
+        doReturn(order).when(orderRepository).findOrderByOrderNumber(orderNumber);
+
+        // When
+        String message = "";
+        try {
+            underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus,
+                    reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
+        } catch (Exception e){
+            message = e.getMessage();
+        }
+
+        // Then
+        assertEquals(OrderMessages.ORDER_INFO_CANNOT_CHANGE_FROM_SUBMITTED, message);
+        Mockito.verify(orderRepository, times(1)).findOrderByOrderNumber(anyString());
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
+    }
+
+    /**
+     * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean) with ParameterException
+     *
+     * @see com.parasoft.demoapp.service.OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
+     */
+    @Test
+    public void testUpdateOrderByOrderNumber_exception_ParameterException_changeToInternalStatus() throws Throwable {
+        // Given
+        OrderEntity order = prepareOrderWithIgnoringSubmmitedStatusHelper();
+        order.setStatus(OrderStatus.PROCESSED);
+        order.setReviewedByPRCH(true);
+        order.setReviewedByAPV(false);
+        String orderNumber = "11-234-567";
+        OrderStatus newStatus = OrderStatus.SUBMITTED; // test point
+        String userRoleName = RoleType.ROLE_APPROVER.toString();
+        Boolean reviewedByPRCH = true;
+        Boolean reviewedByAPV = false;
+        String respondedBy = null;
+        String comments = "";
+        boolean publicToMQ = true;
+        doReturn(order).when(orderRepository).findOrderByOrderNumber(orderNumber);
+
+        // When
+        String message = "";
+        try {
+            underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus,
+                    reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
+        } catch (Exception e){
+            message = e.getMessage();
+        }
+
+        // Then
+        assertEquals(MessageFormat.format(OrderMessages.ORDER_STATUS_CHANGED_BACK_ERROR, order.getStatus(), newStatus), message);
+        Mockito.verify(orderRepository, times(1)).findOrderByOrderNumber(anyString());
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
+
+        // Given
+        newStatus = OrderStatus.CANCELED; // test point
+
+        // When
+        try {
+            underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus,
+                    reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
+        } catch (Exception e){
+            message = e.getMessage();
+        }
+
+        // Then
+        assertEquals(MessageFormat.format(OrderMessages.ORDER_STATUS_CHANGED_BACK_ERROR, order.getStatus(), newStatus), message);
+
+        // Given
+        newStatus = OrderStatus.CANCELED; // test point
+
+        // When
+        try {
+            underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus,
+                    reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
+        } catch (Exception e){
+            message = e.getMessage();
+        }
+
+        // Then
+        assertEquals(MessageFormat.format(OrderMessages.ORDER_STATUS_CHANGED_BACK_ERROR, order.getStatus(), newStatus), message);
+
+        // Then
+        assertEquals(MessageFormat.format(OrderMessages.ORDER_STATUS_CHANGED_BACK_ERROR, order.getStatus(), newStatus), message);
+
+        // Given
+        newStatus = OrderStatus.SUBMITTED; // test point
+
+        // When
+        try {
+            underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus,
+                    reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
+        } catch (Exception e){
+            message = e.getMessage();
+        }
+
+        // Then
+        assertEquals(MessageFormat.format(OrderMessages.ORDER_STATUS_CHANGED_BACK_ERROR, order.getStatus(), newStatus), message);
+    }
+
+    /**
      * Test for updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean) declined
      *
      * @see com.parasoft.demoapp.service.OrderService#updateOrderByOrderNumber(String, String, OrderStatus, Boolean, Boolean, String, String, boolean)
@@ -1209,7 +1365,7 @@ public class OrderServiceTest {
         // Given
         String orderNumber = "11-234-567";
         OrderEntity order = prepareOrderWithIgnoringSubmmitedStatusHelper();
-        order.setStatus(OrderStatus.SUBMITTED);
+        order.setStatus(OrderStatus.PROCESSED);
         order.setOrderNumber(orderNumber);
         order.setReviewedByPRCH(true);
         order.setReviewedByAPV(false);

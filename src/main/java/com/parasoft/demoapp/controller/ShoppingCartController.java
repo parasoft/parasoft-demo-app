@@ -2,6 +2,7 @@ package com.parasoft.demoapp.controller;
 
 import com.parasoft.demoapp.dto.ShoppingCartDTO;
 import com.parasoft.demoapp.exception.CartItemNotFoundException;
+import com.parasoft.demoapp.exception.InventoryNotFoundException;
 import com.parasoft.demoapp.exception.ItemNotFoundException;
 import com.parasoft.demoapp.exception.ParameterException;
 import com.parasoft.demoapp.model.industry.CartItemEntity;
@@ -33,12 +34,12 @@ public class ShoppingCartController {
 
 	@Autowired
 	private ShoppingCartService shoppingCartService;
-	
+
 	@Operation(description = "Add an item to the shopping cart.")
 	@Parameters({
-		@Parameter(name = "itemId", in = ParameterIn.QUERY, required = true, 
+		@Parameter(name = "itemId", in = ParameterIn.QUERY, required = true,
 				style = ParameterStyle.FORM, schema = @Schema(type = "integer", format = "int64")),
-		@Parameter(name = "itemQty", in = ParameterIn.QUERY, required = true, 
+		@Parameter(name = "itemQty", in = ParameterIn.QUERY, required = true,
 				style = ParameterStyle.FORM, schema = @Schema(type = "integer", format = "int64")),
 	})
 	@ApiResponses({
@@ -61,7 +62,7 @@ public class ShoppingCartController {
 	@ResponseBody
 	public ResponseResult<CartItemEntity> addItemInCart(
 			Authentication auth, @Parameter(hidden = true) @RequestBody ShoppingCartDTO shoppingCartDto)
-			throws ItemNotFoundException, ParameterException {
+			throws ItemNotFoundException, ParameterException, InventoryNotFoundException {
 
 		ResponseResult<CartItemEntity> response = ResponseResult.getInstance(ResponseResult.STATUS_OK,
 				ResponseResult.MESSAGE_OK);
@@ -73,7 +74,7 @@ public class ShoppingCartController {
 
 		return response;
 	}
-	
+
 	@Operation(description = "Remove an item from the shopping cart.")
 	@ApiResponses({
 		@ApiResponse(responseCode = "200",
@@ -99,9 +100,9 @@ public class ShoppingCartController {
 		Long currentUserId = AuthenticationUtil.getUserIdInAuthentication(auth);
 		shoppingCartService.removeCartItemByUserIdAndItemId(currentUserId, itemId);
 
-		return response;		
+		return response;
 	}
-	
+
 	@Operation(description = "Remove all items for the current user from the shopping cart.")
 	@ApiResponses({
 		@ApiResponse(responseCode = "200",
@@ -127,12 +128,12 @@ public class ShoppingCartController {
 		Long currentUserId = AuthenticationUtil.getUserIdInAuthentication(auth);
 		shoppingCartService.clearShoppingCart(currentUserId);
 
-		return response;		
+		return response;
 	}
-	
+
 	@Operation(description = "Update the quantity of item in the shopping cart.")
 	@Parameters({
-		@Parameter(name = "itemQty", in = ParameterIn.QUERY, required = true, 
+		@Parameter(name = "itemQty", in = ParameterIn.QUERY, required = true,
 				style = ParameterStyle.FORM, schema = @Schema(type = "integer", format = "int64")),})
 	@ApiResponses({
 		@ApiResponse(responseCode = "200",
@@ -162,7 +163,7 @@ public class ShoppingCartController {
 		response.setData(shoppingCartService.updateCartItemQuantity(currentUserId,
 				                                                    itemId, shoppingCartDto.getItemQty()));
 
-		return response;		
+		return response;
 	}
 
 	@Operation(description = "Obtain all items for the current user in the shopping cart.")
@@ -189,10 +190,10 @@ public class ShoppingCartController {
 
 		Long currentUserId = AuthenticationUtil.getUserIdInAuthentication(auth);
 		response.setData(shoppingCartService.getCartItemsByUserId(currentUserId));
-		
-		return response;		
-	}	
-	
+
+		return response;
+	}
+
 	@Operation(description = "Obtain an item with item id in the shopping cart.")
 	@ApiResponses({
 		@ApiResponse(responseCode = "200",
