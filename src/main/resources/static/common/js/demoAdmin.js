@@ -36,7 +36,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 
     demo.GENERAL = "active";
 
-    demo.tooltipInfoList = [
+    demo.configurationDetails = [
         {
             label: $filter('translate')('PROVIDER_URL_LABEL'),
             value: "tcp://localhost:61626"
