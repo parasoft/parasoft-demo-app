@@ -76,6 +76,39 @@ Parasoft Demo Application exposes port 9001 for the user to connect to the HSQLD
 | Username | `SA`                                                |
 | Password | `pass`                                              |
 
+## Using Parasoft JMS/MQ Proxy
+There are two services in PDA, **order service** and **inventory service**. When an order is submitted, order service would send 
+a request to inventory service to decrease the inventory. Then inventory service would return a response to show whether 
+the operation is successful.
+
+If you want to use JMS/MQ proxy, you should set the configuration in **PARASOFT JMS/MQ PROXY** in PDA **Demo Admin** page.
+
+<img src="src/main/resources/static/common/images/services_diagram.png" width="500" alt="services_diagram">
+
+Default connection of **order service**
+
+| Option             | Value                            |
+|--------------------|----------------------------------|
+| Destination queue  | `queue.inventory.request`        |
+| Reply to queue     | `queue.inventory.response`       |
+
+Default connection of **inventory service**
+
+| Option             | Value                            |
+|--------------------|----------------------------------|
+| Destination queue: | `proxy.queue.inventory.request`  |
+| Reply to queue     | `proxy.queue.inventory.response` |
+
+Configuration details for embedded ActiveMQ server
+
+| Option                | Value                                                    |
+|-----------------------|----------------------------------------------------------|
+| Provider URL          | `tcp://localhost:61626`                                  |
+| Initial context class | `org.apache.activemq.jndi.ActiveMQInitialContextFactory` |
+| Connection factory    | `ConnectionFactory`                                      |
+| Username              | `admin`                                                  |
+| Password              | `admin`                                                  |
+
 ## Using Parasoft JDBC Proxy
 1. Find the **ParasoftJDBCDriver.jar** in **{SOAtest & Virtualize installation directory}/{version}/proxies**.
 2. Copy it to **{root directory of parasoft-demo-app}/lib**. (Create the folder if it does not already exist.)
