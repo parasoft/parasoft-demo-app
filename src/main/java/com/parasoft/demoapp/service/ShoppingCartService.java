@@ -1,6 +1,7 @@
 package com.parasoft.demoapp.service;
 
 import com.parasoft.demoapp.exception.CartItemNotFoundException;
+import com.parasoft.demoapp.exception.InventoryNotFoundException;
 import com.parasoft.demoapp.exception.ItemNotFoundException;
 import com.parasoft.demoapp.exception.ParameterException;
 import com.parasoft.demoapp.messages.AssetMessages;
@@ -27,7 +28,7 @@ public class ShoppingCartService {
     private ItemInventoryService itemInventoryService;
 
     public CartItemEntity addCartItemInShoppingCart(Long userId, Long itemId, Integer quantity)
-            throws ParameterException, ItemNotFoundException {
+            throws ParameterException, ItemNotFoundException, InventoryNotFoundException {
 
         ParameterValidator.requireNonNull(userId, AssetMessages.USER_ID_CANNOT_BE_NULL);
         ParameterValidator.requireNonNull(itemId, AssetMessages.ITEM_ID_CANNOT_BE_NULL);
@@ -37,6 +38,9 @@ public class ShoppingCartService {
 
         synchronized (this){
             ItemEntity item = itemService.getItemById(itemId);
+            if(item.getInStock() == null) {
+                throw new InventoryNotFoundException(MessageFormat.format(AssetMessages.INVENTORY_NOT_FOUND_WITH_ITEM_ID, itemId));
+            }
 
             if (quantity > item.getInStock()) {
                 throw new ParameterException(AssetMessages.INCLUDES_SHOPPING_CART_IN_STOCK_OF_CART_ITEM_IS_INSUFFICIENT);
@@ -64,7 +68,7 @@ public class ShoppingCartService {
             return cartItem;
         }
     }
-    
+
     @Transactional(value = "industryTransactionManager")
     public void removeCartItemByUserIdAndItemId(Long userId, Long itemId)
             throws ParameterException, CartItemNotFoundException {
@@ -88,7 +92,7 @@ public class ShoppingCartService {
 
         shoppingCartRepository.deleteByUserId(userId);
     }
-    
+
     @Transactional(value = "industryTransactionManager")
     public CartItemEntity updateCartItemQuantity(Long userId, Long itemId, Integer newQuantity)
             throws ParameterException, ItemNotFoundException, CartItemNotFoundException {
@@ -104,14 +108,14 @@ public class ShoppingCartService {
             throw new CartItemNotFoundException(MessageFormat.format(
                     AssetMessages.THERE_IS_NO_CART_ITEM_CORRESPONDING_TO, itemId));
         }
-        
+
         if (item.getInStock() < newQuantity) {
             throw new ParameterException(AssetMessages.INCLUDES_SHOPPING_CART_IN_STOCK_OF_CART_ITEM_IS_INSUFFICIENT);
         }
 
         cartItem.setQuantity(newQuantity);
         cartItem = shoppingCartRepository.save(cartItem);
-        
+
         cartItem.setRealInStock(itemInventoryService.getInStockByItemId(itemId));
 
         return cartItem;

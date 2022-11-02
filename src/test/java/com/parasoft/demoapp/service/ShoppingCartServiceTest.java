@@ -4,9 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -218,6 +216,34 @@ public class ShoppingCartServiceTest {
 
 		// Then
 		Assertions.assertEquals(AssetMessages.ITEM_ID_CANNOT_BE_NULL, message);
+	}
+
+	/**
+	 * Test for addCartItemInShoppingCart(Long, Long, Integer) with NullItemIdException
+	 *
+	 * @see ShoppingCartService#addCartItemInShoppingCart(Long, Long, Integer)
+	 */
+	@Test
+	public void testAddCartItemInShoppingCart_exception_inventoryNotExists() throws Throwable {
+		// Given
+		Long userId = 1L;
+		Long itemId = 1L;
+		Integer quantity = 10;
+		ItemEntity item = new ItemEntity();
+		item.setId(itemId);
+		item.setInStock(null); // test point
+		when(itemService.getItemById(itemId)).thenReturn(item);
+
+		// When
+		String message = "";
+		try {
+			underTest.addCartItemInShoppingCart(userId, itemId, quantity);
+		} catch (Exception e) {
+			message = e.getMessage();
+		}
+
+		// Then
+		Assertions.assertEquals(MessageFormat.format(AssetMessages.INVENTORY_NOT_FOUND_WITH_ITEM_ID, itemId), message);
 	}
 
 	/**
