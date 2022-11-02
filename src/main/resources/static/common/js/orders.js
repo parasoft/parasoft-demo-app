@@ -34,6 +34,23 @@ app.controller('orderHistoryController', function($rootScope, $http, $filter) {
 		return processedItems.substring(0,processedItems.lastIndexOf(" - "));
 	}
 
+    history.parseOrderStatus = function(status) {
+        switch (status) {
+            case 'SUBMITTED':
+                return $filter('translate')('SUBMITTED_STATUS');
+            case 'PROCESSED':
+                return $filter('translate')('PROCESSED_STATUS');
+            case 'CANCELED':
+                return $filter('translate')('CANCELLED_STATUS');
+            case 'APPROVED':
+                return $filter('translate')('APPROVED_STATUS');
+            case 'DECLINED':
+                return $filter('translate')('DECLINED_STATUS');
+            default:
+                return '';
+        }
+    }
+
 	history.showOrderDetail = {'show':false}
 
 	history.openOrderDetail = function(index, orderNumber){
@@ -70,7 +87,7 @@ app.controller('orderHistoryController', function($rootScope, $http, $filter) {
 	            }
 	        });
 
-            if(introduceIncorrectNumberBug && history.order.status === "SUBMITTED"){
+            if(introduceIncorrectNumberBug && history.order.status === "PROCESSED"){
             	history.totalItemQuantity = 0;
             }else{
             	var totalAmount = 0;

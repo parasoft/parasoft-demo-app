@@ -177,6 +177,59 @@
 
                         <div class="section_container">
                             <div class="section_title">
+                                <span class="align-to-icon" translate="PARASOFT_JMS_MQ_PROXY"></span>
+                                <i class="fa fa-info-circle info-icon" ng-click="demo.showToolTip()"></i>
+                            </div>
+                            <div class="section_body">
+                                <div class="form-group">
+                                    <label>
+                                        <input type="checkbox" name="activeMqProxyEnabled" ng-model="options.activeMqProxyEnabled" value="true"/>
+                                        <span class="input-label" translate="ENABLE"></span>
+                                    </label>
+                                </div>
+                                <label for="client_connection" class="connection-label" translate="CLIENT_CONNECTION"></label>
+                                <div id="client_connection">
+                                    <div class="form-group">
+                                        <label for="client_destination_queue" class="form_label" translate="DESTINATION_QUEUE"></label>
+                                        <input type="hidden" name="clientDestinationQueue" ng-value="options.clientDestinationQueue">
+                                        <div class="input-wrapper">
+                                            <input type="text" id="client_destination_queue" class="form-control" ng-model="options.clientDestinationQueue" ng-trim="false"
+                                                   ng-disabled="!options.activeMqProxyEnabled">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="client_reply_to_queue" class="form_label" translate="REPLY_TO_QUEUE"></label>
+                                        <input type="hidden" name="clientReplyToQueue" ng-value="options.clientReplyToQueue">
+                                        <div class="input-wrapper">
+                                            <input type="text" id="client_reply_to_queue" class="form-control" ng-model="options.clientReplyToQueue" ng-trim="false"
+                                                   ng-disabled="!options.activeMqProxyEnabled">
+                                        </div>
+                                    </div>
+                                </div>
+                                <label for="server_connection" class="connection-label" translate="SERVER_CONNECTION"></label>
+                                <div id="server_connection">
+                                    <div class="form-group">
+                                        <label for="server_destination_queue" class="form_label" translate="DESTINATION_QUEUE"></label>
+                                        <input type="hidden" name="serverDestinationQueue" ng-value="options.serverDestinationQueue">
+                                        <div class="input-wrapper">
+                                            <input type="text" id="server_destination_queue" class="form-control" ng-model="options.serverDestinationQueue" ng-trim="false"
+                                                   ng-disabled="!options.activeMqProxyEnabled">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                    <label for="server_reply_to_queue" class="form_label" translate="REPLY_TO_QUEUE"></label>
+                                    <input type="hidden" name="serverReplyToQueue" ng-value="options.serverReplyToQueue">
+                                    <div class="input-wrapper">
+                                        <input type="text" id="server_reply_to_queue" class="form-control" ng-model="options.serverReplyToQueue" ng-trim="false"
+                                               ng-disabled="!options.activeMqProxyEnabled">
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section_container">
+                            <div class="section_title">
                                 <span translate="PARASOFT_JDBC_PROXY"></span>
                             </div>
                             <div class="section_body">

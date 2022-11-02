@@ -47,6 +47,9 @@ public class OrderServiceSpringTest3 {
     @Autowired
     OrderService underTest;
 
+    @Autowired
+    ItemInventoryService itemInventoryService;
+
     /**
      * Test for addNewOrderSynchronized(Long, String, RegionType, String, String, String, String) under concurrency condition.
      *
@@ -87,7 +90,7 @@ public class OrderServiceSpringTest3 {
         }finally {
             // Then
             assertEquals(1, orderRepository.findAll().size());
-            assertEquals(20, (int)itemService.getInStockById(item.getId()));
+            assertEquals(20, (int)itemInventoryService.getInStockByItemId(item.getId()));
             itemService.removeItemById(item.getId());
             categoryService.removeCategory(category.getId());
             orderRepository.deleteAll();
