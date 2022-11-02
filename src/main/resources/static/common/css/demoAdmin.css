@@ -346,7 +346,7 @@ label {
     font-size: 13px;
 }
 
-#database_reset_confirm_modal .modal-dialog, #remove_confirm_modal .modal-dialog {
+#database_reset_confirm_modal .modal-dialog, #remove_confirm_modal .modal-dialog, #jms_configuration_details_modal .modal-dialog {
     top: 25%;
 }
 
