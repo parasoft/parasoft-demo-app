@@ -361,7 +361,6 @@ public class OrderServiceSpringTest {
 
         // When
         userRoleName = RoleType.ROLE_PURCHASER.toString();
-        newStatus = OrderStatus.APPROVED; // test point
         reviewedByPRCH = true; // test point
         reviewedByAPV = true; // test point
         result = underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus,
@@ -408,11 +407,11 @@ public class OrderServiceSpringTest {
             message = e.getMessage();
         }
         // Then
-        assertEquals(MessageFormat.format(OrderMessages.NO_PERMISSION_TO_CHANGE_TO_ORDER_STATUS, newStatus), message);
+        assertEquals(MessageFormat.format(OrderMessages.ORDER_STATUS_CHANGED_BACK_ERROR, OrderStatus.APPROVED, newStatus), message);
 
         // When
         try {
-            newStatus = OrderStatus.DECLINED; // test point
+            newStatus = OrderStatus.CANCELED; // test point
             comments = "reject";
             underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus, reviewedByPRCH,
                     reviewedByAPV, respondedBy, comments, publicToMQ);
@@ -421,7 +420,7 @@ public class OrderServiceSpringTest {
             message = e.getMessage();
         }
         // Then
-        assertEquals(MessageFormat.format(OrderMessages.NO_PERMISSION_TO_CHANGE_TO_ORDER_STATUS, newStatus), message);
+        assertEquals(MessageFormat.format(OrderMessages.ORDER_STATUS_CHANGED_BACK_ERROR, OrderStatus.APPROVED, newStatus), message);
 
         itemService.removeItemById(item.getId());
         categoryService.removeCategory(category.getId());
@@ -582,7 +581,7 @@ public class OrderServiceSpringTest {
             message = e.getMessage();
         }
         // Then
-        assertEquals(MessageFormat.format(OrderMessages.NO_PERMISSION_TO_CHANGE_TO_ORDER_STATUS, newStatus), message);
+        assertEquals(MessageFormat.format(OrderMessages.ORDER_STATUS_CHANGED_BACK_ERROR, OrderStatus.DECLINED, newStatus), message);
 
         // When
         try {
@@ -747,7 +746,7 @@ public class OrderServiceSpringTest {
 
         // When
         try {
-            newStatus = OrderStatus.PROCESSED; // test point
+            newStatus = OrderStatus.SUBMITTED; // test point
             comments = "";
             underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus, reviewedByPRCH,
                     reviewedByAPV, comments, respondedBy, publicToMQ);
@@ -756,7 +755,7 @@ public class OrderServiceSpringTest {
             message = e.getMessage();
         }
         // Then
-        assertEquals(MessageFormat.format(OrderMessages.NO_PERMISSION_TO_CHANGE_TO_ORDER_STATUS, newStatus), message);
+        assertEquals(MessageFormat.format(OrderMessages.ORDER_STATUS_CHANGED_BACK_ERROR, OrderStatus.DECLINED, newStatus), message);
 
         // When
         try {

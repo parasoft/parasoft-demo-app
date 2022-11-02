@@ -17,7 +17,10 @@ public class OrderMessages extends Messages {
 	public static final String REGION_CANNOT_BE_NULL = "Region should not be null.";
 	public static final String THERE_IS_NO_ORDER_CORRESPONDING_TO = "There is no order corresponding to {0}.";
 	public static final String ORDER_STATUS_CHANGED = "Order status is changed.";
+	public static final String ORDER_STATUS_CHANGED_BACK_ERROR = "Invalid update for order status from {0} to {1}.";
 	public static final String NO_PERMISSION_TO_CHANGE_TO_ORDER_STATUS = "You do not have permission to change the status of order to {0}.";
+	public static final String ORDER_INFO_CANNOT_CHANGE_FROM_CANCELED = "Update to cancelled order is not allowed.";
+	public static final String ORDER_INFO_CANNOT_CHANGE_FROM_SUBMITTED = "Update to submitted order is only allowed in internal process.";
 	public static final String CANNOT_SET_TRUE_TO_FALSE = "Cannot set the review status from true to false.";
 	public static final String ALREADY_MODIFIED_THIS_ORDER = "You have already modified this order status and cannot operate it again.";
 	public static final String ITEM_HAS_ALREADY_BEEN_REMOVED = "The item no longer exists and cannot be operated.";
@@ -31,5 +34,5 @@ public class OrderMessages extends Messages {
     public OrderMessages() {
 		super("i18n/messages");
 	}
-    
+
 }
