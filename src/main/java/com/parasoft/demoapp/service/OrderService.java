@@ -48,13 +48,13 @@ public class OrderService {
                 order = getOrderByOrderNumber(orderNumber);
                 switch (operationResult.getStatus()) {
                     case SUCCESS:
-                        order = updateOrderStatus(orderNumber, OrderStatus.PROCESSED);
+                        order = updateOrderStatus(orderNumber, OrderStatus.PROCESSED, null);
                         OrderMQMessageDTO message =
                                 new OrderMQMessageDTO(orderNumber, order.getRequestedBy(), order.getStatus(), OrderMessages.THE_ORDER_IS_PROCESSED);
                         orderMQService.sendToApprover(message);
                         break;
                     case FAIL:
-                        order = updateOrderStatus(orderNumber, OrderStatus.CANCELED);
+                        order = updateOrderStatus(orderNumber, OrderStatus.CANCELED, operationResult.getInfo());
                         OrderMQMessageDTO msg =
                                 new OrderMQMessageDTO(orderNumber, order.getRequestedBy(), order.getStatus(), OrderMessages.THE_ORDER_IS_CANCELLED);
                         orderMQService.sendToApprover(msg);
@@ -72,10 +72,12 @@ public class OrderService {
         }
     }
 
-    private OrderEntity updateOrderStatus(String orderNumber, OrderStatus status) throws OrderNotFoundException, ParameterException, OrderStatusException {
+    private OrderEntity updateOrderStatus(String orderNumber, OrderStatus status, String comments)
+                                            throws OrderNotFoundException, ParameterException, OrderStatusException {
         OrderEntity order = getOrderByOrderNumber(orderNumber);
         if(order.getStatus().getPriority() < status.getPriority()) {
             order.setStatus(status);
+            order.setComments(comments);
             return orderRepository.save(order);
         }
 
