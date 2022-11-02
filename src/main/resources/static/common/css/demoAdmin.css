@@ -437,30 +437,38 @@ textarea {
     margin: 10px 0;
 }
 
-.jms_or_mq_proxy_tooltip_content {
+.jms_configuration_details {
+    margin-bottom: 10px;
+}
+
+.jms_configuration_details a {
+    cursor: pointer;
+}
+
+.jms_configuration_details_modal_content {
     width: 560px;
 }
 
-.tooltip_info_table {
+.jms_configuration_details_table {
     margin: 0 auto;
 }
 
-.tooltip_info_table th{
+.jms_configuration_details_table th{
     text-align: start;
     font-size: 15px;
     font-weight: normal;
     padding-bottom: 7px;
 }
 
-.tooltip_info_value {
+.jms_configuration_details_value {
     padding-left: 10px;
 }
 
-.tooltip_info_modal_header {
+.jms_configuration_details_modal_header {
     padding-bottom: 0;
 }
 
-.tooltip_info_modal_body {
+.jms_configuration_details_modal_body {
     padding-top: 0;
 }
 
