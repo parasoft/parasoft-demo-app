@@ -178,9 +178,37 @@
                         <div class="section_container">
                             <div class="section_title">
                                 <span class="align-to-icon" translate="PARASOFT_JMS_MQ_PROXY"></span>
-                                <i class="fa fa-info-circle info-icon" ng-click="demo.showToolTip()"></i>
                             </div>
+
                             <div class="section_body">
+                                <div class="jms_configuration_details">
+                                    <a class="industry_font industry_color_1" translate="CONFIGURATION_DETAILS" data-toggle="modal" data-target="#jms_configuration_details_modal"></a>
+                                </div>
+
+                                <div id="jms_configuration_details_modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content industry_font jms_configuration_details_modal_content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                <div class="modal-title">
+                                                    <span translate="ACTIVEMQ_JMS"></span>
+                                                </div>
+                                            </div>
+
+                                            <div class="modal-body">
+                                                <table class="jms_configuration_details_table">
+                                                    <tbody>
+                                                    <tr ng-repeat="configuration in demo.configurationDetails">
+                                                        <th translate="{{ configuration.label }}"></th>
+                                                        <th class="jms_configuration_details_value" ng-bind="configuration.value"></th>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="form-group">
                                     <label>
                                         <input type="checkbox" name="activeMqProxyEnabled" ng-model="options.activeMqProxyEnabled" value="true"/>
