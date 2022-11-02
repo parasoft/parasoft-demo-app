@@ -218,15 +218,16 @@ public class OrderService {
         OrderEntity originalOrder = getOrderByOrderNumber(orderNumber);
 
         if(originalOrder.getStatus() == OrderStatus.CANCELED) {
-            throw new ParameterException(OrderMessages.ORDER_INFO_CANNOT_CHANGE_FROM_CANCELED);
+            throw new IncorrectOperationException(OrderMessages.ORDER_INFO_CANNOT_CHANGE_FROM_CANCELED);
         }
 
         if(originalOrder.getStatus() == OrderStatus.SUBMITTED) {
-            throw new ParameterException(OrderMessages.ORDER_INFO_CANNOT_CHANGE_FROM_SUBMITTED);
+            throw new IncorrectOperationException(OrderMessages.ORDER_INFO_CANNOT_CHANGE_FROM_SUBMITTED);
         }
 
         if(newStatus != originalOrder.getStatus() && newStatus.getPriority() <= OrderStatus.PROCESSED.getPriority()) {
-            throw new ParameterException(MessageFormat.format(OrderMessages.ORDER_STATUS_CHANGED_BACK_ERROR, originalOrder.getStatus(), newStatus));
+            throw new ParameterException(
+                    MessageFormat.format(OrderMessages.ORDER_STATUS_CHANGED_BACK_ERROR, originalOrder.getStatus(), newStatus));
         }
 
         OrderEntity newOrder = originalOrder.copy();
