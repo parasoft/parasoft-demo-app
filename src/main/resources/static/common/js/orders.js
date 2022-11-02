@@ -106,6 +106,8 @@ app.controller('orderHistoryController', function($rootScope, $http, $filter) {
 
 	history.closeOrderDetail = function(){
 		history.showOrderDetail['show'] = false;
+		history.order = undefined;
+		history.totalItemQuantity = undefined;
 	}
 
 	history.loadStyles = function(index){
