@@ -28,6 +28,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.anyList;
 import static org.mockito.Mockito.*;
@@ -75,7 +76,7 @@ public class OrderServiceTest {
      * @see OrderService#handleMessageFromResponseQueue(InventoryOperationResultMessageDTO)
      */
     @Test
-    public void testDecrease_normal_inventorySuccess() {
+    public void testHandleMessageFromResponseQueue_normal() {
         // Given
         String orderNumber = "123-456-789";
         OrderEntity order = new OrderEntity();
@@ -90,7 +91,7 @@ public class OrderServiceTest {
 
         // Then
         Mockito.verify(orderMQService, times(1)).sendToApprover(any());
-        assertEquals(requestMessage, null);
+        assertNull(requestMessage);
         assertEquals(OrderStatus.PROCESSED, order.getStatus());
     }
 
@@ -100,7 +101,7 @@ public class OrderServiceTest {
      * @see OrderService#handleMessageFromResponseQueue(InventoryOperationResultMessageDTO)
      */
     @Test
-    public void testDecrease_normal_inventoryFail() {
+    public void testHandleMessageFromResponseQueue_inventoryNotEnough() {
         // Given
         String orderNumber = "123-456-789";
         OrderEntity order = new OrderEntity();
@@ -108,15 +109,18 @@ public class OrderServiceTest {
         order.setStatus(OrderStatus.SUBMITTED);
         when(orderRepository.findOrderByOrderNumber(anyString())).thenReturn(order);
         when(orderRepository.save((OrderEntity) any())).thenReturn(order);
+        String cancelledInfo = "Inventory item with id 1 is out of stock.";
 
         // When
         InventoryOperationRequestMessageDTO requestMessage = underTest.handleMessageFromResponseQueue(
-                new InventoryOperationResultMessageDTO(InventoryOperation.DECREASE, orderNumber, InventoryOperationStatus.FAIL, null));
+                new InventoryOperationResultMessageDTO(InventoryOperation.DECREASE, orderNumber,
+                        InventoryOperationStatus.FAIL, cancelledInfo));
 
         // Then
         Mockito.verify(orderMQService, times(1)).sendToApprover(any());
         assertEquals(requestMessage, null);
         assertEquals(OrderStatus.CANCELED, order.getStatus());
+        assertEquals(cancelledInfo, order.getComments());
     }
 
     /**
@@ -125,7 +129,7 @@ public class OrderServiceTest {
      * @see OrderService#handleMessageFromResponseQueue(InventoryOperationResultMessageDTO)
      */
     @Test
-    public void testDecrease_reversedProcessException() {
+    public void testHandleMessageFromResponseQueue_reversedProcess() {
         // Given
         String orderNumber = "123-456-789";
         OrderEntity order = new OrderEntity();
@@ -153,7 +157,7 @@ public class OrderServiceTest {
      * @see OrderService#handleMessageFromResponseQueue(InventoryOperationResultMessageDTO)
      */
     @Test
-    public void testDecrease_OrderNotExist() {
+    public void testHandleMessageFromResponseQueue_orderNotExist() {
         // Given
         String orderNumber = "123-456-789";
         when(orderRepository.findOrderByOrderNumber(anyString())).thenReturn(null);

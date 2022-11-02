@@ -149,7 +149,8 @@
 									<span class="order_detail_summary_content" ng-bind="history.order.location" title="{{history.order.location}}"></span>
 								</div>
 							</div>
-							<div class="order_rejected_reason industry_font" ng-if="!isAerospace" ng-show="history.order.status === 'APPROVED' || history.order.status === 'DECLINED'">
+							<div class="order_rejected_reason industry_font" ng-if="!isAerospace"
+								 ng-show="history.order.status === 'APPROVED' || history.order.status === 'DECLINED' || history.order.status === 'CANCELED'">
 								<div>
 									<span translate="COMMENTS"></span><span>: </span>
 								</div>
@@ -182,7 +183,8 @@
 									</div>
 								</div>
 							</div>
-							<div class="order_rejected_reason industry_font" ng-if="isAerospace" ng-show="history.order.status === 'APPROVED' || history.order.status === 'DECLINED'">
+							<div class="order_rejected_reason industry_font" ng-if="isAerospace"
+								 ng-show="history.order.status === 'APPROVED' || history.order.status === 'DECLINED' || history.order.status === 'CANCELED'">
 								<div>
 									<span translate="COMMENTS"></span><span>: </span>
 								</div>
