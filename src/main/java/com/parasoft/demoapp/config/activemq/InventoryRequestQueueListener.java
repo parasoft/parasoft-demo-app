@@ -37,18 +37,30 @@ public class InventoryRequestQueueListener extends RefreshableMessageListener {
     public void onMessage(Message message) {
         try {
             Object object = jmsMessageConverter.fromMessage(message);
+
+            try {
+                log.info("Inventory service receives a message from {} \n Message content: {}", message.getJMSDestination(), object);
+            } catch (JMSException e) {
+                // do nothing
+            }
+
             InventoryOperationResultMessageDTO messageToReply = itemInventoryService.
                     handleMessageFromRequestQueue((InventoryOperationRequestMessageDTO) object);
             if(messageToReply == null) {
+                log.info("Inventory service has no response message to reply.");
                 return;
             }
 
+            boolean useDefaultJmsReplyToDestination = false;
             Destination replyToDestination = message.getJMSReplyTo();
-            if(replyToDestination != null) {
-                itemInventoryMQService.send(replyToDestination, messageToReply);
-            } else {
-                itemInventoryMQService.sendToInventoryResponseQueue(messageToReply);
+            if(replyToDestination == null) {
+                useDefaultJmsReplyToDestination = true;
+                replyToDestination = ActiveMQConfig.getInventoryResponseActiveMqQueue();
             }
+            itemInventoryMQService.send(replyToDestination, messageToReply);
+
+            log.info("Inventory service replied a message to {}(default JMSReplyTo destination: {}) \n Message content: {}",
+                    replyToDestination, useDefaultJmsReplyToDestination, messageToReply);
         } catch (MessageConversionException e) {
             log.error("Invalid message from inventory request queue:", e);
         } catch (JMSException e) {
