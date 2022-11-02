@@ -4,6 +4,7 @@ import com.parasoft.demoapp.model.global.preferences.DataAccessMode;
 import com.parasoft.demoapp.model.global.preferences.DemoBugsType;
 import com.parasoft.demoapp.model.global.preferences.IndustryType;
 
+import com.parasoft.demoapp.model.global.preferences.MqType;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -47,5 +48,17 @@ public class GlobalPreferencesDTO {
     @Schema(description = "Only works when useParasoftJDBCProxy field is enabled. Default value is /pda if this field is not set.<br/>" +
                           "Only the following characters can be used for the group id: 0-9, a-z, A-Z, - and _ .")
     private String parasoftVirtualizeGroupId;
+
+    private Boolean mqProxyEnabled;
+
+    private MqType mqType;
+
+    private String orderServiceDestinationQueue;
+
+    private String orderServiceReplyToQueue;
+
+    private String inventoryServiceDestinationQueue;
+
+    private String inventoryServiceReplyToQueue;
 
 }
