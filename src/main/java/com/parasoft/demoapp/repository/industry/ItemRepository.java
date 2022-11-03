@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -26,9 +25,6 @@ public interface ItemRepository extends JpaRepository<ItemEntity, Long>, JpaSpec
     void deleteByName(String name);
 
     long countByCategoryId(Long categoryId);
-
-    @Query("select inStock FROM ItemEntity where id=?1")
-    Integer findInStockById(Long id);
 
     Page<ItemEntity> findAllByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
             String nameKey, String descriptionKey, Pageable pageable);

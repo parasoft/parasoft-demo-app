@@ -4,9 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -41,6 +39,9 @@ public class ShoppingCartServiceTest {
 
 	@Mock
 	ItemService itemService;
+
+	@Mock
+    ItemInventoryService itemInventoryService;
 
 	@Before
 	public void setupMocks() {
@@ -86,7 +87,7 @@ public class ShoppingCartServiceTest {
 		assertEquals(image, result.getImage());
 		assertEquals(quantity, result.getQuantity());
 	}
-	
+
 	/**
 	 * Test for addCartItemInShoppingCart(Long, Long, Integer), for validating realInStock property.
 	 *
@@ -113,15 +114,15 @@ public class ShoppingCartServiceTest {
 		CartItemEntity saveResult = new CartItemEntity(userId, item, quantity);
 		doReturn(false).when(shoppingCartRepository).existsByItemIdAndUserId(anyLong(), anyLong());
 		doReturn(saveResult).when(shoppingCartRepository).save((CartItemEntity) any());
-		doReturn(quantity).when(itemService).getInStockById(anyLong());
+		doReturn(inStock).when(itemInventoryService).getInStockByItemId(anyLong());
 
 		// When
 		CartItemEntity result = underTest.addCartItemInShoppingCart(userId, itemId, quantity);
 
 		// Then
 		assertNotNull(result);
-		
-		assertEquals(quantity, result.getRealInStock());
+
+		assertEquals(inStock, result.getRealInStock());
 	}
 
 	/**
@@ -215,6 +216,34 @@ public class ShoppingCartServiceTest {
 
 		// Then
 		Assertions.assertEquals(AssetMessages.ITEM_ID_CANNOT_BE_NULL, message);
+	}
+
+	/**
+	 * Test for addCartItemInShoppingCart(Long, Long, Integer) with NullItemIdException
+	 *
+	 * @see ShoppingCartService#addCartItemInShoppingCart(Long, Long, Integer)
+	 */
+	@Test
+	public void testAddCartItemInShoppingCart_exception_inventoryNotExists() throws Throwable {
+		// Given
+		Long userId = 1L;
+		Long itemId = 1L;
+		Integer quantity = 10;
+		ItemEntity item = new ItemEntity();
+		item.setId(itemId);
+		item.setInStock(null); // test point
+		when(itemService.getItemById(itemId)).thenReturn(item);
+
+		// When
+		String message = "";
+		try {
+			underTest.addCartItemInShoppingCart(userId, itemId, quantity);
+		} catch (Exception e) {
+			message = e.getMessage();
+		}
+
+		// Then
+		Assertions.assertEquals(MessageFormat.format(AssetMessages.INVENTORY_NOT_FOUND_WITH_ITEM_ID, itemId), message);
 	}
 
 	/**
@@ -535,7 +564,7 @@ public class ShoppingCartServiceTest {
 		assertNotNull(result);
 		assertEquals(newQuantity, result.getQuantity());
 	}
-	
+
 	/**
 	 * Test for updateCartItemQuantity(Long, Long, Integer), for validating realInStock property.
 	 *
@@ -564,7 +593,7 @@ public class ShoppingCartServiceTest {
 		doReturn(cartItem).when(shoppingCartRepository).findByUserIdAndItemId(anyLong(), anyLong());
 		doReturn(newCartItem).when(shoppingCartRepository).save((CartItemEntity) any());
 		doReturn(item).when(itemService).getItemById(anyLong());
-		doReturn(newQuantity).when(itemService).getInStockById(anyLong());
+		doReturn(newQuantity).when(itemInventoryService).getInStockByItemId(anyLong());
 
 		// When
 		CartItemEntity result = underTest.updateCartItemQuantity(userId, itemId, newQuantity);
@@ -782,7 +811,7 @@ public class ShoppingCartServiceTest {
 		assertNotNull(result);
 		Assertions.assertEquals(1, result.size());
 	}
-	
+
 	/**
 	 * Test for getCartItemsByUserId(Long), for validating realInStock property.
 	 *
@@ -794,7 +823,7 @@ public class ShoppingCartServiceTest {
 		Long itemId = 2L;
 		ItemEntity item = mock(ItemEntity.class);
 		doReturn(itemId).when(item).getId();
-		
+
 		Long userId = 1L;
 		Integer quantity = 10;
 		CartItemEntity shoppingCart = new CartItemEntity(userId, item, quantity);
@@ -802,7 +831,7 @@ public class ShoppingCartServiceTest {
 		findResult.add(shoppingCart);
 
 		doReturn(findResult).when(shoppingCartRepository).findAllByUserId(anyLong());
-		doReturn(quantity).when(itemService).getInStockById(anyLong());
+		doReturn(quantity).when(itemInventoryService).getInStockByItemId(anyLong());
 
 		// When
 		List<CartItemEntity> result = underTest.getCartItemsByUserId(userId);
@@ -857,7 +886,7 @@ public class ShoppingCartServiceTest {
 		assertEquals(userId, result.getUserId());
 		assertEquals(quantity, result.getQuantity());
 	}
-	
+
 	/**
 	 * Test for getCartItemByItemId(Long), for validating realInStock property.
 	 *
@@ -871,7 +900,7 @@ public class ShoppingCartServiceTest {
 		Integer quantity = 10;
 		CartItemEntity cartItem = new CartItemEntity(userId, mock(ItemEntity.class), quantity);
 		doReturn(cartItem).when(shoppingCartRepository).findByUserIdAndItemId(anyLong(), anyLong());
-		doReturn(quantity).when(itemService).getInStockById(anyLong());
+		doReturn(quantity).when(itemInventoryService).getInStockByItemId(anyLong());
 
 		// When
 		CartItemEntity result = underTest.getCartItemByUserIdAndItemId(userId, itemId);
@@ -897,7 +926,7 @@ public class ShoppingCartServiceTest {
 		doReturn(itemId).when(item).getId();
 		doReturn(item).when(itemService).getItemById(itemId);
 		doReturn(null).when(shoppingCartRepository).findByUserIdAndItemId(anyLong(), anyLong());
-		doReturn(realInStock).when(itemService).getInStockById(anyLong());
+		doReturn(realInStock).when(itemInventoryService).getInStockByItemId(anyLong());
 
 		// When
 		CartItemEntity result = underTest.getCartItemByUserIdAndItemId(userId, itemId);

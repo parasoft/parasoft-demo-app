@@ -19,7 +19,7 @@
 }
 
 .order-container .table-container .table-body {
-    height: 458px;
+    min-height: 458px;
 }
 
 .order_error_message {

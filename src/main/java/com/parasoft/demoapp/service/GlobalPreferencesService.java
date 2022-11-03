@@ -56,12 +56,22 @@ public class GlobalPreferencesService {
     @Autowired
     private GlobalPreferencesDefaultSettingsService defaultGlobalPreferencesSettingsService;
 
+    /**
+    * This method is used only when PDA startup first time(it means no db files are created),
+     * do not use it for other purposes since there are no validations for parameters.
+    */
     public GlobalPreferencesEntity addNewGlobalPreferences(DataAccessMode dataAccessMode, String soapEndPoint,
                                                            Set<RestEndpointEntity> restEndpoints,
                                                            IndustryType industryType, Set<DemoBugEntity> demoBugs,
                                                            Boolean advertisingEnabled, Boolean useParasoftJDBCProxy,
                                                            String parasoftVirtualizeServerUrl, String parasoftVirtualizeServerPath,
-                                                           String parasoftVirtualizeGroupId) throws ParameterException {
+                                                           String parasoftVirtualizeGroupId,
+                                                           Boolean mqProxyEnabled,
+                                                           MqType mqType,
+                                                           String orderServiceDestinationQueue,
+                                                           String orderServiceReplyToQueue,
+                                                           String inventoryServiceDestinationQueue,
+                                                           String inventoryServiceReplyToQueue ) throws ParameterException {
 
         validateIndustry(industryType);
         ParameterValidator.requireNonNull(advertisingEnabled, GlobalPreferencesMessages.ADVERTISING_ENABLED_CANNOT_BE_NULL);
@@ -70,10 +80,23 @@ public class GlobalPreferencesService {
             demoBugs = new TreeSet<>();
         }
 
-        GlobalPreferencesEntity newGlobalPreferences = new GlobalPreferencesEntity(dataAccessMode,
-                soapEndPoint, restEndpoints, industryType, demoBugs, advertisingEnabled, useParasoftJDBCProxy,
-                parasoftVirtualizeServerUrl, parasoftVirtualizeServerPath, parasoftVirtualizeGroupId);
-
+        GlobalPreferencesEntity newGlobalPreferences = new GlobalPreferencesEntity(
+                                                            dataAccessMode,
+                                                            soapEndPoint,
+                                                            restEndpoints,
+                                                            industryType,
+                                                            demoBugs,
+                                                            advertisingEnabled,
+                                                            useParasoftJDBCProxy,
+                                                            parasoftVirtualizeServerUrl,
+                                                            parasoftVirtualizeServerPath,
+                                                            parasoftVirtualizeGroupId,
+                                                            mqProxyEnabled,
+                                                            mqType,
+                                                            orderServiceDestinationQueue,
+                                                            orderServiceReplyToQueue,
+                                                            inventoryServiceDestinationQueue,
+                                                            inventoryServiceReplyToQueue);
 
         for(DemoBugEntity demoBug : demoBugs){
             demoBug.setGlobalPreferences(newGlobalPreferences);

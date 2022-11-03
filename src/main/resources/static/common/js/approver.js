@@ -64,14 +64,12 @@ app.controller('approverHomePageController', function($rootScope, $http, $filter
             },
         };
         
-        if(orderStatus === 'SUBMITTED'){
+        if(orderStatus === 'PROCESSED'){
             approver.response.showResponseSelect = true;
             approver.response.showResponseCommentsTextarea = true;
             approver.response.showResponseSaveAndCancel = true;
             approver.response.showResponseSaveAndCancel = true;
-        }
-        
-        if(orderStatus === 'DECLINED' || approver.orderDetail.status === 'APPROVED'){
+        } else {
             approver.response.showResponseResult = true;
             approver.response.showResponseCommentsResult = true;
         }
@@ -239,7 +237,7 @@ app.controller('approverHomePageController', function($rootScope, $http, $filter
 
     approver.parseOrderStatus = function(status) {
         switch (status) {
-            case 'SUBMITTED':
+            case 'PROCESSED':
                 return $filter('translate')('OPEN_STATUS');
             case 'APPROVED':
                 return $filter('translate')('APPROVED_STATUS');

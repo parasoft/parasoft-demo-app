@@ -1,11 +1,12 @@
 package com.parasoft.demoapp.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.text.MessageFormat;
-
+import com.parasoft.demoapp.defaultdata.global.GlobalUsersCreator;
+import com.parasoft.demoapp.messages.OrderMessages;
+import com.parasoft.demoapp.model.global.RoleType;
+import com.parasoft.demoapp.model.global.UserEntity;
+import com.parasoft.demoapp.model.industry.*;
+import com.parasoft.demoapp.repository.industry.OrderRepository;
+import com.parasoft.demoapp.utilfortest.OrderUtilForTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,16 +15,11 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.parasoft.demoapp.defaultdata.global.GlobalUsersCreator;
-import com.parasoft.demoapp.messages.OrderMessages;
-import com.parasoft.demoapp.model.global.RoleType;
-import com.parasoft.demoapp.model.global.UserEntity;
-import com.parasoft.demoapp.model.industry.CategoryEntity;
-import com.parasoft.demoapp.model.industry.ItemEntity;
-import com.parasoft.demoapp.model.industry.OrderEntity;
-import com.parasoft.demoapp.model.industry.OrderStatus;
-import com.parasoft.demoapp.model.industry.RegionType;
-import com.parasoft.demoapp.repository.industry.OrderRepository;
+import java.text.MessageFormat;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Test for OrderService
@@ -52,6 +48,9 @@ public class OrderServiceSpringTest {
 
     @Autowired
     OrderService underTest;
+
+    @Autowired
+    ItemInventoryService itemInventoryService;
 
     /**
      * Test for addNewOrder(Long, String, RegionType, String, String, String, String, String)
@@ -128,6 +127,7 @@ public class OrderServiceSpringTest {
             String eventId = "45833-ORG-7834";
             String eventNumber = "55-444-33-22";
             order = underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
+            OrderUtilForTest.waitChangeForOrderStatus(order.getOrderNumber(), orderRepository, OrderStatus.SUBMITTED, 5);
 
             String orderNumber = order.getOrderNumber();
             String userRoleName = RoleType.ROLE_APPROVER.toString();
@@ -145,14 +145,15 @@ public class OrderServiceSpringTest {
             assertEquals(newStatus, result.getStatus());
             assertEquals(comments, result.getComments());
             assertEquals(respondedBy, result.getRespondedBy());
-            assertEquals(30, (int)itemService.getInStockById(item.getId()));
 
             // When
-            shoppingCartService.addCartItemInShoppingCart(userId, item.getId(), 20);
+            shoppingCartService.addCartItemInShoppingCart(userId, item.getId(), 10);
             order = underTest.addNewOrder(userId, requestedBy, region, shippingType, location, receiverId, eventId, eventNumber);
+            OrderUtilForTest.waitChangeForOrderStatus(order.getOrderNumber(), orderRepository, OrderStatus.SUBMITTED, 5);
             orderNumber = order.getOrderNumber();
             newStatus = OrderStatus.APPROVED;
             comments = "approved";
+
             OrderEntity result2 = underTest.updateOrderByOrderNumber(
                     orderNumber, userRoleName, newStatus, reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
 
@@ -160,7 +161,6 @@ public class OrderServiceSpringTest {
             assertEquals(newStatus, result2.getStatus());
             assertEquals(comments, result2.getComments());
             assertEquals(respondedBy, result2.getRespondedBy());
-            assertEquals(10, (int)itemService.getInStockById(item.getId()));
         } finally {
             itemService.removeItemById(item.getId());
             categoryService.removeCategory(category.getId());
@@ -204,19 +204,20 @@ public class OrderServiceSpringTest {
         String eventId = "45833-ORG-7834";
         String eventNumber = "55-444-33-22";
         order = underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
+        OrderUtilForTest.waitChangeForOrderStatus(order.getOrderNumber(), orderRepository, OrderStatus.SUBMITTED, 5);
         String orderNumber = order.getOrderNumber();
         String comments = "";
         userRoleName = RoleType.ROLE_PURCHASER.toString();
 
         // When
-        newStatus = OrderStatus.SUBMITTED; // test point
+        newStatus = OrderStatus.PROCESSED; // test point
         reviewedByPRCH = true; // test point
         reviewedByAPV = false; // test point
         result = underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus,
                 reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
 
         // Then
-        assertEquals(OrderStatus.SUBMITTED, result.getStatus());
+        assertEquals(OrderStatus.PROCESSED, result.getStatus());
         assertEquals(true, result.getReviewedByPRCH());
         assertEquals(false, result.getReviewedByAPV());
         assertNull(result.getRespondedBy());
@@ -249,7 +250,7 @@ public class OrderServiceSpringTest {
 
         // When
         try {
-            newStatus = OrderStatus.SUBMITTED;
+            newStatus = OrderStatus.PROCESSED;
             comments = "";
             reviewedByPRCH = false; // test point
             reviewedByAPV = false;
@@ -269,7 +270,7 @@ public class OrderServiceSpringTest {
                 reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
 
         // Then
-        assertEquals(OrderStatus.SUBMITTED, result.getStatus());
+        assertEquals(OrderStatus.PROCESSED, result.getStatus());
         assertEquals(true, result.getReviewedByPRCH());
         assertEquals(false, result.getReviewedByAPV());
 
@@ -281,7 +282,7 @@ public class OrderServiceSpringTest {
                 reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
 
         // Then
-        assertEquals(OrderStatus.SUBMITTED, result.getStatus());
+        assertEquals(OrderStatus.PROCESSED, result.getStatus());
         assertEquals(true, result.getReviewedByPRCH());
         assertEquals(true, result.getReviewedByAPV());
 
@@ -304,7 +305,7 @@ public class OrderServiceSpringTest {
                 reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
 
         // Then
-        assertEquals(OrderStatus.SUBMITTED, result.getStatus());
+        assertEquals(OrderStatus.PROCESSED, result.getStatus());
         assertEquals(true, result.getReviewedByPRCH());
         assertEquals(true, result.getReviewedByAPV());
 
@@ -364,7 +365,6 @@ public class OrderServiceSpringTest {
 
         // When
         userRoleName = RoleType.ROLE_PURCHASER.toString();
-        newStatus = OrderStatus.APPROVED; // test point
         reviewedByPRCH = true; // test point
         reviewedByAPV = true; // test point
         result = underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus,
@@ -402,7 +402,7 @@ public class OrderServiceSpringTest {
 
         // When
         try {
-            newStatus = OrderStatus.SUBMITTED; // test point
+            newStatus = OrderStatus.PROCESSED; // test point
             comments = "";
             underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus, reviewedByPRCH,
                     reviewedByAPV, respondedBy, comments, publicToMQ);
@@ -411,11 +411,11 @@ public class OrderServiceSpringTest {
             message = e.getMessage();
         }
         // Then
-        assertEquals(MessageFormat.format(OrderMessages.NO_PERMISSION_TO_CHANGE_TO_ORDER_STATUS, newStatus), message);
+        assertEquals(MessageFormat.format(OrderMessages.ORDER_STATUS_CHANGED_BACK_ERROR, OrderStatus.APPROVED, newStatus), message);
 
         // When
         try {
-            newStatus = OrderStatus.DECLINED; // test point
+            newStatus = OrderStatus.CANCELED; // test point
             comments = "reject";
             underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus, reviewedByPRCH,
                     reviewedByAPV, respondedBy, comments, publicToMQ);
@@ -424,7 +424,7 @@ public class OrderServiceSpringTest {
             message = e.getMessage();
         }
         // Then
-        assertEquals(MessageFormat.format(OrderMessages.NO_PERMISSION_TO_CHANGE_TO_ORDER_STATUS, newStatus), message);
+        assertEquals(MessageFormat.format(OrderMessages.ORDER_STATUS_CHANGED_BACK_ERROR, OrderStatus.APPROVED, newStatus), message);
 
         itemService.removeItemById(item.getId());
         categoryService.removeCategory(category.getId());
@@ -467,19 +467,20 @@ public class OrderServiceSpringTest {
         String eventId = "45833-ORG-7834";
         String eventNumber = "55-444-33-22";
         order = underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
+        OrderUtilForTest.waitChangeForOrderStatus(order.getOrderNumber(), orderRepository, OrderStatus.SUBMITTED, 5);
         String orderNumber = order.getOrderNumber();
         String comments = "";
         userRoleName = RoleType.ROLE_PURCHASER.toString();
 
         // When
-        newStatus = OrderStatus.SUBMITTED; // test point
+        newStatus = OrderStatus.PROCESSED; // test point
         reviewedByPRCH = true; // test point
         reviewedByAPV = false; // test point
         result = underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus,
                 reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
 
         // Then
-        assertEquals(OrderStatus.SUBMITTED, result.getStatus());
+        assertEquals(OrderStatus.PROCESSED, result.getStatus());
         assertEquals(true, result.getReviewedByPRCH());
         assertEquals(false, result.getReviewedByAPV());
         assertNull(result.getRespondedBy());
@@ -497,7 +498,6 @@ public class OrderServiceSpringTest {
         assertEquals(false, result.getReviewedByPRCH());
         assertEquals(true, result.getReviewedByAPV());
         assertEquals(respondedBy, result.getRespondedBy());
-        assertEquals(30, (int)itemService.getInStockById(item.getId()));
         assertEquals(comments, result.getComments());
 
         // When
@@ -538,7 +538,6 @@ public class OrderServiceSpringTest {
         assertEquals(false, result.getReviewedByPRCH());
         assertEquals(true, result.getReviewedByAPV());
         assertEquals(respondedBy, result.getRespondedBy());
-        assertEquals(30, (int)itemService.getInStockById(item.getId()));
 
         // When
         userRoleName = RoleType.ROLE_PURCHASER.toString(); // test point
@@ -552,7 +551,6 @@ public class OrderServiceSpringTest {
         assertEquals(true, result.getReviewedByPRCH());
         assertEquals(true, result.getReviewedByAPV());
         assertEquals(respondedBy, result.getRespondedBy());
-        assertEquals(30, (int)itemService.getInStockById(item.getId()));
 
         // When
         try {
@@ -576,11 +574,10 @@ public class OrderServiceSpringTest {
         assertEquals(OrderStatus.DECLINED, result.getStatus());
         assertEquals(true, result.getReviewedByPRCH());
         assertEquals(true, result.getReviewedByAPV());
-        assertEquals(30, (int)itemService.getInStockById(item.getId()));
 
         // When
         try {
-            newStatus = OrderStatus.SUBMITTED; // test point
+            newStatus = OrderStatus.PROCESSED; // test point
             comments = "";
             underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus, reviewedByPRCH,
                     reviewedByAPV, comments,respondedBy, publicToMQ);
@@ -589,7 +586,7 @@ public class OrderServiceSpringTest {
             message = e.getMessage();
         }
         // Then
-        assertEquals(MessageFormat.format(OrderMessages.NO_PERMISSION_TO_CHANGE_TO_ORDER_STATUS, newStatus), message);
+        assertEquals(MessageFormat.format(OrderMessages.ORDER_STATUS_CHANGED_BACK_ERROR, OrderStatus.DECLINED, newStatus), message);
 
         // When
         try {
@@ -645,19 +642,20 @@ public class OrderServiceSpringTest {
         String eventId = "45833-ORG-7834";
         String eventNumber = "55-444-33-22";
         order = underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
+        OrderUtilForTest.waitChangeForOrderStatus(order.getOrderNumber(), orderRepository, OrderStatus.SUBMITTED, 5);
         String orderNumber = order.getOrderNumber();
         String comments = "";
         userRoleName = RoleType.ROLE_PURCHASER.toString();
 
         // When
-        newStatus = OrderStatus.SUBMITTED; // test point
+        newStatus = OrderStatus.PROCESSED; // test point
         reviewedByPRCH = true; // test point
         reviewedByAPV = false; // test point
         result = underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus,
                 reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
 
         // Then
-        assertEquals(OrderStatus.SUBMITTED, result.getStatus());
+        assertEquals(OrderStatus.PROCESSED, result.getStatus());
         assertEquals(true, result.getReviewedByPRCH());
         assertEquals(false, result.getReviewedByAPV());
         assertNull(result.getRespondedBy());
@@ -675,7 +673,6 @@ public class OrderServiceSpringTest {
         assertEquals(false, result.getReviewedByPRCH());
         assertEquals(true, result.getReviewedByAPV());
         assertEquals(respondedBy, result.getRespondedBy());
-        assertEquals(30, (int)itemService.getInStockById(item.getId()));
 
         // When
         try {
@@ -715,7 +712,6 @@ public class OrderServiceSpringTest {
         assertEquals(false, result.getReviewedByPRCH());
         assertEquals(true, result.getReviewedByAPV());
         assertEquals(respondedBy, result.getRespondedBy());
-        assertEquals(30, (int)itemService.getInStockById(item.getId()));
 
         // When
         userRoleName = RoleType.ROLE_PURCHASER.toString(); // test point
@@ -729,7 +725,6 @@ public class OrderServiceSpringTest {
         assertEquals(true, result.getReviewedByPRCH());
         assertEquals(true, result.getReviewedByAPV());
         assertEquals(respondedBy, result.getRespondedBy());
-        assertEquals(30, (int)itemService.getInStockById(item.getId()));
 
         // When
         try {
@@ -754,7 +749,6 @@ public class OrderServiceSpringTest {
         assertEquals(true, result.getReviewedByPRCH());
         assertEquals(true, result.getReviewedByAPV());
         assertEquals(respondedBy, result.getRespondedBy());
-        assertEquals(30, (int)itemService.getInStockById(item.getId()));
 
         // When
         try {
@@ -767,7 +761,7 @@ public class OrderServiceSpringTest {
             message = e.getMessage();
         }
         // Then
-        assertEquals(MessageFormat.format(OrderMessages.NO_PERMISSION_TO_CHANGE_TO_ORDER_STATUS, newStatus), message);
+        assertEquals(MessageFormat.format(OrderMessages.ORDER_STATUS_CHANGED_BACK_ERROR, OrderStatus.DECLINED, newStatus), message);
 
         // When
         try {

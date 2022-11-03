@@ -3,16 +3,18 @@ package com.parasoft.demoapp.service;
 import static org.junit.Assert.assertEquals;
 
 import com.parasoft.demoapp.model.global.UserEntity;
+import com.parasoft.demoapp.model.industry.*;
+import com.parasoft.demoapp.repository.industry.OrderRepository;
+import com.parasoft.demoapp.utilfortest.OrderUtilForTest;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 
 import com.parasoft.demoapp.defaultdata.global.GlobalUsersCreator;
-import com.parasoft.demoapp.model.industry.CartItemEntity;
-import com.parasoft.demoapp.model.industry.CategoryEntity;
-import com.parasoft.demoapp.model.industry.ItemEntity;
-import com.parasoft.demoapp.model.industry.RegionType;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Test for OrderService
@@ -35,6 +37,9 @@ public class OrderServiceSpringTest2 {
 
     @Autowired
     ShoppingCartService shoppingCartService;
+
+    @Autowired
+    OrderRepository orderRepository;
 
     @Autowired
     OrderService underTest;
@@ -70,11 +75,11 @@ public class OrderServiceSpringTest2 {
         try {
         	// Given
             category = categoryService.addNewCategory("name", "description", "imagePath");
-            item = itemService.addNewItem("name", "description", category.getId(), 30, "imagePath", RegionType.JAPAN);
+            item = itemService.addNewItem("name", "description", category.getId(), 30, "imagePath", RegionType.LOCATION_1);
             cartItem = shoppingCartService.addCartItemInShoppingCart(userId, item.getId(), 10);
 
             // When
-            RegionType region = RegionType.JAPAN;
+            RegionType region = RegionType.LOCATION_1;
             String location = "JAPAN 82.8628° S, 135.0000° E";
             String shippingType = "Standard (1 - 2 weeks)";
             String receiverId = "345-6789-21";
@@ -84,7 +89,6 @@ public class OrderServiceSpringTest2 {
         }catch(Exception e) {
         	e.printStackTrace();
         } finally {
-        	assertEquals(item.getInStock(), itemService.getItemById(item.getId()).getInStock());
         	assertEquals(cartItem.getQuantity(), shoppingCartService.getCartItemByUserIdAndItemId(userId, item.getId()).getQuantity());
         	assertEquals(1, shoppingCartService.getCartItemsByUserId(userId).size());
         	itemService.removeItemById(item.getId());
