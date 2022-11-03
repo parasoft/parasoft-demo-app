@@ -97,6 +97,14 @@ app.controller('orderHistoryController', function($rootScope, $http, $filter) {
 
             	history.totalItemQuantity = totalAmount;
             }
+
+			if(history.order.status === "CANCELED") {
+				if(history.order.comments.indexOf("out of stock") !== -1) {
+					history.order.comments = $filter('translate')('INVENTORY_ITEM_OUT_OF_STOCK');
+				} else if (history.order.comments.indexOf("doesn't exist") !== -1) {
+					history.order.comments = $filter('translate')('INVENTORY_ITEM_NOT_EXIST');
+				}
+			}
 		}).catch(function(result) {
 			console.log(result);
 		});
