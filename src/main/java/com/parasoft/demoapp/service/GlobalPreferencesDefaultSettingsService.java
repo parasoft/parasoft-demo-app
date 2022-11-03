@@ -40,6 +40,8 @@ public class GlobalPreferencesDefaultSettingsService {
     public static final String LOCATIONS_ENDPOINT_PATH = "/proxy/v1/locations/**";
     public static final String LOCATIONS_ENDPOINT_REAL_PATH = "/v1/locations";
 
+    public static final String PROXY_SUFFIX = "proxy.";
+
     @Autowired
     private WebConfig webConfig;
 
@@ -272,11 +274,11 @@ public class GlobalPreferencesDefaultSettingsService {
     }
 
     public String defaultOrderServiceDestinationQueue() {
-        return ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST;
+        return PROXY_SUFFIX + ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST;
     }
 
     public String defaultOrderServiceReplyToQueue() {
-        return ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE;
+        return PROXY_SUFFIX + ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE;
     }
 
     public String defaultInventoryServiceDestinationQueue() {
