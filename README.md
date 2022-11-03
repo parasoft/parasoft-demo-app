@@ -82,21 +82,7 @@ a request through messaging queue to check and decrease the inventory. After the
 
 To use Parasoft JMS/MQ proxy, you should enable the feature in PDA Demo Administration page and configure the connection queues with your message proxy in Virtualize.
 
-<img src="src/main/resources/static/common/images/services_diagram.png" width="500" alt="services_diagram">
-
-Default connection of **order service**
-
-| Option             | Value                            |
-|--------------------|----------------------------------|
-| Destination queue  | `queue.inventory.request`        |
-| Reply to queue     | `queue.inventory.response`       |
-
-Default connection of **inventory service**
-
-| Option             | Value                            |
-|--------------------|----------------------------------|
-| Destination queue: | `proxy.queue.inventory.request`  |
-| Reply to queue     | `proxy.queue.inventory.response` |
+<img src="src/main/resources/static/common/images/services_diagram.png" width="1050" alt="services_diagram">
 
 Configuration details for embedded ActiveMQ server
 
