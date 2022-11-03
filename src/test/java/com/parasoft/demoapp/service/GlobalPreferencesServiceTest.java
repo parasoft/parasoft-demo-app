@@ -117,11 +117,11 @@ public class GlobalPreferencesServiceTest {
 		assertEquals(IndustryType.DEFENSE.getValue(), result.getIndustryType().getValue());
 		assertEquals(false, result.getAdvertisingEnabled());
 		assertEquals(false, result.getMqProxyEnabled());
-		assertEquals(MqType.ACTIVE_MQ, result.getMqType());
-		assertEquals(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST, result.getOrderServiceDestinationQueue());
-		assertEquals(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE, result.getOrderServiceReplyToQueue());
-		assertEquals(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST, result.getInventoryServiceDestinationQueue());
-		assertEquals(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE, result.getInventoryServiceReplyToQueue());
+		assertEquals(mqType, result.getMqType());
+		assertEquals(orderServiceDestinationQueue, result.getOrderServiceDestinationQueue());
+		assertEquals(orderServiceReplyToQueue, result.getOrderServiceReplyToQueue());
+		assertEquals(inventoryServiceDestinationQueue, result.getInventoryServiceDestinationQueue());
+		assertEquals(inventoryServiceReplyToQueue, result.getInventoryServiceReplyToQueue());
 	}
 
 	/**
