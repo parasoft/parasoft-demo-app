@@ -136,9 +136,11 @@ public class GlobalPreferencesService {
 
         handleParasoftJDBCProxy(currentPreferences, globalPreferencesDto);
 
+        handlePreferencesMQ(currentPreferences, globalPreferencesDto);
+
         currentPreferences = updateGlobalPreferences(currentPreferences);
 
-        afterUpdateGlobalPreferences(currentPreferences, globalPreferencesDto);
+        afterUpdateGlobalPreferences(currentPreferences);
 
         return currentPreferences;
     }
@@ -184,14 +186,14 @@ public class GlobalPreferencesService {
         return preferences;
     }
 
-    private void afterUpdateGlobalPreferences(GlobalPreferencesEntity preferences, GlobalPreferencesDTO globalPreferencesDTO) throws ParameterException {
+    private void afterUpdateGlobalPreferences(GlobalPreferencesEntity preferences) {
         switchIndustry(preferences);
 
         restEndpointService.refreshEndpoint();
 
         refreshProxyDataSource(preferences);
 
-        refreshInventoryQueueDestinations(preferences, globalPreferencesDTO);
+        refreshInventoryQueueDestinations(preferences);
 
         // TODO switch other settings
     }
@@ -227,34 +229,12 @@ public class GlobalPreferencesService {
         parasoftJDBCProxyService.refreshParasoftJDBCProxyDataSource();
     }
 
-    private void refreshInventoryQueueDestinations(GlobalPreferencesEntity currentPreferences, GlobalPreferencesDTO globalPreferencesDto) throws ParameterException {
-        Boolean mqProxyEnabled = globalPreferencesDto.getMqProxyEnabled();
-        ParameterValidator.requireNonNull(mqProxyEnabled, "Mq enabled must not be null");
-
-        MqType mqType = globalPreferencesDto.getMqType();
-        String orderServiceDestinationQueue = globalPreferencesDto.getOrderServiceDestinationQueue();
-        String orderServiceReplyToQueue = globalPreferencesDto.getOrderServiceReplyToQueue();
-        String inventoryServiceReplyToQueue = globalPreferencesDto.getInventoryServiceReplyToQueue();
-        String inventoryServiceDestinationQueue = globalPreferencesDto.getInventoryServiceDestinationQueue();
-
-        if(mqProxyEnabled) {
-            ParameterValidator.requireNonNull(mqType, "Mq type must not be null");
-            ParameterValidator.requireNonBlank(orderServiceDestinationQueue, GlobalPreferencesMessages.ORDER_SERVICE_DESTINATION_QUEUE_CANNOT_BE_NULL);
-            ParameterValidator.requireNonBlank(orderServiceReplyToQueue, GlobalPreferencesMessages.ORDER_SERVICE_REPLY_TO_QUEUE_CANNOT_BE_NULL);
-            ParameterValidator.requireNonBlank(inventoryServiceReplyToQueue, GlobalPreferencesMessages.INVENTORY_SERVICE_REPLY_TO_QUEUE_CANNOT_BE_NULL);
-            ParameterValidator.requireNonBlank(inventoryServiceDestinationQueue, GlobalPreferencesMessages.INVENTORY_SERVICE_DESTINATION_QUEUE_CANNOT_BE_NULL);
-        }
-
-        if(mqType == null) {
-            mqType = MqType.ACTIVE_MQ;
-        }
-
-        currentPreferences.setMqProxyEnabled(mqProxyEnabled);
-        currentPreferences.setMqType(mqType);
-        currentPreferences.setOrderServiceDestinationQueue(orderServiceDestinationQueue);
-        currentPreferences.setOrderServiceReplyToQueue(orderServiceReplyToQueue);
-        currentPreferences.setInventoryServiceReplyToQueue(inventoryServiceReplyToQueue);
-        currentPreferences.setInventoryServiceDestinationQueue(inventoryServiceDestinationQueue);
+    private void refreshInventoryQueueDestinations(GlobalPreferencesEntity currentPreferences){
+        Boolean mqProxyEnabled = currentPreferences.getMqProxyEnabled();
+        String orderServiceDestinationQueue = currentPreferences.getOrderServiceDestinationQueue();
+        String orderServiceReplyToQueue = currentPreferences.getOrderServiceReplyToQueue();
+        String inventoryServiceReplyToQueue = currentPreferences.getInventoryServiceReplyToQueue();
+        String inventoryServiceDestinationQueue = currentPreferences.getInventoryServiceDestinationQueue();
 
         if(!mqProxyEnabled) {
             ActiveMQConfig.resetInventoryActiveMqQueues();
@@ -368,6 +348,33 @@ public class GlobalPreferencesService {
         currentPreferences.setRestEndPoints(endpoints);
     }
 
+    private void handlePreferencesMQ(GlobalPreferencesEntity currentPreferences,
+                                     GlobalPreferencesDTO globalPreferencesDto) throws ParameterException {
+        Boolean mqProxyEnabled = globalPreferencesDto.getMqProxyEnabled();
+        ParameterValidator.requireNonNull(mqProxyEnabled, GlobalPreferencesMessages.MQENABLED_MUST_NOT_BE_NULL);
+
+        MqType mqType = globalPreferencesDto.getMqType();
+        String orderServiceDestinationQueue = globalPreferencesDto.getOrderServiceDestinationQueue();
+        String orderServiceReplyToQueue = globalPreferencesDto.getOrderServiceReplyToQueue();
+        String inventoryServiceReplyToQueue = globalPreferencesDto.getInventoryServiceReplyToQueue();
+        String inventoryServiceDestinationQueue = globalPreferencesDto.getInventoryServiceDestinationQueue();
+
+        if(mqProxyEnabled) {
+            validateDestinationName(globalPreferencesDto);
+        }
+
+        if(mqType == null) {
+            mqType = MqType.ACTIVE_MQ;
+        }
+
+        currentPreferences.setMqProxyEnabled(mqProxyEnabled);
+        currentPreferences.setMqType(mqType);
+        currentPreferences.setOrderServiceDestinationQueue(orderServiceDestinationQueue);
+        currentPreferences.setOrderServiceReplyToQueue(orderServiceReplyToQueue);
+        currentPreferences.setInventoryServiceReplyToQueue(inventoryServiceReplyToQueue);
+        currentPreferences.setInventoryServiceDestinationQueue(inventoryServiceDestinationQueue);
+    }
+
     private void switchIndustry(GlobalPreferencesEntity currentPreferences) {
     	IndustryRoutingDataSource.currentIndustry = currentPreferences.getIndustryType();
     }
@@ -421,6 +428,14 @@ public class GlobalPreferencesService {
 
         imageService.removeSpecificIndustryUploadedImages(IndustryRoutingDataSource.currentIndustry);
 	}
+
+    public void validateDestinationName(GlobalPreferencesDTO globalPreferencesDto) throws ParameterException {
+        ParameterValidator.requireNonNull(globalPreferencesDto.getMqType(), GlobalPreferencesMessages.MQTYPE_MUST_NOT_BE_NULL);
+        ParameterValidator.requireNonBlank(globalPreferencesDto.getOrderServiceDestinationQueue(), GlobalPreferencesMessages.ORDER_SERVICE_DESTINATION_QUEUE_CANNOT_BE_NULL);
+        ParameterValidator.requireNonBlank(globalPreferencesDto.getOrderServiceReplyToQueue(), GlobalPreferencesMessages.ORDER_SERVICE_REPLY_TO_QUEUE_CANNOT_BE_NULL);
+        ParameterValidator.requireNonBlank(globalPreferencesDto.getInventoryServiceReplyToQueue(), GlobalPreferencesMessages.INVENTORY_SERVICE_REPLY_TO_QUEUE_CANNOT_BE_NULL);
+        ParameterValidator.requireNonBlank(globalPreferencesDto.getInventoryServiceDestinationQueue(), GlobalPreferencesMessages.INVENTORY_SERVICE_DESTINATION_QUEUE_CANNOT_BE_NULL);
+    }
 
     public void shutdownJMSService() {
         // TODO shutdown JMS service
