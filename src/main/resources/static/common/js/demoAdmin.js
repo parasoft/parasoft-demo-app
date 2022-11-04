@@ -1230,7 +1230,7 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
         console.log(result);
     });
 
-    options.clickReset = function () {
+    options.resetGraphQLEndpoint = function () {
         alert("TO DO");
     }
 
