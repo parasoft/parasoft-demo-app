@@ -1231,6 +1231,10 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
         console.log(result);
     });
 
+    options.clickReset = function () {
+        alert("TO DO");
+    }
+
 	options.resetEndpoint = function(endpoint){
 
 		resetValuesTemplate(function(defaultOptions){

@@ -102,72 +102,102 @@
                                 <span translate="WEB_SERVICE"></span>
                             </div>
                             <div class="section_body">
-                                <div class="form-group">
-                                    <label class="form_label" for="categories_rest_endpoint"><span translate="CATEGORIES"></span>:</label>
-                                    <div class="invalid_message" ng-show="demo.endpointError_categories" translate={{'INVALID_ENDPOINT_URL'|translate}}></div>
-                                    <div class="input-wrapper">
-                                        <input id="categories_rest_endpoint" type="text" name="categoriesRestEndpoint"
-                                               class="form-control" placeholder="{{'ENDPOINT_URL_FOR_CATEGORIES'|translate}} {{demo.end_point_for_categories}}"
-                                               ng-model="options.restEndpoints.categoriesRestEndpointUrl"  ng-trim="false"
-                                               ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.categoriesRestEndpointUrl, 'categories');"/>
-                                        <button class="btn btn-default industry_button labels_reset_btn"
-                                                ng-click="options.resetEndpoint('categories')"
-                                                translate="RESET_ENDPOINT">
-                                        </button>
+                                <div class="web_services">
+                                    <div class="rest_api_web_service">
+                                        <label>
+                                            <input type="radio" name="webServiceMode" ng-model="options.webServiceMode" value="RESTAPI">
+                                            <span class="input-label" translate="REST_API"></span>
+                                        </label>
+                                    </div>
+
+                                    <div class="graphql_web_service">
+                                        <label>
+                                            <input type="radio" name="webServiceMode" ng-model="options.webServiceMode" value="GRAPHQL">
+                                            <span class="input-label" translate="GRAPHQL"></span>
+                                        </label>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="form_label" for="items_rest_endpoint"><span translate="ITEMS"></span>:</label>
-                                    <div class="invalid_message" ng-show="demo.endpointError_items" translate={{'INVALID_ENDPOINT_URL'|translate}}></div>
-                                    <div class="input-wrapper">
-                                        <input id="items_rest_endpoint" type="text" name="itemsRestEndpoint"
-                                               class="form-control" placeholder="{{'ENDPOINT_URL_FOR_ITEMS'|translate}} {{demo.end_point_for_items}}"
-                                               ng-model="options.restEndpoints.itemsRestEndpointUrl"  ng-trim="false"
-                                               ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.itemsRestEndpointUrl, 'items')"/>
-                                        <button class="btn btn-default industry_button labels_reset_btn"
-                                                ng-click="options.resetEndpoint('items')"
-                                                translate="RESET_ENDPOINT">
-                                        </button>
+
+                                <div ng-show="options.webServiceMode === 'RESTAPI'">
+                                    <div class="form-group">
+                                        <label class="form_label" for="categories_rest_endpoint"><span translate="CATEGORIES"></span>:</label>
+                                        <div class="invalid_message" ng-show="demo.endpointError_categories" translate={{'INVALID_ENDPOINT_URL'|translate}}></div>
+                                        <div class="input-wrapper">
+                                            <input id="categories_rest_endpoint" type="text" name="categoriesRestEndpoint"
+                                                   class="form-control" placeholder="{{'ENDPOINT_URL_FOR_CATEGORIES'|translate}} {{demo.end_point_for_categories}}"
+                                                   ng-model="options.restEndpoints.categoriesRestEndpointUrl"  ng-trim="false"
+                                                   ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.categoriesRestEndpointUrl, 'categories');"/>
+                                            <button class="btn btn-default industry_button labels_reset_btn"
+                                                    ng-click="options.resetEndpoint('categories')"
+                                                    translate="RESET_ENDPOINT">
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form_label" for="items_rest_endpoint"><span translate="ITEMS"></span>:</label>
+                                        <div class="invalid_message" ng-show="demo.endpointError_items" translate={{'INVALID_ENDPOINT_URL'|translate}}></div>
+                                        <div class="input-wrapper">
+                                            <input id="items_rest_endpoint" type="text" name="itemsRestEndpoint"
+                                                   class="form-control" placeholder="{{'ENDPOINT_URL_FOR_ITEMS'|translate}} {{demo.end_point_for_items}}"
+                                                   ng-model="options.restEndpoints.itemsRestEndpointUrl"  ng-trim="false"
+                                                   ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.itemsRestEndpointUrl, 'items')"/>
+                                            <button class="btn btn-default industry_button labels_reset_btn"
+                                                    ng-click="options.resetEndpoint('items')"
+                                                    translate="RESET_ENDPOINT">
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form_label" for="cart_items_rest_endpoint"><span translate="CART_ITEMS"></span>:</label>
+                                        <div class="invalid_message" ng-show="demo.endpointError_cart" translate={{'INVALID_ENDPOINT_URL'|translate}}></div>
+                                        <div class="input-wrapper">
+                                            <input id="cart_items_rest_endpoint" type="text" name="cartItemsRestEndpoint"
+                                                   class="form-control" placeholder="{{'ENDPOINT_URL_FOR_CARTITEMS'|translate}} {{demo.end_point_for_cartItems}}"
+                                                   ng-model="options.restEndpoints.cartItemsRestEndpointUrl"  ng-trim="false"
+                                                   ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.cartItemsRestEndpointUrl, 'cart')"/>
+                                            <button class="btn btn-default labels_reset_btn"
+                                                    ng-click="options.resetEndpoint('cart')"
+                                                    translate="RESET_ENDPOINT">
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form_label" for="orders_rest_endpoint"><span translate="ORDERS"></span>:</label>
+                                        <div class="invalid_message" ng-show="demo.endpointError_orders" translate={{'INVALID_ENDPOINT_URL'|translate}}></div>
+                                        <div class="input-wrapper">
+                                            <input id="orders_rest_endpoint" type="text" name="ordersRestEndpoint"
+                                                   class="form-control" placeholder="{{'ENDPOINT_URL_FOR_ORDERS'|translate}} {{demo.end_point_for_orders}}"
+                                                   ng-model="options.restEndpoints.ordersRestEndpointUrl"  ng-trim="false"
+                                                   ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.ordersRestEndpointUrl, 'orders')"/>
+                                            <button class="btn btn-default labels_reset_btn"
+                                                    ng-click="options.resetEndpoint('orders')"
+                                                    translate="RESET_ENDPOINT">
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form_label" for="locations_rest_endpoint"><span translate="LOCATIONS"></span>:</label>
+                                        <div class="invalid_message" ng-show="demo.endpointError_locations" translate={{'INVALID_ENDPOINT_URL'|translate}}></div>
+                                        <div class="input-wrapper">
+                                            <input id="locations_rest_endpoint" type="text" name="locationsRestEndpoint"
+                                                   class="form-control" placeholder="{{'ENDPOINT_URL_FOR_LOCATIONS'|translate}} {{demo.end_point_for_locations}}"
+                                                   ng-model="options.restEndpoints.locationsRestEndpointUrl"  ng-trim="false"
+                                                   ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.locationsRestEndpointUrl, 'locations')"/>
+                                            <button class="btn btn-default labels_reset_btn"
+                                                    ng-click="options.resetEndpoint('locations')"
+                                                    translate="RESET_ENDPOINT">
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="form_label" for="cart_items_rest_endpoint"><span translate="CART_ITEMS"></span>:</label>
-                                    <div class="invalid_message" ng-show="demo.endpointError_cart" translate={{'INVALID_ENDPOINT_URL'|translate}}></div>
+
+                                <div class="form-group" ng-show="options.webServiceMode === 'GRAPHQL'">
+                                    <label class="form_label" for="graphql_endpoint"><span translate="ENDPOINT"></span>:</label>
                                     <div class="input-wrapper">
-                                        <input id="cart_items_rest_endpoint" type="text" name="cartItemsRestEndpoint"
-                                               class="form-control" placeholder="{{'ENDPOINT_URL_FOR_CARTITEMS'|translate}} {{demo.end_point_for_cartItems}}"
-                                               ng-model="options.restEndpoints.cartItemsRestEndpointUrl"  ng-trim="false"
-                                               ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.cartItemsRestEndpointUrl, 'cart')"/>
+                                        <input id="graphql_endpoint" type="text" name="graphQLEndpoint"
+                                               class="form-control"/>
                                         <button class="btn btn-default labels_reset_btn"
-                                                ng-click="options.resetEndpoint('cart')"
-                                                translate="RESET_ENDPOINT">
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form_label" for="orders_rest_endpoint"><span translate="ORDERS"></span>:</label>
-                                    <div class="invalid_message" ng-show="demo.endpointError_orders" translate={{'INVALID_ENDPOINT_URL'|translate}}></div>
-                                    <div class="input-wrapper">
-                                        <input id="orders_rest_endpoint" type="text" name="ordersRestEndpoint"
-                                               class="form-control" placeholder="{{'ENDPOINT_URL_FOR_ORDERS'|translate}} {{demo.end_point_for_orders}}"
-                                               ng-model="options.restEndpoints.ordersRestEndpointUrl"  ng-trim="false"
-                                               ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.ordersRestEndpointUrl, 'orders')"/>
-                                        <button class="btn btn-default labels_reset_btn"
-                                                ng-click="options.resetEndpoint('orders')"
-                                                translate="RESET_ENDPOINT">
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form_label" for="locations_rest_endpoint"><span translate="LOCATIONS"></span>:</label>
-                                    <div class="invalid_message" ng-show="demo.endpointError_locations" translate={{'INVALID_ENDPOINT_URL'|translate}}></div>
-                                    <div class="input-wrapper">
-                                        <input id="locations_rest_endpoint" type="text" name="locationsRestEndpoint"
-                                               class="form-control" placeholder="{{'ENDPOINT_URL_FOR_LOCATIONS'|translate}} {{demo.end_point_for_locations}}"
-                                               ng-model="options.restEndpoints.locationsRestEndpointUrl"  ng-trim="false"
-                                               ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.locationsRestEndpointUrl, 'locations')"/>
-                                        <button class="btn btn-default labels_reset_btn"
-                                                ng-click="options.resetEndpoint('locations')"
+                                                ng-click="options.clickReset()"
                                                 translate="RESET_ENDPOINT">
                                         </button>
                                     </div>
