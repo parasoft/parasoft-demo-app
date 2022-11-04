@@ -76,6 +76,24 @@ Parasoft Demo Application exposes port 9001 for the user to connect to the HSQLD
 | Username | `SA`                                                |
 | Password | `pass`                                              |
 
+## Using Parasoft JMS/MQ Proxy
+There are two main services for order management in PDA, **order service** and **inventory service**. After an order is submitted, order service would send 
+a request through messaging queue to check and decrease the inventory. After the operation is done, inventory service would send a response through messaging queue which includes the information of the operation result.
+
+To use Parasoft JMS/MQ proxy, you should enable the feature in PDA Demo Administration page and configure the connection queues with your message proxy in Virtualize.
+
+<img src="src/main/resources/static/common/images/services_diagram.png" width="1050" alt="services_diagram">
+
+Configuration details for embedded ActiveMQ server
+
+| Option                | Value                                                    |
+|-----------------------|----------------------------------------------------------|
+| Provider URL          | `tcp://localhost:61626`                                  |
+| Initial context class | `org.apache.activemq.jndi.ActiveMQInitialContextFactory` |
+| Connection factory    | `ConnectionFactory`                                      |
+| Username              | `admin`                                                  |
+| Password              | `admin`                                                  |
+
 ## Using Parasoft JDBC Proxy
 1. Find the **ParasoftJDBCDriver.jar** in **{SOAtest & Virtualize installation directory}/{version}/proxies**.
 2. Copy it to **{root directory of parasoft-demo-app}/lib**. (Create the folder if it does not already exist.)
