@@ -1224,6 +1224,8 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
         options.parasoftVirtualizeServerPath = data.parasoftVirtualizeServerPath;
         options.parasoftVirtualizeGroupId = data.parasoftVirtualizeGroupId;
 
+        options.webServiceMode = data.webServiceMode;
+
     }).catch(function(result) {
         toastrService().error($filter('translate')('LOADING_DATA_FAILS'));
         console.log(result);

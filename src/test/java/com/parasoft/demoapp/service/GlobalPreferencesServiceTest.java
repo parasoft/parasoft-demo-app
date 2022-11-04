@@ -72,7 +72,7 @@ public class GlobalPreferencesServiceTest {
 	 * Boolean, MqType, String, String, String, String)
 	 *
 	 * @see GlobalPreferencesService#addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, Set, Boolean, Boolean, String, String, String,
-	 * Boolean, MqType, String, String, String, String)
+	 * Boolean, MqType, String, String, String, String, WebServiceMode)
 	 */
 	@Test
 	public void testAddNewGlobalPreferences_normal() throws Throwable {
@@ -95,18 +95,19 @@ public class GlobalPreferencesServiceTest {
 		String orderServiceReplyToQueue = "queue.inventory.response";
 		String inventoryServiceDestinationQueue = "queue.inventory.request";
 		String inventoryServiceReplyToQueue = "queue.inventory.response";
+		WebServiceMode webServiceMode = WebServiceMode.REST;
 
 		GlobalPreferencesEntity saveResult = new GlobalPreferencesEntity(dataAccessMode, soapEndPoint, restEndPoints,
 				industryType, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
 				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, proxyMqEnabled, mqType, orderServiceDestinationQueue,
-				orderServiceReplyToQueue, inventoryServiceDestinationQueue, inventoryServiceReplyToQueue);
+				orderServiceReplyToQueue, inventoryServiceDestinationQueue, inventoryServiceReplyToQueue, webServiceMode);
 		doReturn(saveResult).when(globalPreferencesRepository).save((GlobalPreferencesEntity) any());
 
 		// When
 		GlobalPreferencesEntity result = underTest.addNewGlobalPreferences(dataAccessMode, soapEndPoint, restEndPoints,
 				industryType, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
 				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, proxyMqEnabled, mqType, orderServiceDestinationQueue,
-				orderServiceReplyToQueue, inventoryServiceDestinationQueue, inventoryServiceReplyToQueue);
+				orderServiceReplyToQueue, inventoryServiceDestinationQueue, inventoryServiceReplyToQueue, webServiceMode);
 
 		// Then
 		assertNotNull(result);
@@ -129,7 +130,7 @@ public class GlobalPreferencesServiceTest {
 	 * Boolean, MqType, String, String, String, String)
 	 *
 	 * @see GlobalPreferencesService#addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, Set, Boolean, Boolean, String, String, String,
-	 * Boolean, MqType, String, String, String, String)
+	 * Boolean, MqType, String, String, String, String, WebServiceMode)
 	 */
 	@Test
 	public void testAddNewGlobalPreferences_nullDemoBugs() throws Throwable {
@@ -150,18 +151,19 @@ public class GlobalPreferencesServiceTest {
 		String orderServiceReplyToQueue = "queue.inventory.response";
 		String inventoryServiceDestinationQueue = "queue.inventory.request";
 		String inventoryServiceReplyToQueue = "queue.inventory.response";
+		WebServiceMode webServiceMode = WebServiceMode.REST;
 
 		GlobalPreferencesEntity saveResult = new GlobalPreferencesEntity(dataAccessMode, soapEndPoint, restEndPoints,
 				industryType, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
 				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, proxyMqEnabled, mqType, orderServiceDestinationQueue,
-				orderServiceReplyToQueue, inventoryServiceDestinationQueue, inventoryServiceReplyToQueue);
+				orderServiceReplyToQueue, inventoryServiceDestinationQueue, inventoryServiceReplyToQueue, webServiceMode);
 		doReturn(saveResult).when(globalPreferencesRepository).save((GlobalPreferencesEntity) any());
 
 		// When
 		GlobalPreferencesEntity result = underTest.addNewGlobalPreferences(dataAccessMode, soapEndPoint, restEndPoints,
 				industryType, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
 				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, proxyMqEnabled, mqType, orderServiceDestinationQueue,
-				orderServiceReplyToQueue, inventoryServiceDestinationQueue, inventoryServiceReplyToQueue);
+				orderServiceReplyToQueue, inventoryServiceDestinationQueue, inventoryServiceReplyToQueue, webServiceMode);
 
 		// Then
 		assertNotNull(result);
@@ -173,7 +175,7 @@ public class GlobalPreferencesServiceTest {
 	 * Boolean, MqType, String, String, String, String)
 	 *
 	 * @see GlobalPreferencesService#addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, Set, Boolean, Boolean, String, String, String,
-	 * Boolean, MqType, String, String, String, String)
+	 * Boolean, MqType, String, String, String, String, WebServiceMode)
 	 */
 	@Test
 	public void testAddNewGlobalPreferences_nullRestEndPoints() throws Throwable {
@@ -194,18 +196,19 @@ public class GlobalPreferencesServiceTest {
 		String orderServiceReplyToQueue = "queue.inventory.response";
 		String inventoryServiceDestinationQueue = "queue.inventory.request";
 		String inventoryServiceReplyToQueue = "queue.inventory.response";
+		WebServiceMode webServiceMode = WebServiceMode.REST;
 
 		GlobalPreferencesEntity saveResult = new GlobalPreferencesEntity(dataAccessMode, soapEndPoint, restEndPoints,
 				industryType, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
 				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, proxyMqEnabled, mqType, orderServiceDestinationQueue,
-				orderServiceReplyToQueue, inventoryServiceDestinationQueue, inventoryServiceReplyToQueue);
+				orderServiceReplyToQueue, inventoryServiceDestinationQueue, inventoryServiceReplyToQueue, webServiceMode);
 		doReturn(saveResult).when(globalPreferencesRepository).save((GlobalPreferencesEntity) any());
 
 		// When
 		GlobalPreferencesEntity result = underTest.addNewGlobalPreferences(dataAccessMode, soapEndPoint, restEndPoints,
 				industryType, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
 				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, proxyMqEnabled, mqType, orderServiceDestinationQueue,
-				orderServiceReplyToQueue, inventoryServiceDestinationQueue, inventoryServiceReplyToQueue);
+				orderServiceReplyToQueue, inventoryServiceDestinationQueue, inventoryServiceReplyToQueue, webServiceMode);
 
 		// Then
 		assertNotNull(result);
@@ -217,7 +220,7 @@ public class GlobalPreferencesServiceTest {
 	 * Boolean, MqType, String, String, String, String)
 	 *
 	 * @see GlobalPreferencesService#addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, Set, Boolean, Boolean, String, String, String,
-	 * Boolean, MqType, String, String, String, String)
+	 * Boolean, MqType, String, String, String, String, WebServiceMode)
 	 */
 	@Test
 	public void testAddNewGlobalPreferences_nullAdvertisingEnabled() throws Throwable {
@@ -238,11 +241,12 @@ public class GlobalPreferencesServiceTest {
 		String orderServiceReplyToQueue = "queue.inventory.response";
 		String inventoryServiceDestinationQueue = "queue.inventory.request";
 		String inventoryServiceReplyToQueue = "queue.inventory.response";
+		WebServiceMode webServiceMode = WebServiceMode.REST;
 
 		GlobalPreferencesEntity saveResult = new GlobalPreferencesEntity(dataAccessMode, soapEndPoint, restEndPoints,
 				industryType, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
 				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, proxyMqEnabled, mqType, orderServiceDestinationQueue,
-				orderServiceReplyToQueue, inventoryServiceDestinationQueue, inventoryServiceReplyToQueue);
+				orderServiceReplyToQueue, inventoryServiceDestinationQueue, inventoryServiceReplyToQueue, webServiceMode);
 		doReturn(saveResult).when(globalPreferencesRepository).save((GlobalPreferencesEntity) any());
 
 		// When
@@ -251,7 +255,7 @@ public class GlobalPreferencesServiceTest {
 			underTest.addNewGlobalPreferences(dataAccessMode, soapEndPoint, restEndPoints, industryType, demoBugSet,
 					advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
 					parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, proxyMqEnabled, mqType, orderServiceDestinationQueue,
-					orderServiceReplyToQueue, inventoryServiceDestinationQueue, inventoryServiceReplyToQueue);
+					orderServiceReplyToQueue, inventoryServiceDestinationQueue, inventoryServiceReplyToQueue, webServiceMode);
 		} catch (Exception e) {
 			message = e.getMessage();
 		}
@@ -284,11 +288,12 @@ public class GlobalPreferencesServiceTest {
 		String orderServiceReplyToQueue = "queue.inventory.response";
 		String inventoryServiceDestinationQueue = "queue.inventory.request";
 		String inventoryServiceReplyToQueue = "queue.inventory.response";
+		WebServiceMode webServiceMode = WebServiceMode.REST;
 
 		GlobalPreferencesEntity globalPreferencesEntity = new GlobalPreferencesEntity(dataAccessMode, soapEndPoint, restEndPoints,
 				industryType, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
 				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, proxyMqEnabled, mqType, orderServiceDestinationQueue,
-				orderServiceReplyToQueue, inventoryServiceDestinationQueue, inventoryServiceReplyToQueue);
+				orderServiceReplyToQueue, inventoryServiceDestinationQueue, inventoryServiceReplyToQueue, webServiceMode);
 
 		when(globalPreferencesRepository.findAll()).thenReturn(Arrays.asList(globalPreferencesEntity));
 

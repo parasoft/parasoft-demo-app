@@ -97,6 +97,10 @@ public class GlobalPreferencesEntity {
     @Column(name = "inventory_service_reply_to_queue")
     private String inventoryServiceReplyToQueue;
 
+    @Setter
+    @Column(name = "web_service_mode")
+    private WebServiceMode webServiceMode;
+
     public GlobalPreferencesEntity(DataAccessMode dataAccessMode, String soapEndpoint,
                                    Set<RestEndpointEntity> restEndpoints,
                                    IndustryType industryType, Set<DemoBugEntity> demoBugs,
@@ -108,7 +112,8 @@ public class GlobalPreferencesEntity {
                                    String orderServiceDestinationQueue,
                                    String orderServiceReplyToQueue,
                                    String inventoryServiceDestinationQueue,
-                                   String inventoryServiceReplyToQueue) {
+                                   String inventoryServiceReplyToQueue,
+                                   WebServiceMode webServiceMode) {
         this.dataAccessMode = dataAccessMode;
         this.soapEndPoint = soapEndpoint;
         this.restEndPoints = restEndpoints;
@@ -125,6 +130,7 @@ public class GlobalPreferencesEntity {
         this.orderServiceReplyToQueue = orderServiceReplyToQueue;
         this.inventoryServiceDestinationQueue = inventoryServiceDestinationQueue;
         this.inventoryServiceReplyToQueue = inventoryServiceReplyToQueue;
+        this.webServiceMode = webServiceMode;
     }
 
 }

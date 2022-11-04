@@ -91,6 +91,7 @@ function initHeaderController(app){
             $rootScope.isAerospace = angular.equals(industry, AEROSPACE);
             $rootScope.isShowAdvertising = preferenceData.advertisingEnabled;
             $rootScope.deBugs = preferenceData.demoBugs;
+            $rootScope.webServiceMode = preferenceData.webServiceMode;
 
             if(preferenceData.useParasoftJDBCProxy){
                 $http({

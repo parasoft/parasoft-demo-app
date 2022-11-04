@@ -71,7 +71,8 @@ public class GlobalPreferencesService {
                                                            String orderServiceDestinationQueue,
                                                            String orderServiceReplyToQueue,
                                                            String inventoryServiceDestinationQueue,
-                                                           String inventoryServiceReplyToQueue ) throws ParameterException {
+                                                           String inventoryServiceReplyToQueue,
+                                                           WebServiceMode webServiceMode) throws ParameterException {
 
         validateIndustry(industryType);
         ParameterValidator.requireNonNull(advertisingEnabled, GlobalPreferencesMessages.ADVERTISING_ENABLED_CANNOT_BE_NULL);
@@ -96,7 +97,8 @@ public class GlobalPreferencesService {
                                                             orderServiceDestinationQueue,
                                                             orderServiceReplyToQueue,
                                                             inventoryServiceDestinationQueue,
-                                                            inventoryServiceReplyToQueue);
+                                                            inventoryServiceReplyToQueue,
+                                                            webServiceMode);
 
         for(DemoBugEntity demoBug : demoBugs){
             demoBug.setGlobalPreferences(newGlobalPreferences);
