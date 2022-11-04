@@ -30,7 +30,7 @@ public class InventoryRequestQueueListener extends RefreshableMessageListener {
                                          ItemInventoryMQService itemInventoryMQService,
                                          CachingConnectionFactory cachingConnectionFactory) {
         super(jmsMessageConverter, jmsListenerEndpointRegistry, jmsQueueListenerContainerFactory,
-                ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST, cachingConnectionFactory);
+                ActiveMQConfig.getInventoryServiceListenToQueue(), cachingConnectionFactory);
 
         this.itemInventoryService = itemInventoryService;
         this.itemInventoryMQService = itemInventoryMQService;
