@@ -464,15 +464,15 @@ textarea {
     padding-left: 10px;
 }
 
-.rest_api_interface, .graphql_api_interface {
+.rest_api_web_service, .graphql_web_service {
     display: inline-block;
 }
 
-.api_interface {
+.web_services {
     padding-bottom: 15px;
 }
 
-.graphql_api_interface {
+.graphql_web_service {
     margin-left: 40px;
 }
 
