@@ -464,4 +464,16 @@ textarea {
     padding-left: 10px;
 }
 
+.rest_api_interface, .graphql_api_interface {
+    display: inline-block;
+}
+
+.api_interface {
+    padding-bottom: 15px;
+}
+
+.graphql_api_interface {
+    margin-left: 40px;
+}
+
 /* LABELS tab */

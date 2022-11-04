@@ -1224,10 +1224,15 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
         options.parasoftVirtualizeServerPath = data.parasoftVirtualizeServerPath;
         options.parasoftVirtualizeGroupId = data.parasoftVirtualizeGroupId;
 
+        options.apiInterface = "RESTAPI";
     }).catch(function(result) {
         toastrService().error($filter('translate')('LOADING_DATA_FAILS'));
         console.log(result);
     });
+
+    options.clickReset = function () {
+        alert("TO DO");
+    }
 
 	options.resetEndpoint = function(endpoint){
 
