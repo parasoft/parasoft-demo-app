@@ -4,7 +4,6 @@ import com.parasoft.demoapp.dto.InventoryOperationRequestMessageDTO;
 import com.parasoft.demoapp.dto.InventoryOperationResultMessageDTO;
 import com.parasoft.demoapp.service.OrderMQService;
 import com.parasoft.demoapp.service.OrderService;
-import com.parasoft.demoapp.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.config.JmsListenerEndpointRegistry;
@@ -31,7 +30,7 @@ public class InventoryResponseQueueListener extends RefreshableMessageListener {
                                           OrderMQService orderMQService,
                                           CachingConnectionFactory cachingConnectionFactory) {
         super(jmsMessageConverter, jmsListenerEndpointRegistry, jmsQueueListenerContainerFactory,
-                ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE, cachingConnectionFactory);
+                ActiveMQConfig.getOrderServiceListenToQueue(), cachingConnectionFactory);
 
         this.orderService = orderService;
         this.orderMQService = orderMQService;
