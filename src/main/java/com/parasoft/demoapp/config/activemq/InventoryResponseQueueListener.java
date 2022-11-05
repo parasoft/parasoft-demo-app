@@ -4,9 +4,11 @@ import com.parasoft.demoapp.dto.InventoryOperationRequestMessageDTO;
 import com.parasoft.demoapp.dto.InventoryOperationResultMessageDTO;
 import com.parasoft.demoapp.service.OrderMQService;
 import com.parasoft.demoapp.service.OrderService;
+import com.parasoft.demoapp.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.config.JmsListenerEndpointRegistry;
+import org.springframework.jms.connection.CachingConnectionFactory;
 import org.springframework.jms.support.converter.MessageConversionException;
 import org.springframework.jms.support.converter.MessageConverter;
 import org.springframework.stereotype.Component;
@@ -20,17 +22,20 @@ import javax.jms.Message;
 public class InventoryResponseQueueListener extends RefreshableMessageListener {
     private final OrderService orderService;
     private final OrderMQService orderMQService;
+    protected final CachingConnectionFactory cachingConnectionFactory;
 
     public InventoryResponseQueueListener(MessageConverter jmsMessageConverter,
                                           JmsListenerEndpointRegistry jmsListenerEndpointRegistry,
                                           DefaultJmsListenerContainerFactory jmsQueueListenerContainerFactory,
                                           OrderService orderService,
-                                          OrderMQService orderMQService) {
+                                          OrderMQService orderMQService,
+                                          CachingConnectionFactory cachingConnectionFactory) {
         super(jmsMessageConverter, jmsListenerEndpointRegistry, jmsQueueListenerContainerFactory,
-                ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE);
+                ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE, cachingConnectionFactory);
 
         this.orderService = orderService;
         this.orderMQService = orderMQService;
+        this.cachingConnectionFactory = cachingConnectionFactory;
     }
 
     @Override

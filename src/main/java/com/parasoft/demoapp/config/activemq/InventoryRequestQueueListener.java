@@ -7,6 +7,7 @@ import com.parasoft.demoapp.service.ItemInventoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.config.JmsListenerEndpointRegistry;
+import org.springframework.jms.connection.CachingConnectionFactory;
 import org.springframework.jms.support.converter.MessageConversionException;
 import org.springframework.jms.support.converter.MessageConverter;
 import org.springframework.stereotype.Component;
@@ -20,17 +21,20 @@ import javax.jms.Message;
 public class InventoryRequestQueueListener extends RefreshableMessageListener {
     private final ItemInventoryService itemInventoryService;
     private final ItemInventoryMQService itemInventoryMQService;
+    protected final CachingConnectionFactory cachingConnectionFactory;
 
     public InventoryRequestQueueListener(MessageConverter jmsMessageConverter,
                                          JmsListenerEndpointRegistry jmsListenerEndpointRegistry,
                                          DefaultJmsListenerContainerFactory jmsQueueListenerContainerFactory,
                                          ItemInventoryService itemInventoryService,
-                                         ItemInventoryMQService itemInventoryMQService) {
+                                         ItemInventoryMQService itemInventoryMQService,
+                                         CachingConnectionFactory cachingConnectionFactory) {
         super(jmsMessageConverter, jmsListenerEndpointRegistry, jmsQueueListenerContainerFactory,
-                ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
+                ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST, cachingConnectionFactory);
 
         this.itemInventoryService = itemInventoryService;
         this.itemInventoryMQService = itemInventoryMQService;
+        this.cachingConnectionFactory = cachingConnectionFactory;
     }
 
     @Override
