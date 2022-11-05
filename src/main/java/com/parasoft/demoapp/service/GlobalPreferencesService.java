@@ -134,7 +134,7 @@ public class GlobalPreferencesService {
 
         handleParasoftJDBCProxy(currentPreferences, globalPreferencesDto);
 
-        handlePreferencesMQ(currentPreferences, globalPreferencesDto);
+        handleMqProxy(currentPreferences, globalPreferencesDto);
 
         currentPreferences = updateGlobalPreferences(currentPreferences);
 
@@ -258,7 +258,7 @@ public class GlobalPreferencesService {
             throws ParameterException {
         GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
         BeanUtils.copyProperties(globalPreferences, globalPreferencesDto);
-        validateDestinationName(globalPreferencesDto);
+        validateProxyConfig(globalPreferencesDto);
 
         ActiveMQConfig.setOrderServiceSendToActiveMqQueue(new ActiveMQQueue(
                 globalPreferences.getOrderServiceDestinationQueue()));
@@ -366,8 +366,8 @@ public class GlobalPreferencesService {
         currentPreferences.setRestEndPoints(endpoints);
     }
 
-    private void handlePreferencesMQ(GlobalPreferencesEntity currentPreferences,
-                                     GlobalPreferencesDTO globalPreferencesDto) throws ParameterException {
+    private void handleMqProxy(GlobalPreferencesEntity currentPreferences,
+                               GlobalPreferencesDTO globalPreferencesDto) throws ParameterException {
         Boolean mqProxyEnabled = globalPreferencesDto.getMqProxyEnabled();
         ParameterValidator.requireNonNull(mqProxyEnabled, GlobalPreferencesMessages.MQENABLED_MUST_NOT_BE_NULL);
 
@@ -378,7 +378,7 @@ public class GlobalPreferencesService {
         String inventoryServiceDestinationQueue = globalPreferencesDto.getInventoryServiceDestinationQueue();
 
         if(mqProxyEnabled) {
-            validateDestinationName(globalPreferencesDto);
+            validateProxyConfig(globalPreferencesDto);
         }
 
         if(mqType == null) {
@@ -447,7 +447,7 @@ public class GlobalPreferencesService {
         imageService.removeSpecificIndustryUploadedImages(IndustryRoutingDataSource.currentIndustry);
 	}
 
-    private void validateDestinationName(GlobalPreferencesDTO globalPreferencesDto) throws ParameterException {
+    private void validateProxyConfig(GlobalPreferencesDTO globalPreferencesDto) throws ParameterException {
         ParameterValidator.requireNonNull(globalPreferencesDto.getMqType(), GlobalPreferencesMessages.MQTYPE_MUST_NOT_BE_NULL);
         ParameterValidator.requireNonBlank(globalPreferencesDto.getOrderServiceDestinationQueue(), GlobalPreferencesMessages.ORDER_SERVICE_DESTINATION_QUEUE_CANNOT_BE_NULL);
         ParameterValidator.requireNonBlank(globalPreferencesDto.getOrderServiceReplyToQueue(), GlobalPreferencesMessages.ORDER_SERVICE_REPLY_TO_QUEUE_CANNOT_BE_NULL);

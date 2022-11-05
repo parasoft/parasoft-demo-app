@@ -51,11 +51,11 @@ public abstract class RefreshableMessageListener implements MessageListener {
             container.stop();
         }
 
-        MessageListenerContainer wantedMessageListenerContainer = listenedListenerContainers.get(destinationName);
-        if(wantedMessageListenerContainer == null) {
+        MessageListenerContainer targetMessageListenerContainer = listenedListenerContainers.get(destinationName);
+        if(targetMessageListenerContainer == null) {
             registerListener(destinationName);
         } else {
-            wantedMessageListenerContainer.start();
+            targetMessageListenerContainer.start();
         }
 
         cachingConnectionFactory.resetConnection();
