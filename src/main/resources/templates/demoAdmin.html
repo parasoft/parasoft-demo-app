@@ -245,28 +245,26 @@
                                         <span class="input-label" translate="ENABLE"></span>
                                     </label>
                                 </div>
-			    	<div id="message_queue_type">
-				    <div class="form-group">
-				    	<input type="hidden" name="mqType" ng-value="options.mqType">
-				    </div>
-				</div>
+			    	            <div id="message_queue_type">
+                                    <div class="form-group">
+                                        <input type="hidden" name="mqType" ng-value="options.mqType">
+                                    </div>
+				                </div>
                                 <label for="client_connection" class="connection-label" translate="CLIENT_CONNECTION"></label>
                                 <div id="client_connection">
                                     <div class="form-group">
                                         <label for="order_service_destination_queue" class="form_label" translate="DESTINATION_QUEUE"></label>
-                                        <input type="hidden" name="orderServiceDestinationQueue" ng-value="options.orderServiceDestinationQueue">
-					<div class="invalid_message" ng-show="optionsForm.orderServiceDestinationQueueField.$invalid" translate={{'QUEUE_NAME_SHOULD_NOT_BE_EMPTY'|translate}}></div>
+					                    <div class="invalid_message" ng-show="optionsForm.orderServiceDestinationQueue.$invalid" translate={{'QUEUE_NAME_SHOULD_NOT_BE_EMPTY'|translate}}></div>
                                         <div class="input-wrapper">
-                                            <input type="text" name="orderServiceDestinationQueueField" id="order_service_destination_queue" class="form-control" ng-model="options.orderServiceDestinationQueue" ng-trim="false"
+                                            <input type="text" name="orderServiceDestinationQueue" id="order_service_destination_queue" class="form-control" ng-model="options.orderServiceDestinationQueue" ng-trim="false"
                                                    ng-disabled="!options.mqProxyEnabled" ng-required="options.mqProxyEnabled">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="order_service_reply_to_queue" class="form_label" translate="REPLY_TO_QUEUE"></label>
-                                        <input type="hidden" name="orderServiceReplyToQueue" ng-value="options.orderServiceReplyToQueue">
-					<div class="invalid_message" ng-show="optionsForm.orderServiceReplyToQueueField.$invalid" translate={{'QUEUE_NAME_SHOULD_NOT_BE_EMPTY'|translate}}></div>
+					                    <div class="invalid_message" ng-show="optionsForm.orderServiceReplyToQueue.$invalid" translate={{'QUEUE_NAME_SHOULD_NOT_BE_EMPTY'|translate}}></div>
                                         <div class="input-wrapper">
-                                            <input type="text" name="orderServiceReplyToQueueField" id="order_service_reply_to_queue" class="form-control" ng-model="options.orderServiceReplyToQueue" ng-trim="false"
+                                            <input type="text" name="orderServiceReplyToQueue" id="order_service_reply_to_queue" class="form-control" ng-model="options.orderServiceReplyToQueue" ng-trim="false"
                                                    ng-disabled="!options.mqProxyEnabled" ng-required="options.mqProxyEnabled">
                                         </div>
                                     </div>
@@ -275,21 +273,19 @@
                                 <div id="server_connection">
                                     <div class="form-group">
                                         <label for="inventory_service_destination_queue" class="form_label" translate="DESTINATION_QUEUE"></label>
-                                        <input type="hidden" name="inventoryServiceDestinationQueue" ng-value="options.inventoryServiceDestinationQueue">
-					<div class="invalid_message" ng-show="optionsForm.inventoryServiceDestinationQueueField.$invalid" translate={{'QUEUE_NAME_SHOULD_NOT_BE_EMPTY'|translate}}></div>
+					                    <div class="invalid_message" ng-show="optionsForm.inventoryServiceDestinationQueue.$invalid" translate={{'QUEUE_NAME_SHOULD_NOT_BE_EMPTY'|translate}}></div>
                                         <div class="input-wrapper">
-                                            <input type="text" name="inventoryServiceDestinationQueueField" id="inventory_service_destination_queue" class="form-control" ng-model="options.inventoryServiceDestinationQueue" ng-trim="false"
+                                            <input type="text" name="inventoryServiceDestinationQueue" id="inventory_service_destination_queue" class="form-control" ng-model="options.inventoryServiceDestinationQueue" ng-trim="false"
                                                    ng-disabled="!options.mqProxyEnabled" ng-required="options.mqProxyEnabled">
                                         </div>
                                     </div>
                                     <div class="form-group">
-					<label for="inventory_service_to_queue" class="form_label" translate="REPLY_TO_QUEUE"></label>
-					<input type="hidden" name="inventoryServiceReplyToQueue" ng-value="options.inventoryServiceReplyToQueue">
-					<div class="invalid_message" ng-show="optionsForm.inventoryServiceReplyToQueueField.$invalid" translate={{'QUEUE_NAME_SHOULD_NOT_BE_EMPTY'|translate}}></div>
-					<div class="input-wrapper">
-					    <input type="text" name="inventoryServiceReplyToQueueField" id="inventory_service_to_queue" class="form-control" ng-model="options.inventoryServiceReplyToQueue" ng-trim="false"
-						    ng-disabled="!options.mqProxyEnabled" ng-required="options.mqProxyEnabled">
-					</div>
+					                    <label for="inventory_service_to_queue" class="form_label" translate="REPLY_TO_QUEUE"></label>
+                                        <div class="invalid_message" ng-show="optionsForm.inventoryServiceReplyToQueue.$invalid" translate={{'QUEUE_NAME_SHOULD_NOT_BE_EMPTY'|translate}}></div>
+                                        <div class="input-wrapper">
+                                            <input type="text" name="inventoryServiceReplyToQueue" id="inventory_service_to_queue" class="form-control" ng-model="options.inventoryServiceReplyToQueue" ng-trim="false"
+                                                ng-disabled="!options.mqProxyEnabled" ng-required="options.mqProxyEnabled">
+                                        </div>
                                 </div>
                                 </div>
                             </div>
@@ -708,7 +704,6 @@
                 </div>
             </div>
         </div>
-
         <div id="img_modal" ng-if="demo.isShowImgModal" class="common_industry" ng-style="demo.modalStyle">
             <div ng-click="demo.closeImgModal()"><span id="close_btn" ng-bind="'x'" class="common_div font_color2"></span></div>
             <img id="img_in_modal" ng-src="{{demo.itemImg}}">
