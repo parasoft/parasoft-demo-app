@@ -69,7 +69,8 @@ public class GlobalPreferencesService {
     */
     public GlobalPreferencesEntity addNewGlobalPreferences(DataAccessMode dataAccessMode, String soapEndPoint,
                                                            Set<RestEndpointEntity> restEndpoints,
-                                                           IndustryType industryType, Set<DemoBugEntity> demoBugs,
+                                                           IndustryType industryType, WebServiceMode webServiceMode,
+                                                           RestEndpointEntity graphQLEndpoint, Set<DemoBugEntity> demoBugs,
                                                            Boolean advertisingEnabled, Boolean useParasoftJDBCProxy,
                                                            String parasoftVirtualizeServerUrl, String parasoftVirtualizeServerPath,
                                                            String parasoftVirtualizeGroupId,
@@ -92,6 +93,8 @@ public class GlobalPreferencesService {
                                                             soapEndPoint,
                                                             restEndpoints,
                                                             industryType,
+                                                            webServiceMode,
+                                                            graphQLEndpoint,
                                                             demoBugs,
                                                             advertisingEnabled,
                                                             useParasoftJDBCProxy,
@@ -128,9 +131,18 @@ public class GlobalPreferencesService {
         currentPreferences.setIndustryType(industry);
         currentPreferences.setAdvertisingEnabled(advertisingEnabled);
 
+        WebServiceMode webServiceMode = globalPreferencesDto.getWebServiceMode();
+        currentPreferences.setWebServiceMode(webServiceMode);
+
         handleDemoBugs(currentPreferences, globalPreferencesDto);
 
-        handleRestEndpoints(currentPreferences, globalPreferencesDto);
+        if(WebServiceMode.REST_API == webServiceMode){
+            handleRestEndpoints(currentPreferences, globalPreferencesDto);
+            currentPreferences.setGraphQLEndpoint(restEndpointService.getGraphQLEndpoint());
+        }else{
+            handleGraphQLEndpoint(currentPreferences, globalPreferencesDto);
+            currentPreferences.setRestEndPoints(restEndpointService.getRestEndpoints());
+        }
 
         handleParasoftJDBCProxy(currentPreferences, globalPreferencesDto);
 
@@ -322,7 +334,7 @@ public class GlobalPreferencesService {
     }
 
     private void handleRestEndpoints(GlobalPreferencesEntity currentPreferences,
-                    GlobalPreferencesDTO globalPreferencesDto) throws EndpointInvalidException, ParameterException {
+                                     GlobalPreferencesDTO globalPreferencesDto) throws EndpointInvalidException, ParameterException {
 
         // handle endpoints
         restEndpointService.removeAllEndpoints(); // remove existed endpoints
@@ -364,6 +376,17 @@ public class GlobalPreferencesService {
         }
 
         currentPreferences.setRestEndPoints(endpoints);
+    }
+
+    private void handleGraphQLEndpoint(GlobalPreferencesEntity currentPreferences,
+                                       GlobalPreferencesDTO globalPreferencesDto) throws EndpointInvalidException, ParameterException {
+        String graphQLEndpoint = globalPreferencesDto.getGraphQLEndpoint();
+        if(!StringUtils.isBlank(graphQLEndpoint)){
+            restEndpointService.validateUrl(graphQLEndpoint, GlobalPreferencesMessages.INVALID_GRAPH_URL);
+        }
+
+        currentPreferences.setGraphQLEndpoint(new RestEndpointEntity(GRAPHQL_ENDPOINT_ID, GRAPHQL_ENDPOINT_PATH,
+                graphQLEndpoint, currentPreferences));
     }
 
     private void handleMqProxy(GlobalPreferencesEntity currentPreferences,

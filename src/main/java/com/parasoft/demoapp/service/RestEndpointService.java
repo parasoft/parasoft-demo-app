@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class RestEndpointService {
@@ -35,6 +36,14 @@ public class RestEndpointService {
 
     public List<RestEndpointEntity> getAllEndpoints() {
         return restEndPointRepository.findAll();
+    }
+
+    public Set<RestEndpointEntity> getRestEndpoints() {
+        return restEndPointRepository.findAllByRouteIdNot(GlobalPreferencesDefaultSettingsService.GRAPHQL_ENDPOINT_ID);
+    }
+
+    public RestEndpointEntity getGraphQLEndpoint() {
+        return restEndPointRepository.findAllByRouteId(GlobalPreferencesDefaultSettingsService.GRAPHQL_ENDPOINT_ID);
     }
 
     public void removeAllEndpoints() {

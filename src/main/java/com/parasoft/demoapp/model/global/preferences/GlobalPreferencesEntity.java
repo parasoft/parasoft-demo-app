@@ -1,6 +1,8 @@
 package com.parasoft.demoapp.model.global.preferences;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService;
+import com.parasoft.demoapp.util.RouteIdSortOfRestEndpoint;
 import lombok.*;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -36,6 +38,17 @@ public class GlobalPreferencesEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "industry_type")
     private IndustryType industryType;
+
+    @Setter
+    @Enumerated(EnumType.STRING)
+    @Column(name = "web_service_mode")
+    private WebServiceMode webServiceMode;
+
+    @Setter
+    @OneToOne
+    @JoinColumn(name = "graphql_endpoint_id")
+    @Cascade(CascadeType.ALL)
+    private RestEndpointEntity graphQLEndpoint;
 
     @Setter
     @Column(name = "ad_enabled")
@@ -99,7 +112,8 @@ public class GlobalPreferencesEntity {
 
     public GlobalPreferencesEntity(DataAccessMode dataAccessMode, String soapEndpoint,
                                    Set<RestEndpointEntity> restEndpoints,
-                                   IndustryType industryType, Set<DemoBugEntity> demoBugs,
+                                   IndustryType industryType, WebServiceMode webServiceMode,
+                                   RestEndpointEntity graphQLEndpoint, Set<DemoBugEntity> demoBugs,
                                    Boolean advertisingEnabled, Boolean useParasoftJDBCProxy,
                                    String parasoftVirtualizeServerUrl, String parasoftVirtualizeServerPath,
                                    String parasoftVirtualizeGroupId,
@@ -113,6 +127,8 @@ public class GlobalPreferencesEntity {
         this.soapEndPoint = soapEndpoint;
         this.restEndPoints = restEndpoints;
         this.industryType = industryType;
+        this.webServiceMode = webServiceMode;
+        this.graphQLEndpoint = graphQLEndpoint;
         this.demoBugs = demoBugs;
         this.advertisingEnabled = advertisingEnabled;
         this.useParasoftJDBCProxy = useParasoftJDBCProxy;
@@ -127,4 +143,20 @@ public class GlobalPreferencesEntity {
         this.inventoryServiceReplyToQueue = inventoryServiceReplyToQueue;
     }
 
+    /**
+     * getRestEndpoints (not including graphQL- related)
+     * @return
+     */
+    public Set<RestEndpointEntity> getRestEndPoints() {
+        if(restEndPoints != null) {
+            Set<RestEndpointEntity> endpoints = new TreeSet<>(new RouteIdSortOfRestEndpoint());
+            for(RestEndpointEntity restEndpoint: restEndPoints) {
+                if(restEndpoint.getRouteId() != GlobalPreferencesDefaultSettingsService.GRAPHQL_ENDPOINT_ID) {
+                    endpoints.add(restEndpoint);
+                }
+            }
+            return endpoints;
+        }
+        return null;
+    }
 }
