@@ -371,26 +371,17 @@ public class GlobalPreferencesService {
         Boolean mqProxyEnabled = globalPreferencesDto.getMqProxyEnabled();
         ParameterValidator.requireNonNull(mqProxyEnabled, GlobalPreferencesMessages.MQENABLED_MUST_NOT_BE_NULL);
 
-        MqType mqType = globalPreferencesDto.getMqType();
-        String orderServiceDestinationQueue = globalPreferencesDto.getOrderServiceDestinationQueue();
-        String orderServiceReplyToQueue = globalPreferencesDto.getOrderServiceReplyToQueue();
-        String inventoryServiceReplyToQueue = globalPreferencesDto.getInventoryServiceReplyToQueue();
-        String inventoryServiceDestinationQueue = globalPreferencesDto.getInventoryServiceDestinationQueue();
-
-        if(mqProxyEnabled) {
+        if (mqProxyEnabled) {
+            MqType mqType = globalPreferencesDto.getMqType();
             validateProxyConfig(globalPreferencesDto);
+            currentPreferences.setMqType(mqType);
+            currentPreferences.setOrderServiceDestinationQueue(globalPreferencesDto.getOrderServiceDestinationQueue());
+            currentPreferences.setOrderServiceReplyToQueue(globalPreferencesDto.getOrderServiceReplyToQueue());
+            currentPreferences.setInventoryServiceReplyToQueue(globalPreferencesDto.getInventoryServiceReplyToQueue());
+            currentPreferences.setInventoryServiceDestinationQueue(globalPreferencesDto.getInventoryServiceDestinationQueue());
+        } else {
         }
-
-        if(mqType == null) {
-            mqType = MqType.ACTIVE_MQ;
-        }
-
         currentPreferences.setMqProxyEnabled(mqProxyEnabled);
-        currentPreferences.setMqType(mqType);
-        currentPreferences.setOrderServiceDestinationQueue(orderServiceDestinationQueue);
-        currentPreferences.setOrderServiceReplyToQueue(orderServiceReplyToQueue);
-        currentPreferences.setInventoryServiceReplyToQueue(inventoryServiceReplyToQueue);
-        currentPreferences.setInventoryServiceDestinationQueue(inventoryServiceDestinationQueue);
     }
 
     private void switchIndustry(GlobalPreferencesEntity currentPreferences) {
