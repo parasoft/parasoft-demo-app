@@ -258,7 +258,7 @@
 					<div class="invalid_message" ng-show="optionsForm.orderServiceDestinationQueueField.$invalid" translate={{'QUEUE_NAME_SHOULD_NOT_BE_EMPTY'|translate}}></div>
                                         <div class="input-wrapper">
                                             <input type="text" name="orderServiceDestinationQueueField" id="order_service_destination_queue" class="form-control" ng-model="options.orderServiceDestinationQueue" ng-trim="false"
-                                                   ng-disabled="!options.mqProxyEnabled" ng-required="!!options.mqProxyEnabled">
+                                                   ng-disabled="!options.mqProxyEnabled" ng-required="options.mqProxyEnabled">
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -267,7 +267,7 @@
 					<div class="invalid_message" ng-show="optionsForm.orderServiceReplyToQueueField.$invalid" translate={{'QUEUE_NAME_SHOULD_NOT_BE_EMPTY'|translate}}></div>
                                         <div class="input-wrapper">
                                             <input type="text" name="orderServiceReplyToQueueField" id="order_service_reply_to_queue" class="form-control" ng-model="options.orderServiceReplyToQueue" ng-trim="false"
-                                                   ng-disabled="!options.mqProxyEnabled" ng-required="!!options.mqProxyEnabled">
+                                                   ng-disabled="!options.mqProxyEnabled" ng-required="options.mqProxyEnabled">
                                         </div>
                                     </div>
                                 </div>
@@ -279,7 +279,7 @@
 					<div class="invalid_message" ng-show="optionsForm.inventoryServiceDestinationQueueField.$invalid" translate={{'QUEUE_NAME_SHOULD_NOT_BE_EMPTY'|translate}}></div>
                                         <div class="input-wrapper">
                                             <input type="text" name="inventoryServiceDestinationQueueField" id="inventory_service_destination_queue" class="form-control" ng-model="options.inventoryServiceDestinationQueue" ng-trim="false"
-                                                   ng-disabled="!options.mqProxyEnabled" ng-required="!!options.mqProxyEnabled">
+                                                   ng-disabled="!options.mqProxyEnabled" ng-required="options.mqProxyEnabled">
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -288,7 +288,7 @@
 					<div class="invalid_message" ng-show="optionsForm.inventoryServiceReplyToQueueField.$invalid" translate={{'QUEUE_NAME_SHOULD_NOT_BE_EMPTY'|translate}}></div>
 					<div class="input-wrapper">
 					    <input type="text" name="inventoryServiceReplyToQueueField" id="inventory_service_to_queue" class="form-control" ng-model="options.inventoryServiceReplyToQueue" ng-trim="false"
-						    ng-disabled="!options.mqProxyEnabled" ng-required="!!options.mqProxyEnabled">
+						    ng-disabled="!options.mqProxyEnabled" ng-required="options.mqProxyEnabled">
 					</div>
                                 </div>
                                 </div>
@@ -319,7 +319,7 @@
                                         </span>
                                     <div class="input-wrapper">
                                         <input type="text" name="parasoftVirtualizeServerUrlField" id="parasoft_virtualize_server_url" class="form-control" ng-model="options.parasoftVirtualizeServerUrl" ng-trim="false"
-                                               ng-disabled="!options.useParasoftJDBCProxy" ng-change="demo.validateVirtualizeServerUrlWellForm(options.parasoftVirtualizeServerUrl)" ng-required="!!options.useParasoftJDBCProxy">
+                                               ng-disabled="!options.useParasoftJDBCProxy" ng-change="demo.validateVirtualizeServerUrlWellForm(options.parasoftVirtualizeServerUrl)" ng-required="options.useParasoftJDBCProxy">
                                         <button class="btn btn-default industry_button labels_reset_btn" translate="RESET_URL"
                                                 ng-click="options.resetVirtualizeServerUrl();demo.clearVirtualizeServerUrlTestMessage();"
                                                 ng-disabled="!options.useParasoftJDBCProxy"></button>
@@ -334,7 +334,7 @@
                                     <span class="invalid_message" ng-show="demo.invalidVirtualizeServerPath || optionsForm.parasoftVirtualizeServerPathField.$invalid" translate={{'INVALID_VIRTUALIZE_SERVER_PATH'|translate}}></span>
                                     <div class="input-wrapper">
                                         <input type="text" name="parasoftVirtualizeServerPathField" id="parasoft_virtualize_server_path" class="form-control" ng-model="options.parasoftVirtualizeServerPath" ng-trim="false"
-                                               ng-disabled="!options.useParasoftJDBCProxy" ng-change="options.fullfilPath();demo.validateVirtualizeServerPathWellForm(options.parasoftVirtualizeServerPath);" ng-required="!!options.useParasoftJDBCProxy">
+                                               ng-disabled="!options.useParasoftJDBCProxy" ng-change="options.fullfilPath();demo.validateVirtualizeServerPathWellForm(options.parasoftVirtualizeServerPath);" ng-required="options.useParasoftJDBCProxy">
                                         <button class="btn btn-default industry_button labels_reset_btn" translate="RESET_PATH"
                                                 ng-click="options.resetVirtualizeServerPath();demo.clearVirtualizeServerPathTestMessage();"
                                                 ng-disabled="!options.useParasoftJDBCProxy"></button>
@@ -346,7 +346,7 @@
                                     <span class="invalid_message" ng-show="demo.invalidVirtualizeGroupId || optionsForm.parasoftVirtualizeGroupIdField.$invalid" translate={{'INVALID_VIRTUALIZE_GROUP_ID'|translate}}></span>
                                     <div class="input-wrapper">
                                         <input type="text" name="parasoftVirtualizeGroupIdField" id="parasoft_virtualize_gourp_id" class="form-control" ng-model="options.parasoftVirtualizeGroupId" ng-trim="false"
-                                               ng-disabled="!options.useParasoftJDBCProxy" ng-change="demo.validateVirtualizeGroupIdWellForm(options.parasoftVirtualizeGroupId)" ng-required="!!options.useParasoftJDBCProxy">
+                                               ng-disabled="!options.useParasoftJDBCProxy" ng-change="demo.validateVirtualizeGroupIdWellForm(options.parasoftVirtualizeGroupId)" ng-required="options.useParasoftJDBCProxy">
                                         <button class="btn btn-default industry_button labels_reset_btn" translate="RESET_GROUP_ID"
                                                 ng-click="options.resetVirtualizeGroupId();demo.clearVirtualizeGroupIdTestMessage();"
                                                 ng-disabled="!options.useParasoftJDBCProxy"></button>
