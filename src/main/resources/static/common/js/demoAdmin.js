@@ -1226,6 +1226,7 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
         options.parasoftVirtualizeServerPath = data.parasoftVirtualizeServerPath;
         options.parasoftVirtualizeGroupId = data.parasoftVirtualizeGroupId;
 
+
         options.mqProxyEnabled = data.mqProxyEnabled;
         options.mqType = data.mqType;
         options.orderServiceDestinationQueue = data.orderServiceDestinationQueue;
@@ -1233,10 +1234,16 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
         options.inventoryServiceDestinationQueue = data.inventoryServiceDestinationQueue;
         options.inventoryServiceReplyToQueue = data.inventoryServiceReplyToQueue;
 
+        options.webServiceMode = "RESTAPI";
+
     }).catch(function(result) {
         toastrService().error($filter('translate')('LOADING_DATA_FAILS'));
         console.log(result);
     });
+
+    options.resetGraphQLEndpoint = function () {
+        alert("TO DO");
+    }
 
 	options.resetEndpoint = function(endpoint){
 

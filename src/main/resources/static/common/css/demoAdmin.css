@@ -464,4 +464,16 @@ textarea {
     padding-left: 10px;
 }
 
+.rest_api_web_service, .graphql_web_service {
+    display: inline-block;
+}
+
+.web_services {
+    padding-bottom: 15px;
+}
+
+.graphql_web_service {
+    margin-left: 40px;
+}
+
 /* LABELS tab */
