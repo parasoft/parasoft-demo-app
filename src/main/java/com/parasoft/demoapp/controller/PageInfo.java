@@ -25,6 +25,10 @@ public class PageInfo<T>  {
 	@Schema(description = "The page content as list.")
     private List<T> content;
 
+    public PageInfo() {
+        super();
+    }
+
     public PageInfo(Page<T> page){
         this.totalElements = page.getTotalElements();
         this.totalPages = page.getTotalPages();

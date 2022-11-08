@@ -1,12 +1,7 @@
 package com.parasoft.demoapp.provider;
 
-import com.parasoft.demoapp.model.industry.CategoryEntity;
-import com.parasoft.demoapp.model.industry.OrderEntity;
 import graphql.GraphQL;
-import graphql.TypeResolutionEnvironment;
-import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLSchema;
-import graphql.schema.TypeResolver;
 import graphql.schema.idl.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -27,7 +22,7 @@ public class GraphQLProvider {
 
     @PostConstruct
     public void init() throws IOException {
-        final Resource resource = new ClassPathResource("schema.graphql");
+        final Resource resource = new ClassPathResource("static/schema.graphql");
         String sdl = null;
         try {
             sdl = new String(Files.readAllBytes(resource.getFile().toPath()), StandardCharsets.UTF_8);
@@ -48,6 +43,7 @@ public class GraphQLProvider {
                 .type("Query", typeWriting -> typeWriting.dataFetcher("getCategoryById", dataFetcher.getCategoryById()))
                 .type("Query", typeWriting -> typeWriting.dataFetcher("getCategoryByName", dataFetcher.getCategoryByName()))
                 .type("Query", typeWriting -> typeWriting.dataFetcher("getCategories", dataFetcher.getCategories()))
+                .type("Mutation", typeWriting -> typeWriting.dataFetcher("updateCategory", dataFetcher.updateCategory()))
                 .build();
     }
     @Bean

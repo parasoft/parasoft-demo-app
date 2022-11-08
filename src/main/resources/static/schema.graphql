@@ -1,0 +1,28 @@
+type Query {
+    getCategoryById(categoryId: ID): Category
+    getCategoryByName(categoryName: String): Category
+    getCategories: CategoryPageInfo
+}
+type Mutation {
+    updateCategory(categoryId: ID, categoryDto: CategoryDTO): Category
+}
+type Category {
+    id: ID
+    name: String
+    description: String
+    image: String
+}
+input CategoryDTO {
+    name: String,
+    description: String,
+    imagePath: String
+}
+type CategoryPageInfo {
+    totalElements: ID,
+    totalPages: Int,
+    size: Int,
+    number: Int,
+    numberOfElements: Int,
+    sort: String,
+    content: [Category]
+}
