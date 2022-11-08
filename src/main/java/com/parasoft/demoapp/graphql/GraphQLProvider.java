@@ -1,4 +1,4 @@
-package com.parasoft.demoapp.provider;
+package com.parasoft.demoapp.graphql;
 
 import graphql.GraphQL;
 import graphql.schema.GraphQLSchema;
@@ -18,7 +18,7 @@ import java.nio.file.Files;
 public class GraphQLProvider {
     private GraphQL graphQL;
     @Autowired
-    private GraphQLDataFetcher dataFetcher;
+    private CategoryGraphQLDataFetcher dataFetcher;
 
     @PostConstruct
     public void init() throws IOException {

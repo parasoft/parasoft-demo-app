@@ -1,7 +1,7 @@
 type Query {
     getCategoryById(categoryId: ID): Category
     getCategoryByName(categoryName: String): Category
-    getCategories: CategoryPageInfo
+    getCategories(searchString: String, page: Int, size: Int, sort: [String]): CategoryPageInfo
 }
 type Mutation {
     updateCategory(categoryId: ID, categoryDto: CategoryDTO): Category
