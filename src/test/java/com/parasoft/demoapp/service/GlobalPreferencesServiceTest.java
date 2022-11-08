@@ -65,7 +65,7 @@ public class GlobalPreferencesServiceTest {
 	 * test for addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, Set, Boolean, Boolean, String, String, String,
 	 * Boolean, MqType, String, String, String, String)
 	 *
-	 * @see GlobalPreferencesService#addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, WebServiceMode, RestEndpointEntity, Set, Boolean, Boolean, String, String, String,
+	 * @see GlobalPreferencesService#addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, WebServiceMode, String, Set, Boolean, Boolean, String, String, String,
 	 * Boolean, MqType, String, String, String, String)
 	 */
 	@Test
@@ -76,8 +76,7 @@ public class GlobalPreferencesServiceTest {
 		Set<RestEndpointEntity> restEndPoints = new TreeSet<>(new RouteIdSortOfRestEndpoint());
 		IndustryType industryType = IndustryType.DEFENSE;
 		WebServiceMode webServiceMode = WebServiceMode.REST_API;
-		RestEndpointEntity graphQLEndpoint = new RestEndpointEntity("fooId", "/proxy/foo",
-				"http://localhost:" + webConfig.getServerPort() + "/fool");
+		String graphQLEndpoint = "https://localhost:8080/graphql";
 		DemoBugEntity demoBug = new DemoBugEntity(DemoBugsType.INCORRECT_LOCATION_FOR_APPROVED_ORDERS);
 		Set<DemoBugEntity> demoBugSet = new TreeSet<>(new BugsTypeSortOfDemoBugs());
 		demoBugSet.add(demoBug);
@@ -125,7 +124,7 @@ public class GlobalPreferencesServiceTest {
 	 * test for addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, Set, Boolean, Boolean, String, String, String,
 	 * Boolean, MqType, String, String, String, String)
 	 *
-	 * @see GlobalPreferencesService#addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, WebServiceMode, RestEndpointEntity, Set, Boolean, Boolean, String, String, String,
+	 * @see GlobalPreferencesService#addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, WebServiceMode, String, Set, Boolean, Boolean, String, String, String,
 	 * Boolean, MqType, String, String, String, String)
 	 */
 	@Test
@@ -136,8 +135,7 @@ public class GlobalPreferencesServiceTest {
 		Set<RestEndpointEntity> restEndPoints = new TreeSet<>(new RouteIdSortOfRestEndpoint());
 		IndustryType industryType = IndustryType.DEFENSE;
 		WebServiceMode webServiceMode = WebServiceMode.REST_API;
-		RestEndpointEntity graphQLEndpoint = new RestEndpointEntity("fooId", "/proxy/foo",
-				"http://localhost:" + webConfig.getServerPort() + "/fool");
+		String graphQLEndpoint = "https://localhost:8080/graphql";
 		Set<DemoBugEntity> demoBugSet = null;
 		Boolean advertisingEnabled = false;
 		Boolean useParasoftJDBCProxy = false;
@@ -172,7 +170,7 @@ public class GlobalPreferencesServiceTest {
 	 * test for addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, Set, Boolean, Boolean, String, String, String,
 	 * Boolean, MqType, String, String, String, String)
 	 *
-	 * @see GlobalPreferencesService#addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, WebServiceMode, RestEndpointEntity, Set, Boolean, Boolean, String, String, String,
+	 * @see GlobalPreferencesService#addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, WebServiceMode, String, Set, Boolean, Boolean, String, String, String,
 	 * Boolean, MqType, String, String, String, String)
 	 */
 	@Test
@@ -183,8 +181,7 @@ public class GlobalPreferencesServiceTest {
 		Set<RestEndpointEntity> restEndPoints = null;
 		IndustryType industryType = IndustryType.DEFENSE;
 		WebServiceMode webServiceMode = WebServiceMode.REST_API;
-		RestEndpointEntity graphQLEndpoint = new RestEndpointEntity("fooId", "/proxy/foo",
-				"http://localhost:" + webConfig.getServerPort() + "/fool");
+		String graphQLEndpoint = "https://localhost:8080/graphql";
 		Set<DemoBugEntity> demoBugSet = new TreeSet<>(new BugsTypeSortOfDemoBugs());
 		Boolean advertisingEnabled = false;
 		Boolean useParasoftJDBCProxy = false;
@@ -219,7 +216,7 @@ public class GlobalPreferencesServiceTest {
 	 * test for addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, Set, Boolean, Boolean, String, String, String,
 	 * Boolean, MqType, String, String, String, String)
 	 *
-	 * @see GlobalPreferencesService#addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, WebServiceMode, RestEndpointEntity, Set, Boolean, Boolean, String, String, String,
+	 * @see GlobalPreferencesService#addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, WebServiceMode, String, Set, Boolean, Boolean, String, String, String,
 	 * Boolean, MqType, String, String, String, String)
 	 */
 	@Test
@@ -230,8 +227,7 @@ public class GlobalPreferencesServiceTest {
 		Set<RestEndpointEntity> restEndPoints = new TreeSet<>(new RouteIdSortOfRestEndpoint());
 		IndustryType industryType = IndustryType.DEFENSE;
 		WebServiceMode webServiceMode = WebServiceMode.REST_API;
-		RestEndpointEntity graphQLEndpoint = new RestEndpointEntity("fooId", "/proxy/foo",
-				"http://localhost:" + webConfig.getServerPort() + "/fool");
+		String graphQLEndpoint = "https://localhost:8080/graphql";
 		Set<DemoBugEntity> demoBugSet = new TreeSet<>(new BugsTypeSortOfDemoBugs());
 		Boolean advertisingEnabled = null;
 		Boolean useParasoftJDBCProxy = false;
@@ -279,8 +275,7 @@ public class GlobalPreferencesServiceTest {
 		Set<RestEndpointEntity> restEndPoints = new TreeSet<>(new RouteIdSortOfRestEndpoint());
 		IndustryType industryType = IndustryType.DEFENSE;
 		WebServiceMode webServiceMode = WebServiceMode.REST_API;
-		RestEndpointEntity graphQLEndpoint = new RestEndpointEntity("fooId", "/proxy/foo",
-				"http://localhost:" + webConfig.getServerPort() + "/fool");
+		String graphQLEndpoint = "https://localhost:8080/graphql";
 		Set<DemoBugEntity> demoBugSet = new TreeSet<>(new BugsTypeSortOfDemoBugs());
 		Boolean advertisingEnabled = false;
 		Boolean useParasoftJDBCProxy = false;

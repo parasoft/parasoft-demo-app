@@ -19,7 +19,6 @@ public class GlobalPreferencesMessages extends Messages {
     public static final String INVALID_CART_ITEMS_URL = "Rest endpoint error: {0} -- invalid cart items URL.";
     public static final String INVALID_ORDERS_URL = "Rest endpoint error: {0} -- invalid orders URL.";
     public static final String INVALID_LOCATIONS_URL = "Rest endpoint error: {0} -- invalid locations URL}.";
-    public static final String INVALID_GRAPH_URL = "GraphQL endpoint error: {0} -- invalid GraphQL URL}.";
     public static final String BLANK_URL = "Url should not be blank";
     public static final String INDUSTRY_HAS_NOT_IMPLEMENTED = "Industry {0} has not implemented yet.";
     public static final String LABELS_CANNOT_BE_NULL = "Labels cannot be null.";

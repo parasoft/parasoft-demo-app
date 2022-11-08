@@ -1,16 +1,13 @@
 package com.parasoft.demoapp.model.global.preferences;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService;
-import com.parasoft.demoapp.util.RouteIdSortOfRestEndpoint;
 import lombok.*;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
-
 import javax.persistence.*;
-import java.util.TreeSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 @Entity
 @Getter
@@ -45,10 +42,8 @@ public class GlobalPreferencesEntity {
     private WebServiceMode webServiceMode;
 
     @Setter
-    @OneToOne
-    @JoinColumn(name = "graphql_endpoint_id")
-    @Cascade(CascadeType.ALL)
-    private RestEndpointEntity graphQLEndpoint;
+    @Column(name = "graphql_endpoint")
+    private String graphQLEndpoint;
 
     @Setter
     @Column(name = "ad_enabled")
@@ -113,7 +108,7 @@ public class GlobalPreferencesEntity {
     public GlobalPreferencesEntity(DataAccessMode dataAccessMode, String soapEndpoint,
                                    Set<RestEndpointEntity> restEndpoints,
                                    IndustryType industryType, WebServiceMode webServiceMode,
-                                   RestEndpointEntity graphQLEndpoint, Set<DemoBugEntity> demoBugs,
+                                   String graphQLEndpoint, Set<DemoBugEntity> demoBugs,
                                    Boolean advertisingEnabled, Boolean useParasoftJDBCProxy,
                                    String parasoftVirtualizeServerUrl, String parasoftVirtualizeServerPath,
                                    String parasoftVirtualizeGroupId,
@@ -141,22 +136,5 @@ public class GlobalPreferencesEntity {
         this.orderServiceReplyToQueue = orderServiceReplyToQueue;
         this.inventoryServiceDestinationQueue = inventoryServiceDestinationQueue;
         this.inventoryServiceReplyToQueue = inventoryServiceReplyToQueue;
-    }
-
-    /**
-     * getRestEndpoints (not including graphQL- related)
-     * @return
-     */
-    public Set<RestEndpointEntity> getRestEndPoints() {
-        if(restEndPoints != null) {
-            Set<RestEndpointEntity> endpoints = new TreeSet<>(new RouteIdSortOfRestEndpoint());
-            for(RestEndpointEntity restEndpoint: restEndPoints) {
-                if(restEndpoint.getRouteId() != GlobalPreferencesDefaultSettingsService.GRAPHQL_ENDPOINT_ID) {
-                    endpoints.add(restEndpoint);
-                }
-            }
-            return endpoints;
-        }
-        return null;
     }
 }

@@ -19,9 +19,7 @@ public class GlobalPreferencesDefaultSettingsService {
 
     public static final String HOST_WITHOUT_PORT = "http://localhost:";
 
-    public static final String GRAPHQL_ENDPOINT_ID = "graphql";
-    public static final String GRAPHQL_ENDPOINT_PATH = "/proxy/graphql";
-    public static final String GRAPHQL_ENDPOINT_REAL_PATH = "/graphql";
+    public static final String GRAPHQL_ENDPOINT_URL = "http://localhost:8080/graphql";
 
     public static final String CATEGORIES_ENDPOINT_ID = "categories";
     public static final String CATEGORIES_ENDPOINT_PATH = "/proxy/v1/assets/categories/**";
@@ -57,7 +55,7 @@ public class GlobalPreferencesDefaultSettingsService {
         Set<RestEndpointEntity> restEndpoints = defaultEndpoints();
         IndustryType industryType = defaultIndustry();
         WebServiceMode webServiceMode = defaultWebServiceMode();
-        RestEndpointEntity graphQLEndpoint = defaultGraphQLEndpoint();
+        String graphQLEndpoint = defaultGraphQLEndpoint();
         Set<DemoBugEntity> demoBugs = defaultDemoBugs();
         Boolean advertisingEnabled = defaultAdvertisingEnabled();
         boolean useParasoftJDBCProxy = defaultUseParasoftJDBCProxy();
@@ -159,9 +157,8 @@ public class GlobalPreferencesDefaultSettingsService {
         return WebServiceMode.REST_API;
     }
 
-    public RestEndpointEntity defaultGraphQLEndpoint() {
-        return new RestEndpointEntity(GRAPHQL_ENDPOINT_ID, GRAPHQL_ENDPOINT_PATH,
-                HOST_WITHOUT_PORT + webConfig.getServerPort() + GRAPHQL_ENDPOINT_REAL_PATH);
+    public String defaultGraphQLEndpoint() {
+        return GRAPHQL_ENDPOINT_URL;
     }
 
     public boolean defaultAdvertisingEnabled(){

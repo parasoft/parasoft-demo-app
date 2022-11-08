@@ -1248,7 +1248,7 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
         options.inventoryServiceReplyToQueue = data.inventoryServiceReplyToQueue;
 
         options.webServiceMode = data.webServiceMode;
-        options.graphQLEndpoint = data.graphQLEndpoint.url;
+        options.graphQLEndpoint = data.graphQLEndpoint;
 
     }).catch(function(result) {
         toastrService().error($filter('translate')('LOADING_DATA_FAILS'));
@@ -1257,7 +1257,7 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
 
     options.resetGraphQLEndpoint = function() {
         resetValuesTemplate(function(defaultOptions){
-            options.graphQLEndpoint = defaultOptions.graphQLEndpoint.url;
+            options.graphQLEndpoint = defaultOptions.graphQLEndpoint;
             clearMessage("graphql");
         })
     }
