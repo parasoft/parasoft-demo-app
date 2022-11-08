@@ -18,7 +18,7 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
 
     Page<OrderEntity> findAllByStatusNotIn(List<OrderStatus> orderStatuses, Pageable pageable);
 
-    int countByRequestedByAndReviewedByPRCH(String requestedBy, boolean b);
+    int countByRequestedByAndReviewedByPRCHAndStatusNotIn(String requestedBy, boolean reviewedByPRCH, List<OrderStatus> orderStatuses);
 
-    int countByReviewedByAPV(boolean b);
+    int countByReviewedByAPVAndStatusNotIn(boolean reviewedByAPV, List<OrderStatus> orderStatuses);
 }
