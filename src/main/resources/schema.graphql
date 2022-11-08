@@ -1,0 +1,30 @@
+type Query {
+    getCategoryById(categoryId: ID!): CategoryResult
+    getCategoryByName(categoryName: String!): CategoryResult
+    getCategories: CategoryPageResult
+}
+type Category {
+    id: ID
+    name: String
+    description: String
+    image: String
+}
+type CategoryResult {
+    status: Int,
+    message: String,
+    data: Category
+}
+type CategoryPageInfo {
+    totalElements: ID,
+    totalPages: Int,
+    size: Int,
+    number: Int,
+    numberOfElements: Int,
+    sort: String,
+    content: [Category]
+}
+type CategoryPageResult {
+    status: Int,
+    message: String,
+    data: CategoryPageInfo
+}
