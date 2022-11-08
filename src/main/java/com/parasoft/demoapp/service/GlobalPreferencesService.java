@@ -330,7 +330,7 @@ public class GlobalPreferencesService {
         ParameterValidator.requireNonNull(webServiceMode, GlobalPreferencesMessages.WEBSERVICEMODE_MUST_NOT_BE_NULL);
 
         currentPreferences.setWebServiceMode(webServiceMode);
-        if(WebServiceMode.GRAPHQL == webServiceMode){
+        if (WebServiceMode.GRAPHQL.equals(webServiceMode)){
             currentPreferences.setGraphQLEndpoint(globalPreferencesDto.getGraphQLEndpoint());
             return;
         }
