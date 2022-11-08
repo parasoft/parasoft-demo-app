@@ -463,6 +463,7 @@ public class GlobalPreferencesServiceTest {
 		String locationsRestEndpointUrl = ""; // test point
 		GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
 		globalPreferencesDto.setIndustryType(IndustryType.AEROSPACE);
+		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 		globalPreferencesDto.setCategoriesRestEndpoint(categoriesRestEndpointUrl);
 		globalPreferencesDto.setItemsRestEndpoint(itemsRestEndpointUrl);
 		globalPreferencesDto.setCartItemsRestEndpoint(cartItemsRestEndpointUrl);
@@ -509,6 +510,7 @@ public class GlobalPreferencesServiceTest {
 		String locationsRestEndpointUrl = " "; // test point
 		GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
 		globalPreferencesDto.setIndustryType(IndustryType.AEROSPACE);
+		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 		globalPreferencesDto.setCategoriesRestEndpoint(categoriesRestEndpointUrl);
 		globalPreferencesDto.setItemsRestEndpoint(itemsRestEndpointUrl);
 		globalPreferencesDto.setCartItemsRestEndpoint(cartItemsRestEndpointUrl);
@@ -556,6 +558,7 @@ public class GlobalPreferencesServiceTest {
 		String locationsRestEndpointUrl = null; // test point
 		GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
 		globalPreferencesDto.setIndustryType(IndustryType.AEROSPACE);
+		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 		globalPreferencesDto.setCategoriesRestEndpoint(categoriesRestEndpointUrl);
 		globalPreferencesDto.setItemsRestEndpoint(itemsRestEndpointUrl);
 		globalPreferencesDto.setCartItemsRestEndpoint(cartItemsRestEndpointUrl);
@@ -626,6 +629,7 @@ public class GlobalPreferencesServiceTest {
 		String locationsRestEndpointUrl = "http://localhost:8080/v1/locations/";
 		GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
 		globalPreferencesDto.setIndustryType(IndustryType.AEROSPACE);
+		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 		globalPreferencesDto.setCategoriesRestEndpoint(categoriesRestEndpointUrl);
 		globalPreferencesDto.setItemsRestEndpoint(itemsRestEndpointUrl);
 		globalPreferencesDto.setCartItemsRestEndpoint(cartItemsRestEndpointUrl);
@@ -675,6 +679,7 @@ public class GlobalPreferencesServiceTest {
 		String locationsRestEndpointUrl = "http://localhost:8080/v1/locations/";
 		GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
 		globalPreferencesDto.setIndustryType(IndustryType.AEROSPACE);
+		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 		globalPreferencesDto.setCategoriesRestEndpoint(categoriesRestEndpointUrl);
 		globalPreferencesDto.setItemsRestEndpoint(itemsRestEndpointUrl);
 		globalPreferencesDto.setCartItemsRestEndpoint(cartItemsRestEndpointUrl);
@@ -725,6 +730,7 @@ public class GlobalPreferencesServiceTest {
 		String locationsRestEndpointUrl = null; // test point
 		GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
 		globalPreferencesDto.setIndustryType(IndustryType.AEROSPACE);
+		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 		globalPreferencesDto.setCategoriesRestEndpoint(categoriesRestEndpointUrl);
 		globalPreferencesDto.setItemsRestEndpoint(itemsRestEndpointUrl);
 		globalPreferencesDto.setCartItemsRestEndpoint(cartItemsRestEndpointUrl);
@@ -770,6 +776,7 @@ public class GlobalPreferencesServiceTest {
 		String locationsRestEndpointUrl = "http://localhost:8080/v1/locations/";
 		GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
 		globalPreferencesDto.setIndustryType(IndustryType.AEROSPACE);
+		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 		globalPreferencesDto.setCategoriesRestEndpoint(categoriesRestEndpointUrl);
 		globalPreferencesDto.setItemsRestEndpoint(itemsRestEndpointUrl);
 		globalPreferencesDto.setCartItemsRestEndpoint(cartItemsRestEndpointUrl);
@@ -819,6 +826,7 @@ public class GlobalPreferencesServiceTest {
 		String locationsRestEndpointUrl = "http://localhost:8080/v1/locations/";
 		GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
 		globalPreferencesDto.setIndustryType(IndustryType.AEROSPACE);
+		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 		globalPreferencesDto.setCategoriesRestEndpoint(categoriesRestEndpointUrl);
 		globalPreferencesDto.setItemsRestEndpoint(itemsRestEndpointUrl);
 		globalPreferencesDto.setCartItemsRestEndpoint(cartItemsRestEndpointUrl);
@@ -868,6 +876,7 @@ public class GlobalPreferencesServiceTest {
 		String locationsRestEndpointUrl = "http://localhost:8080/v1/locations/";
 		GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
 		globalPreferencesDto.setIndustryType(IndustryType.AEROSPACE);
+		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 		globalPreferencesDto.setCategoriesRestEndpoint(categoriesRestEndpointUrl);
 		globalPreferencesDto.setItemsRestEndpoint(itemsRestEndpointUrl);
 		globalPreferencesDto.setCartItemsRestEndpoint(cartItemsRestEndpointUrl);
@@ -917,6 +926,7 @@ public class GlobalPreferencesServiceTest {
 		String locationsRestEndpointUrl = "http://localhost:8080/v1/locations/";
 		GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
 		globalPreferencesDto.setIndustryType(IndustryType.AEROSPACE);
+		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 		globalPreferencesDto.setCategoriesRestEndpoint(categoriesRestEndpointUrl);
 		globalPreferencesDto.setItemsRestEndpoint(itemsRestEndpointUrl);
 		globalPreferencesDto.setCartItemsRestEndpoint(cartItemsRestEndpointUrl);

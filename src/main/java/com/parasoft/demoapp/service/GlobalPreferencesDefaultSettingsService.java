@@ -19,7 +19,7 @@ public class GlobalPreferencesDefaultSettingsService {
 
     public static final String HOST_WITHOUT_PORT = "http://localhost:";
 
-    public static final String GRAPHQL_ENDPOINT_URL = "http://localhost:8080/graphql";
+    public static final String GRAPHQL_ENDPOINT_PATH = "/graphql";
 
     public static final String CATEGORIES_ENDPOINT_ID = "categories";
     public static final String CATEGORIES_ENDPOINT_PATH = "/proxy/v1/assets/categories/**";
@@ -158,7 +158,7 @@ public class GlobalPreferencesDefaultSettingsService {
     }
 
     public String defaultGraphQLEndpoint() {
-        return GRAPHQL_ENDPOINT_URL;
+        return HOST_WITHOUT_PORT + webConfig.getServerPort() + GRAPHQL_ENDPOINT_PATH;
     }
 
     public boolean defaultAdvertisingEnabled(){

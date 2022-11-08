@@ -133,13 +133,7 @@ public class GlobalPreferencesService {
 
         handleDemoBugs(currentPreferences, globalPreferencesDto);
 
-        WebServiceMode webServiceMode = globalPreferencesDto.getWebServiceMode();
-        currentPreferences.setWebServiceMode(webServiceMode);
-        if(WebServiceMode.REST_API == webServiceMode){
-            handleRestEndpoints(currentPreferences, globalPreferencesDto);
-        }else{
-            currentPreferences.setGraphQLEndpoint(globalPreferencesDto.getGraphQLEndpoint());
-        }
+        handleEndpoints(currentPreferences, globalPreferencesDto);
 
         handleParasoftJDBCProxy(currentPreferences, globalPreferencesDto);
 
@@ -330,9 +324,16 @@ public class GlobalPreferencesService {
         currentPreferences.setDemoBugs(demoBugs);
     }
 
-    private void handleRestEndpoints(GlobalPreferencesEntity currentPreferences,
+    private void handleEndpoints(GlobalPreferencesEntity currentPreferences,
                                      GlobalPreferencesDTO globalPreferencesDto) throws EndpointInvalidException, ParameterException {
+        WebServiceMode webServiceMode = globalPreferencesDto.getWebServiceMode();
+        ParameterValidator.requireNonNull(webServiceMode, GlobalPreferencesMessages.WEBSERVICEMODE_MUST_NOT_BE_NULL);
 
+        currentPreferences.setWebServiceMode(webServiceMode);
+        if(WebServiceMode.GRAPHQL == webServiceMode){
+            currentPreferences.setGraphQLEndpoint(globalPreferencesDto.getGraphQLEndpoint());
+            return;
+        }
         // handle endpoints
         restEndpointService.removeAllEndpoints(); // remove existed endpoints
 
