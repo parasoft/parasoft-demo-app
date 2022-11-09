@@ -7,20 +7,22 @@ import graphql.schema.idl.SchemaGenerator;
 import graphql.schema.idl.SchemaParser;
 import graphql.schema.idl.TypeDefinitionRegistry;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
+import java.io.InputStream;
 
 @Slf4j
 @Component
 public class GraphQLProvider {
     private GraphQL graphQL;
+
+    @Value("classpath:static/schema.graphql")
+    protected Resource graphqlSchemaResource;
 
     private final CategoryGraphQLDataFetcher categoryDataFetcher;
 
@@ -30,18 +32,11 @@ public class GraphQLProvider {
 
     @PostConstruct
     public void init() throws IOException {
-        final Resource resource = new ClassPathResource("static/schema.graphql");
-        String sdl = null;
-        try {
-            sdl = new String(Files.readAllBytes(resource.getFile().toPath()), StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            log.error(e.getMessage(), e);
-        }
-        GraphQLSchema graphQLSchema = buildSchema(sdl);
+        GraphQLSchema graphQLSchema = buildSchema(graphqlSchemaResource.getInputStream());
         this.graphQL = GraphQL.newGraphQL(graphQLSchema).build();
     }
 
-    private GraphQLSchema buildSchema(String sdl) {
+    private GraphQLSchema buildSchema(InputStream sdl) {
         TypeDefinitionRegistry typeRegistry = new SchemaParser().parse(sdl);
         RuntimeWiring runtimeWiring = buildWiring();
         SchemaGenerator schemaGenerator = new SchemaGenerator();
