@@ -21,7 +21,6 @@ import javax.jms.Message;
 public class InventoryResponseQueueListener extends RefreshableMessageListener {
     private final OrderService orderService;
     private final OrderMQService orderMQService;
-    protected final CachingConnectionFactory cachingConnectionFactory;
 
     public InventoryResponseQueueListener(MessageConverter jmsMessageConverter,
                                           JmsListenerEndpointRegistry jmsListenerEndpointRegistry,
@@ -34,7 +33,6 @@ public class InventoryResponseQueueListener extends RefreshableMessageListener {
 
         this.orderService = orderService;
         this.orderMQService = orderMQService;
-        this.cachingConnectionFactory = cachingConnectionFactory;
     }
 
     @Override

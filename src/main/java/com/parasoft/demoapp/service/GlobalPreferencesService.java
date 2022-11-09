@@ -260,7 +260,12 @@ public class GlobalPreferencesService {
     public void initializeActiveMqJmsProxyOnStartup(GlobalPreferencesEntity globalPreferences)
             throws ParameterException {
         GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
-        BeanUtils.copyProperties(globalPreferences, globalPreferencesDto);
+        globalPreferencesDto.setMqType(globalPreferences.getMqType());
+        globalPreferencesDto.setOrderServiceDestinationQueue(globalPreferences.getOrderServiceDestinationQueue());
+        globalPreferencesDto.setOrderServiceReplyToQueue(globalPreferences.getOrderServiceReplyToQueue());
+        globalPreferencesDto.setInventoryServiceDestinationQueue(globalPreferences.getInventoryServiceDestinationQueue());
+        globalPreferencesDto.setInventoryServiceReplyToQueue(globalPreferences.getInventoryServiceReplyToQueue());
+
         validateProxyConfig(globalPreferencesDto);
 
         ActiveMQConfig.setOrderServiceSendToActiveMqQueue(new ActiveMQQueue(
