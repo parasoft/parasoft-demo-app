@@ -1,5 +1,6 @@
 package com.parasoft.demoapp.controller;
 
+import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -8,6 +9,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
 public class PageInfo<T>  {
 
 	@Schema(description = "The total amount of elements.")
