@@ -18,7 +18,7 @@ var bug_Incorrect_number_value = "INCORRECT_NUMBER_OF_ITEMS_IN_SUMMARY_OF_PENDIN
 var bug_Reverse_orders_value = "REVERSE_ORDER_OF_ORDERS";
 var bug_Reinitialize_datasource_for_each_http_request_value = "REINITIALIZE_DATASOURCE_FOR_EACH_HTTP_REQUEST";
 
-mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $filter, $window, $timeout) {
+mod.controller('demo_admin_controller', ['$rootScope', '$scope', '$http', '$filter', '$window', '$timeout', 'GraphQLQueryService', function($rootScope, $scope, $http, $filter, $window, $timeout, GraphQLQueryService) {
 	var demo = this;
 	demo.end_point_for_categories = "/proxy/v1/assets/categories/**";
 	demo.end_point_for_items = "/proxy/v1/assets/items/**";
@@ -152,27 +152,39 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
     }
 
     function getAllCategories(){
-    	$http({
-            method: 'GET',
-            url: '/proxy/v1/assets/categories',
-        }).then(function(result) {
-        	categories = result.data.data.content;
-        	demo.categories = categories;
+        var success = function(data) {
+            categories = data.content;
+            demo.categories = categories;
 
-        	//Define the height of footer in 'categories' tab
-        	if(categories.length > 3){
-	    		$rootScope.footerHeight = {
-    	    		"top" : (categories.length - 3) * 40 + 757 + "px"
-    	    	};
-	    	}else{
-	    		$rootScope.footerHeight = {
-	    			"top" : "874px"
-	    		};
-	    	}
-        }).catch(function(result) {
-        	console.info(result);
-        	displayLoadError(result,$rootScope,$filter,$http,true,'categories');
-        });
+            //Define the height of footer in 'categories' tab
+            if(categories.length > 3){
+                $rootScope.footerHeight = {
+                    "top" : (categories.length - 3) * 40 + 757 + "px"
+                };
+            }else{
+                $rootScope.footerHeight = {
+                    "top" : "874px"
+                };
+            }
+        };
+        var error = function(result) {
+            console.info(result);
+            displayLoadError(result,$rootScope,$filter,$http,true,'categories');
+        };
+        // TODO should use rootScope.webServiceMode for this condition
+        var isGraphQL = true;
+        if (isGraphQL) {
+            GraphQLQueryService.getCategories(success, error);
+        } else {
+            $http({
+                method: 'GET',
+                url: '/proxy/v1/assets/categories',
+            }).then(function(result) {
+                success(result.data.data);
+            }).catch(function(result) {
+                error(result);
+            });
+        }
     }
 
     function getAllRegions(){
@@ -1189,7 +1201,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 
 	//To avoid displaying page without styles due to the slow loading of CSS files
 	setTimeout(function(){ angular.element("body").css("visibility","visible") }, 500);
-});
+}]);
 
 /* with CSRF
 mod.config(['$httpProvider', function($httpProvider) {
