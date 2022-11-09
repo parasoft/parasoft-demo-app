@@ -18,7 +18,7 @@ var bug_Incorrect_number_value = "INCORRECT_NUMBER_OF_ITEMS_IN_SUMMARY_OF_PENDIN
 var bug_Reverse_orders_value = "REVERSE_ORDER_OF_ORDERS";
 var bug_Reinitialize_datasource_for_each_http_request_value = "REINITIALIZE_DATASOURCE_FOR_EACH_HTTP_REQUEST";
 
-mod.controller('demo_admin_controller', ['$rootScope', '$scope', '$http', '$filter', '$window', '$timeout', 'GraphQLQueryService', function($rootScope, $scope, $http, $filter, $window, $timeout, GraphQLQueryService) {
+mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $filter, $window, $timeout, GraphQLQueryService) {
 	var demo = this;
 	demo.end_point_for_categories = "/proxy/v1/assets/categories/**";
 	demo.end_point_for_items = "/proxy/v1/assets/items/**";
@@ -1201,7 +1201,7 @@ mod.controller('demo_admin_controller', ['$rootScope', '$scope', '$http', '$filt
 
 	//To avoid displaying page without styles due to the slow loading of CSS files
 	setTimeout(function(){ angular.element("body").css("visibility","visible") }, 500);
-}]);
+});
 
 /* with CSRF
 mod.config(['$httpProvider', function($httpProvider) {
