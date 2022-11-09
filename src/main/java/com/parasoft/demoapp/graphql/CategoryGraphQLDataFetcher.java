@@ -34,7 +34,9 @@ public class CategoryGraphQLDataFetcher {
         return dataFetchingEnvironment -> {
             try {
                 Map<String, String> uriVariables = new HashMap<>();
-                uriVariables.put("categoryId", dataFetchingEnvironment.getArgument("categoryId"));
+                if (dataFetchingEnvironment.containsArgument("categoryId")) {
+                    uriVariables.put("categoryId", dataFetchingEnvironment.getArgument("categoryId"));
+                }
                 ResponseEntity<ResponseResult<CategoryEntity>> entity =
                         restTemplate.exchange(CATEGORY_BASE_URL + "/{categoryId}",
                                                 HttpMethod.GET,
@@ -52,7 +54,9 @@ public class CategoryGraphQLDataFetcher {
         return dataFetchingEnvironment -> {
             try {
                 Map<String, String> uriVariables = new HashMap<>();
-                uriVariables.put("categoryName", dataFetchingEnvironment.getArgument("categoryName"));
+                if (dataFetchingEnvironment.containsArgument("categoryName")) {
+                    uriVariables.put("categoryName", dataFetchingEnvironment.getArgument("categoryName"));
+                }
                 ResponseEntity<ResponseResult<CategoryEntity>> entity =
                     restTemplate.exchange(  CATEGORY_BASE_URL + "/name/{categoryName}",
                                                 HttpMethod.GET, new HttpEntity<Void>(createHeaders()),
@@ -68,12 +72,19 @@ public class CategoryGraphQLDataFetcher {
     public DataFetcher<PageInfo<CategoryEntity>> getCategories() {
         return dataFetchingEnvironment -> {
             try {
-                UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(CATEGORY_BASE_URL)
-                        .queryParam("searchString", (Object)dataFetchingEnvironment.getArgument("searchString"))
-                        .queryParam("size", (Object)dataFetchingEnvironment.getArgument("size"))
-                        .queryParam("page", (Object)dataFetchingEnvironment.getArgument("page"))
-                        .queryParam("sort", (Collection<?>) dataFetchingEnvironment.getArgument("sort"));
-
+                UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(CATEGORY_BASE_URL);
+                if (dataFetchingEnvironment.containsArgument("searchString")) {
+                    builder.queryParam("searchString", (Object)dataFetchingEnvironment.getArgument("searchString"));
+                }
+                if (dataFetchingEnvironment.containsArgument("size")) {
+                    builder.queryParam("size", (Object)dataFetchingEnvironment.getArgument("size"));
+                }
+                if (dataFetchingEnvironment.containsArgument("page")) {
+                    builder.queryParam("page", (Object)dataFetchingEnvironment.getArgument("page"));
+                }
+                if (dataFetchingEnvironment.containsArgument("sort")) {
+                    builder.queryParam("sort", (Collection<?>) dataFetchingEnvironment.getArgument("sort"));
+                }
                 URI uri = builder.build().encode().toUri();
                 ResponseEntity<ResponseResult<PageInfo<CategoryEntity>>> entity =
                     restTemplate.exchange(  uri,
@@ -91,8 +102,9 @@ public class CategoryGraphQLDataFetcher {
         return dataFetchingEnvironment -> {
             try {
                 Map<String, String> uriVariables = new HashMap<>();
-                uriVariables.put("categoryId", dataFetchingEnvironment.getArgument("categoryId"));
-
+                if (dataFetchingEnvironment.containsArgument("categoryId")) {
+                    uriVariables.put("categoryId", dataFetchingEnvironment.getArgument("categoryId"));
+                }
                 HttpEntity<Object> httpEntity = new HttpEntity<>(dataFetchingEnvironment.getArgument("categoryDto"), createHeaders());
                 ResponseEntity<ResponseResult<CategoryEntity>> entity =
                     restTemplate.exchange(  CATEGORY_BASE_URL + "/{categoryId}",

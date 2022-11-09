@@ -18,7 +18,7 @@ import java.nio.file.Files;
 public class GraphQLProvider {
     private GraphQL graphQL;
     @Autowired
-    private CategoryGraphQLDataFetcher dataFetcher;
+    private CategoryGraphQLDataFetcher categoryDataFetcher;
 
     @PostConstruct
     public void init() throws IOException {
@@ -39,13 +39,18 @@ public class GraphQLProvider {
         return schemaGenerator.makeExecutableSchema(typeRegistry, runtimeWiring);
     }
     private RuntimeWiring buildWiring() {
-        return RuntimeWiring.newRuntimeWiring()
-                .type("Query", typeWriting -> typeWriting.dataFetcher("getCategoryById", dataFetcher.getCategoryById()))
-                .type("Query", typeWriting -> typeWriting.dataFetcher("getCategoryByName", dataFetcher.getCategoryByName()))
-                .type("Query", typeWriting -> typeWriting.dataFetcher("getCategories", dataFetcher.getCategories()))
-                .type("Mutation", typeWriting -> typeWriting.dataFetcher("updateCategory", dataFetcher.updateCategory()))
-                .build();
+        RuntimeWiring.Builder builder = RuntimeWiring.newRuntimeWiring();
+        categoryTypeWiring(builder);
+        return builder.build();
     }
+
+    private void categoryTypeWiring(RuntimeWiring.Builder builder) {
+        builder.type("Query", typeWriting -> typeWriting.dataFetcher("getCategoryById", categoryDataFetcher.getCategoryById()))
+            .type("Query", typeWriting -> typeWriting.dataFetcher("getCategoryByName", categoryDataFetcher.getCategoryByName()))
+            .type("Query", typeWriting -> typeWriting.dataFetcher("getCategories", categoryDataFetcher.getCategories()))
+            .type("Mutation", typeWriting -> typeWriting.dataFetcher("updateCategory", categoryDataFetcher.updateCategory()));
+    }
+
     @Bean
     public GraphQL graphQL() {
         return graphQL;
