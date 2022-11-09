@@ -2,30 +2,34 @@ package com.parasoft.demoapp.config.endpoint;
 
 import com.parasoft.demoapp.model.global.preferences.RestEndpointEntity;
 import com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService;
+import com.parasoft.demoapp.service.GlobalPreferencesService;
 import com.parasoft.demoapp.service.RestEndpointService;
+import lombok.SneakyThrows;
 import org.springframework.cloud.netflix.zuul.filters.RefreshableRouteLocator;
 import org.springframework.cloud.netflix.zuul.filters.SimpleRouteLocator;
 import org.springframework.cloud.netflix.zuul.filters.ZuulProperties;
 import org.springframework.util.StringUtils;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.*;
 
 public class CustomRouteLocator extends SimpleRouteLocator implements RefreshableRouteLocator {
 
-    private RestEndpointService restEndpointService;
+    private final RestEndpointService restEndpointService;
 
-    private GlobalPreferencesDefaultSettingsService defaultGlobalPreferencesSettingsService;
+    private final GlobalPreferencesDefaultSettingsService defaultGlobalPreferencesSettingsService;
+
+    private final GlobalPreferencesService globalPreferencesService;
 
     public CustomRouteLocator(String servletPath, ZuulProperties properties, RestEndpointService restEndpointService,
-                              GlobalPreferencesDefaultSettingsService defaultGlobalPreferencesSettingsService) {
+                              GlobalPreferencesDefaultSettingsService defaultGlobalPreferencesSettingsService,
+                              GlobalPreferencesService globalPreferencesService) {
 
         super(servletPath, properties);
         this.restEndpointService = restEndpointService;
         this.defaultGlobalPreferencesSettingsService = defaultGlobalPreferencesSettingsService;
+        this.globalPreferencesService = globalPreferencesService;
     }
 
     @Override
@@ -33,9 +37,18 @@ public class CustomRouteLocator extends SimpleRouteLocator implements Refreshabl
         doRefresh();
     }
 
+    @SneakyThrows
     @Override
     protected Map<String, ZuulProperties.ZuulRoute> locateRoutes() {
         LinkedHashMap<String, ZuulProperties.ZuulRoute> routesMap = new LinkedHashMap<>();
+        String graphQLEndpoint = globalPreferencesService.getCurrentGlobalPreferences().getGraphQLEndpoint();
+        if(!graphQLEndpoint.isEmpty()) {
+            Set<String> sensitiveHeaders = new HashSet<>();
+            routesMap.put(GRAPHQL_ENDPOINT_PATH,
+                    new ZuulProperties.ZuulRoute(
+                            GRAPHQL_ENDPOINT_ID, GRAPHQL_ENDPOINT_PATH, null,
+                            graphQLEndpoint, true, false, sensitiveHeaders));
+        }
         routesMap.putAll(getPersistentRoutesFromDB());
         fullFillDefaultRoutes(routesMap);
 
@@ -98,6 +111,15 @@ public class CustomRouteLocator extends SimpleRouteLocator implements Refreshabl
         if(routesMap.get(LOCATIONS_ENDPOINT_PATH) == null){
             routesMap.put(LOCATIONS_ENDPOINT_PATH,
                     defaultGlobalPreferencesSettingsService.defaultLocationsEndpoint().toRealZuulRoute());
+        }
+
+        if(routesMap.get(GRAPHQL_ENDPOINT_PATH) == null){
+            Set<String> sensitiveHeaders = new HashSet<>();
+            routesMap.put(GRAPHQL_ENDPOINT_PATH,
+                    new ZuulProperties.ZuulRoute(
+                            GRAPHQL_ENDPOINT_ID, GRAPHQL_ENDPOINT_PATH, null,
+                            defaultGlobalPreferencesSettingsService.defaultGraphQLEndpoint(),
+                            true, false, sensitiveHeaders));
         }
     }
 }
