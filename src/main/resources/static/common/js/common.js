@@ -4,6 +4,7 @@ var ROLE_APPROVER = "ROLE_APPROVER";
 var ROLE_PURCHASER = "ROLE_PURCHASER";
 var CURRENT_ROLE = angular.element("#current_rolename").val();
 var CURRENT_USERNAME = angular.element("#current_username").val();
+var CURRENT_WEB_SERVICE_MODE = angular.element("#current_web_service_mode").val();
 function symbol(s, e){
     return s + 'dmi' + e;
 }
@@ -91,7 +92,6 @@ function initHeaderController(app){
             $rootScope.isAerospace = angular.equals(industry, AEROSPACE);
             $rootScope.isShowAdvertising = preferenceData.advertisingEnabled;
             $rootScope.deBugs = preferenceData.demoBugs;
-            $rootScope.webServiceMode = preferenceData.webServiceMode;
 
             if(preferenceData.useParasoftJDBCProxy){
                 $http({

@@ -1,8 +1,7 @@
 package com.parasoft.demoapp.model.global.preferences;
 
 public enum WebServiceMode {
-    REST("REST"),
-    GRAPHQL("graphql");
+    REST_API("REST API"), GRAPHQL("GraphQL");
 
     private String value;
 

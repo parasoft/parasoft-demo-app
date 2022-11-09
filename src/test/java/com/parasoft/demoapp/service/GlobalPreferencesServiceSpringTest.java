@@ -3,36 +3,16 @@
  */
 package com.parasoft.demoapp.service;
 
-import static com.parasoft.demoapp.config.ParasoftJDBCProxyConfig.PARASOFT_JDBC_PROXY_VIRTUALIZE_SERVER_URL_DEFAULT_VALUE;
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.CART_ENDPOINT_ID;
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.CART_ENDPOINT_PATH;
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.CART_ENDPOINT_REAL_PATH;
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.CATEGORIES_ENDPOINT_ID;
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.CATEGORIES_ENDPOINT_PATH;
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.CATEGORIES_ENDPOINT_REAL_PATH;
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.HOST_WITHOUT_PORT;
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.ITEMS_ENDPOINT_ID;
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.ITEMS_ENDPOINT_PATH;
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.ITEMS_ENDPOINT_REAL_PATH;
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.LOCATIONS_ENDPOINT_ID;
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.LOCATIONS_ENDPOINT_PATH;
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.LOCATIONS_ENDPOINT_REAL_PATH;
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.ORDERS_ENDPOINT_ID;
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.ORDERS_ENDPOINT_PATH;
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.ORDERS_ENDPOINT_REAL_PATH;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-
-import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.parasoft.demoapp.config.WebConfig;
+import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
+import com.parasoft.demoapp.dto.GlobalPreferencesDTO;
+import com.parasoft.demoapp.messages.GlobalPreferencesMessages;
+import com.parasoft.demoapp.model.global.preferences.DemoBugsType;
+import com.parasoft.demoapp.model.global.preferences.GlobalPreferencesEntity;
+import com.parasoft.demoapp.model.global.preferences.IndustryType;
+import com.parasoft.demoapp.model.global.preferences.RestEndpointEntity;
+import com.parasoft.demoapp.repository.industry.*;
+import com.parasoft.demoapp.util.UrlUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
@@ -50,20 +30,16 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.parasoft.demoapp.config.WebConfig;
-import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
-import com.parasoft.demoapp.dto.GlobalPreferencesDTO;
-import com.parasoft.demoapp.messages.GlobalPreferencesMessages;
-import com.parasoft.demoapp.model.global.preferences.DemoBugsType;
-import com.parasoft.demoapp.model.global.preferences.GlobalPreferencesEntity;
-import com.parasoft.demoapp.model.global.preferences.IndustryType;
-import com.parasoft.demoapp.model.global.preferences.RestEndpointEntity;
-import com.parasoft.demoapp.repository.industry.CategoryRepository;
-import com.parasoft.demoapp.repository.industry.ItemRepository;
-import com.parasoft.demoapp.repository.industry.LocationRepository;
-import com.parasoft.demoapp.repository.industry.OrderRepository;
-import com.parasoft.demoapp.repository.industry.ShoppingCartRepository;
-import com.parasoft.demoapp.util.UrlUtil;
+import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static com.parasoft.demoapp.config.ParasoftJDBCProxyConfig.PARASOFT_JDBC_PROXY_VIRTUALIZE_SERVER_URL_DEFAULT_VALUE;
+import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.*;
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 
 /**
  * Test class for GlobalPreferencesService
@@ -119,6 +95,7 @@ public class GlobalPreferencesServiceSpringTest {
 		GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
 		IndustryType industry = IndustryType.AEROSPACE;
 		globalPreferencesDto.setIndustryType(industry);
+		globalPreferencesDto.setMqProxyEnabled(false);
 
 		// When
 		GlobalPreferencesEntity result = service.updateGlobalPreferences(globalPreferencesDto);
@@ -169,6 +146,7 @@ public class GlobalPreferencesServiceSpringTest {
 		globalPreferencesDto.setOrdersRestEndpoint(ordersRestEndpointUrl);
 		globalPreferencesDto.setLocationsRestEndpoint(locationsRestEndpointUrl);
 		globalPreferencesDto.setAdvertisingEnabled(false);
+		globalPreferencesDto.setMqProxyEnabled(false);
 
 		// When
 		GlobalPreferencesEntity result = service.updateGlobalPreferences(globalPreferencesDto);
@@ -291,6 +269,7 @@ public class GlobalPreferencesServiceSpringTest {
 		globalPreferencesDto.setOrdersRestEndpoint(ordersRestEndpointUrl);
 		globalPreferencesDto.setLocationsRestEndpoint(locationsRestEndpointUrl);
 		globalPreferencesDto.setAdvertisingEnabled(false);
+		globalPreferencesDto.setMqProxyEnabled(false);
 
 		// When
 		// After updating the preferences, project will apply default endpoint routes to Zuul
@@ -374,6 +353,7 @@ public class GlobalPreferencesServiceSpringTest {
 		globalPreferencesDto.setIndustryType(IndustryType.AEROSPACE);
 		DemoBugsType[] demoBugsTypes = { DemoBugsType.INCORRECT_LOCATION_FOR_APPROVED_ORDERS };
 		globalPreferencesDto.setDemoBugs(demoBugsTypes);
+		globalPreferencesDto.setMqProxyEnabled(false);
 
 		// When
 		GlobalPreferencesEntity result = service.updateGlobalPreferences(globalPreferencesDto);
@@ -419,6 +399,7 @@ public class GlobalPreferencesServiceSpringTest {
 		globalPreferencesDto.setIndustryType(IndustryType.DEFENSE);
 		globalPreferencesDto.setUseParasoftJDBCProxy(useParasoftJDBCProxy);
 		globalPreferencesDto.setParasoftVirtualizeServerUrl(parasoftVirtualizeServerUrl);
+		globalPreferencesDto.setMqProxyEnabled(false);
 
 		// When
 		GlobalPreferencesEntity result = service.updateGlobalPreferences(globalPreferencesDto);
@@ -456,6 +437,7 @@ public class GlobalPreferencesServiceSpringTest {
 		globalPreferencesDto.setIndustryType(IndustryType.DEFENSE);
 		globalPreferencesDto.setUseParasoftJDBCProxy(useParasoftJDBCProxy);
 		globalPreferencesDto.setParasoftVirtualizeServerUrl(parasoftVirtualizeServerUrl);
+		globalPreferencesDto.setMqProxyEnabled(false);
 
 		// When
 		GlobalPreferencesEntity result = service.updateGlobalPreferences(globalPreferencesDto);

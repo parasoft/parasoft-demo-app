@@ -1,30 +1,30 @@
 package com.parasoft.demoapp.service;
 
 import com.parasoft.demoapp.config.ImplementedIndustries;
+import com.parasoft.demoapp.config.activemq.ActiveMQConfig;
+import com.parasoft.demoapp.config.activemq.InventoryRequestQueueListener;
+import com.parasoft.demoapp.config.activemq.InventoryResponseQueueListener;
 import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
 import com.parasoft.demoapp.defaultdata.ClearEntrance;
 import com.parasoft.demoapp.defaultdata.ResetEntrance;
 import com.parasoft.demoapp.dto.GlobalPreferencesDTO;
 import com.parasoft.demoapp.exception.*;
-import com.parasoft.demoapp.exception.EndpointInvalidException;
-import com.parasoft.demoapp.exception.GlobalPreferencesMoreThanOneException;
-import com.parasoft.demoapp.exception.GlobalPreferencesNotFoundException;
-import com.parasoft.demoapp.exception.ParameterException;
 import com.parasoft.demoapp.messages.GlobalPreferencesMessages;
 import com.parasoft.demoapp.model.global.preferences.*;
 import com.parasoft.demoapp.repository.global.GlobalPreferencesRepository;
 import com.parasoft.demoapp.util.BugsTypeSortOfDemoBugs;
 import com.parasoft.demoapp.util.RouteIdSortOfRestEndpoint;
-
+import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.MessageFormat;
-import java.util.TreeSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import static com.parasoft.demoapp.config.ParasoftJDBCProxyConfig.*;
 import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.*;
@@ -54,7 +54,14 @@ public class GlobalPreferencesService {
     private ParasoftJDBCProxyService parasoftJDBCProxyService;
 
     @Autowired
+    private InventoryRequestQueueListener inventoryRequestQueueListener;
+
+    @Autowired
+    private InventoryResponseQueueListener inventoryResponseQueueListener;
+
+    @Autowired
     private GlobalPreferencesDefaultSettingsService defaultGlobalPreferencesSettingsService;
+
 
     /**
     * This method is used only when PDA startup first time(it means no db files are created),
@@ -62,7 +69,8 @@ public class GlobalPreferencesService {
     */
     public GlobalPreferencesEntity addNewGlobalPreferences(DataAccessMode dataAccessMode, String soapEndPoint,
                                                            Set<RestEndpointEntity> restEndpoints,
-                                                           IndustryType industryType, Set<DemoBugEntity> demoBugs,
+                                                           IndustryType industryType, WebServiceMode webServiceMode,
+                                                           String graphQLEndpoint, Set<DemoBugEntity> demoBugs,
                                                            Boolean advertisingEnabled, Boolean useParasoftJDBCProxy,
                                                            String parasoftVirtualizeServerUrl, String parasoftVirtualizeServerPath,
                                                            String parasoftVirtualizeGroupId,
@@ -71,8 +79,7 @@ public class GlobalPreferencesService {
                                                            String orderServiceDestinationQueue,
                                                            String orderServiceReplyToQueue,
                                                            String inventoryServiceDestinationQueue,
-                                                           String inventoryServiceReplyToQueue,
-                                                           WebServiceMode webServiceMode) throws ParameterException {
+                                                           String inventoryServiceReplyToQueue ) throws ParameterException {
 
         validateIndustry(industryType);
         ParameterValidator.requireNonNull(advertisingEnabled, GlobalPreferencesMessages.ADVERTISING_ENABLED_CANNOT_BE_NULL);
@@ -86,6 +93,8 @@ public class GlobalPreferencesService {
                                                             soapEndPoint,
                                                             restEndpoints,
                                                             industryType,
+                                                            webServiceMode,
+                                                            graphQLEndpoint,
                                                             demoBugs,
                                                             advertisingEnabled,
                                                             useParasoftJDBCProxy,
@@ -97,8 +106,7 @@ public class GlobalPreferencesService {
                                                             orderServiceDestinationQueue,
                                                             orderServiceReplyToQueue,
                                                             inventoryServiceDestinationQueue,
-                                                            inventoryServiceReplyToQueue,
-                                                            webServiceMode);
+                                                            inventoryServiceReplyToQueue);
 
         for(DemoBugEntity demoBug : demoBugs){
             demoBug.setGlobalPreferences(newGlobalPreferences);
@@ -125,9 +133,11 @@ public class GlobalPreferencesService {
 
         handleDemoBugs(currentPreferences, globalPreferencesDto);
 
-        handleRestEndpoints(currentPreferences, globalPreferencesDto);
+        handleEndpoints(currentPreferences, globalPreferencesDto);
 
         handleParasoftJDBCProxy(currentPreferences, globalPreferencesDto);
+
+        handleMqProxy(currentPreferences, globalPreferencesDto);
 
         currentPreferences = updateGlobalPreferences(currentPreferences);
 
@@ -184,6 +194,8 @@ public class GlobalPreferencesService {
 
         refreshProxyDataSource(preferences);
 
+        refreshInventoryQueueDestinations(preferences);
+
         // TODO switch other settings
     }
 
@@ -216,6 +228,47 @@ public class GlobalPreferencesService {
         IndustryRoutingDataSource.parasoftVirtualizeGroupId = virtualizeGroupId;
 
         parasoftJDBCProxyService.refreshParasoftJDBCProxyDataSource();
+    }
+
+    private void refreshInventoryQueueDestinations(GlobalPreferencesEntity currentPreferences){
+        Boolean mqProxyEnabled = currentPreferences.getMqProxyEnabled();
+        String orderServiceDestinationQueue = currentPreferences.getOrderServiceDestinationQueue();
+        String orderServiceReplyToQueue = currentPreferences.getOrderServiceReplyToQueue();
+        String inventoryServiceReplyToQueue = currentPreferences.getInventoryServiceReplyToQueue();
+        String inventoryServiceDestinationQueue = currentPreferences.getInventoryServiceDestinationQueue();
+
+        if(!mqProxyEnabled) {
+            ActiveMQConfig.resetInventoryActiveMqQueues();
+            inventoryRequestQueueListener.refreshDestination(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
+            inventoryResponseQueueListener.refreshDestination(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE);
+            return;
+        }
+
+        ActiveMQConfig.setInventoryRequestActiveMqQueue(new ActiveMQQueue(orderServiceDestinationQueue));
+        inventoryResponseQueueListener.refreshDestination(orderServiceReplyToQueue);
+
+        ActiveMQConfig.setInventoryResponseActiveMqQueue(new ActiveMQQueue(inventoryServiceReplyToQueue));
+        inventoryRequestQueueListener.refreshDestination(inventoryServiceDestinationQueue);
+    }
+
+    /**
+     * This method should only be used on startup.
+     *
+     * @param globalPreferences
+     * @throws ParameterException
+     */
+    public void initializeActiveMqJmsProxyOnStartup(GlobalPreferencesEntity globalPreferences)
+            throws ParameterException {
+        GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
+        BeanUtils.copyProperties(globalPreferences, globalPreferencesDto);
+        validateProxyConfig(globalPreferencesDto);
+
+        ActiveMQConfig.setOrderServiceSendToActiveMqQueue(new ActiveMQQueue(
+                globalPreferences.getOrderServiceDestinationQueue()));
+        ActiveMQConfig.setOrderServiceListenToQueue(globalPreferences.getOrderServiceReplyToQueue());
+        ActiveMQConfig.setInventoryServiceSendToActiveMqQueue(new ActiveMQQueue(
+                globalPreferences.getInventoryServiceReplyToQueue()));
+        ActiveMQConfig.setInventoryServiceListenToQueue(globalPreferences.getInventoryServiceDestinationQueue());
     }
 
     private void handleParasoftJDBCProxy(GlobalPreferencesEntity currentPreferences,
@@ -271,9 +324,16 @@ public class GlobalPreferencesService {
         currentPreferences.setDemoBugs(demoBugs);
     }
 
-    private void handleRestEndpoints(GlobalPreferencesEntity currentPreferences,
-                    GlobalPreferencesDTO globalPreferencesDto) throws EndpointInvalidException, ParameterException {
+    private void handleEndpoints(GlobalPreferencesEntity currentPreferences,
+                                     GlobalPreferencesDTO globalPreferencesDto) throws EndpointInvalidException, ParameterException {
+        WebServiceMode webServiceMode = globalPreferencesDto.getWebServiceMode();
+        ParameterValidator.requireNonNull(webServiceMode, GlobalPreferencesMessages.WEBSERVICEMODE_MUST_NOT_BE_NULL);
 
+        currentPreferences.setWebServiceMode(webServiceMode);
+        if (WebServiceMode.GRAPHQL.equals(webServiceMode)){
+            currentPreferences.setGraphQLEndpoint(globalPreferencesDto.getGraphQLEndpoint());
+            return;
+        }
         // handle endpoints
         restEndpointService.removeAllEndpoints(); // remove existed endpoints
 
@@ -314,6 +374,24 @@ public class GlobalPreferencesService {
         }
 
         currentPreferences.setRestEndPoints(endpoints);
+    }
+
+    private void handleMqProxy(GlobalPreferencesEntity currentPreferences,
+                               GlobalPreferencesDTO globalPreferencesDto) throws ParameterException {
+        Boolean mqProxyEnabled = globalPreferencesDto.getMqProxyEnabled();
+        ParameterValidator.requireNonNull(mqProxyEnabled, GlobalPreferencesMessages.MQENABLED_MUST_NOT_BE_NULL);
+
+        if (mqProxyEnabled) {
+            MqType mqType = globalPreferencesDto.getMqType();
+            validateProxyConfig(globalPreferencesDto);
+            currentPreferences.setMqType(mqType);
+            currentPreferences.setOrderServiceDestinationQueue(globalPreferencesDto.getOrderServiceDestinationQueue());
+            currentPreferences.setOrderServiceReplyToQueue(globalPreferencesDto.getOrderServiceReplyToQueue());
+            currentPreferences.setInventoryServiceReplyToQueue(globalPreferencesDto.getInventoryServiceReplyToQueue());
+            currentPreferences.setInventoryServiceDestinationQueue(globalPreferencesDto.getInventoryServiceDestinationQueue());
+        } else {
+        }
+        currentPreferences.setMqProxyEnabled(mqProxyEnabled);
     }
 
     private void switchIndustry(GlobalPreferencesEntity currentPreferences) {
@@ -369,6 +447,14 @@ public class GlobalPreferencesService {
 
         imageService.removeSpecificIndustryUploadedImages(IndustryRoutingDataSource.currentIndustry);
 	}
+
+    private void validateProxyConfig(GlobalPreferencesDTO globalPreferencesDto) throws ParameterException {
+        ParameterValidator.requireNonNull(globalPreferencesDto.getMqType(), GlobalPreferencesMessages.MQTYPE_MUST_NOT_BE_NULL);
+        ParameterValidator.requireNonBlank(globalPreferencesDto.getOrderServiceDestinationQueue(), GlobalPreferencesMessages.ORDER_SERVICE_DESTINATION_QUEUE_CANNOT_BE_NULL);
+        ParameterValidator.requireNonBlank(globalPreferencesDto.getOrderServiceReplyToQueue(), GlobalPreferencesMessages.ORDER_SERVICE_REPLY_TO_QUEUE_CANNOT_BE_NULL);
+        ParameterValidator.requireNonBlank(globalPreferencesDto.getInventoryServiceReplyToQueue(), GlobalPreferencesMessages.INVENTORY_SERVICE_REPLY_TO_QUEUE_CANNOT_BE_NULL);
+        ParameterValidator.requireNonBlank(globalPreferencesDto.getInventoryServiceDestinationQueue(), GlobalPreferencesMessages.INVENTORY_SERVICE_DESTINATION_QUEUE_CANNOT_BE_NULL);
+    }
 
     public void shutdownJMSService() {
         // TODO shutdown JMS service

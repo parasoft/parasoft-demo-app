@@ -5,10 +5,9 @@ import lombok.*;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
-
 import javax.persistence.*;
-import java.util.TreeSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 @Entity
 @Getter
@@ -36,6 +35,15 @@ public class GlobalPreferencesEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "industry_type")
     private IndustryType industryType;
+
+    @Setter
+    @Enumerated(EnumType.STRING)
+    @Column(name = "web_service_mode")
+    private WebServiceMode webServiceMode;
+
+    @Setter
+    @Column(name = "graphql_endpoint")
+    private String graphQLEndpoint;
 
     @Setter
     @Column(name = "ad_enabled")
@@ -97,13 +105,10 @@ public class GlobalPreferencesEntity {
     @Column(name = "inventory_service_reply_to_queue")
     private String inventoryServiceReplyToQueue;
 
-    @Setter
-    @Column(name = "web_service_mode")
-    private WebServiceMode webServiceMode;
-
     public GlobalPreferencesEntity(DataAccessMode dataAccessMode, String soapEndpoint,
                                    Set<RestEndpointEntity> restEndpoints,
-                                   IndustryType industryType, Set<DemoBugEntity> demoBugs,
+                                   IndustryType industryType, WebServiceMode webServiceMode,
+                                   String graphQLEndpoint, Set<DemoBugEntity> demoBugs,
                                    Boolean advertisingEnabled, Boolean useParasoftJDBCProxy,
                                    String parasoftVirtualizeServerUrl, String parasoftVirtualizeServerPath,
                                    String parasoftVirtualizeGroupId,
@@ -112,12 +117,13 @@ public class GlobalPreferencesEntity {
                                    String orderServiceDestinationQueue,
                                    String orderServiceReplyToQueue,
                                    String inventoryServiceDestinationQueue,
-                                   String inventoryServiceReplyToQueue,
-                                   WebServiceMode webServiceMode) {
+                                   String inventoryServiceReplyToQueue) {
         this.dataAccessMode = dataAccessMode;
         this.soapEndPoint = soapEndpoint;
         this.restEndPoints = restEndpoints;
         this.industryType = industryType;
+        this.webServiceMode = webServiceMode;
+        this.graphQLEndpoint = graphQLEndpoint;
         this.demoBugs = demoBugs;
         this.advertisingEnabled = advertisingEnabled;
         this.useParasoftJDBCProxy = useParasoftJDBCProxy;
@@ -130,7 +136,5 @@ public class GlobalPreferencesEntity {
         this.orderServiceReplyToQueue = orderServiceReplyToQueue;
         this.inventoryServiceDestinationQueue = inventoryServiceDestinationQueue;
         this.inventoryServiceReplyToQueue = inventoryServiceReplyToQueue;
-        this.webServiceMode = webServiceMode;
     }
-
 }

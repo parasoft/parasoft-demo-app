@@ -11,6 +11,7 @@
 	<link rel="stylesheet" type="text/css" ng-href="/{{industry}}/css/error.css">
 </head>
 <body>
+	<input type="hidden" id="current_web_service_mode" th:value="${currentWebServiceMode}">
 	<div class="message warning industry_font" ng-controller="error_controller as error">
 		<div class="error_head">
 			<h1 translate="404_ERROR_TITLE"></h1>

@@ -1,14 +1,17 @@
 package com.parasoft.demoapp.defaultdata;
 
 import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
+import com.parasoft.demoapp.exception.ParameterException;
 import com.parasoft.demoapp.exception.VirtualizeServerUrlException;
 import com.parasoft.demoapp.messages.DatabaseOperationMessages;
 import com.parasoft.demoapp.model.global.DatabaseInitResultEntity;
 import com.parasoft.demoapp.model.global.preferences.GlobalPreferencesEntity;
+import com.parasoft.demoapp.model.global.preferences.MqType;
 import com.parasoft.demoapp.repository.global.DatabaseInitResultRepository;
 import com.parasoft.demoapp.service.GlobalPreferencesService;
 import com.parasoft.demoapp.service.ParasoftJDBCProxyService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.MessageFormat;
@@ -115,6 +118,16 @@ public class InitializationEntrance {
 
         parasoftJDBCProxyService.refreshParasoftJDBCProxyDataSource();
 
+        if (BooleanUtils.isTrue(globalPreferences.getMqProxyEnabled())) {
+            MqType mqType = globalPreferences.getMqType();
+            if (mqType == MqType.ACTIVE_MQ) {
+                try {
+                    globalPreferencesService.initializeActiveMqJmsProxyOnStartup(globalPreferences);
+                } catch (ParameterException pe) {
+                    log.error("Failed to initialize ActiveMQ JMS proxy: {}", pe.getMessage());
+                }
+            }
+        }
 
         log.info(MessageFormat.format(databaseOperationMessages.getString(DatabaseOperationMessages.CURRENT_INDUSTRY),
                 globalPreferences.getIndustryType()));

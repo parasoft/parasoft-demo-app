@@ -25,6 +25,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 	demo.end_point_for_cartItems = "/proxy/v1/cartItems/**";
 	demo.end_point_for_orders = "/proxy/v1/orders/**";
 	demo.end_point_for_locations = "/proxy/v1/locations/**";
+	demo.end_point_for_graphql = "/proxy/graphql";
 
 	$rootScope.isShowSettingButton = false;
 	$rootScope.isShowRequisitionButton = false;
@@ -250,6 +251,9 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 	            case "locations":
 	                demo.endpointError_locations = true;
 	                break;
+	            case "graphql":
+	                demo.endpointError_graphql = true;
+	                break;
 	            default:
     		}
     	}
@@ -281,6 +285,9 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
             break;
         case "locations":
             demo.endpointError_locations = false;
+            break;
+        case "graphql":
+            demo.endpointError_graphql = false;
             break;
         default:
         }
@@ -382,10 +389,16 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
     	}
     }
 
-    demo.disableSaveChangesButton = function() {
-    	if(demo.endpointError_categories || demo.endpointError_categories || demo.endpointError_items ||
-    		demo.endpointError_cart || demo.endpointError_orders || demo.endpointError_locations ||
-    		demo.invalidVirtualizeServerUrl || demo.cannotConnectToVirtualizeServerUrl ||
+    demo.disableSaveChangesButton = function(options) {
+        if (options.webServiceMode === "GRAPHQL" && demo.endpointError_graphql) {
+            return true;
+        } else if(options.webServiceMode === "REST_API") {
+            if(demo.endpointError_categories || demo.endpointError_categories || demo.endpointError_items ||
+                demo.endpointError_cart || demo.endpointError_orders || demo.endpointError_locations) {
+                return true;
+            }
+        }
+        if (demo.invalidVirtualizeServerUrl || demo.cannotConnectToVirtualizeServerUrl ||
     		demo.invalidVirtualizeServerPath || demo.invalidVirtualizeGroupId){
     		return true;
     	}
@@ -394,10 +407,12 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
     }
 
 	demo.saveAll = function() {
+        let data = angular.element('#options_form').serializeJSON()
+        data.mqProxyEnabled = !!data.mqProxyEnabled;
         $http({
             method: 'PUT',
             url: '/v1/demoAdmin/preferences',
-            data: angular.element('#options_form').serializeJSON(),
+            data: data,
             headers : { 'Content-Type': 'application/json' }
         }).then(function(result) {
             localStorage.setItem("status", "true");
@@ -1224,15 +1239,27 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
         options.parasoftVirtualizeServerPath = data.parasoftVirtualizeServerPath;
         options.parasoftVirtualizeGroupId = data.parasoftVirtualizeGroupId;
 
+
+        options.mqProxyEnabled = data.mqProxyEnabled;
+        options.mqType = data.mqType;
+        options.orderServiceDestinationQueue = data.orderServiceDestinationQueue;
+        options.orderServiceReplyToQueue = data.orderServiceReplyToQueue;
+        options.inventoryServiceDestinationQueue = data.inventoryServiceDestinationQueue;
+        options.inventoryServiceReplyToQueue = data.inventoryServiceReplyToQueue;
+
         options.webServiceMode = data.webServiceMode;
+        options.graphQLEndpoint = data.graphQLEndpoint;
 
     }).catch(function(result) {
         toastrService().error($filter('translate')('LOADING_DATA_FAILS'));
         console.log(result);
     });
 
-    options.clickReset = function () {
-        alert("TO DO");
+    options.resetGraphQLEndpoint = function() {
+        resetValuesTemplate(function(defaultOptions){
+            options.graphQLEndpoint = defaultOptions.graphQLEndpoint;
+            clearMessage("graphql");
+        })
     }
 
 	options.resetEndpoint = function(endpoint){

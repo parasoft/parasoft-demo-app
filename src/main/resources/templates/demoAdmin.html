@@ -16,6 +16,7 @@
 <body>
 <input type="hidden" id="current_username" th:value="${#authentication.principal.username}">
 <input type="hidden" id="current_rolename" th:value="${#authentication.principal.role.name}">
+<input type="hidden" id="current_web_service_mode" th:value="${currentWebServiceMode}">
 <div class="page-container">
     <div ng-include="'/common/pages/header.html'" ng-controller="headerController" class="header-section"></div>
 
@@ -96,7 +97,7 @@
                         </div>
                     </div>
 
-                    <form id="options_form" ng-controller="optionsForm as options">
+                    <form id="options_form" name="optionsForm" ng-controller="optionsForm as options" novalidate>
                         <div class="section_container">
                             <div class="section_title">
                                 <span translate="WEB_SERVICE"></span>
@@ -105,7 +106,7 @@
                                 <div class="web_services">
                                     <div class="rest_api_web_service">
                                         <label>
-                                            <input type="radio" name="webServiceMode" ng-model="options.webServiceMode" value="RESTAPI">
+                                            <input type="radio" name="webServiceMode" ng-model="options.webServiceMode" value="REST_API">
                                             <span class="input-label" translate="REST_API"></span>
                                         </label>
                                     </div>
@@ -118,7 +119,7 @@
                                     </div>
                                 </div>
 
-                                <div ng-show="options.webServiceMode === 'RESTAPI'">
+                                <div ng-show="options.webServiceMode === 'REST_API'">
                                     <div class="form-group">
                                         <label class="form_label" for="categories_rest_endpoint"><span translate="CATEGORIES"></span>:</label>
                                         <div class="invalid_message" ng-show="demo.endpointError_categories" translate={{'INVALID_ENDPOINT_URL'|translate}}></div>
@@ -193,11 +194,14 @@
 
                                 <div class="form-group" ng-show="options.webServiceMode === 'GRAPHQL'">
                                     <label class="form_label" for="graphql_endpoint"><span translate="ENDPOINT"></span>:</label>
+                                    <div class="invalid_message" ng-show="demo.endpointError_graphql" translate={{'INVALID_ENDPOINT_URL'|translate}}></div>
                                     <div class="input-wrapper">
                                         <input id="graphql_endpoint" type="text" name="graphQLEndpoint"
-                                               class="form-control"/>
+                                               class="form-control" placeholder="{{'ENDPOINT_URL_FOR_GRAPHQL'|translate}} {{demo.end_point_for_graphql}}"
+                                               ng-model="options.graphQLEndpoint" ng-trim="false"
+                                               ng-change="demo.validateEndpointUrlWellForm(options.graphQLEndpoint, 'graphql')"/>
                                         <button class="btn btn-default labels_reset_btn"
-                                                ng-click="options.clickReset()"
+                                                ng-click="options.resetGraphQLEndpoint()"
                                                 translate="RESET_ENDPOINT">
                                         </button>
                                     </div>
@@ -241,46 +245,51 @@
 
                                 <div class="form-group">
                                     <label>
-                                        <input type="checkbox" name="activeMqProxyEnabled" ng-model="options.activeMqProxyEnabled" value="true"/>
+                                        <input type="checkbox" name="mqProxyEnabled" ng-model="options.mqProxyEnabled" value="true"/>
                                         <span class="input-label" translate="ENABLE"></span>
                                     </label>
                                 </div>
+			    	            <div id="message_queue_type">
+                                    <div class="form-group">
+                                        <input type="hidden" name="mqType" ng-value="options.mqType">
+                                    </div>
+				                </div>
                                 <label for="client_connection" class="connection-label" translate="CLIENT_CONNECTION"></label>
                                 <div id="client_connection">
                                     <div class="form-group">
-                                        <label for="client_destination_queue" class="form_label" translate="DESTINATION_QUEUE"></label>
-                                        <input type="hidden" name="clientDestinationQueue" ng-value="options.clientDestinationQueue">
+                                        <label for="order_service_destination_queue" class="form_label" translate="DESTINATION_QUEUE"></label>
+					                    <div class="invalid_message" ng-show="optionsForm.orderServiceDestinationQueue.$invalid" translate={{'QUEUE_NAME_SHOULD_NOT_BE_EMPTY'|translate}}></div>
                                         <div class="input-wrapper">
-                                            <input type="text" id="client_destination_queue" class="form-control" ng-model="options.clientDestinationQueue" ng-trim="false"
-                                                   ng-disabled="!options.activeMqProxyEnabled">
+                                            <input type="text" name="orderServiceDestinationQueue" id="order_service_destination_queue" class="form-control" ng-model="options.orderServiceDestinationQueue" ng-trim="false"
+                                                   ng-disabled="!options.mqProxyEnabled" ng-required="options.mqProxyEnabled">
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label for="client_reply_to_queue" class="form_label" translate="REPLY_TO_QUEUE"></label>
-                                        <input type="hidden" name="clientReplyToQueue" ng-value="options.clientReplyToQueue">
+                                        <label for="order_service_reply_to_queue" class="form_label" translate="REPLY_TO_QUEUE"></label>
+					                    <div class="invalid_message" ng-show="optionsForm.orderServiceReplyToQueue.$invalid" translate={{'QUEUE_NAME_SHOULD_NOT_BE_EMPTY'|translate}}></div>
                                         <div class="input-wrapper">
-                                            <input type="text" id="client_reply_to_queue" class="form-control" ng-model="options.clientReplyToQueue" ng-trim="false"
-                                                   ng-disabled="!options.activeMqProxyEnabled">
+                                            <input type="text" name="orderServiceReplyToQueue" id="order_service_reply_to_queue" class="form-control" ng-model="options.orderServiceReplyToQueue" ng-trim="false"
+                                                   ng-disabled="!options.mqProxyEnabled" ng-required="options.mqProxyEnabled">
                                         </div>
                                     </div>
                                 </div>
                                 <label for="server_connection" class="connection-label" translate="SERVER_CONNECTION"></label>
                                 <div id="server_connection">
                                     <div class="form-group">
-                                        <label for="server_destination_queue" class="form_label" translate="DESTINATION_QUEUE"></label>
-                                        <input type="hidden" name="serverDestinationQueue" ng-value="options.serverDestinationQueue">
+                                        <label for="inventory_service_destination_queue" class="form_label" translate="DESTINATION_QUEUE"></label>
+					                    <div class="invalid_message" ng-show="optionsForm.inventoryServiceDestinationQueue.$invalid" translate={{'QUEUE_NAME_SHOULD_NOT_BE_EMPTY'|translate}}></div>
                                         <div class="input-wrapper">
-                                            <input type="text" id="server_destination_queue" class="form-control" ng-model="options.serverDestinationQueue" ng-trim="false"
-                                                   ng-disabled="!options.activeMqProxyEnabled">
+                                            <input type="text" name="inventoryServiceDestinationQueue" id="inventory_service_destination_queue" class="form-control" ng-model="options.inventoryServiceDestinationQueue" ng-trim="false"
+                                                   ng-disabled="!options.mqProxyEnabled" ng-required="options.mqProxyEnabled">
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                    <label for="server_reply_to_queue" class="form_label" translate="REPLY_TO_QUEUE"></label>
-                                    <input type="hidden" name="serverReplyToQueue" ng-value="options.serverReplyToQueue">
-                                    <div class="input-wrapper">
-                                        <input type="text" id="server_reply_to_queue" class="form-control" ng-model="options.serverReplyToQueue" ng-trim="false"
-                                               ng-disabled="!options.activeMqProxyEnabled">
-                                    </div>
+					                    <label for="inventory_service_to_queue" class="form_label" translate="REPLY_TO_QUEUE"></label>
+                                        <div class="invalid_message" ng-show="optionsForm.inventoryServiceReplyToQueue.$invalid" translate={{'QUEUE_NAME_SHOULD_NOT_BE_EMPTY'|translate}}></div>
+                                        <div class="input-wrapper">
+                                            <input type="text" name="inventoryServiceReplyToQueue" id="inventory_service_to_queue" class="form-control" ng-model="options.inventoryServiceReplyToQueue" ng-trim="false"
+                                                ng-disabled="!options.mqProxyEnabled" ng-required="options.mqProxyEnabled">
+                                        </div>
                                 </div>
                                 </div>
                             </div>
@@ -303,14 +312,14 @@
                                     <label for="parasoft_virtualize_server_url" class="form_label" translate="PARASOFT_VIRTUALIZE_SERVER_URL"></label>
                                     <input type="hidden" name="parasoftVirtualizeServerUrl" ng-value="options.parasoftVirtualizeServerUrl">
                                     <span class="test_virtualize_server_url_message">
-                                            <div class="invalid_message" ng-show="demo.invalidVirtualizeServerUrl" translate={{'INVALID_VIRTUALIZE_SERVER_URL'|translate}}></div>
+                                            <div class="invalid_message" ng-show="demo.invalidVirtualizeServerUrl  || optionsForm.parasoftVirtualizeServerUrlField.$invalid" translate={{'INVALID_VIRTUALIZE_SERVER_URL'|translate}}></div>
                                             <span class="valid_url_message" ng-show="demo.validVirtualizeServerUrl" translate={{'VALID_VIRTUALIZE_SERVER_URL'|translate}}></span>
                                             <div class="invalid_message" ng-show="demo.cannotConnectToVirtualizeServerUrl" translate={{'UNREACHABLE_VIRTUALIZE_SERVER_URL'|translate}}></div>
                                             <span ng-show="demo.isVirtualizeServerUrlTesting" translate={{'TESTING'|translate}}></span>
                                         </span>
                                     <div class="input-wrapper">
-                                        <input type="text" id="parasoft_virtualize_server_url" class="form-control" ng-model="options.parasoftVirtualizeServerUrl" ng-trim="false"
-                                               ng-disabled="!options.useParasoftJDBCProxy" ng-change="demo.validateVirtualizeServerUrlWellForm(options.parasoftVirtualizeServerUrl)">
+                                        <input type="text" name="parasoftVirtualizeServerUrlField" id="parasoft_virtualize_server_url" class="form-control" ng-model="options.parasoftVirtualizeServerUrl" ng-trim="false"
+                                               ng-disabled="!options.useParasoftJDBCProxy" ng-change="demo.validateVirtualizeServerUrlWellForm(options.parasoftVirtualizeServerUrl)" ng-required="options.useParasoftJDBCProxy">
                                         <button class="btn btn-default industry_button labels_reset_btn" translate="RESET_URL"
                                                 ng-click="options.resetVirtualizeServerUrl();demo.clearVirtualizeServerUrlTestMessage();"
                                                 ng-disabled="!options.useParasoftJDBCProxy"></button>
@@ -322,10 +331,10 @@
                                 <div class="form-group">
                                     <label for="parasoft_virtualize_server_path" class="form_label" translate="PARASOFT_VIRTUALIZE_SERVER_PATH"></label>
                                     <input type="hidden" name="parasoftVirtualizeServerPath" ng-value="options.parasoftVirtualizeServerPath">
-                                    <span class="invalid_message" ng-show="demo.invalidVirtualizeServerPath" translate={{'INVALID_VIRTUALIZE_SERVER_PATH'|translate}}></span>
+                                    <span class="invalid_message" ng-show="demo.invalidVirtualizeServerPath || optionsForm.parasoftVirtualizeServerPathField.$invalid" translate={{'INVALID_VIRTUALIZE_SERVER_PATH'|translate}}></span>
                                     <div class="input-wrapper">
-                                        <input type="text" id="parasoft_virtualize_server_path" class="form-control" ng-model="options.parasoftVirtualizeServerPath" ng-trim="false"
-                                               ng-disabled="!options.useParasoftJDBCProxy" ng-change="options.fullfilPath();demo.validateVirtualizeServerPathWellForm(options.parasoftVirtualizeServerPath);">
+                                        <input type="text" name="parasoftVirtualizeServerPathField" id="parasoft_virtualize_server_path" class="form-control" ng-model="options.parasoftVirtualizeServerPath" ng-trim="false"
+                                               ng-disabled="!options.useParasoftJDBCProxy" ng-change="options.fullfilPath();demo.validateVirtualizeServerPathWellForm(options.parasoftVirtualizeServerPath);" ng-required="options.useParasoftJDBCProxy">
                                         <button class="btn btn-default industry_button labels_reset_btn" translate="RESET_PATH"
                                                 ng-click="options.resetVirtualizeServerPath();demo.clearVirtualizeServerPathTestMessage();"
                                                 ng-disabled="!options.useParasoftJDBCProxy"></button>
@@ -334,10 +343,10 @@
                                 <div class="form-group">
                                     <label for="parasoft_virtualize_gourp_id" class="form_label" translate="PARASOFT_VIRTUALIZE_GROUP_ID"></label>
                                     <input type="hidden" name="parasoftVirtualizeGroupId" ng-value="options.parasoftVirtualizeGroupId">
-                                    <span class="invalid_message" ng-show="demo.invalidVirtualizeGroupId" translate={{'INVALID_VIRTUALIZE_GROUP_ID'|translate}}></span>
+                                    <span class="invalid_message" ng-show="demo.invalidVirtualizeGroupId || optionsForm.parasoftVirtualizeGroupIdField.$invalid" translate={{'INVALID_VIRTUALIZE_GROUP_ID'|translate}}></span>
                                     <div class="input-wrapper">
-                                        <input type="text" id="parasoft_virtualize_gourp_id" class="form-control" ng-model="options.parasoftVirtualizeGroupId" ng-trim="false"
-                                               ng-disabled="!options.useParasoftJDBCProxy" ng-change="demo.validateVirtualizeGroupIdWellForm(options.parasoftVirtualizeGroupId)">
+                                        <input type="text" name="parasoftVirtualizeGroupIdField" id="parasoft_virtualize_gourp_id" class="form-control" ng-model="options.parasoftVirtualizeGroupId" ng-trim="false"
+                                               ng-disabled="!options.useParasoftJDBCProxy" ng-change="demo.validateVirtualizeGroupIdWellForm(options.parasoftVirtualizeGroupId)" ng-required="options.useParasoftJDBCProxy">
                                         <button class="btn btn-default industry_button labels_reset_btn" translate="RESET_GROUP_ID"
                                                 ng-click="options.resetVirtualizeGroupId();demo.clearVirtualizeGroupIdTestMessage();"
                                                 ng-disabled="!options.useParasoftJDBCProxy"></button>
@@ -416,7 +425,7 @@
                         <div class="section_container">
                             <button id="save_changes_button" class="btn save-changes-button button-primary"
                                     data-toggle="modal" data-target="#saving_modal" ng-click="demo.saveAll()"
-                                    ng-disabled="demo.disableSaveChangesButton()"
+                                    ng-disabled="optionsForm.$invalid || demo.disableSaveChangesButton(options)"
                                     translate="SAVE_CHANGES">
                             </button>
                             <div id="saving_modal" class="modal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
@@ -699,7 +708,6 @@
                 </div>
             </div>
         </div>
-
         <div id="img_modal" ng-if="demo.isShowImgModal" class="common_industry" ng-style="demo.modalStyle">
             <div ng-click="demo.closeImgModal()"><span id="close_btn" ng-bind="'x'" class="common_div font_color2"></span></div>
             <img id="img_in_modal" ng-src="{{demo.itemImg}}">

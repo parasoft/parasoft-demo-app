@@ -50,7 +50,8 @@ public class GlobalPreferencesCreator extends AbstractDataCreator {
         try {
             defaultPreferences = globalPreferencesService.addNewGlobalPreferences(defaultPreferences.getDataAccessMode(),
                             defaultPreferences.getSoapEndPoint(), defaultPreferences.getRestEndPoints(),
-                            defaultPreferences.getIndustryType(), defaultPreferences.getDemoBugs(),
+                            defaultPreferences.getIndustryType(), defaultPreferences.getWebServiceMode(),
+                            defaultPreferences.getGraphQLEndpoint(), defaultPreferences.getDemoBugs(),
                             defaultPreferences.getAdvertisingEnabled(), defaultPreferences.getUseParasoftJDBCProxy(),
                             defaultPreferences.getParasoftVirtualizeServerUrl(),
                             defaultPreferences.getParasoftVirtualizeServerPath(),
@@ -60,8 +61,7 @@ public class GlobalPreferencesCreator extends AbstractDataCreator {
                             defaultPreferences.getOrderServiceDestinationQueue(),
                             defaultPreferences.getOrderServiceReplyToQueue(),
                             defaultPreferences.getInventoryServiceDestinationQueue(),
-                            defaultPreferences.getInventoryServiceReplyToQueue(),
-                            defaultPreferences.getWebServiceMode());
+                            defaultPreferences.getInventoryServiceReplyToQueue());
 
             for(RestEndpointEntity restEndpointEntity : restEndpointService.getAllEndpoints()){
                 restEndpointEntity.setGlobalPreferences(defaultPreferences);
