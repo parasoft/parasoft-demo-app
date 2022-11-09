@@ -1,6 +1,7 @@
 package com.parasoft.demoapp.service;
 
 import com.parasoft.demoapp.config.WebConfig;
+import com.parasoft.demoapp.config.activemq.ActiveMQConfig;
 import com.parasoft.demoapp.config.activemq.InventoryRequestQueueListener;
 import com.parasoft.demoapp.config.activemq.InventoryResponseQueueListener;
 import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
@@ -11,6 +12,7 @@ import com.parasoft.demoapp.model.global.preferences.*;
 import com.parasoft.demoapp.repository.global.GlobalPreferencesRepository;
 import com.parasoft.demoapp.util.BugsTypeSortOfDemoBugs;
 import com.parasoft.demoapp.util.RouteIdSortOfRestEndpoint;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -20,6 +22,8 @@ import org.mockito.MockitoAnnotations;
 import java.text.MessageFormat;
 import java.util.*;
 
+import static com.parasoft.demoapp.config.activemq.ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST;
+import static com.parasoft.demoapp.config.activemq.ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -59,6 +63,13 @@ public class GlobalPreferencesServiceTest {
 	@Before
 	public void setupMocks() {
 		MockitoAnnotations.initMocks(this);
+	}
+
+	@After
+	public void tearDown() {
+		ActiveMQConfig.setInventoryServiceListenToQueue(DEFAULT_QUEUE_INVENTORY_REQUEST);
+		ActiveMQConfig.setOrderServiceListenToQueue(DEFAULT_QUEUE_INVENTORY_RESPONSE);
+		ActiveMQConfig.resetInventoryActiveMqQueues();
 	}
 
 	/**

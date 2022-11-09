@@ -7,10 +7,7 @@ import com.parasoft.demoapp.config.WebConfig;
 import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
 import com.parasoft.demoapp.dto.GlobalPreferencesDTO;
 import com.parasoft.demoapp.messages.GlobalPreferencesMessages;
-import com.parasoft.demoapp.model.global.preferences.DemoBugsType;
-import com.parasoft.demoapp.model.global.preferences.GlobalPreferencesEntity;
-import com.parasoft.demoapp.model.global.preferences.IndustryType;
-import com.parasoft.demoapp.model.global.preferences.RestEndpointEntity;
+import com.parasoft.demoapp.model.global.preferences.*;
 import com.parasoft.demoapp.repository.industry.*;
 import com.parasoft.demoapp.util.UrlUtil;
 import org.junit.Test;
@@ -96,6 +93,7 @@ public class GlobalPreferencesServiceSpringTest {
 		IndustryType industry = IndustryType.AEROSPACE;
 		globalPreferencesDto.setIndustryType(industry);
 		globalPreferencesDto.setMqProxyEnabled(false);
+		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 
 		// When
 		GlobalPreferencesEntity result = service.updateGlobalPreferences(globalPreferencesDto);
@@ -147,6 +145,7 @@ public class GlobalPreferencesServiceSpringTest {
 		globalPreferencesDto.setLocationsRestEndpoint(locationsRestEndpointUrl);
 		globalPreferencesDto.setAdvertisingEnabled(false);
 		globalPreferencesDto.setMqProxyEnabled(false);
+		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 
 		// When
 		GlobalPreferencesEntity result = service.updateGlobalPreferences(globalPreferencesDto);
@@ -270,6 +269,7 @@ public class GlobalPreferencesServiceSpringTest {
 		globalPreferencesDto.setLocationsRestEndpoint(locationsRestEndpointUrl);
 		globalPreferencesDto.setAdvertisingEnabled(false);
 		globalPreferencesDto.setMqProxyEnabled(false);
+		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 
 		// When
 		// After updating the preferences, project will apply default endpoint routes to Zuul
@@ -354,6 +354,7 @@ public class GlobalPreferencesServiceSpringTest {
 		DemoBugsType[] demoBugsTypes = { DemoBugsType.INCORRECT_LOCATION_FOR_APPROVED_ORDERS };
 		globalPreferencesDto.setDemoBugs(demoBugsTypes);
 		globalPreferencesDto.setMqProxyEnabled(false);
+		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 
 		// When
 		GlobalPreferencesEntity result = service.updateGlobalPreferences(globalPreferencesDto);
@@ -400,6 +401,7 @@ public class GlobalPreferencesServiceSpringTest {
 		globalPreferencesDto.setUseParasoftJDBCProxy(useParasoftJDBCProxy);
 		globalPreferencesDto.setParasoftVirtualizeServerUrl(parasoftVirtualizeServerUrl);
 		globalPreferencesDto.setMqProxyEnabled(false);
+		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 
 		// When
 		GlobalPreferencesEntity result = service.updateGlobalPreferences(globalPreferencesDto);
@@ -438,6 +440,7 @@ public class GlobalPreferencesServiceSpringTest {
 		globalPreferencesDto.setUseParasoftJDBCProxy(useParasoftJDBCProxy);
 		globalPreferencesDto.setParasoftVirtualizeServerUrl(parasoftVirtualizeServerUrl);
 		globalPreferencesDto.setMqProxyEnabled(false);
+		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 
 		// When
 		GlobalPreferencesEntity result = service.updateGlobalPreferences(globalPreferencesDto);
