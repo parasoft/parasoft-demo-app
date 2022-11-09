@@ -10,6 +10,8 @@ import static org.mockito.Mockito.when;
 
 import javax.servlet.http.HttpSession;
 
+import com.parasoft.demoapp.model.global.preferences.GlobalPreferencesEntity;
+import com.parasoft.demoapp.model.global.preferences.WebServiceMode;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -45,10 +47,15 @@ public class PageControllerTest {
 	
 	@Mock
 	ItemService itemService;
-	
+
+	@Mock
+	GlobalPreferencesEntity globalPreferencesEntity;
+
 	@Before
-	public void setupMocks() {
+	public void setupMocks()  throws Throwable {
 		MockitoAnnotations.initMocks(this);
+		when(globalPreferencesService.getCurrentGlobalPreferences()).thenReturn(globalPreferencesEntity);
+		when(globalPreferencesEntity.getWebServiceMode()).thenReturn(WebServiceMode.GRAPHQL);
 	}
 
 	/**

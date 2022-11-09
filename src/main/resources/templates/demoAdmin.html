@@ -16,6 +16,7 @@
 <body>
 <input type="hidden" id="current_username" th:value="${#authentication.principal.username}">
 <input type="hidden" id="current_rolename" th:value="${#authentication.principal.role.name}">
+<input type="hidden" id="current_web_service_mode" th:value="${currentWebServiceMode}">
 <div class="page-container">
     <div ng-include="'/common/pages/header.html'" ng-controller="headerController" class="header-section"></div>
 

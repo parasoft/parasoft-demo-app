@@ -15,6 +15,7 @@
 <body>
 <input type="hidden" id="current_username" th:value="${#authentication.principal.username}">
 <input type="hidden" id="current_rolename" th:value="${#authentication.principal.role.name}">
+<input type="hidden" id="current_web_service_mode" th:value="${currentWebServiceMode}">
 <div ng-controller="headerController"></div> <!-- To obtain industry information -->
 <div class="page-container industry_font" ng-controller="approverHomePageController as approver">
     <div class="header-section">
