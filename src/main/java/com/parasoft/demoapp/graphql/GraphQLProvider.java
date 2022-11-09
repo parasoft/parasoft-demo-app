@@ -7,6 +7,7 @@ import graphql.schema.idl.SchemaGenerator;
 import graphql.schema.idl.SchemaParser;
 import graphql.schema.idl.TypeDefinitionRegistry;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
@@ -24,11 +25,8 @@ public class GraphQLProvider {
     @Value("classpath:static/schema.graphql")
     protected Resource graphqlSchemaResource;
 
-    private final CategoryGraphQLDataFetcher categoryDataFetcher;
-
-    public GraphQLProvider(CategoryGraphQLDataFetcher categoryDataFetcher) {
-        this.categoryDataFetcher = categoryDataFetcher;
-    }
+    @Autowired
+    private CategoryGraphQLDataFetcher categoryDataFetcher;
 
     @PostConstruct
     public void init() throws IOException {
