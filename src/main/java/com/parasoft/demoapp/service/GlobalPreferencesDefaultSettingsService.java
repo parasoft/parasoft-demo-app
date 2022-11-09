@@ -1,24 +1,25 @@
 package com.parasoft.demoapp.service;
 
-import static com.parasoft.demoapp.config.ParasoftJDBCProxyConfig.*;
-
-import java.util.*;
-
+import com.parasoft.demoapp.config.WebConfig;
 import com.parasoft.demoapp.config.activemq.ActiveMQConfig;
+import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
 import com.parasoft.demoapp.model.global.preferences.*;
 import com.parasoft.demoapp.model.industry.RegionType;
+import com.parasoft.demoapp.util.BugsTypeSortOfDemoBugs;
+import com.parasoft.demoapp.util.RouteIdSortOfRestEndpoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.parasoft.demoapp.config.WebConfig;
-import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
-import com.parasoft.demoapp.util.BugsTypeSortOfDemoBugs;
-import com.parasoft.demoapp.util.RouteIdSortOfRestEndpoint;
+import java.util.*;
+
+import static com.parasoft.demoapp.config.ParasoftJDBCProxyConfig.*;
 
 @Service
 public class GlobalPreferencesDefaultSettingsService {
 
     public static final String HOST_WITHOUT_PORT = "http://localhost:";
+
+    public static final String GRAPHQL_ENDPOINT_PATH = "/graphql";
 
     public static final String CATEGORIES_ENDPOINT_ID = "categories";
     public static final String CATEGORIES_ENDPOINT_PATH = "/proxy/v1/assets/categories/**";
@@ -53,6 +54,8 @@ public class GlobalPreferencesDefaultSettingsService {
         String soapEndPoint = defaultSoapEndPoint();
         Set<RestEndpointEntity> restEndpoints = defaultEndpoints();
         IndustryType industryType = defaultIndustry();
+        WebServiceMode webServiceMode = defaultWebServiceMode();
+        String graphQLEndpoint = defaultGraphQLEndpoint();
         Set<DemoBugEntity> demoBugs = defaultDemoBugs();
         Boolean advertisingEnabled = defaultAdvertisingEnabled();
         boolean useParasoftJDBCProxy = defaultUseParasoftJDBCProxy();
@@ -71,6 +74,8 @@ public class GlobalPreferencesDefaultSettingsService {
         defaultPreferences.setSoapEndPoint(soapEndPoint);
         defaultPreferences.setRestEndPoints(restEndpoints);
         defaultPreferences.setIndustryType(industryType);
+        defaultPreferences.setGraphQLEndpoint(graphQLEndpoint);
+        defaultPreferences.setWebServiceMode(webServiceMode);
         defaultPreferences.setDemoBugs(demoBugs);
         defaultPreferences.setAdvertisingEnabled(advertisingEnabled);
         defaultPreferences.setUseParasoftJDBCProxy(useParasoftJDBCProxy);
@@ -146,6 +151,14 @@ public class GlobalPreferencesDefaultSettingsService {
 
     public IndustryType defaultIndustry(){
         return IndustryRoutingDataSource.DEFAULT_INDUSTRY;
+    }
+
+    public WebServiceMode defaultWebServiceMode() {
+        return WebServiceMode.REST_API;
+    }
+
+    public String defaultGraphQLEndpoint() {
+        return HOST_WITHOUT_PORT + webConfig.getServerPort() + GRAPHQL_ENDPOINT_PATH;
     }
 
     public boolean defaultAdvertisingEnabled(){

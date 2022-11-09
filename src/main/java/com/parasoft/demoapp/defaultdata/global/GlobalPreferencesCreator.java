@@ -50,7 +50,8 @@ public class GlobalPreferencesCreator extends AbstractDataCreator {
         try {
             defaultPreferences = globalPreferencesService.addNewGlobalPreferences(defaultPreferences.getDataAccessMode(),
                             defaultPreferences.getSoapEndPoint(), defaultPreferences.getRestEndPoints(),
-                            defaultPreferences.getIndustryType(), defaultPreferences.getDemoBugs(),
+                            defaultPreferences.getIndustryType(), defaultPreferences.getWebServiceMode(),
+                            defaultPreferences.getGraphQLEndpoint(), defaultPreferences.getDemoBugs(),
                             defaultPreferences.getAdvertisingEnabled(), defaultPreferences.getUseParasoftJDBCProxy(),
                             defaultPreferences.getParasoftVirtualizeServerUrl(),
                             defaultPreferences.getParasoftVirtualizeServerPath(),

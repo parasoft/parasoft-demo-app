@@ -4,6 +4,7 @@ import com.parasoft.demoapp.model.global.preferences.DataAccessMode;
 import com.parasoft.demoapp.model.global.preferences.DemoBugsType;
 import com.parasoft.demoapp.model.global.preferences.IndustryType;
 
+import com.parasoft.demoapp.model.global.preferences.WebServiceMode;
 import com.parasoft.demoapp.model.global.preferences.MqType;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -21,6 +22,10 @@ public class GlobalPreferencesDTO {
     private String soapEndPoint;
 
     private IndustryType industryType;
+
+    private WebServiceMode webServiceMode;
+
+    private String graphQLEndpoint;
 
     private Boolean advertisingEnabled;
 

@@ -105,7 +105,7 @@
                                 <div class="web_services">
                                     <div class="rest_api_web_service">
                                         <label>
-                                            <input type="radio" name="webServiceMode" ng-model="options.webServiceMode" value="RESTAPI">
+                                            <input type="radio" name="webServiceMode" ng-model="options.webServiceMode" value="REST_API">
                                             <span class="input-label" translate="REST_API"></span>
                                         </label>
                                     </div>
@@ -118,7 +118,7 @@
                                     </div>
                                 </div>
 
-                                <div ng-show="options.webServiceMode === 'RESTAPI'">
+                                <div ng-show="options.webServiceMode === 'REST_API'">
                                     <div class="form-group">
                                         <label class="form_label" for="categories_rest_endpoint"><span translate="CATEGORIES"></span>:</label>
                                         <div class="invalid_message" ng-show="demo.endpointError_categories" translate={{'INVALID_ENDPOINT_URL'|translate}}></div>
@@ -193,9 +193,12 @@
 
                                 <div class="form-group" ng-show="options.webServiceMode === 'GRAPHQL'">
                                     <label class="form_label" for="graphql_endpoint"><span translate="ENDPOINT"></span>:</label>
+                                    <div class="invalid_message" ng-show="demo.endpointError_graphql" translate={{'INVALID_ENDPOINT_URL'|translate}}></div>
                                     <div class="input-wrapper">
                                         <input id="graphql_endpoint" type="text" name="graphQLEndpoint"
-                                               class="form-control"/>
+                                               class="form-control" placeholder="{{'ENDPOINT_URL_FOR_GRAPHQL'|translate}} {{demo.end_point_for_graphql}}"
+                                               ng-model="options.graphQLEndpoint" ng-trim="false"
+                                               ng-change="demo.validateEndpointUrlWellForm(options.graphQLEndpoint, 'graphql')"/>
                                         <button class="btn btn-default labels_reset_btn"
                                                 ng-click="options.resetGraphQLEndpoint()"
                                                 translate="RESET_ENDPOINT">
@@ -421,7 +424,7 @@
                         <div class="section_container">
                             <button id="save_changes_button" class="btn save-changes-button button-primary"
                                     data-toggle="modal" data-target="#saving_modal" ng-click="demo.saveAll()"
-                                    ng-disabled="optionsForm.$invalid || demo.disableSaveChangesButton()"
+                                    ng-disabled="optionsForm.$invalid || demo.disableSaveChangesButton(options)"
                                     translate="SAVE_CHANGES">
                             </button>
                             <div id="saving_modal" class="modal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">

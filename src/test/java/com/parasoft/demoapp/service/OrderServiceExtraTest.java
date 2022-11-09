@@ -8,8 +8,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 public class OrderServiceExtraTest {
@@ -29,8 +33,8 @@ public class OrderServiceExtraTest {
     public void testGetUnreviewedOrderNumber() {
         // Given
         String currentUsername = "purchaser1";
-        when(orderRepository.countByRequestedByAndReviewedByPRCH(currentUsername, false)).thenReturn(1);
-        when(orderRepository.countByReviewedByAPV(false)).thenReturn(2);
+        when(orderRepository.countByRequestedByAndReviewedByPRCHAndStatusNotIn(eq(currentUsername), eq(false), any(List.class))).thenReturn(1);
+        when(orderRepository.countByReviewedByAPVAndStatusNotIn(eq(false), any(List.class))).thenReturn(2);
 
         // When
         UnreviewedOrderNumberResponseDTO result = underTest.getUnreviewedOrderNumber(currentUsername);

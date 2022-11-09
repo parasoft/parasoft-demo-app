@@ -1,43 +1,33 @@
 package com.parasoft.demoapp.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
-
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
+import com.parasoft.demoapp.config.WebConfig;
 import com.parasoft.demoapp.config.activemq.ActiveMQConfig;
 import com.parasoft.demoapp.config.activemq.InventoryRequestQueueListener;
 import com.parasoft.demoapp.config.activemq.InventoryResponseQueueListener;
+import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
+import com.parasoft.demoapp.dto.GlobalPreferencesDTO;
 import com.parasoft.demoapp.exception.*;
+import com.parasoft.demoapp.messages.GlobalPreferencesMessages;
 import com.parasoft.demoapp.model.global.preferences.*;
+import com.parasoft.demoapp.repository.global.GlobalPreferencesRepository;
+import com.parasoft.demoapp.util.BugsTypeSortOfDemoBugs;
+import com.parasoft.demoapp.util.RouteIdSortOfRestEndpoint;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.parasoft.demoapp.config.WebConfig;
-import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
-import com.parasoft.demoapp.dto.GlobalPreferencesDTO;
-import com.parasoft.demoapp.messages.GlobalPreferencesMessages;
-import com.parasoft.demoapp.repository.global.GlobalPreferencesRepository;
-import com.parasoft.demoapp.util.BugsTypeSortOfDemoBugs;
-import com.parasoft.demoapp.util.RouteIdSortOfRestEndpoint;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.text.MessageFormat;
+import java.util.*;
+
+import static com.parasoft.demoapp.config.activemq.ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST;
+import static com.parasoft.demoapp.config.activemq.ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE;
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 
 /**
  * test class for GlobalPreferencesService
@@ -75,11 +65,18 @@ public class GlobalPreferencesServiceTest {
 		MockitoAnnotations.initMocks(this);
 	}
 
+	@After
+	public void tearDown() {
+		ActiveMQConfig.setInventoryServiceListenToQueue(DEFAULT_QUEUE_INVENTORY_REQUEST);
+		ActiveMQConfig.setOrderServiceListenToQueue(DEFAULT_QUEUE_INVENTORY_RESPONSE);
+		ActiveMQConfig.resetInventoryActiveMqQueues();
+	}
+
 	/**
 	 * test for addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, Set, Boolean, Boolean, String, String, String,
 	 * Boolean, MqType, String, String, String, String)
 	 *
-	 * @see GlobalPreferencesService#addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, Set, Boolean, Boolean, String, String, String,
+	 * @see GlobalPreferencesService#addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, WebServiceMode, String, Set, Boolean, Boolean, String, String, String,
 	 * Boolean, MqType, String, String, String, String)
 	 */
 	@Test
@@ -89,6 +86,8 @@ public class GlobalPreferencesServiceTest {
 		String soapEndPoint = "";
 		Set<RestEndpointEntity> restEndPoints = new TreeSet<>(new RouteIdSortOfRestEndpoint());
 		IndustryType industryType = IndustryType.DEFENSE;
+		WebServiceMode webServiceMode = WebServiceMode.REST_API;
+		String graphQLEndpoint = "https://localhost:8080/graphql";
 		DemoBugEntity demoBug = new DemoBugEntity(DemoBugsType.INCORRECT_LOCATION_FOR_APPROVED_ORDERS);
 		Set<DemoBugEntity> demoBugSet = new TreeSet<>(new BugsTypeSortOfDemoBugs());
 		demoBugSet.add(demoBug);
@@ -105,14 +104,14 @@ public class GlobalPreferencesServiceTest {
 		String inventoryServiceReplyToQueue = "queue.inventory.response";
 
 		GlobalPreferencesEntity saveResult = new GlobalPreferencesEntity(dataAccessMode, soapEndPoint, restEndPoints,
-				industryType, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
+				industryType, webServiceMode, graphQLEndpoint, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
 				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, proxyMqEnabled, mqType, orderServiceDestinationQueue,
 				orderServiceReplyToQueue, inventoryServiceDestinationQueue, inventoryServiceReplyToQueue);
 		doReturn(saveResult).when(globalPreferencesRepository).save((GlobalPreferencesEntity) any());
 
 		// When
 		GlobalPreferencesEntity result = underTest.addNewGlobalPreferences(dataAccessMode, soapEndPoint, restEndPoints,
-				industryType, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
+				industryType, webServiceMode, graphQLEndpoint, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
 				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, proxyMqEnabled, mqType, orderServiceDestinationQueue,
 				orderServiceReplyToQueue, inventoryServiceDestinationQueue, inventoryServiceReplyToQueue);
 
@@ -136,7 +135,7 @@ public class GlobalPreferencesServiceTest {
 	 * test for addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, Set, Boolean, Boolean, String, String, String,
 	 * Boolean, MqType, String, String, String, String)
 	 *
-	 * @see GlobalPreferencesService#addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, Set, Boolean, Boolean, String, String, String,
+	 * @see GlobalPreferencesService#addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, WebServiceMode, String, Set, Boolean, Boolean, String, String, String,
 	 * Boolean, MqType, String, String, String, String)
 	 */
 	@Test
@@ -146,6 +145,8 @@ public class GlobalPreferencesServiceTest {
 		String soapEndPoint = "";
 		Set<RestEndpointEntity> restEndPoints = new TreeSet<>(new RouteIdSortOfRestEndpoint());
 		IndustryType industryType = IndustryType.DEFENSE;
+		WebServiceMode webServiceMode = WebServiceMode.REST_API;
+		String graphQLEndpoint = "https://localhost:8080/graphql";
 		Set<DemoBugEntity> demoBugSet = null;
 		Boolean advertisingEnabled = false;
 		Boolean useParasoftJDBCProxy = false;
@@ -160,14 +161,14 @@ public class GlobalPreferencesServiceTest {
 		String inventoryServiceReplyToQueue = "queue.inventory.response";
 
 		GlobalPreferencesEntity saveResult = new GlobalPreferencesEntity(dataAccessMode, soapEndPoint, restEndPoints,
-				industryType, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
+				industryType, webServiceMode, graphQLEndpoint, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
 				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, proxyMqEnabled, mqType, orderServiceDestinationQueue,
 				orderServiceReplyToQueue, inventoryServiceDestinationQueue, inventoryServiceReplyToQueue);
 		doReturn(saveResult).when(globalPreferencesRepository).save((GlobalPreferencesEntity) any());
 
 		// When
 		GlobalPreferencesEntity result = underTest.addNewGlobalPreferences(dataAccessMode, soapEndPoint, restEndPoints,
-				industryType, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
+				industryType, webServiceMode, graphQLEndpoint, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
 				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, proxyMqEnabled, mqType, orderServiceDestinationQueue,
 				orderServiceReplyToQueue, inventoryServiceDestinationQueue, inventoryServiceReplyToQueue);
 
@@ -180,7 +181,7 @@ public class GlobalPreferencesServiceTest {
 	 * test for addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, Set, Boolean, Boolean, String, String, String,
 	 * Boolean, MqType, String, String, String, String)
 	 *
-	 * @see GlobalPreferencesService#addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, Set, Boolean, Boolean, String, String, String,
+	 * @see GlobalPreferencesService#addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, WebServiceMode, String, Set, Boolean, Boolean, String, String, String,
 	 * Boolean, MqType, String, String, String, String)
 	 */
 	@Test
@@ -190,6 +191,8 @@ public class GlobalPreferencesServiceTest {
 		String soapEndPoint = "";
 		Set<RestEndpointEntity> restEndPoints = null;
 		IndustryType industryType = IndustryType.DEFENSE;
+		WebServiceMode webServiceMode = WebServiceMode.REST_API;
+		String graphQLEndpoint = "https://localhost:8080/graphql";
 		Set<DemoBugEntity> demoBugSet = new TreeSet<>(new BugsTypeSortOfDemoBugs());
 		Boolean advertisingEnabled = false;
 		Boolean useParasoftJDBCProxy = false;
@@ -204,14 +207,14 @@ public class GlobalPreferencesServiceTest {
 		String inventoryServiceReplyToQueue = "queue.inventory.response";
 
 		GlobalPreferencesEntity saveResult = new GlobalPreferencesEntity(dataAccessMode, soapEndPoint, restEndPoints,
-				industryType, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
+				industryType, webServiceMode, graphQLEndpoint, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
 				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, proxyMqEnabled, mqType, orderServiceDestinationQueue,
 				orderServiceReplyToQueue, inventoryServiceDestinationQueue, inventoryServiceReplyToQueue);
 		doReturn(saveResult).when(globalPreferencesRepository).save((GlobalPreferencesEntity) any());
 
 		// When
 		GlobalPreferencesEntity result = underTest.addNewGlobalPreferences(dataAccessMode, soapEndPoint, restEndPoints,
-				industryType, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
+				industryType, webServiceMode, graphQLEndpoint, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
 				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, proxyMqEnabled, mqType, orderServiceDestinationQueue,
 				orderServiceReplyToQueue, inventoryServiceDestinationQueue, inventoryServiceReplyToQueue);
 
@@ -224,7 +227,7 @@ public class GlobalPreferencesServiceTest {
 	 * test for addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, Set, Boolean, Boolean, String, String, String,
 	 * Boolean, MqType, String, String, String, String)
 	 *
-	 * @see GlobalPreferencesService#addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, Set, Boolean, Boolean, String, String, String,
+	 * @see GlobalPreferencesService#addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, WebServiceMode, String, Set, Boolean, Boolean, String, String, String,
 	 * Boolean, MqType, String, String, String, String)
 	 */
 	@Test
@@ -234,6 +237,8 @@ public class GlobalPreferencesServiceTest {
 		String soapEndPoint = "";
 		Set<RestEndpointEntity> restEndPoints = new TreeSet<>(new RouteIdSortOfRestEndpoint());
 		IndustryType industryType = IndustryType.DEFENSE;
+		WebServiceMode webServiceMode = WebServiceMode.REST_API;
+		String graphQLEndpoint = "https://localhost:8080/graphql";
 		Set<DemoBugEntity> demoBugSet = new TreeSet<>(new BugsTypeSortOfDemoBugs());
 		Boolean advertisingEnabled = null;
 		Boolean useParasoftJDBCProxy = false;
@@ -248,7 +253,7 @@ public class GlobalPreferencesServiceTest {
 		String inventoryServiceReplyToQueue = "queue.inventory.response";
 
 		GlobalPreferencesEntity saveResult = new GlobalPreferencesEntity(dataAccessMode, soapEndPoint, restEndPoints,
-				industryType, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
+				industryType, webServiceMode, graphQLEndpoint, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
 				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, proxyMqEnabled, mqType, orderServiceDestinationQueue,
 				orderServiceReplyToQueue, inventoryServiceDestinationQueue, inventoryServiceReplyToQueue);
 		doReturn(saveResult).when(globalPreferencesRepository).save((GlobalPreferencesEntity) any());
@@ -256,8 +261,8 @@ public class GlobalPreferencesServiceTest {
 		// When
 		String message = "";
 		try {
-			underTest.addNewGlobalPreferences(dataAccessMode, soapEndPoint, restEndPoints, industryType, demoBugSet,
-					advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
+			underTest.addNewGlobalPreferences(dataAccessMode, soapEndPoint, restEndPoints, industryType, webServiceMode, graphQLEndpoint,
+					demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
 					parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, proxyMqEnabled, mqType, orderServiceDestinationQueue,
 					orderServiceReplyToQueue, inventoryServiceDestinationQueue, inventoryServiceReplyToQueue);
 		} catch (Exception e) {
@@ -280,6 +285,8 @@ public class GlobalPreferencesServiceTest {
 		String soapEndPoint = "";
 		Set<RestEndpointEntity> restEndPoints = new TreeSet<>(new RouteIdSortOfRestEndpoint());
 		IndustryType industryType = IndustryType.DEFENSE;
+		WebServiceMode webServiceMode = WebServiceMode.REST_API;
+		String graphQLEndpoint = "https://localhost:8080/graphql";
 		Set<DemoBugEntity> demoBugSet = new TreeSet<>(new BugsTypeSortOfDemoBugs());
 		Boolean advertisingEnabled = false;
 		Boolean useParasoftJDBCProxy = false;
@@ -294,7 +301,7 @@ public class GlobalPreferencesServiceTest {
 		String inventoryServiceReplyToQueue = "queue.inventory.response";
 
 		GlobalPreferencesEntity globalPreferencesEntity = new GlobalPreferencesEntity(dataAccessMode, soapEndPoint, restEndPoints,
-				industryType, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
+				industryType, webServiceMode, graphQLEndpoint, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
 				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, proxyMqEnabled, mqType, orderServiceDestinationQueue,
 				orderServiceReplyToQueue, inventoryServiceDestinationQueue, inventoryServiceReplyToQueue);
 
@@ -381,6 +388,7 @@ public class GlobalPreferencesServiceTest {
 		String locationsRestEndpointUrl = "http://localhost:8080/v1/locations/";
 		GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
 		globalPreferencesDto.setIndustryType(IndustryType.AEROSPACE);
+		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 		globalPreferencesDto.setCategoriesRestEndpoint(categoriesRestEndpointUrl);
 		globalPreferencesDto.setItemsRestEndpoint(itemsRestEndpointUrl);
 		globalPreferencesDto.setCartItemsRestEndpoint(cartItemsRestEndpointUrl);
@@ -401,6 +409,7 @@ public class GlobalPreferencesServiceTest {
 		assertEquals(IndustryType.AEROSPACE, IndustryRoutingDataSource.currentIndustry);
 		assertEquals(IndustryType.AEROSPACE, globalPreferences.getIndustryType());
 		assertEquals(5, globalPreferences.getRestEndPoints().size());
+
 
 		Map<String, RestEndpointEntity> endpoints = new HashMap<>(); // Map<url,RestEndpointEntity>
 		for (RestEndpointEntity endpoint : globalPreferences.getRestEndPoints()) {
@@ -465,6 +474,7 @@ public class GlobalPreferencesServiceTest {
 		String locationsRestEndpointUrl = ""; // test point
 		GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
 		globalPreferencesDto.setIndustryType(IndustryType.AEROSPACE);
+		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 		globalPreferencesDto.setCategoriesRestEndpoint(categoriesRestEndpointUrl);
 		globalPreferencesDto.setItemsRestEndpoint(itemsRestEndpointUrl);
 		globalPreferencesDto.setCartItemsRestEndpoint(cartItemsRestEndpointUrl);
@@ -511,6 +521,7 @@ public class GlobalPreferencesServiceTest {
 		String locationsRestEndpointUrl = " "; // test point
 		GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
 		globalPreferencesDto.setIndustryType(IndustryType.AEROSPACE);
+		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 		globalPreferencesDto.setCategoriesRestEndpoint(categoriesRestEndpointUrl);
 		globalPreferencesDto.setItemsRestEndpoint(itemsRestEndpointUrl);
 		globalPreferencesDto.setCartItemsRestEndpoint(cartItemsRestEndpointUrl);
@@ -558,6 +569,7 @@ public class GlobalPreferencesServiceTest {
 		String locationsRestEndpointUrl = null; // test point
 		GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
 		globalPreferencesDto.setIndustryType(IndustryType.AEROSPACE);
+		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 		globalPreferencesDto.setCategoriesRestEndpoint(categoriesRestEndpointUrl);
 		globalPreferencesDto.setItemsRestEndpoint(itemsRestEndpointUrl);
 		globalPreferencesDto.setCartItemsRestEndpoint(cartItemsRestEndpointUrl);
@@ -628,6 +640,7 @@ public class GlobalPreferencesServiceTest {
 		String locationsRestEndpointUrl = "http://localhost:8080/v1/locations/";
 		GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
 		globalPreferencesDto.setIndustryType(IndustryType.AEROSPACE);
+		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 		globalPreferencesDto.setCategoriesRestEndpoint(categoriesRestEndpointUrl);
 		globalPreferencesDto.setItemsRestEndpoint(itemsRestEndpointUrl);
 		globalPreferencesDto.setCartItemsRestEndpoint(cartItemsRestEndpointUrl);
@@ -677,6 +690,7 @@ public class GlobalPreferencesServiceTest {
 		String locationsRestEndpointUrl = "http://localhost:8080/v1/locations/";
 		GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
 		globalPreferencesDto.setIndustryType(IndustryType.AEROSPACE);
+		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 		globalPreferencesDto.setCategoriesRestEndpoint(categoriesRestEndpointUrl);
 		globalPreferencesDto.setItemsRestEndpoint(itemsRestEndpointUrl);
 		globalPreferencesDto.setCartItemsRestEndpoint(cartItemsRestEndpointUrl);
@@ -727,6 +741,7 @@ public class GlobalPreferencesServiceTest {
 		String locationsRestEndpointUrl = null; // test point
 		GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
 		globalPreferencesDto.setIndustryType(IndustryType.AEROSPACE);
+		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 		globalPreferencesDto.setCategoriesRestEndpoint(categoriesRestEndpointUrl);
 		globalPreferencesDto.setItemsRestEndpoint(itemsRestEndpointUrl);
 		globalPreferencesDto.setCartItemsRestEndpoint(cartItemsRestEndpointUrl);
@@ -772,6 +787,7 @@ public class GlobalPreferencesServiceTest {
 		String locationsRestEndpointUrl = "http://localhost:8080/v1/locations/";
 		GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
 		globalPreferencesDto.setIndustryType(IndustryType.AEROSPACE);
+		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 		globalPreferencesDto.setCategoriesRestEndpoint(categoriesRestEndpointUrl);
 		globalPreferencesDto.setItemsRestEndpoint(itemsRestEndpointUrl);
 		globalPreferencesDto.setCartItemsRestEndpoint(cartItemsRestEndpointUrl);
@@ -821,6 +837,7 @@ public class GlobalPreferencesServiceTest {
 		String locationsRestEndpointUrl = "http://localhost:8080/v1/locations/";
 		GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
 		globalPreferencesDto.setIndustryType(IndustryType.AEROSPACE);
+		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 		globalPreferencesDto.setCategoriesRestEndpoint(categoriesRestEndpointUrl);
 		globalPreferencesDto.setItemsRestEndpoint(itemsRestEndpointUrl);
 		globalPreferencesDto.setCartItemsRestEndpoint(cartItemsRestEndpointUrl);
@@ -870,6 +887,7 @@ public class GlobalPreferencesServiceTest {
 		String locationsRestEndpointUrl = "http://localhost:8080/v1/locations/";
 		GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
 		globalPreferencesDto.setIndustryType(IndustryType.AEROSPACE);
+		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 		globalPreferencesDto.setCategoriesRestEndpoint(categoriesRestEndpointUrl);
 		globalPreferencesDto.setItemsRestEndpoint(itemsRestEndpointUrl);
 		globalPreferencesDto.setCartItemsRestEndpoint(cartItemsRestEndpointUrl);
@@ -919,6 +937,7 @@ public class GlobalPreferencesServiceTest {
 		String locationsRestEndpointUrl = "http://localhost:8080/v1/locations/";
 		GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
 		globalPreferencesDto.setIndustryType(IndustryType.AEROSPACE);
+		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 		globalPreferencesDto.setCategoriesRestEndpoint(categoriesRestEndpointUrl);
 		globalPreferencesDto.setItemsRestEndpoint(itemsRestEndpointUrl);
 		globalPreferencesDto.setCartItemsRestEndpoint(cartItemsRestEndpointUrl);
