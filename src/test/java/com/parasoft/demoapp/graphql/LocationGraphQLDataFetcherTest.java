@@ -28,8 +28,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class LocationGraphQLDataFetcherTest {
 
     private static final String LOCATION_GRAPHQL_RESOURCE = "graphql/locations/location.graphql";
-    private static final String LOCATION_QUERY_PATH = "getLocation";
-    private static final String LOCATION_DATA_JSON_PATH = DATA_PATH + "." + LOCATION_QUERY_PATH;
+    private static final String UNAUTHORIZED_ERR = "Current user is not authorized.";
+    private static final String LOCATION_DATA_JSON_PATH = DATA_PATH + ".getLocation";
     private static final String STATUS_CODE_FIELD = "statusCode";
 
     @Autowired private GraphQLTestTemplate graphQLTestTemplate;
@@ -70,8 +70,8 @@ public class LocationGraphQLDataFetcherTest {
         response.assertThatErrorsField().isNotNull()
                 .asListOf(GraphQLTestError.class)
                 .hasOnlyOneElementSatisfying(error -> {
-                    assertThat(error.getPath()).containsOnlyOnce(LOCATION_QUERY_PATH);
-                   assertThat(error.getExtensions().get(STATUS_CODE_FIELD)).isEqualTo(404);
+                    assertThat(error.getMessage()).isEqualTo("Location not found.");
+                   assertThat(error.getExtensions().get("statusCode")).isEqualTo(404);
                 })
                 .and()
                 .assertThatField(LOCATION_DATA_JSON_PATH).isNull();
@@ -109,8 +109,8 @@ public class LocationGraphQLDataFetcherTest {
         response.assertThatErrorsField().isNotNull()
                 .asListOf(GraphQLTestError.class)
                 .hasOnlyOneElementSatisfying(error -> {
-                    assertThat(error.getPath()).containsOnlyOnce(LOCATION_QUERY_PATH);
-                    assertThat(error.getExtensions().get(STATUS_CODE_FIELD)).isEqualTo(401);
+                    assertThat(error.getMessage()).isEqualTo(UNAUTHORIZED_ERR);
+                    assertThat(error.getExtensions().get("statusCode")).isEqualTo(401);
                 })
                 .and()
                 .assertThatField(LOCATION_DATA_JSON_PATH).isNull();
