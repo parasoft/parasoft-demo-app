@@ -4,15 +4,18 @@ import graphql.ErrorType;
 import graphql.GraphQLError;
 import graphql.language.SourceLocation;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 public class GraphQLException extends RuntimeException implements GraphQLError {
 
     private final int httpStatusCode;
+    private final Object data;
 
-    public GraphQLException(int httpStatusCode, String message, Throwable cause) {
+    public GraphQLException(int httpStatusCode, Object data, String message, Throwable cause) {
         super(message, cause);
         this.httpStatusCode = httpStatusCode;
+        this.data = data;
     }
 
     @Override
@@ -27,6 +30,9 @@ public class GraphQLException extends RuntimeException implements GraphQLError {
 
     @Override
     public Map<String, Object> getExtensions() {
-        return Collections.singletonMap("statusCode", httpStatusCode);
+        Map<String, Object> extensionsMap = new HashMap<>();
+        extensionsMap.put("statusCode", httpStatusCode);
+        extensionsMap.put("data", data);
+        return extensionsMap;
     }
 }

@@ -1,11 +1,11 @@
-var loginApp = angular.module('loginApp', ['pascalprecht.translate']);
+var app = angular.module('pdaApp', ['pascalprecht.translate']);
 
-setLocale(loginApp);
+setLocale(app);
 //initialize controller of import page
-initHeaderController(loginApp);
-initProductBuildInfo(loginApp);
+initHeaderController(app);
+initProductBuildInfo(app);
 
-loginApp.controller('loginController', function($rootScope, $location, $window, $http){
+app.controller('loginController', function($rootScope, $location, $window, $http){
 	var login = this;
 	login.credentials = {};
 	login.onSubmit = onSubmit;
