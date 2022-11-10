@@ -1,4 +1,4 @@
-var mod = angular.module('demoAdminApp', ['pascalprecht.translate']);
+var mod = angular.module('pdaApp', ['pascalprecht.translate']);
 
 setLocale(mod);
 //initialize controllers of import page
@@ -18,7 +18,7 @@ var bug_Incorrect_number_value = "INCORRECT_NUMBER_OF_ITEMS_IN_SUMMARY_OF_PENDIN
 var bug_Reverse_orders_value = "REVERSE_ORDER_OF_ORDERS";
 var bug_Reinitialize_datasource_for_each_http_request_value = "REINITIALIZE_DATASOURCE_FOR_EACH_HTTP_REQUEST";
 
-mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $filter, $window, $timeout) {
+mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $filter, $window, $timeout, graphQLService) {
 	var demo = this;
 	demo.end_point_for_categories = "/proxy/v1/assets/categories/**";
 	demo.end_point_for_items = "/proxy/v1/assets/items/**";
@@ -153,27 +153,36 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
     }
 
     function getAllCategories(){
-    	$http({
-            method: 'GET',
-            url: '/proxy/v1/assets/categories',
-        }).then(function(result) {
-        	categories = result.data.data.content;
-        	demo.categories = categories;
-
-        	//Define the height of footer in 'categories' tab
-        	if(categories.length > 3){
-	    		$rootScope.footerHeight = {
-    	    		"top" : (categories.length - 3) * 40 + 757 + "px"
-    	    	};
-	    	}else{
-	    		$rootScope.footerHeight = {
-	    			"top" : "874px"
-	    		};
-	    	}
-        }).catch(function(result) {
-        	console.info(result);
-        	displayLoadError(result,$rootScope,$filter,$http,true,'categories');
-        });
+        let success = (data) => {
+            categories = data.content;
+            demo.categories = categories;
+            //Define the height of footer in 'categories' tab
+            if (categories.length > 3) {
+                $rootScope.footerHeight = {
+                    "top" : (categories.length - 3) * 40 + 757 + "px"
+                };
+            } else {
+                $rootScope.footerHeight = {
+                    "top" : "874px"
+                };
+            }
+        };
+        let error = (data, endpointType) => {
+            console.info(data);
+            displayLoadError(data,$rootScope,$filter,$http,true,endpointType);
+        };
+        if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+            graphQLService.getCategories(success, (data) => {error(data, "graphQL")});
+        } else {
+            $http({
+                method: 'GET',
+                url: '/proxy/v1/assets/categories',
+            }).then(function(result) {
+                success(result.data.data);
+            }).catch(function(result) {
+                error(result, "categories");
+            });
+        }
     }
 
     function getAllRegions(){

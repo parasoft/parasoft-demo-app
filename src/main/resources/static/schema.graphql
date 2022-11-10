@@ -1,11 +1,21 @@
 type Query {
-    getCategoryById(categoryId: ID): Category
+    # category
+    getCategoryById(categoryId: ID): Category,
+    getCategories(searchString: String, page: Int, size: Int, sort: [String]): CategoryPageInfo
 }
-
+# category
 type Category {
-    id: ID
-    name: String
-    description: String
+    id: ID,
+    name: String,
+    description: String,
     image: String
 }
-
+type CategoryPageInfo {
+    totalElements: ID,
+    totalPages: Int,
+    size: Int,
+    number: Int,
+    numberOfElements: Int,
+    sort: String,
+    content: [Category]
+}
