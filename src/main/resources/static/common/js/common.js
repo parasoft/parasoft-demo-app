@@ -834,8 +834,13 @@ function handleRestpointErrorMessage($rootScope,$http,$filter,errorType,url,show
             }
         });
 
+        if(errorType === "graphQL") {
+            endpointError = $filter('translate')('GRAPHQL_ENDPOINT_ERROR');
+            url = preferenceData.graphQLEndpoint;
+        }
+
         if(isconnectionError){
-            var errorMessage = endpointError + url + ' ' + unavailableToConnect;
+            var errorMessage = endpointError + ' ' + url + ' ' + unavailableToConnect;
         }else{
             var handledString = JSON.stringify(data).substring(0, 1000);
             handledString = handledString + (handledString.length >= 1000 ? "..." : "");
@@ -896,6 +901,9 @@ function handleMessageAccordingToType($rootScope,$filter,errorMessage,errorType,
             case "locations":
                 if(isEndpointError) {errorMessage = $filter('translate')('LOCATIONS') + ' ' + errorMessage;}
                 $rootScope.locationsErrorMessage = errorMessage;
+                break;
+            case "graphQL":
+                $rootScope.graphQLErrorMessage = errorMessage;
                 break;
             default:
         }

@@ -1,4 +1,4 @@
-var app = angular.module('approverHomePageApp', ['pascalprecht.translate']);
+var app = angular.module('pdaApp', ['pascalprecht.translate']);
 
 setLocale(app);
 initHeaderController(app);

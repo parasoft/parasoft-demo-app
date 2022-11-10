@@ -1,7 +1,7 @@
 <div class="error-message-container industry_font">
 	<div class="error-message">
 		<div>
-			<p ng-if="home.categoriesLoadError" class="error_message_block"><span ng-bind="categoriesErrorMessage"></span></p>
+			<p ng-if="home.categoriesLoadError" class="error_message_block"><span ng-bind="categoriesErrorMessage ? categoriesErrorMessage : graphQLErrorMessage"></span></p>
 			<p ng-if="history.ordersLoadError || approver.ordersLoadError" class="error_message_block"><span ng-bind="ordersErrorMessage"></span></p>
 			<p ng-if="category.itemsLoadError || itemDetail.itemDetailError" class="error_message_block"><span ng-bind="itemsErrorMessage"></span></p>
 		</div>

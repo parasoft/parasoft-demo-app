@@ -1,5 +1,8 @@
 package com.parasoft.demoapp.graphql;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.parasoft.demoapp.controller.ResponseResult;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -23,9 +26,18 @@ public class RestTemplateUtil {
 
     public static GraphQLException convertException(Exception e) {
         if (e instanceof HttpStatusCodeException) {
-            return new GraphQLException(((HttpStatusCodeException)e).getRawStatusCode(), e.getMessage(), e);
+            try {
+                String errorMsg = e.getMessage();
+                int index = errorMsg.indexOf(":");
+                String jsonStr = errorMsg.substring(index + 1).trim();
+                ObjectMapper objectMapper = new ObjectMapper();
+                ResponseResult responseResult = objectMapper.readValue(jsonStr.substring(1, jsonStr.length() - 1), ResponseResult.class);
+                return new GraphQLException(((HttpStatusCodeException) e).getRawStatusCode(), responseResult.getData(), responseResult.getMessage(), e);
+            } catch (Exception ex) {
+                return new GraphQLException(HttpStatus.INTERNAL_SERVER_ERROR.value(), null, ex.getMessage(), ex);
+            }
         } else {
-            return new GraphQLException(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage(), e);
+            return new GraphQLException(HttpStatus.INTERNAL_SERVER_ERROR.value(), null, e.getMessage(), e);
         }
     }
 }
