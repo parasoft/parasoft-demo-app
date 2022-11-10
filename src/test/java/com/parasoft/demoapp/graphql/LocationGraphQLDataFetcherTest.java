@@ -30,7 +30,6 @@ public class LocationGraphQLDataFetcherTest {
     private static final String LOCATION_GRAPHQL_RESOURCE = "graphql/locations/location.graphql";
     private static final String UNAUTHORIZED_ERR = "Current user is not authorized.";
     private static final String LOCATION_DATA_JSON_PATH = DATA_PATH + ".getLocation";
-    private static final String STATUS_CODE_FIELD = "statusCode";
 
     @Autowired private GraphQLTestTemplate graphQLTestTemplate;
 
@@ -89,10 +88,10 @@ public class LocationGraphQLDataFetcherTest {
         assertThat(response.isOk()).isTrue();
         response.assertThatErrorsField().isNotNull()
                 .asListOf(GraphQLTestError.class)
-                .hasOnlyOneElementSatisfying(error -> {
+                .hasOnlyOneElementSatisfying(error ->
                     assertThat(error.getExtensions().get("classification"))
-                            .asString().isEqualTo("ValidationError");
-                })
+                        .asString().isEqualTo("ValidationError")
+                )
                 .and()
                 .assertThatDataField().isNotPresent();
     }
