@@ -17,9 +17,8 @@ var bug_Incorrect_location_value = "INCORRECT_LOCATION_FOR_APPROVED_ORDERS";
 var bug_Incorrect_number_value = "INCORRECT_NUMBER_OF_ITEMS_IN_SUMMARY_OF_PENDING_ORDER";
 var bug_Reverse_orders_value = "REVERSE_ORDER_OF_ORDERS";
 var bug_Reinitialize_datasource_for_each_http_request_value = "REINITIALIZE_DATASOURCE_FOR_EACH_HTTP_REQUEST";
-var CURRENT_WEB_SERVICE_MODE = angular.element("#current_web_service_mode").val();
 
-mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $filter, $window, $timeout, GraphQLQueryService) {
+mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $filter, $window, $timeout, graphQLService) {
 	var demo = this;
 	demo.end_point_for_categories = "/proxy/v1/assets/categories/**";
 	demo.end_point_for_items = "/proxy/v1/assets/items/**";
@@ -154,7 +153,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
     }
 
     function getAllCategories(){
-        var success = (data) => {
+        let success = (data) => {
             categories = data.content;
             demo.categories = categories;
             //Define the height of footer in 'categories' tab
@@ -168,12 +167,12 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
                 };
             }
         };
-        var error = (data) => {
+        let error = (data, endpointType) => {
             console.info(data);
-            displayLoadError(data,$rootScope,$filter,$http,true,'categories');
+            displayLoadError(data,$rootScope,$filter,$http,true,endpointType);
         };
-        if (CURRENT_WEB_SERVICE_MODE == "GraphQL") {
-            GraphQLQueryService.getCategories(success, error);
+        if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+            graphQLService.getCategories(success, (data) => {error(data, "graphQL")});
         } else {
             $http({
                 method: 'GET',
@@ -181,7 +180,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
             }).then(function(result) {
                 success(result.data.data);
             }).catch(function(result) {
-                error(result);
+                error(result, "categories");
             });
         }
     }

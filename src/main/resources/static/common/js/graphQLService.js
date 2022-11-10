@@ -1,8 +1,8 @@
 angular
     .module('pdaApp')
-        .factory('makeQueryCallService', function($http) {
-            var instance = {};
-            var formatError = (response) => {
+        .factory('graphQLService', function($http, $filter) {
+            let instance = {};
+            let formatError = (response) => {
                 return {
                     data: {
                         data: response.data.errors[0].extensions.data,
@@ -12,14 +12,15 @@ angular
                     config: response.config
                 };
             };
-            var makeQueryCall = function(query, success, error) {
+
+            let makeCall = function(requestBody, success, error) {
                 $http({
                     method: 'POST',
-                    url: '/graphql',
+                    url: '/proxy/graphql',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    data: query
+                    data: requestBody
                 }).then(function(response) {
                     if (response.data.errors) {
                         error(formatError(response));
@@ -27,13 +28,13 @@ angular
                         success(response);
                     }
                 }).catch(function(response) {
-                    // TODO toaster.error
+                    error(response)
                 });
             };
             // categories
             instance.getCategories = function(success, error) {
-                var query = {"query": "{getCategories{totalElements,totalPages,size,number,numberOfElements,sort,content{id,name,description,image}}}"}
-                makeQueryCall(query, function(response) {
+                let requestBody = {"query": "{getCategories{totalElements,totalPages,size,number,numberOfElements,sort,content{id,name,description,image}}}"}
+                makeCall(requestBody, function(response) {
                     success(response.data.data.getCategories);
                 }, error);
             }
