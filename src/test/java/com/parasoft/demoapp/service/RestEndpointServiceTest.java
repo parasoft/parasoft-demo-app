@@ -3,25 +3,23 @@
  */
 package com.parasoft.demoapp.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.nullable;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
-
-import java.text.MessageFormat;
-
+import com.parasoft.demoapp.messages.GlobalPreferencesMessages;
+import com.parasoft.demoapp.model.global.preferences.RestEndpointEntity;
+import com.parasoft.demoapp.repository.global.RestEndpointRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.parasoft.demoapp.messages.GlobalPreferencesMessages;
-import com.parasoft.demoapp.model.global.preferences.RestEndpointEntity;
-import com.parasoft.demoapp.repository.global.RestEndpointRepository;
+import java.text.MessageFormat;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.nullable;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 
 /**
  * Test class for RestEndpointService
@@ -129,88 +127,4 @@ public class RestEndpointServiceTest {
         assertEquals(
                 MessageFormat.format(GlobalPreferencesMessages.ID_OF_REST_ENDPOINT_ENTITY_NOT_FOUND, id), message);
     }
-
-    /**
-     * Test for validateUrl(String, String)
-     *
-     * @see com.parasoft.demoapp.service.RestEndpointService#validateUrl(String, String)
-     */
-    @Test
-    public void testValidateUrl() throws Throwable {
-        // Given
-        String url = "http://localhost:8080";
-
-        // When
-        underTest.validateUrl(url, GlobalPreferencesMessages.INVALID_URL);
-    }
-
-    /**
-     * Test for validateUrl(String, String) with nullUrl
-     *
-     * @see com.parasoft.demoapp.service.RestEndpointService#validateUrl(String, String)
-     */
-    @Test
-    public void testValidateUrl_NullUrl() throws Throwable {
-        // Given
-        String url = null;
-        String exceptionMessage = GlobalPreferencesMessages.BLANK_URL;
-
-        // When
-        String message = "";
-        try {
-            underTest.validateUrl(url, exceptionMessage);
-        } catch (Exception e) {
-            message = e.getMessage();
-        }
-
-        // Then
-        assertEquals(MessageFormat.format(exceptionMessage, url), message);
-    }
-
-    /**
-     * Test for validateUrl(String, String) with connectionException
-     *
-     * @see com.parasoft.demoapp.service.RestEndpointService#validateUrl(String, String)
-     */
-    @Test
-    public void testValidateUrl_ConnectionException() throws Throwable {
-        // Given
-        String url = "http://localhost:";
-        String exceptionMessage = GlobalPreferencesMessages.INVALID_URL;
-
-        // When
-        String message = "";
-        try {
-            underTest.validateUrl(url, exceptionMessage);
-        } catch (Exception e) {
-            message = e.getMessage();
-        }
-
-        // Then
-        assertTrue(message.startsWith("Rest endpoint error: " + url));
-    }
-
-    /**
-     * Test for validateUrl(String, String) with errorUrlException
-     *
-     * @see com.parasoft.demoapp.service.RestEndpointService#validateUrl(String, String)
-     */
-    @Test
-    public void testValidateUrl_ErrorUrlException() throws Throwable {
-        // Given
-        String url = "error url";
-        String exceptionMessage = GlobalPreferencesMessages.INVALID_URL;
-
-        // When
-        String message = "";
-        try {
-            underTest.validateUrl(url, exceptionMessage);
-        } catch (Exception e) {
-            message = e.getMessage();
-        }
-
-        // Then
-        assertTrue(message.startsWith("Rest endpoint error: " + url));
-    }
-
 }

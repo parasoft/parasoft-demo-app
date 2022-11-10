@@ -5,6 +5,7 @@ import com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService;
 import com.parasoft.demoapp.service.GlobalPreferencesService;
 import com.parasoft.demoapp.service.RestEndpointService;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.netflix.zuul.filters.RefreshableRouteLocator;
 import org.springframework.cloud.netflix.zuul.filters.SimpleRouteLocator;
 import org.springframework.cloud.netflix.zuul.filters.ZuulProperties;
@@ -14,6 +15,7 @@ import java.util.*;
 
 import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.*;
 
+@Slf4j
 public class CustomRouteLocator extends SimpleRouteLocator implements RefreshableRouteLocator {
 
     private final RestEndpointService restEndpointService;
@@ -37,19 +39,9 @@ public class CustomRouteLocator extends SimpleRouteLocator implements Refreshabl
         doRefresh();
     }
 
-    @SneakyThrows
     @Override
     protected Map<String, ZuulProperties.ZuulRoute> locateRoutes() {
-        LinkedHashMap<String, ZuulProperties.ZuulRoute> routesMap = new LinkedHashMap<>();
-        String graphQLEndpoint = globalPreferencesService.getCurrentGlobalPreferences().getGraphQLEndpoint();
-        if(!graphQLEndpoint.isEmpty()) {
-            Set<String> sensitiveHeaders = new HashSet<>();
-            routesMap.put(GRAPHQL_ENDPOINT_PATH,
-                    new ZuulProperties.ZuulRoute(
-                            GRAPHQL_ENDPOINT_ID, GRAPHQL_ENDPOINT_PATH, null,
-                            graphQLEndpoint, true, false, sensitiveHeaders));
-        }
-        routesMap.putAll(getPersistentRoutesFromDB());
+        LinkedHashMap<String, ZuulProperties.ZuulRoute> routesMap = new LinkedHashMap<>(getPersistentRoutes());
         fullFillDefaultRoutes(routesMap);
 
         LinkedHashMap<String, ZuulProperties.ZuulRoute> values = new LinkedHashMap<>();
@@ -62,10 +54,20 @@ public class CustomRouteLocator extends SimpleRouteLocator implements Refreshabl
             values.put(path, entry.getValue());
         }
 
+        StringBuilder sb = new StringBuilder();
+        for(String key: values.keySet()) {
+            sb.append("\n")
+              .append(values.get(key).getPath())
+              .append(" ---> ")
+              .append(values.get(key).getUrl());
+        }
+        log.info("Endpoints routes:" + sb);
+
         return values;
     }
 
-    private Map<String, ZuulProperties.ZuulRoute> getPersistentRoutesFromDB() {
+    @SneakyThrows
+    private Map<String, ZuulProperties.ZuulRoute> getPersistentRoutes() {
         // RestEndpointEntity is a copy of ZuulProperties.ZuulRoute, they are saved in database
         List<RestEndpointEntity> results = restEndpointService.getAllEndpoints();
 
@@ -80,6 +82,16 @@ public class CustomRouteLocator extends SimpleRouteLocator implements Refreshabl
             ZuulProperties.ZuulRoute zuulRoute = result.toRealZuulRoute();
 
             routes.put(zuulRoute.getPath(), zuulRoute);
+        }
+
+        // Handle graphql endpoint
+        String graphQLEndpoint = globalPreferencesService.getCurrentGlobalPreferences().getGraphQLEndpoint();
+        if(!graphQLEndpoint.isEmpty()) {
+            Set<String> sensitiveHeaders = new HashSet<>();
+            routes.put(GRAPHQL_ENDPOINT_PATH,
+                    new ZuulProperties.ZuulRoute(
+                            GRAPHQL_ENDPOINT_ID, GRAPHQL_ENDPOINT_PATH, null,
+                            graphQLEndpoint, true, false, sensitiveHeaders));
         }
 
         return routes;
