@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:ng="http://angularjs.org" xmlns:th="http://www.thymeleaf.org" ng-app="categoryPageApp">
+<html lang="en" xmlns:ng="http://angularjs.org" xmlns:th="http://www.thymeleaf.org" ng-app="pdaApp">
 <head>
     <meta charset="UTF-8">
     <title translate="PROJECT_NAME"></title>
@@ -15,6 +15,7 @@
 <body>
     <input type="hidden" id="current_username" th:value="${#authentication.principal.username}">
     <input type="hidden" id="current_rolename" th:value="${#authentication.principal.role.name}">
+    <input type="hidden" id="current_web_service_mode" th:value="${currentWebServiceMode}">
 
     <div class="page-container">
         <div ng-include="'/common/pages/header.html'" class="header-section" ng-controller="headerController"></div>
@@ -206,5 +207,6 @@
     <script type="text/javascript" src="/lib/stomp/stomp.min.js"></script>
     <script type="text/javascript" src="/common/js/common.js"></script>
     <script type="text/javascript" src="/common/js/category.js"></script>
+    <script type="text/javascript" src="/common/js/graphQLQueryService.js"></script>
 </body>
 </html>

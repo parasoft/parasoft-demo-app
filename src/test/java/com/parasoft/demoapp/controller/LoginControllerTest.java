@@ -1,6 +1,7 @@
 package com.parasoft.demoapp.controller;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -9,10 +10,14 @@ import static org.powermock.api.mockito.PowerMockito.spy;
 
 import javax.servlet.http.HttpSession;
 
+import com.parasoft.demoapp.model.global.preferences.GlobalPreferencesEntity;
+import com.parasoft.demoapp.model.global.preferences.WebServiceMode;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.ui.ModelMap;
@@ -39,6 +44,16 @@ public class LoginControllerTest {
 	@Mock
 	GlobalPreferencesService globalPreferencesService;
 
+	@Mock
+	GlobalPreferencesEntity globalPreferencesEntity;
+
+	@Before
+	public void setupMocks()  throws Throwable {
+		MockitoAnnotations.initMocks(this);
+		when(globalPreferencesService.getCurrentGlobalPreferences()).thenReturn(globalPreferencesEntity);
+		when(globalPreferencesEntity.getWebServiceMode()).thenReturn(WebServiceMode.GRAPHQL);
+	}
+
 	/**
 	 * Parasoft Jtest UTA: tested method is login(HttpSession)
 	 *
@@ -49,6 +64,7 @@ public class LoginControllerTest {
 		//Given
 		ModelMap modelMap = new ModelMap();
 		modelMap.addAttribute("industry", "defense");
+		modelMap.addAttribute("currentWebServiceMode", "GRAPHQL");
 
 		when(globalPreferencesService.getCurrentIndustry()).thenReturn(IndustryType.DEFENSE);
 

@@ -46,6 +46,9 @@ public class GlobalPreferencesServiceTest {
 	RestEndpointService restEndpointService;
 
 	@Mock
+	EndpointService endpointService;
+
+	@Mock
 	DemoBugService demoBugService;
 
 	@Mock

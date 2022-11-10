@@ -16,7 +16,6 @@ import com.parasoft.demoapp.util.BugsTypeSortOfDemoBugs;
 import com.parasoft.demoapp.util.RouteIdSortOfRestEndpoint;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,6 +45,9 @@ public class GlobalPreferencesService {
 
     @Autowired
     private RestEndpointService restEndpointService;
+
+    @Autowired
+    private EndpointService endpointService;
 
     @Autowired
     private ImageService imageService;
@@ -125,7 +127,7 @@ public class GlobalPreferencesService {
         validateIndustry(industry);
 
         Boolean advertisingEnabled =
-                globalPreferencesDto.getAdvertisingEnabled() == null ? false : globalPreferencesDto.getAdvertisingEnabled();
+                globalPreferencesDto.getAdvertisingEnabled() != null && globalPreferencesDto.getAdvertisingEnabled();
 
         GlobalPreferencesEntity currentPreferences = getCurrentGlobalPreferences();
         currentPreferences.setIndustryType(industry);
@@ -190,7 +192,7 @@ public class GlobalPreferencesService {
     private void afterUpdateGlobalPreferences(GlobalPreferencesEntity preferences) {
         switchIndustry(preferences);
 
-        restEndpointService.refreshEndpoint();
+        endpointService.refreshEndpoint();
 
         refreshProxyDataSource(preferences);
 
@@ -254,7 +256,6 @@ public class GlobalPreferencesService {
     /**
      * This method should only be used on startup.
      *
-     * @param globalPreferences
      * @throws ParameterException
      */
     public void initializeActiveMqJmsProxyOnStartup(GlobalPreferencesEntity globalPreferences)
@@ -280,8 +281,7 @@ public class GlobalPreferencesService {
                                          GlobalPreferencesDTO globalPreferencesDto)
                                             throws VirtualizeServerUrlException, ParameterException {
 
-        boolean useParasoftJDBCProxy = globalPreferencesDto.getUseParasoftJDBCProxy()
-                                                    == null ? false : globalPreferencesDto.getUseParasoftJDBCProxy();
+        boolean useParasoftJDBCProxy = globalPreferencesDto.getUseParasoftJDBCProxy() != null && globalPreferencesDto.getUseParasoftJDBCProxy();
         currentPreferences.setUseParasoftJDBCProxy(useParasoftJDBCProxy);
 
         String virtualizeServerUrl = globalPreferencesDto.getParasoftVirtualizeServerUrl();
@@ -336,7 +336,9 @@ public class GlobalPreferencesService {
 
         currentPreferences.setWebServiceMode(webServiceMode);
         if (WebServiceMode.GRAPHQL.equals(webServiceMode)){
-            currentPreferences.setGraphQLEndpoint(globalPreferencesDto.getGraphQLEndpoint());
+            String graphQLEndpoint = globalPreferencesDto.getGraphQLEndpoint();
+            endpointService.validateUrl(graphQLEndpoint, GlobalPreferencesMessages.INVALID_GRAPHQL_URL);
+            currentPreferences.setGraphQLEndpoint(graphQLEndpoint);
             return;
         }
         // handle endpoints
@@ -345,35 +347,35 @@ public class GlobalPreferencesService {
         Set<RestEndpointEntity> endpoints = new TreeSet<>(new RouteIdSortOfRestEndpoint()); // add new endpoints
         String categoriesRestEndpoint = globalPreferencesDto.getCategoriesRestEndpoint();
         if(!StringUtils.isBlank(categoriesRestEndpoint)){
-            restEndpointService.validateUrl(categoriesRestEndpoint, GlobalPreferencesMessages.INVALID_CATEGORIES_URL);
+            endpointService.validateUrl(categoriesRestEndpoint, GlobalPreferencesMessages.INVALID_CATEGORIES_URL);
             endpoints.add(new RestEndpointEntity(CATEGORIES_ENDPOINT_ID, CATEGORIES_ENDPOINT_PATH,
                     categoriesRestEndpoint, currentPreferences));
         }
 
         String itemsRestEndpoint = globalPreferencesDto.getItemsRestEndpoint();
         if(!StringUtils.isBlank(itemsRestEndpoint)){
-            restEndpointService.validateUrl(itemsRestEndpoint, GlobalPreferencesMessages.INVALID_ITEMS_URL);
+            endpointService.validateUrl(itemsRestEndpoint, GlobalPreferencesMessages.INVALID_ITEMS_URL);
             endpoints.add(new RestEndpointEntity(ITEMS_ENDPOINT_ID, ITEMS_ENDPOINT_PATH,
                     itemsRestEndpoint, currentPreferences));
         }
 
         String cartItemsRestEndpoint = globalPreferencesDto.getCartItemsRestEndpoint();
         if(!StringUtils.isBlank(cartItemsRestEndpoint)){
-            restEndpointService.validateUrl(cartItemsRestEndpoint, GlobalPreferencesMessages.INVALID_CART_ITEMS_URL);
+            endpointService.validateUrl(cartItemsRestEndpoint, GlobalPreferencesMessages.INVALID_CART_ITEMS_URL);
             endpoints.add(new RestEndpointEntity(CART_ENDPOINT_ID, CART_ENDPOINT_PATH,
                     cartItemsRestEndpoint, currentPreferences));
         }
 
         String ordersRestEndpoint = globalPreferencesDto.getOrdersRestEndpoint();
         if(!StringUtils.isBlank(ordersRestEndpoint)){
-            restEndpointService.validateUrl(ordersRestEndpoint, GlobalPreferencesMessages.INVALID_ORDERS_URL);
+            endpointService.validateUrl(ordersRestEndpoint, GlobalPreferencesMessages.INVALID_ORDERS_URL);
             endpoints.add(new RestEndpointEntity(ORDERS_ENDPOINT_ID, ORDERS_ENDPOINT_PATH,
                     ordersRestEndpoint, currentPreferences));
         }
 
         String locationsRestEndpoint = globalPreferencesDto.getLocationsRestEndpoint();
         if(!StringUtils.isBlank(locationsRestEndpoint)){
-            restEndpointService.validateUrl(locationsRestEndpoint, GlobalPreferencesMessages.INVALID_LOCATIONS_URL);
+            endpointService.validateUrl(locationsRestEndpoint, GlobalPreferencesMessages.INVALID_LOCATIONS_URL);
             endpoints.add(new RestEndpointEntity(LOCATIONS_ENDPOINT_ID, LOCATIONS_ENDPOINT_PATH,
                     locationsRestEndpoint, currentPreferences));
         }
@@ -394,7 +396,6 @@ public class GlobalPreferencesService {
             currentPreferences.setOrderServiceReplyToQueue(globalPreferencesDto.getOrderServiceReplyToQueue());
             currentPreferences.setInventoryServiceReplyToQueue(globalPreferencesDto.getInventoryServiceReplyToQueue());
             currentPreferences.setInventoryServiceDestinationQueue(globalPreferencesDto.getInventoryServiceDestinationQueue());
-        } else {
         }
         currentPreferences.setMqProxyEnabled(mqProxyEnabled);
     }

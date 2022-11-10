@@ -22,6 +22,7 @@ public class LoginController {
 
 		try {
 			modelMap.addAttribute("industry", globalPreferencesService.getCurrentIndustry().getValue());
+			modelMap.addAttribute("currentWebServiceMode", globalPreferencesService.getCurrentGlobalPreferences().getWebServiceMode().getValue());
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "error";

@@ -1,6 +1,7 @@
 package com.parasoft.demoapp.config.endpoint;
 
 import com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService;
+import com.parasoft.demoapp.service.GlobalPreferencesService;
 import com.parasoft.demoapp.service.RestEndpointService;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.cloud.netflix.zuul.filters.ZuulProperties;
@@ -15,9 +16,10 @@ public class ZuulConfig {
     @Bean
     @DependsOn("defaultDataInitialization")
     public CustomRouteLocator routeLocator(RestEndpointService restEndpointService,
-                                           GlobalPreferencesDefaultSettingsService defaultGlobalPreferencesSettingsService) {
+                                           GlobalPreferencesDefaultSettingsService defaultGlobalPreferencesSettingsService,
+                                           GlobalPreferencesService globalPreferencesService) {
 
         return new CustomRouteLocator("/", new ZuulProperties(), restEndpointService,
-                                        defaultGlobalPreferencesSettingsService);
+                                        defaultGlobalPreferencesSettingsService, globalPreferencesService);
     }
 }

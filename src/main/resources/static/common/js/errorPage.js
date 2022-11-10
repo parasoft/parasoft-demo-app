@@ -1,4 +1,4 @@
-var app = angular.module('errorPageApp', ['pascalprecht.translate']);
+var app = angular.module('pdaApp', ['pascalprecht.translate']);
 setLocale(app);
 
 app.controller('error_controller', function($rootScope,$http) {

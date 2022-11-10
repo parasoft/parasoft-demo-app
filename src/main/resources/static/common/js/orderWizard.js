@@ -1,4 +1,4 @@
-var app = angular.module('orderWizardPageApp', ['pascalprecht.translate']);
+var app = angular.module('pdaApp', ['pascalprecht.translate']);
 
 setLocale(app);
 //initialize controllers of import page

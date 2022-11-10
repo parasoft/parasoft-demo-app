@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:ng="http://angularjs.org" xmlns:th="http://www.thymeleaf.org" ng-app="loginApp">
+<html xmlns:ng="http://angularjs.org" xmlns:th="http://www.thymeleaf.org" ng-app="pdaApp">
 <head>
 	<meta charset="UTF-8">
 	<title translate="PROJECT_NAME"></title>
@@ -12,6 +12,7 @@
 	<link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/login.css'">
 </head>
 <body>
+	<input type="hidden" id="current_web_service_mode" th:value="${currentWebServiceMode}">
 	<div class="page-container">
 		<div class="header-section" ng-include="'/common/pages/header.html'" ng-controller="headerController"></div>
 		<div class="page-content-section" ng-controller="loginController as login">

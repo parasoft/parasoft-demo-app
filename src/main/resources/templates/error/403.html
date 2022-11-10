@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="en" xmlns:ng="http://angularjs.org" xmlns:th="http://www.thymeleaf.org" ng-app="errorPageApp">
+<html lang="en" xmlns:ng="http://angularjs.org" xmlns:th="http://www.thymeleaf.org" ng-app="pdaApp">
 <head>
 	<meta charset="UTF-8">
 	<title translate="PROJECT_NAME"></title>
@@ -11,6 +11,7 @@
 	<link rel="stylesheet" type="text/css" ng-href="/{{industry}}/css/error.css">
 </head>
 <body>
+	<input type="hidden" id="current_web_service_mode" th:value="${currentWebServiceMode}">
 	<div class="message warning industry_font" ng-controller="error_controller as error">
 		<div class="error_head">
 			<h1 translate="403_ERROR_TITLE"></h1>

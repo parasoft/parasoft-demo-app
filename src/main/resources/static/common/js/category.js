@@ -1,4 +1,4 @@
-var app = angular.module('categoryPageApp', ['pascalprecht.translate','ngCookies']);
+var app = angular.module('pdaApp', ['pascalprecht.translate','ngCookies']);
 
 setLocale(app);
 //Initialize controllers of import page
