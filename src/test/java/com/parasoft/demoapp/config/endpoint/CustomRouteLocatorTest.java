@@ -1,42 +1,22 @@
-/**
- * 
- */
 package com.parasoft.demoapp.config.endpoint;
 
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.CART_ENDPOINT_ID;
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.CART_ENDPOINT_PATH;
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.CART_ENDPOINT_REAL_PATH;
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.CATEGORIES_ENDPOINT_ID;
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.CATEGORIES_ENDPOINT_PATH;
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.CATEGORIES_ENDPOINT_REAL_PATH;
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.HOST_WITHOUT_PORT;
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.ITEMS_ENDPOINT_ID;
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.ITEMS_ENDPOINT_PATH;
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.ITEMS_ENDPOINT_REAL_PATH;
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.LOCATIONS_ENDPOINT_ID;
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.LOCATIONS_ENDPOINT_PATH;
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.LOCATIONS_ENDPOINT_REAL_PATH;
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.ORDERS_ENDPOINT_ID;
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.ORDERS_ENDPOINT_PATH;
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.ORDERS_ENDPOINT_REAL_PATH;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.parasoft.demoapp.model.global.preferences.GlobalPreferencesEntity;
+import com.parasoft.demoapp.model.global.preferences.RestEndpointEntity;
+import com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService;
+import com.parasoft.demoapp.service.GlobalPreferencesService;
+import com.parasoft.demoapp.service.RestEndpointService;
+import org.junit.Test;
+import org.springframework.cloud.netflix.zuul.filters.ZuulProperties;
+import org.springframework.cloud.netflix.zuul.filters.ZuulProperties.ZuulRoute;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
-import org.springframework.cloud.netflix.zuul.filters.ZuulProperties;
-import org.springframework.cloud.netflix.zuul.filters.ZuulProperties.ZuulRoute;
-
-import com.parasoft.demoapp.model.global.preferences.GlobalPreferencesEntity;
-import com.parasoft.demoapp.model.global.preferences.RestEndpointEntity;
-import com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService;
-import com.parasoft.demoapp.service.RestEndpointService;
+import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.*;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Test class for CustomRouteLocator
@@ -62,6 +42,7 @@ public class CustomRouteLocatorTest {
 		GlobalPreferencesEntity globalPreferences = mock(GlobalPreferencesEntity.class);
 		GlobalPreferencesDefaultSettingsService globalPreferencesDefaultSettingsService =
 				mock(GlobalPreferencesDefaultSettingsService.class);
+		GlobalPreferencesService globalPreferencesService = mock(GlobalPreferencesService.class);
 
 		String routeId = "routeId";
 		String path = "/v1/assets/**";
@@ -71,16 +52,18 @@ public class CustomRouteLocatorTest {
 		endpoints.add(testedEndpoint);
 		
 		when(restEndpointService.getAllEndpoints()).thenReturn(endpoints);
+		when(globalPreferences.getGraphQLEndpoint()).thenReturn("");
+		when(globalPreferencesService.getCurrentGlobalPreferences()).thenReturn(globalPreferences);
 
 		// When
 		CustomRouteLocator underTest = new CustomRouteLocator(servletPath, properties, restEndpointService,
-				globalPreferencesDefaultSettingsService);
+				globalPreferencesDefaultSettingsService, globalPreferencesService);
 
 		Map<String, ZuulRoute> result = underTest.locateRoutes();
 
 		// Then
 		assertNotNull(result);
-		assertEquals(6, result.size());
+		assertEquals(7, result.size());
 		assertTrue(result.containsKey(path));
 	}
 	
@@ -103,20 +86,23 @@ public class CustomRouteLocatorTest {
 		GlobalPreferencesEntity globalPreferences = mock(GlobalPreferencesEntity.class);
 		GlobalPreferencesDefaultSettingsService globalPreferencesDefaultSettingsService =
 				mock(GlobalPreferencesDefaultSettingsService.class);
+		GlobalPreferencesService globalPreferencesService = mock(GlobalPreferencesService.class);
 
 		RestEndpointEntity endpoint = new RestEndpointEntity(routeId, path, url, globalPreferences);
 		endpoints.add(endpoint);
 		
 		when(restEndpointService.getAllEndpoints()).thenReturn(endpoints);
+		when(globalPreferences.getGraphQLEndpoint()).thenReturn("");
+		when(globalPreferencesService.getCurrentGlobalPreferences()).thenReturn(globalPreferences);
 		
 		// When
 		CustomRouteLocator underTest = new CustomRouteLocator(servletPath, properties, restEndpointService,
-				globalPreferencesDefaultSettingsService);
+				globalPreferencesDefaultSettingsService, globalPreferencesService);
 		Map<String, ZuulRoute> result = underTest.locateRoutes();
 
 		// Then
 		assertNotNull(result);
-		assertEquals(6, result.size());
+		assertEquals(7, result.size());
 		assertTrue(result.containsKey("/" + path));
 	}
 	
@@ -139,20 +125,23 @@ public class CustomRouteLocatorTest {
 		GlobalPreferencesEntity globalPreferences = mock(GlobalPreferencesEntity.class);
 		GlobalPreferencesDefaultSettingsService globalPreferencesDefaultSettingsService =
 				mock(GlobalPreferencesDefaultSettingsService.class);
+		GlobalPreferencesService globalPreferencesService = mock(GlobalPreferencesService.class);
 
 		RestEndpointEntity endpoint = new RestEndpointEntity(routeId, path, url, globalPreferences);
 		endpoints.add(endpoint);
 		
 		when(restEndpointService.getAllEndpoints()).thenReturn(endpoints);
+		when(globalPreferences.getGraphQLEndpoint()).thenReturn("");
+		when(globalPreferencesService.getCurrentGlobalPreferences()).thenReturn(globalPreferences);
 		
 		// When
 		CustomRouteLocator underTest = new CustomRouteLocator(servletPath, properties, restEndpointService,
-				globalPreferencesDefaultSettingsService);
+				globalPreferencesDefaultSettingsService, globalPreferencesService);
 		Map<String, ZuulRoute> result = underTest.locateRoutes();
 
 		// Then
 		assertNotNull(result);
-		assertEquals(5, result.size());
+		assertEquals(6, result.size());
 	}
 	
 	/**
@@ -174,20 +163,23 @@ public class CustomRouteLocatorTest {
 		GlobalPreferencesEntity globalPreferences = mock(GlobalPreferencesEntity.class);
 		GlobalPreferencesDefaultSettingsService globalPreferencesDefaultSettingsService =
 				mock(GlobalPreferencesDefaultSettingsService.class);
+		GlobalPreferencesService globalPreferencesService = mock(GlobalPreferencesService.class);
 
 		RestEndpointEntity endpoint = new RestEndpointEntity(routeId, path, url, globalPreferences);
 		endpoints.add(endpoint);
 		
 		when(restEndpointService.getAllEndpoints()).thenReturn(endpoints);
+		when(globalPreferences.getGraphQLEndpoint()).thenReturn("");
+		when(globalPreferencesService.getCurrentGlobalPreferences()).thenReturn(globalPreferences);
 		
 		// When
 		CustomRouteLocator underTest = new CustomRouteLocator(servletPath, properties, restEndpointService,
-				globalPreferencesDefaultSettingsService);
+				globalPreferencesDefaultSettingsService, globalPreferencesService);
 		Map<String, ZuulRoute> result = underTest.locateRoutes();
 
 		// Then
 		assertNotNull(result);
-		assertEquals(5, result.size());
+		assertEquals(6, result.size());
 	}
 	
 	/**
@@ -209,20 +201,23 @@ public class CustomRouteLocatorTest {
 		GlobalPreferencesEntity globalPreferences = mock(GlobalPreferencesEntity.class);
 		GlobalPreferencesDefaultSettingsService globalPreferencesDefaultSettingsService =
 				mock(GlobalPreferencesDefaultSettingsService.class);
+		GlobalPreferencesService globalPreferencesService = mock(GlobalPreferencesService.class);
 
 		RestEndpointEntity endpoint = new RestEndpointEntity(routeId, path, url, globalPreferences);
 		endpoints.add(endpoint);
 		
 		when(restEndpointService.getAllEndpoints()).thenReturn(endpoints);
+		when(globalPreferences.getGraphQLEndpoint()).thenReturn("");
+		when(globalPreferencesService.getCurrentGlobalPreferences()).thenReturn(globalPreferences);
 		
 		// When
 		CustomRouteLocator underTest = new CustomRouteLocator(servletPath, properties, restEndpointService,
-				globalPreferencesDefaultSettingsService);
+				globalPreferencesDefaultSettingsService, globalPreferencesService);
 		Map<String, ZuulRoute> result = underTest.locateRoutes();
 
 		// Then
 		assertNotNull(result);
-		assertEquals(5, result.size());
+		assertEquals(6, result.size());
 	}
 	
 	/**
@@ -244,20 +239,23 @@ public class CustomRouteLocatorTest {
 		GlobalPreferencesEntity globalPreferences = mock(GlobalPreferencesEntity.class);
 		GlobalPreferencesDefaultSettingsService globalPreferencesDefaultSettingsService =
 				mock(GlobalPreferencesDefaultSettingsService.class);
+		GlobalPreferencesService globalPreferencesService = mock(GlobalPreferencesService.class);
 
 		RestEndpointEntity endpoint = new RestEndpointEntity(routeId, path, url, globalPreferences);
 		endpoints.add(endpoint);
 		
 		when(restEndpointService.getAllEndpoints()).thenReturn(endpoints);
+		when(globalPreferences.getGraphQLEndpoint()).thenReturn("");
+		when(globalPreferencesService.getCurrentGlobalPreferences()).thenReturn(globalPreferences);
 		
 		// When
 		CustomRouteLocator underTest = new CustomRouteLocator(servletPath, properties, restEndpointService,
-				globalPreferencesDefaultSettingsService);
+				globalPreferencesDefaultSettingsService, globalPreferencesService);
 		Map<String, ZuulRoute> result = underTest.locateRoutes();
 
 		// Then
 		assertNotNull(result);
-		assertEquals(5, result.size());
+		assertEquals(6, result.size());
 	}
 
 	private List<RestEndpointEntity> getDefaultRestEndpoints(){
