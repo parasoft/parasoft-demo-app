@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
@@ -28,7 +29,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class LocationGraphQLDataFetcherTest {
 
     private static final String LOCATION_GRAPHQL_RESOURCE = "graphql/locations/location.graphql";
-    private static final String UNAUTHORIZED_ERR = "Current user is not authorized.";
     private static final String LOCATION_DATA_JSON_PATH = DATA_PATH + ".getLocation";
 
     @Autowired private GraphQLTestTemplate graphQLTestTemplate;
@@ -70,7 +70,7 @@ public class LocationGraphQLDataFetcherTest {
                 .asListOf(GraphQLTestError.class)
                 .hasOnlyOneElementSatisfying(error -> {
                     assertThat(error.getMessage()).isEqualTo("Location not found.");
-                   assertThat(error.getExtensions().get("statusCode")).isEqualTo(404);
+                   assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.NOT_FOUND.value());
                 })
                 .and()
                 .assertThatField(LOCATION_DATA_JSON_PATH).isNull();
@@ -108,8 +108,8 @@ public class LocationGraphQLDataFetcherTest {
         response.assertThatErrorsField().isNotNull()
                 .asListOf(GraphQLTestError.class)
                 .hasOnlyOneElementSatisfying(error -> {
-                    assertThat(error.getMessage()).isEqualTo(UNAUTHORIZED_ERR);
-                    assertThat(error.getExtensions().get("statusCode")).isEqualTo(401);
+                    assertThat(error.getMessage()).isEqualTo(GraphQLTestErrorType.UNAUTHORIZED.toString());
+                    assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.UNAUTHORIZED.value());
                 })
                 .and()
                 .assertThatField(LOCATION_DATA_JSON_PATH).isNull();
