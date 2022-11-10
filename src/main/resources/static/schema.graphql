@@ -1,5 +1,6 @@
 type Query {
     getCategoryById(categoryId: ID): Category
+    getLocation(region: RegionType!): Location
 }
 
 type Category {
@@ -9,3 +10,36 @@ type Category {
     image: String
 }
 
+type Location {
+    id: ID!
+    region: RegionType!
+    locationInfo: String
+    locationImage: String
+}
+
+enum RegionType {
+    UNITED_STATES
+    UNITED_KINGDOM
+    GERMANY
+    FRANCE
+    JAPAN
+    SOUTH_KOREA
+    SPAIN
+    AUSTRALIA
+    MERCURY
+    VENUS
+    EARTH
+    MARS
+    JUPITER
+    SATURN
+    URANUS
+    NEPTUNE
+    LOCATION_1
+    LOCATION_2
+    LOCATION_3
+    LOCATION_4
+    LOCATION_5
+    LOCATION_6
+    LOCATION_7
+    LOCATION_8
+}

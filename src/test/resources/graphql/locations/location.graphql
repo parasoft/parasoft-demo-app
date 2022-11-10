@@ -1,0 +1,7 @@
+query LocationInfo($region: RegionType!) {
+    getLocation(region: $region) {
+        id
+        locationInfo
+        locationImage
+    }
+}
