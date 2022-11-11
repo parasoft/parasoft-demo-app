@@ -8,8 +8,8 @@ import graphql.schema.idl.RuntimeWiring;
 import graphql.schema.idl.SchemaGenerator;
 import graphql.schema.idl.SchemaParser;
 import graphql.schema.idl.TypeDefinitionRegistry;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @Slf4j
+@RequiredArgsConstructor
 @Component
 public class GraphQLProvider {
     private GraphQL graphQL;
@@ -27,11 +28,11 @@ public class GraphQLProvider {
     @Value("classpath:static/schema.graphql")
     protected Resource graphqlSchemaResource;
 
-    @Autowired
-    private CategoryGraphQLDataFetcher categoryDataFetcher;
+    private final CategoryGraphQLDataFetcher categoryDataFetcher;
 
-    @Autowired
-    private OrderGraphQLDataFetcher orderGraphQLDataFetcher;
+    private final LocationGraphQLDataFetcher locationDataFetcher;
+
+    private final OrderGraphQLDataFetcher orderGraphQLDataFetcher;
 
     @PostConstruct
     public void init() throws IOException {
@@ -48,9 +49,11 @@ public class GraphQLProvider {
         SchemaGenerator schemaGenerator = new SchemaGenerator();
         return schemaGenerator.makeExecutableSchema(typeRegistry, runtimeWiring);
     }
+
     private RuntimeWiring buildWiring() {
         RuntimeWiring.Builder builder = RuntimeWiring.newRuntimeWiring();
         categoryTypeWiring(builder);
+        locationTypeWiring(builder);
         orderTypeWiring(builder);
         return builder.build();
     }
@@ -58,6 +61,11 @@ public class GraphQLProvider {
     private void categoryTypeWiring(RuntimeWiring.Builder builder) {
         builder.type("Query", typeWriting -> typeWriting.dataFetcher("getCategoryById", categoryDataFetcher.getCategoryById()));
         builder.type("Query", typeWriting -> typeWriting.dataFetcher("getCategories", categoryDataFetcher.getCategories()));
+    }
+
+    private void locationTypeWiring(RuntimeWiring.Builder builder) {
+        builder.type("Query", typeWiring ->
+                typeWiring.dataFetcher("getLocation", locationDataFetcher.getLocation()));
     }
 
     private void orderTypeWiring(RuntimeWiring.Builder builder) {

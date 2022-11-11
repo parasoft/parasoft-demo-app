@@ -54,6 +54,10 @@ dependencies {
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'com.graphql-java-kickstart:graphql-spring-boot-test:14.0.0'
+	testImplementation 'com.graphql-java-kickstart:graphql-java-kickstart:14.0.0'
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
 
 	implementation 'org.apache.activemq:activemq-stomp'
 	// Exclude `jetty-all` dependency, but keep other necessary jetty dependencies.

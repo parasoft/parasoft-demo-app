@@ -2,6 +2,8 @@ type Query {
     # category
     getCategoryById(categoryId: ID): Category,
     getCategories(searchString: String, page: Int, size: Int, sort: [String]): CategoryPageInfo
+    # location
+    getLocation(region: RegionType): Location
 }
 
 type Mutation {
@@ -24,6 +26,39 @@ type CategoryPageInfo {
     numberOfElements: Int,
     sort: String,
     content: [Category]
+}
+
+# location
+type Location {
+    id: ID!
+    locationInfo: String
+    locationImage: String
+}
+enum RegionType {
+    UNITED_STATES
+    UNITED_KINGDOM
+    GERMANY
+    FRANCE
+    JAPAN
+    SOUTH_KOREA
+    SPAIN
+    AUSTRALIA
+    MERCURY
+    VENUS
+    EARTH
+    MARS
+    JUPITER
+    SATURN
+    URANUS
+    NEPTUNE
+    LOCATION_1
+    LOCATION_2
+    LOCATION_3
+    LOCATION_4
+    LOCATION_5
+    LOCATION_6
+    LOCATION_7
+    LOCATION_8
 }
 
 # order
