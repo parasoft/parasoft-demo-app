@@ -5,6 +5,7 @@ import com.parasoft.demoapp.messages.ConfigMessages;
 import com.parasoft.demoapp.util.HttpServletResponseUtil;
 import com.parasoft.demoapp.util.UrlUtil;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -19,7 +20,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     public void commence(HttpServletRequest req, HttpServletResponse resp, AuthenticationException authException)
             throws IOException {
 
-        if (authException instanceof InsufficientAuthenticationException) {
+        if (authException instanceof InsufficientAuthenticationException || authException instanceof BadCredentialsException) {
             if(!isRestfulApiRequest(req)){
                 resp.sendRedirect("/loginPage");
             }else{

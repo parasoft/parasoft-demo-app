@@ -67,6 +67,7 @@ public class SecurityConfig {
                     .antMatchers("/v1/**", "/proxy/v1/**").permitAll()
                  .and()
                     .httpBasic()
+                        .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
                         .realmName("Parasoft Demo App")
                  .and()
                     .csrf()
