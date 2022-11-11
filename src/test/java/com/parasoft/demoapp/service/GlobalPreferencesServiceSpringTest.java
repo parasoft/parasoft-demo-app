@@ -47,7 +47,7 @@ import static org.mockito.Mockito.doNothing;
 @DirtiesContext
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringJUnit4ClassRunner.class)
-@PowerMockIgnore({ "com.sun.org.apache.*", "javax.xml.*", "org.xml.*", "javax.management.*", "javax.net.ssl.*" })
+@PowerMockIgnore({ "com.sun.org.apache.*", "javax.xml.*", "org.xml.*", "javax.management.*", "javax.net.*" })
 @PrepareForTest(UrlUtil.class)
 @SpringBootTest
 public class GlobalPreferencesServiceSpringTest {

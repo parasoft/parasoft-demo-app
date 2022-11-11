@@ -6,7 +6,7 @@ initImportPageControllers(app);
 
 initToastr();
 
-app.controller('orderWizardController', function($scope, $rootScope, $http, $filter) {
+app.controller('orderWizardController', function($scope, $rootScope, $http, $filter, graphQLService) {
 	$rootScope.isShowRequisitionRequestButton = false;
 	connectAndSubscribeMQ(CURRENT_ROLE,$http,$rootScope,$filter);
 	getUnreviewedAmount($http,$rootScope,$filter);
@@ -163,19 +163,30 @@ app.controller('orderWizardController', function($scope, $rootScope, $http, $fil
         var region_select = angular.element("#region_select option:selected").val().replace("string:","");
         $scope.region = region_select;
 		if(region_select !== '' && region_select !== '-'){
-            $http({
-                method: 'GET',
-        	    url: '/proxy/v1/locations/location',
-        	    params:{"region": region_select}
-            }).then(function(result) {
-        	    $scope.positionInfo = true;
-        	    var location = result.data.data;
-        	    $scope.locationInfo = location.locationInfo;
-        	    $scope.locationImage = location.locationImage;
-            }).catch(function(result) {
-        	    console.info(result);
-        	    displayLoadError(result,$rootScope,$filter,$http,true,"locations");
-            })
+			let success = (data) => {
+				$scope.positionInfo = true;
+				$scope.locationInfo = data.locationInfo;
+				$scope.locationImage = data.locationImage;
+			}
+			let error = (data, endpointType) => {
+				console.info(data);
+				displayLoadError(data,$rootScope,$filter,$http,true,endpointType);
+			}
+
+			let params = {"region": region_select};
+			if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+				graphQLService.getLocation(params, success, (data) => {error(data, "graphQL")});
+			} else {
+				$http({
+					method: 'GET',
+					url: '/proxy/v1/locations/location',
+					params: params
+				}).then(function(result) {
+					success(result.data.data);
+				}).catch(function(result) {
+					error(result, "locations");
+				})
+			}
         }
 
 		//Control for get location button
