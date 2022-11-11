@@ -3,10 +3,13 @@ package com.parasoft.demoapp.graphql;
 import graphql.ErrorType;
 import graphql.GraphQLError;
 import graphql.language.SourceLocation;
-import java.util.Collections;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+@Slf4j
 public class GraphQLException extends RuntimeException implements GraphQLError {
 
     private final int httpStatusCode;
@@ -16,6 +19,7 @@ public class GraphQLException extends RuntimeException implements GraphQLError {
         super(message, cause);
         this.httpStatusCode = httpStatusCode;
         this.data = data;
+        log.error(cause.getMessage(), cause);
     }
 
     @Override

@@ -3,6 +3,11 @@ type Query {
     getCategoryById(categoryId: ID): Category,
     getCategories(searchString: String, page: Int, size: Int, sort: [String]): CategoryPageInfo
 }
+
+type Mutation {
+    createOrder(orderDTO: OrderDTO): Order
+}
+
 # category
 type Category {
     id: ID,
@@ -10,6 +15,7 @@ type Category {
     description: String,
     image: String
 }
+
 type CategoryPageInfo {
     totalElements: ID,
     totalPages: Int,
@@ -18,4 +24,43 @@ type CategoryPageInfo {
     numberOfElements: Int,
     sort: String,
     content: [Category]
+}
+
+# order
+type Order {
+    id: ID,
+    orderNumber: String,
+    requestedBy: String,
+    status: String,
+    reviewedByAPV: Boolean,
+    reviewedByPRCH: Boolean,
+    respondedBy: String,
+    orderItems: [OrderItem],
+    region: String,
+    location: String,
+    orderImage: String,
+    receiverId: String,
+    eventId: String,
+    eventNumber: String,
+    submissionDate: String,
+    approverReplyDate: String,
+    comments: String
+}
+
+type OrderItem {
+    id: ID,
+    name: String,
+    description: String,
+    image: String,
+    order: Order,
+    itemId: ID,
+    quantity: Int
+}
+
+input OrderDTO {
+    region: String,
+    location: String,
+    receiverId: String,
+    eventId: String,
+    eventNumber: String
 }
