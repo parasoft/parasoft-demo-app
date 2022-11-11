@@ -24,7 +24,6 @@ type CategoryPageInfo {
 # location
 type Location {
     id: ID!
-    region: RegionType!
     locationInfo: String
     locationImage: String
 }

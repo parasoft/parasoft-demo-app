@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @GraphQLTest
 public class LocationGraphQLDataFetcherTest {
 
-    private static final String LOCATION_GRAPHQL_RESOURCE = "graphql/locations/location.graphql";
+    private static final String LOCATION_GRAPHQL_RESOURCE = "graphql/locations/getLocation.graphql";
     private static final String LOCATION_DATA_JSON_PATH = DATA_PATH + ".getLocation";
 
     @Autowired private GraphQLTestTemplate graphQLTestTemplate;
@@ -51,6 +51,8 @@ public class LocationGraphQLDataFetcherTest {
         log.info(response.getRawResponse().getBody());
         assertThat(response.isOk()).isTrue();
         response.assertThatNoErrorsArePresent()
+                .assertThatDataField().isNotNull()
+                .and()
                 .assertThatField(LOCATION_DATA_JSON_PATH)
                 .as(LocationEntity.class)
                 .hasNoNullFieldsOrPropertiesExcept("region");
