@@ -1,0 +1,14 @@
+query GetAllCategories($searchString: String, $page: Int, $size: Int, $sort: [String]) {
+    getCategories(searchString: $searchString, page: $page, size: $size, sort: $sort) {
+        totalElements
+        totalPages
+        size
+        sort
+        content {
+            id
+            name
+            description
+            image
+        }
+    }
+}
