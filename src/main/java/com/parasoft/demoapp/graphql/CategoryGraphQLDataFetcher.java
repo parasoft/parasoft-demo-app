@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.HOST_WITHOUT_PORT;
+
 @RequiredArgsConstructor
 @Component
 public class CategoryGraphQLDataFetcher {
@@ -36,7 +38,7 @@ public class CategoryGraphQLDataFetcher {
 
     @PostConstruct
     private void init() {
-        categoryBaseUrl = "http://localhost:" + webConfig.getServerPort() +"/v1/assets/categories";
+        categoryBaseUrl = HOST_WITHOUT_PORT + webConfig.getServerPort() +"/v1/assets/categories";
     }
 
     public DataFetcher<CategoryEntity> getCategoryById() {
