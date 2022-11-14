@@ -1,0 +1,18 @@
+query ItemPageInfo($categoryId: Int, $regions: [RegionType], $searchString: String, $page: Int, $size: Int, $sort: [String]) {
+    getItems(categoryId: $categoryId, regions: $regions, searchString: $searchString, page: $page, size: $size, sort: $sort) {
+        totalElements
+        size
+        totalPages
+        sort
+        content {
+            id
+            name
+            description
+            inStock
+            image
+            region
+            lastAccessedDate
+            categoryId
+        }
+    }
+}

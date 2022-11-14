@@ -6,6 +6,8 @@ type Query {
     getCategories(searchString: String, page: Int, size: Int, sort: [String]): CategoryPageInfo
     # location
     getLocation(region: RegionType!): Location
+    #item
+    getItems(categoryId: Int, regions: [RegionType], searchString: String, page: Int, size: Int, sort: [String]): ItemPageInfo
 }
 # category
 type Category {
@@ -54,4 +56,26 @@ enum RegionType {
     LOCATION_6
     LOCATION_7
     LOCATION_8
+}
+
+#item
+type Item {
+    id: ID
+    name: String
+    description: String
+    inStock: Int
+    image: String
+    region: RegionType
+    lastAccessedDate: DateTime
+    categoryId: Int
+}
+
+type ItemPageInfo {
+    totalElements: Int
+    totalPages: Int
+    size: Int
+    number: Int
+    numberOfElements: Int
+    sort: String
+    content: [Item]
 }

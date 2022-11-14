@@ -1,8 +1,9 @@
 package com.parasoft.demoapp.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
+import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
+import com.parasoft.demoapp.model.industry.CategoryEntity;
+import com.parasoft.demoapp.model.industry.ItemEntity;
+import com.parasoft.demoapp.model.industry.RegionType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +15,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
-import com.parasoft.demoapp.messages.AssetMessages;
-import com.parasoft.demoapp.model.industry.CategoryEntity;
-import com.parasoft.demoapp.model.industry.ItemEntity;
-import com.parasoft.demoapp.model.industry.RegionType;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
@@ -88,18 +86,6 @@ public class ItemServiceSpringTest {
         // Then
         assertNotNull(result);
         assertEquals(2, result.getSize());
-
-        // When
-        String message = "";
-        RegionType[] regions6 = {RegionType.LOCATION_3};
-        try {
-            underTest.getItems(categoryOne.getId(), regions6, "III", Pageable.unpaged());
-        } catch (Exception e) {
-            message = e.getMessage();
-        }
-
-        // Then
-        assertEquals(AssetMessages.NO_ITEMS, message);
 
         // When
         RegionType[] regions7 = {};

@@ -1,20 +1,12 @@
 package com.parasoft.demoapp.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.nullable;
-import static org.mockito.Mockito.*;
-
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
+import com.parasoft.demoapp.exception.UploadedImageCanNotDeleteException;
+import com.parasoft.demoapp.messages.AssetMessages;
+import com.parasoft.demoapp.model.industry.CategoryEntity;
+import com.parasoft.demoapp.model.industry.ItemEntity;
 import com.parasoft.demoapp.model.industry.ItemInventoryEntity;
+import com.parasoft.demoapp.model.industry.RegionType;
+import com.parasoft.demoapp.repository.industry.ItemRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -25,12 +17,16 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
-import com.parasoft.demoapp.exception.UploadedImageCanNotDeleteException;
-import com.parasoft.demoapp.messages.AssetMessages;
-import com.parasoft.demoapp.model.industry.CategoryEntity;
-import com.parasoft.demoapp.model.industry.ItemEntity;
-import com.parasoft.demoapp.model.industry.RegionType;
-import com.parasoft.demoapp.repository.industry.ItemRepository;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 /**
  * test class for ItemService
@@ -1421,34 +1417,6 @@ public class ItemServiceTest {
 		assertNotNull(result);
 		assertEquals(1, result.getSize());
         verify(itemInventoryService, times(itemList.size())).getInStockByItemId(nullable(Long.class));
-	}
-
-	/**
-	 * test for getItems(Long, RegionType, String, Pageable) with NoItemException
-	 *
-	 * @see ItemService#getItems(Long, RegionType[], String, Pageable)
-	 */
-	@Test
-	public void testGetItems_noItems() throws Throwable {
-		// Given
-		Long CategoryId = 0L;
-		RegionType[] regions = {RegionType.GERMANY, RegionType.JAPAN};
-		String searchName = null;
-		List<ItemEntity> itemList = new ArrayList<>();
-		Page<ItemEntity> findAllResult = new PageImpl<>(itemList);
-		doReturn(findAllResult).when(itemRepository).findAll(any(Specification.class), any(Pageable.class));
-
-		// When
-		String message = "";
-		try {
-			underTest.getItems(CategoryId, regions, searchName, Pageable.unpaged());
-		} catch (Exception e) {
-			message = e.getMessage();
-		}
-
-		// Then
-		assertEquals(AssetMessages.NO_ITEMS, message);
-        verify(itemInventoryService, times(0)).getInStockByItemId(nullable(Long.class));
 	}
 
 	/**
