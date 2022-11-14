@@ -52,11 +52,14 @@ public class GraphQLProvider {
         RuntimeWiring.Builder builder = RuntimeWiring.newRuntimeWiring();
         categoryTypeWiring(builder);
         locationTypeWiring(builder);
-        return builder.build();
+        return builder
+                .scalar(DateTimeScalar.getInstance())
+                .build();
     }
 
     private void categoryTypeWiring(RuntimeWiring.Builder builder) {
         builder.type("Query", typeWriting -> typeWriting.dataFetcher("getCategoryById", categoryDataFetcher.getCategoryById()));
+        builder.type("Query", typeWriting -> typeWriting.dataFetcher("getCategoryByName", categoryDataFetcher.getCategoryByName()));
         builder.type("Query", typeWriting -> typeWriting.dataFetcher("getCategories", categoryDataFetcher.getCategories()));
         builder.type("Mutation", typeWriting -> typeWriting.dataFetcher("deleteCategoryById", categoryDataFetcher.deleteCategoryById()));
     }
@@ -70,5 +73,4 @@ public class GraphQLProvider {
     public GraphQL graphQL() {
         return graphQL;
     }
-
 }
