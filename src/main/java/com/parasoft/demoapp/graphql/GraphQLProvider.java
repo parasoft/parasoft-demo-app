@@ -35,6 +35,8 @@ public class GraphQLProvider {
 
     private final LocationGraphQLDataFetcher locationDataFetcher;
 
+    private final OrderGraphQLDataFetcher orderGraphQLDataFetcher;
+
     @PostConstruct
     public void init() throws IOException {
         GraphQLSchema graphQLSchema = buildSchema(graphqlSchemaResource.getInputStream());
@@ -55,6 +57,7 @@ public class GraphQLProvider {
         RuntimeWiring.Builder builder = RuntimeWiring.newRuntimeWiring();
         categoryTypeWiring(builder);
         locationTypeWiring(builder);
+        orderTypeWiring(builder);
         return builder
                 .scalar(getDateTimeScalar())
                 .build();
@@ -68,6 +71,10 @@ public class GraphQLProvider {
     private void locationTypeWiring(RuntimeWiring.Builder builder) {
         builder.type("Query", typeWiring ->
                 typeWiring.dataFetcher("getLocation", locationDataFetcher.getLocation()));
+    }
+
+    private void orderTypeWiring(RuntimeWiring.Builder builder) {
+        builder.type("Query", typeWriting -> typeWriting.dataFetcher("getOrderByOrderNumber", orderGraphQLDataFetcher.getOrderByOrderNumber()));
     }
 
     @Bean
