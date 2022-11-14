@@ -7,7 +7,7 @@ type Query {
 }
 type Mutation {
     # category
-    deleteCategory(categoryId: ID): Int
+    deleteCategoryById(categoryId: ID): Int
 }
 # category
 type Category {

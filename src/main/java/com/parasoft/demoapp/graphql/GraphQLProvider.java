@@ -58,7 +58,7 @@ public class GraphQLProvider {
     private void categoryTypeWiring(RuntimeWiring.Builder builder) {
         builder.type("Query", typeWriting -> typeWriting.dataFetcher("getCategoryById", categoryDataFetcher.getCategoryById()));
         builder.type("Query", typeWriting -> typeWriting.dataFetcher("getCategories", categoryDataFetcher.getCategories()));
-        builder.type("Mutation", typeWriting -> typeWriting.dataFetcher("deleteCategory", categoryDataFetcher.deleteCategory()));
+        builder.type("Mutation", typeWriting -> typeWriting.dataFetcher("deleteCategoryById", categoryDataFetcher.deleteCategoryById()));
     }
 
     private void locationTypeWiring(RuntimeWiring.Builder builder) {

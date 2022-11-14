@@ -37,8 +37,8 @@ public class CategoryGraphQLDataFetcherTest {
     private static final String CATEGORIES_GRAPHQL_RESOURCE = "graphql/categories/getCategories.graphql";
     private static final String CATEGORIES_DATA_JSON_PATH = DATA_PATH + ".getCategories";
 
-    private static final String DELETE_CATEGORY_GRAPHQL_RESOURCE = "graphql/categories/deleteCategory.graphql";
-    private static final String DELETE_CATEGORY_DATA_JSON_PATH = DATA_PATH + ".deleteCategory";
+    private static final String DELETE_CATEGORY_GRAPHQL_RESOURCE = "graphql/categories/deleteCategoryById.graphql";
+    private static final String DELETE_CATEGORY_DATA_JSON_PATH = DATA_PATH + ".deleteCategoryById";
 
     @Autowired private GraphQLTestTemplate graphQLTestTemplate;
 
@@ -123,7 +123,7 @@ public class CategoryGraphQLDataFetcherTest {
 
     @SneakyThrows
     @Test
-    public void test_deleteCategory_normal() throws IOException {
+    public void test_deleteCategoryById_normal() throws IOException {
         CategoryEntity categoryEntity = categoryService.addNewCategory(
                 "foo", "name foo", "/foo");
         ObjectNode variables = objectMapper.createObjectNode();
@@ -141,7 +141,7 @@ public class CategoryGraphQLDataFetcherTest {
     }
 
     @Test
-    public void test_deleteCategory_categoryNotFoundException() throws IOException {
+    public void test_deleteCategoryById_categoryNotFoundException() throws IOException {
         ObjectNode variables = objectMapper.createObjectNode();
         variables.put("categoryId", "0");
         GraphQLResponse response = graphQLTestTemplate
@@ -161,7 +161,7 @@ public class CategoryGraphQLDataFetcherTest {
     }
 
     @Test
-    public void test_deleteCategory_categoryHasAtLeastOneItemException() throws IOException {
+    public void test_deleteCategoryById_categoryHasAtLeastOneItemException() throws IOException {
         ObjectNode variables = objectMapper.createObjectNode();
         variables.put("categoryId", "3");
         GraphQLResponse response = graphQLTestTemplate
@@ -181,7 +181,7 @@ public class CategoryGraphQLDataFetcherTest {
     }
 
     @Test
-    public void test_deleteCategory_notAuthenticated() throws IOException {
+    public void test_deleteCategoryById_incorrectAuthentication() throws IOException {
         ObjectNode variables = objectMapper.createObjectNode();
         variables.put("categoryId", "0");
         GraphQLResponse response = graphQLTestTemplate

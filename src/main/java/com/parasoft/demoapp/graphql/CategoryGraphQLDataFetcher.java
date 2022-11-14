@@ -91,7 +91,7 @@ public class CategoryGraphQLDataFetcher {
         };
     }
 
-    public DataFetcher<Integer> deleteCategory() {
+    public DataFetcher<Integer> deleteCategoryById() {
         return dataFetchingEnvironment -> {
             try {
                 Map<String, String> uriVariables = new HashMap<>();
