@@ -52,4 +52,21 @@ public class OrderGraphQLDataFetcher {
             }
         };
     }
+
+    public DataFetcher<OrderEntity> createOrder() {
+        return dataFetchingEnvironment -> {
+            try {
+                ResponseEntity<ResponseResult<OrderEntity>> entity =
+                        restTemplate.exchange(orderBaseUrl,
+                                HttpMethod.POST,
+                                new HttpEntity<>(dataFetchingEnvironment.getArgument("orderDTO"),
+                                        RestTemplateUtil.createHeaders(httpRequest)),
+                                new ParameterizedTypeReference<ResponseResult<OrderEntity>>() {});
+                return Objects.requireNonNull(entity.getBody()).getData();
+            } catch (Exception e) {
+                throw RestTemplateUtil.convertException(e);
+            }
+        };
+    }
+
 }
