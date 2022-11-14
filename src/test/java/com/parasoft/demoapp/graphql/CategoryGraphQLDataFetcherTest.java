@@ -155,7 +155,7 @@ public class CategoryGraphQLDataFetcherTest {
     }
 
     @Test
-    public void testGetCategoryById_incorrectAuthentication() throws IOException {
+    public void testGetCategoryById_notAuthenticated() throws IOException {
         ObjectNode variables = objectMapper.createObjectNode();
         variables.put("categoryId", "3");
         GraphQLResponse response = graphQLTestTemplate
