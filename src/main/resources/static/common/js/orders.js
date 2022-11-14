@@ -6,7 +6,7 @@ initImportPageControllers(app);
 
 initToastr();
 
-app.controller('orderHistoryController', function($rootScope, $http, $filter) {
+app.controller('orderHistoryController', function($rootScope, $http, $filter, graphQLService) {
     var history = this;
     connectAndSubscribeMQ(CURRENT_ROLE,$http,$rootScope,$filter);
     getUnreviewedAmount($http,$rootScope,$filter);
@@ -54,11 +54,8 @@ app.controller('orderHistoryController', function($rootScope, $http, $filter) {
     history.showOrderDetail = {'show':false}
 
     history.openOrderDetail = function(index, orderNumber){
-        $http({
-            method: 'GET',
-            url: '/proxy/v1/orders/'+orderNumber
-        }).then(function(result) {
-            history.order = result.data.data;
+        let success = (data) => {
+            history.order = data;
 
             if(!history.order.reviewedByPRCH){
                 $http({
@@ -105,9 +102,24 @@ app.controller('orderHistoryController', function($rootScope, $http, $filter) {
                     history.order.comments = $filter('translate')('INVENTORY_ITEM_NOT_EXIST');
                 }
             }
-        }).catch(function(result) {
-            console.log(result);
-        });
+        }
+
+        let params = {"orderNumber": orderNumber};
+        if (CURRENT_WEB_SERVICE_MODE === 'GraphQL') {
+            graphQLService.getOrderByOrderNumber(params, success, (data) => {
+                console.log(data);
+            });
+        } else {
+            $http({
+                method: 'GET',
+                url: '/proxy/v1/orders/'+orderNumber
+            }).then(function(result) {
+                success(result.data.data);
+            }).catch(function(result) {
+                console.log(result);
+            });
+        }
+
 
         history.showOrderDetail['show'] = true;
     }
