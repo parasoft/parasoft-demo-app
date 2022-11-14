@@ -3,7 +3,7 @@ package com.parasoft.demoapp.graphql;
 import graphql.GraphQL;
 import graphql.execution.AsyncExecutionStrategy;
 import graphql.execution.AsyncSerialExecutionStrategy;
-import graphql.schema.GraphQLSchema;
+import graphql.schema.*;
 import graphql.schema.idl.RuntimeWiring;
 import graphql.schema.idl.SchemaGenerator;
 import graphql.schema.idl.SchemaParser;
@@ -18,6 +18,9 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -55,7 +58,10 @@ public class GraphQLProvider {
         categoryTypeWiring(builder);
         locationTypeWiring(builder);
         orderTypeWiring(builder);
-        return builder.build();
+
+        return builder
+                .scalar(getDateScalar())
+                .build();
     }
 
     private void categoryTypeWiring(RuntimeWiring.Builder builder) {
@@ -75,6 +81,45 @@ public class GraphQLProvider {
     @Bean
     public GraphQL graphQL() {
         return graphQL;
+    }
+
+    private static GraphQLScalarType getDateScalar() {
+        Coercing<Object, String> coercing = new Coercing<Object, String>() {
+            @Override
+            public String serialize(Object input) throws CoercingSerializeException {
+                if(input instanceof Date) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+                    sdf.setTimeZone(TimeZone.getTimeZone("GMT:0:00"));
+                    return sdf.format(input);
+                } else {
+                    throw new CoercingSerializeException("Not a Date object");
+                }
+            }
+
+            @Override
+            public Object parseValue(Object input) throws CoercingParseValueException {
+                // TODO
+                return "TODO";
+            }
+
+            @Override
+            public Object parseLiteral(Object input) throws CoercingParseLiteralException {
+                // TODO
+                return "TODO";
+            }
+
+            @Override
+            public graphql.language.Value<?> valueToLiteral(Object input) {
+                // TODO
+                return null;
+            }
+        };
+
+        return GraphQLScalarType.newScalar()
+                .name("DateTime")
+                .description("DateTime Scalar")
+                .coercing(coercing)
+                .build();
     }
 
 }
