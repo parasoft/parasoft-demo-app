@@ -1,3 +1,5 @@
+scalar DateTime
+
 type Query {
     # category
     getCategoryById(categoryId: ID): Category

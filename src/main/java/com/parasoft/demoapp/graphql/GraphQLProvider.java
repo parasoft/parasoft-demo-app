@@ -52,7 +52,9 @@ public class GraphQLProvider {
         RuntimeWiring.Builder builder = RuntimeWiring.newRuntimeWiring();
         categoryTypeWiring(builder);
         locationTypeWiring(builder);
-        return builder.build();
+        return builder
+                .scalar(DateTimeScalar.getInstance())
+                .build();
     }
 
     private void categoryTypeWiring(RuntimeWiring.Builder builder) {
@@ -70,5 +72,4 @@ public class GraphQLProvider {
     public GraphQL graphQL() {
         return graphQL;
     }
-
 }

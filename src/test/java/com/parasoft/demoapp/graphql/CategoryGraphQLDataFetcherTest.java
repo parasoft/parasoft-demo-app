@@ -34,6 +34,8 @@ public class CategoryGraphQLDataFetcherTest {
 
     private static final String CATEGORIES_GRAPHQL_RESOURCE = "graphql/categories/getCategories.graphql";
     private static final String CATEGORIES_DATA_JSON_PATH = DATA_PATH + ".getCategories";
+    private static final String CATEGORY_BY_ID_GRAPHQL_RESOURCE = "graphql/categories/getCategoryById.graphql";
+    private static final String CATEGORY_BY_ID_DATA_JSON_PATH = DATA_PATH + ".getCategoryById";
 
     private static final String CATEGORY_BY_NAME_GRAPHQL_RESOURCE = "graphql/categories/getCategoryByName.graphql";
     private static final String CATEGORY_BY_NAME_DATA_JSON_PATH = DATA_PATH + ".getCategoryByName";
@@ -173,4 +175,61 @@ public class CategoryGraphQLDataFetcherTest {
                 .assertThatField(CATEGORIES_DATA_JSON_PATH).isNull();
     }
 
+@Test
+    public void testGetCategoryById_normal() throws IOException {
+        ObjectNode variables = objectMapper.createObjectNode();
+        variables.put("categoryId", 3);
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(CATEGORY_BY_ID_GRAPHQL_RESOURCE, variables);
+        assertThat(response).isNotNull();
+        log.info(response.getRawResponse().getBody());
+        assertThat(response.isOk()).isTrue();
+        response.assertThatNoErrorsArePresent()
+                .assertThatDataField().isNotNull()
+                .and()
+                .assertThatField(CATEGORY_BY_ID_DATA_JSON_PATH)
+                .as(CategoryEntity.class)
+                .has(new Condition<CategoryEntity>(c -> c.getName().equals("Tents"), "name Tents"));;
+    }
+
+    @Test
+    public void testGetCategoryById_invalidId() throws IOException {
+        ObjectNode variables = objectMapper.createObjectNode();
+        variables.put("categoryId", 77);
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(CATEGORY_BY_ID_GRAPHQL_RESOURCE, variables);
+        assertThat(response).isNotNull();
+        log.info(response.getRawResponse().getBody());
+        assertThat(response.isOk()).isTrue();
+        response.assertThatErrorsField().isNotNull()
+                .asListOf(GraphQLTestError.class)
+                .hasOnlyOneElementSatisfying(error -> {
+                    assertThat(error.getMessage()).isEqualTo("Category with ID 77 is not found.");
+                    assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.NOT_FOUND.value());
+                })
+                .and()
+                .assertThatField(CATEGORY_BY_ID_DATA_JSON_PATH).isNull();
+    }
+
+    @Test
+    public void testGetCategoryById_notAuthenticated() throws IOException {
+        ObjectNode variables = objectMapper.createObjectNode();
+        variables.put("categoryId", "3");
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, "invalidPass")
+                .perform(CATEGORY_BY_ID_GRAPHQL_RESOURCE, variables);
+        assertThat(response).isNotNull();
+        log.info(response.getRawResponse().getBody());
+        assertThat(response.isOk()).isTrue();
+        response.assertThatErrorsField().isNotNull()
+                .asListOf(GraphQLTestError.class)
+                .hasOnlyOneElementSatisfying(error -> {
+                    assertThat(error.getMessage()).isEqualTo(GraphQLTestErrorType.UNAUTHORIZED.toString());
+                    assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+                })
+                .and()
+                .assertThatField(CATEGORY_BY_ID_DATA_JSON_PATH).isNull();
+    }
 }
