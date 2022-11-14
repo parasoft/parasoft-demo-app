@@ -6,6 +6,8 @@ type Query {
     getCategories(searchString: String, page: Int, size: Int, sort: [String]): CategoryPageInfo
     # location
     getLocation(region: RegionType!): Location
+    # order
+    getOrderByOrderNumber(orderNumber: String): Order
 }
 # category
 type Category {
@@ -54,4 +56,33 @@ enum RegionType {
     LOCATION_6
     LOCATION_7
     LOCATION_8
+}
+# order
+type Order {
+    id: ID,
+    orderNumber: String,
+    requestedBy: String,
+    status: String,
+    reviewedByAPV: Boolean,
+    reviewedByPRCH: Boolean,
+    respondedBy: String,
+    orderItems: [OrderItem],
+    region: String,
+    location: String,
+    orderImage: String,
+    receiverId: String,
+    eventId: String,
+    eventNumber: String,
+    submissionDate: DateTime,
+    approverReplyDate: DateTime,
+    comments: String
+}
+type OrderItem {
+    id: ID,
+    name: String,
+    description: String,
+    image: String,
+    order: Order,
+    itemId: ID,
+    quantity: Int
 }
