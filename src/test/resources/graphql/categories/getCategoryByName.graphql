@@ -1,0 +1,5 @@
+query GetCategoryByName($categoryName: String) {
+    getCategoryByName(categoryName: $categoryName) {
+        name
+    }
+}

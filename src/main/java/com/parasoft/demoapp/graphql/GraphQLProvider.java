@@ -59,6 +59,7 @@ public class GraphQLProvider {
 
     private void categoryTypeWiring(RuntimeWiring.Builder builder) {
         builder.type("Query", typeWriting -> typeWriting.dataFetcher("getCategoryById", categoryDataFetcher.getCategoryById()));
+        builder.type("Query", typeWriting -> typeWriting.dataFetcher("getCategoryByName", categoryDataFetcher.getCategoryByName()));
         builder.type("Query", typeWriting -> typeWriting.dataFetcher("getCategories", categoryDataFetcher.getCategories()));
     }
 

@@ -3,6 +3,7 @@ scalar DateTime
 type Query {
     # category
     getCategoryById(categoryId: ID): Category
+    getCategoryByName(categoryName: String): Category
     getCategories(searchString: String, page: Int, size: Int, sort: [String]): CategoryPageInfo
     # location
     getLocation(region: RegionType!): Location
