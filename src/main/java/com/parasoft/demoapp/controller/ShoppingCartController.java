@@ -175,15 +175,12 @@ public class ShoppingCartController {
 					content = {@Content(schema = @Schema(hidden = true)) }),
 		@ApiResponse(responseCode = "403",
 					description = "You do not have permission to add item to the shopping cart.",
-		 content = {@Content(schema = @Schema(hidden = true)) }),
-		@ApiResponse(responseCode = "404",
-					description = "No cart items under current conditions.",
-					content = {@Content(schema = @Schema(hidden = true)) })
+		 content = {@Content(schema = @Schema(hidden = true)) })
 	})
 	@GetMapping
 	@ResponseBody
 	public ResponseResult<List<CartItemEntity>> getCartItems(Authentication auth)
-			throws ParameterException, CartItemNotFoundException {
+			throws ParameterException{
 
 		ResponseResult<List<CartItemEntity>> response = ResponseResult.getInstance(ResponseResult.STATUS_OK,
 				ResponseResult.MESSAGE_OK);
