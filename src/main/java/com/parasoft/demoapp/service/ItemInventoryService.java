@@ -1,11 +1,9 @@
 package com.parasoft.demoapp.service;
 
-import com.parasoft.demoapp.dto.InventoryInfoDTO;
-import com.parasoft.demoapp.dto.InventoryOperation;
-import com.parasoft.demoapp.dto.InventoryOperationRequestMessageDTO;
-import com.parasoft.demoapp.dto.InventoryOperationResultMessageDTO;
+import com.parasoft.demoapp.dto.*;
 import com.parasoft.demoapp.exception.ParameterException;
 import com.parasoft.demoapp.messages.AssetMessages;
+import com.parasoft.demoapp.messages.ItemInventoryMessages;
 import com.parasoft.demoapp.model.industry.ItemInventoryEntity;
 import com.parasoft.demoapp.repository.industry.ItemInventoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +31,7 @@ public class ItemInventoryService {
                                                                                         requestMessage) {
         InventoryOperation operation = requestMessage.getOperation();
         if (operation == NONE) {
-            return null;
+            return new InventoryOperationResultMessageDTO(NONE, requestMessage.getOrderNumber(), FAIL, ItemInventoryMessages.INVALID_OPERATION);
         }
 
         InventoryOperationResultMessageDTO resultMessage = new InventoryOperationResultMessageDTO();
@@ -41,7 +39,7 @@ public class ItemInventoryService {
         resultMessage.setOrderNumber(requestMessage.getOrderNumber());
         List<InventoryInfoDTO> requestedItems = requestMessage.getInventoryInfos();
         if (CollectionUtils.isEmpty(requestedItems)) {
-            return null;
+            return new InventoryOperationResultMessageDTO(NONE, requestMessage.getOrderNumber(), FAIL, ItemInventoryMessages.EMPTY_INVENTORYINFOS);
         }
 
         if (operation == DECREASE) {

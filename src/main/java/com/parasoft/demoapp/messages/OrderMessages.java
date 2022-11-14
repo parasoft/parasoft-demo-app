@@ -30,6 +30,7 @@ public class OrderMessages extends Messages {
     public static final String USERNAME_CANNOT_BE_NULL = "Username should not be null.";
     public static final String THE_ORDER_IS_PROCESSED = "The order is processed.";
     public static final String THE_ORDER_IS_CANCELLED = "The order is cancelled.";
+	public static final String INVALID_OPERATION = "Invalid operation.";
 
     public OrderMessages() {
 		super("i18n/messages");

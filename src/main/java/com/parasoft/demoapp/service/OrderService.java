@@ -63,7 +63,7 @@ public class OrderService {
                         log.error(operationResult.getStatus() + " status is not supported");
                 }
             }
-            return null;
+            return new InventoryOperationRequestMessageDTO(InventoryOperation.NONE, orderNumber, OrderMessages.INVALID_OPERATION);
         } catch (OrderNotFoundException | ParameterException | OrderStatusException e) {
             log.error("Order Exception:", e);
             return new InventoryOperationRequestMessageDTO(InventoryOperation.NONE,
