@@ -56,7 +56,7 @@ public class GraphQLProvider {
         categoryTypeWiring(builder);
         locationTypeWiring(builder);
         return builder
-                .scalar(getDateScalar())
+                .scalar(getDateTimeScalar())
                 .build();
     }
 
@@ -75,7 +75,7 @@ public class GraphQLProvider {
         return graphQL;
     }
 
-    private static GraphQLScalarType getDateScalar() {
+    private static GraphQLScalarType getDateTimeScalar() {
         Coercing<Object, String> coercing = new Coercing<Object, String>() {
             @Override
             public String serialize(Object input) throws CoercingSerializeException {
