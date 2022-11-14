@@ -2,7 +2,7 @@ scalar DateTime
 
 type Query {
     # category
-    getCategoryById(categoryId: ID): Category,
+    getCategoryById(categoryId: ID): Category
     getCategories(searchString: String, page: Int, size: Int, sort: [String]): CategoryPageInfo
     # location
     getLocation(region: RegionType): Location
@@ -14,19 +14,19 @@ type Mutation {
 
 # category
 type Category {
-    id: ID,
-    name: String,
-    description: String,
+    id: ID
+    name: String
+    description: String
     image: String
 }
 
 type CategoryPageInfo {
-    totalElements: ID,
-    totalPages: Int,
-    size: Int,
-    number: Int,
-    numberOfElements: Int,
-    sort: String,
+    totalElements: ID
+    totalPages: Int
+    size: Int
+    number: Int
+    numberOfElements: Int
+    sort: String
     content: [Category]
 }
 

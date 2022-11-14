@@ -5,6 +5,7 @@ import com.parasoft.demoapp.controller.PageInfo;
 import com.parasoft.demoapp.controller.ResponseResult;
 import com.parasoft.demoapp.model.industry.CategoryEntity;
 import graphql.schema.DataFetcher;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.Collection;
@@ -20,19 +22,21 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+@RequiredArgsConstructor
 @Component
 public class CategoryGraphQLDataFetcher {
-    private final String categoryBaseUrl;
 
     private final RestTemplate restTemplate;
 
     private final HttpServletRequest httpRequest;
 
+    private final WebConfig webConfig;
 
-    public CategoryGraphQLDataFetcher(RestTemplate restTemplate, HttpServletRequest httpRequest, WebConfig webConfig) {
-        this.restTemplate = restTemplate;
-        this.httpRequest = httpRequest;
-        this.categoryBaseUrl = "http://localhost:" + webConfig.getServerPort() +"/v1/assets/categories";
+    private String categoryBaseUrl;
+
+    @PostConstruct
+    private void init() {
+        categoryBaseUrl = "http://localhost:" + webConfig.getServerPort() +"/v1/assets/categories";
     }
 
     public DataFetcher<CategoryEntity> getCategoryById() {

@@ -38,5 +38,12 @@ angular
                     success(response.data.data.getCategories);
                 }, error);
             }
+            // locations
+            instance.getLocation = function(variables, success, error) {
+                let requestBody = {"query": "query($region:RegionType!){getLocation(region:$region){id,locationInfo,locationImage}}", "variables": variables}
+                makeCall(requestBody, function(response) {
+                    success(response.data.data.getLocation);
+                }, error);
+            }
             return instance;
         });
