@@ -90,4 +90,24 @@ public class CategoryGraphQLDataFetcher {
             }
         };
     }
+
+    public DataFetcher<Integer> deleteCategory() {
+        return dataFetchingEnvironment -> {
+            try {
+                Map<String, String> uriVariables = new HashMap<>();
+                if (dataFetchingEnvironment.containsArgument("categoryId")) {
+                    uriVariables.put("categoryId", dataFetchingEnvironment.getArgument("categoryId"));
+                }
+                ResponseEntity<ResponseResult<Integer>> entity =
+                        restTemplate.exchange(categoryBaseUrl + "/{categoryId}",
+                                HttpMethod.DELETE,
+                                new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
+                                new ParameterizedTypeReference<ResponseResult<Integer>>() {},
+                                uriVariables);
+                return Objects.requireNonNull(entity.getBody()).getData();
+            } catch (Exception e) {
+                throw RestTemplateUtil.convertException(e);
+            }
+        };
+    }
 }

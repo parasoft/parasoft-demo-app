@@ -1,11 +1,8 @@
 package com.parasoft.demoapp.graphql;
 
-import graphql.ErrorClassification;
-import graphql.ErrorType;
 import graphql.GraphQL;
-import graphql.GraphQLError;
-import graphql.execution.*;
-import graphql.language.SourceLocation;
+import graphql.execution.AsyncExecutionStrategy;
+import graphql.execution.AsyncSerialExecutionStrategy;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.idl.RuntimeWiring;
 import graphql.schema.idl.SchemaGenerator;
@@ -21,9 +18,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -64,6 +58,7 @@ public class GraphQLProvider {
     private void categoryTypeWiring(RuntimeWiring.Builder builder) {
         builder.type("Query", typeWriting -> typeWriting.dataFetcher("getCategoryById", categoryDataFetcher.getCategoryById()));
         builder.type("Query", typeWriting -> typeWriting.dataFetcher("getCategories", categoryDataFetcher.getCategories()));
+        builder.type("Mutation", typeWriting -> typeWriting.dataFetcher("deleteCategory", categoryDataFetcher.deleteCategory()));
     }
 
     private void locationTypeWiring(RuntimeWiring.Builder builder) {

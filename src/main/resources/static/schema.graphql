@@ -5,6 +5,10 @@ type Query {
     # location
     getLocation(region: RegionType!): Location
 }
+type Mutation {
+    # category
+    deleteCategory(categoryId: ID): Int
+}
 # category
 type Category {
     id: ID
