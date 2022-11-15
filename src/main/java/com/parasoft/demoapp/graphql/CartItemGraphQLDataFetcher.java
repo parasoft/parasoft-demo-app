@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.HOST_WITHOUT_PORT;
+
 @Component
 public class CartItemGraphQLDataFetcher {
     private final String cartItemBaseUrl;
@@ -28,7 +30,7 @@ public class CartItemGraphQLDataFetcher {
     public CartItemGraphQLDataFetcher(RestTemplate restTemplate, HttpServletRequest httpServletRequest, WebConfig webConfig) {
         this.restTemplate = restTemplate;
         this.httpServletRequest = httpServletRequest;
-        this.cartItemBaseUrl = "http://localhost:" + webConfig.getServerPort() + "/v1/cartItems";
+        this.cartItemBaseUrl = HOST_WITHOUT_PORT + webConfig.getServerPort() + "/v1/cartItems";
     }
 
     public DataFetcher<List<CartItemEntity>> getCartItems() {
