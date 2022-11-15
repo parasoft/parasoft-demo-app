@@ -1,29 +1,5 @@
 package com.parasoft.demoapp.controller;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-
 import com.parasoft.demoapp.dto.ItemsDTO;
 import com.parasoft.demoapp.exception.CategoryNotFoundException;
 import com.parasoft.demoapp.exception.ItemNameExistsAlreadyException;
@@ -33,6 +9,22 @@ import com.parasoft.demoapp.model.industry.ItemEntity;
 import com.parasoft.demoapp.model.industry.RegionType;
 import com.parasoft.demoapp.service.GlobalPreferencesService;
 import com.parasoft.demoapp.service.ItemService;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 /**
  * Test class for ItemController
@@ -583,24 +575,5 @@ public class ItemControllerTest {
 		int getTotalPagesResult = 2;
 		when(getItemsResult.getTotalPages()).thenReturn(getTotalPagesResult);
 		return getItemsResult;
-	}
-	
-	/**
-	 * Test for getItems(Long, RegionType, String, Pageable) with ItemNotFoundException
-	 *
-	 * @see com.parasoft.demoapp.controller.ItemController#getItems(Long, RegionType[], String, Pageable)
-	 */
-	@Test(expected = ItemNotFoundException.class)
-	public void testGetItems_exception_itemNotFound() throws Throwable {
-		// Given
-		Long categoryId = 0L;
-		RegionType[] regions = {RegionType.UNITED_STATES};
-		String searchString = "SearchString";
-		Pageable pageable = mock(Pageable.class);
-		doThrow(ItemNotFoundException.class).when(itemService).getItems(anyLong(), any(RegionType[].class), anyString(),
-				any(Pageable.class));
-		
-		// When
-		underTest.getItems(categoryId, regions, searchString, pageable);
 	}
 }
