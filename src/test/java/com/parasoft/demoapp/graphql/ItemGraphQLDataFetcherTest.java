@@ -126,11 +126,11 @@ public class ItemGraphQLDataFetcherTest {
         String itemId = "1";
         ObjectNode variable = objectMapper.createObjectNode();
         variable.put("itemId", itemId);
-        GraphQLResponse graphQLResponse = graphQLTestTemplate
+        GraphQLResponse response = graphQLTestTemplate
                 .perform(GET_ITEM_BY_ITEM_ID_GRAPHQL_RESOURCE, variable);
-        assertThat(graphQLResponse).isNotNull();
-        assertThat(graphQLResponse.isOk()).isTrue();
-        graphQLResponse.assertThatNoErrorsArePresent()
+        assertThat(response).isNotNull();
+        assertThat(response.isOk()).isTrue();
+        response.assertThatNoErrorsArePresent()
                 .assertThatDataField().isNotNull()
                 .and()
                 .assertThatField(GET_ITEM_BY_ITEM_ID_DATA_JSON_PATH)
@@ -139,19 +139,39 @@ public class ItemGraphQLDataFetcherTest {
     }
 
     @Test
-    public void getItemByItemId_NotFound() throws Throwable {
+    public void getItemByItemId_notFound() throws Throwable {
         String itemId = "0";
         ObjectNode variable = objectMapper.createObjectNode();
         variable.put("itemId", itemId);
-        GraphQLResponse graphQLResponse = graphQLTestTemplate
+        GraphQLResponse response = graphQLTestTemplate
                 .perform(GET_ITEM_BY_ITEM_ID_GRAPHQL_RESOURCE, variable);
-        assertThat(graphQLResponse).isNotNull();
-        assertThat(graphQLResponse.isOk()).isTrue();
-        graphQLResponse.assertThatErrorsField().isNotNull()
+        assertThat(response).isNotNull();
+        assertThat(response.isOk()).isTrue();
+        response.assertThatErrorsField().isNotNull()
                 .asListOf(GraphQLTestError.class)
                 .hasOnlyOneElementSatisfying(error -> {
                     assertThat(error.getMessage()).isEqualTo("Item with ID 0 is not found.");
                     assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.NOT_FOUND.value());
+                })
+                .and()
+                .assertThatField(GET_ITEM_BY_ITEM_ID_DATA_JSON_PATH).isNull();
+    }
+
+    @Test
+    public void getItemByItemId_incorrectAuthentication() throws Throwable {
+        String itemId = "1";
+        ObjectNode variable = objectMapper.createObjectNode();
+        variable.put("itemId", itemId);
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, "invalidPass")
+                .perform(GET_ITEM_BY_ITEM_ID_GRAPHQL_RESOURCE, variable);
+        assertThat(response).isNotNull();
+        assertThat(response.isOk()).isTrue();
+        response.assertThatErrorsField().isNotNull()
+                .asListOf(GraphQLTestError.class)
+                .hasOnlyOneElementSatisfying(error -> {
+                    assertThat(error.getMessage()).isEqualTo(GraphQLTestErrorType.UNAUTHORIZED.toString());
+                    assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.UNAUTHORIZED.value());
                 })
                 .and()
                 .assertThatField(GET_ITEM_BY_ITEM_ID_DATA_JSON_PATH).isNull();
