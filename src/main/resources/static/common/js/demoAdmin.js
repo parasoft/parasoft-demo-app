@@ -1181,33 +1181,41 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 	}
 
 	demo.removeCategory = function(category) {
-    	    var categories = demo.categories;
-    	    $http({
-    	        method: 'DELETE',
-    	        url: '/proxy/v1/assets/categories/'+category.id,
-    	    }).then(function(result) {
-    	        var arrIndex = getArrIndex(categories,category);
-                categories.splice(arrIndex,1);
-                toastr.success($filter('translate')('CATEGORY_SUCCESSFULLY_REMOVED'));
-    	    }, function error(response) {
-    	        console.log(response);
-                let errMsg = "";
-                switch (response.status) {
-                    case 400:
-                        errMsg = $filter('translate')('CATEGORY_FAILED_TO_REMOVE_WITH_CONFLICT');
-                        break;
-                    case 404:
-                        errMsg = $filter('translate')('CATEGORY_NOT_FOUND');
-                        break;
-                    default:
-                        errMsg = $filter('translate')('CATEGORY_FAILED_TO_REMOVE');
-                }
-                toastrService().error(errMsg);
-    	    }).catch(function(result) {
-    	        console.log(result);
-    	    });
-    	    $('#remove_confirm_modal').modal('hide');
-    	}
+        var categories = demo.categories;
+        let success = (data) => {
+            var arrIndex = getArrIndex(categories,category);
+            categories.splice(arrIndex,1);
+            toastr.success($filter('translate')('CATEGORY_SUCCESSFULLY_REMOVED'));
+        };
+        let error = (data, endpointType) => {
+            console.info(data);
+            let errMsg = "";
+            switch (data.status) {
+                case 400:
+                    errMsg = $filter('translate')('CATEGORY_FAILED_TO_REMOVE_WITH_CONFLICT');
+                    break;
+                case 404:
+                    errMsg = $filter('translate')('CATEGORY_NOT_FOUND');
+                    break;
+                default:
+                    errMsg = $filter('translate')('CATEGORY_FAILED_TO_REMOVE');
+            }
+            toastrService().error(errMsg);
+        };
+        if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+            graphQLService.deleteCategoryById({"categoryId": category.id }, success, (data) => {error(data, "graphQL")});
+        } else {
+            $http({
+                method: 'DELETE',
+                url: '/proxy/v1/assets/categories/'+category.id,
+            }).then(function(result) {
+               success(result.data.data);
+           }).catch(function(result) {
+               error(result, "categories");
+           });
+        }
+        $('#remove_confirm_modal').modal('hide');
+    }
 
 	//To avoid displaying page without styles due to the slow loading of CSS files
 	setTimeout(function(){ angular.element("body").css("visibility","visible") }, 500);

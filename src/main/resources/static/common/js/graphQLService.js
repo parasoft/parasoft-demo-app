@@ -38,6 +38,12 @@ angular
                     success(response.data.data.getCategories);
                 }, error);
             }
+            instance.deleteCategoryById = function(variables, success, error) {
+                let requestBody = {"query": "mutation($categoryId:ID){deleteCategoryById(categoryId:$categoryId)}", "variables": variables}
+                makeCall(requestBody, function(response) {
+                    success(response.data.data.deleteCategoryById);
+                }, error);
+            }
             // locations
             instance.getLocation = function(variables, success, error) {
                 let requestBody = {"query": "query($region:RegionType!){getLocation(region:$region){id,locationInfo,locationImage}}", "variables": variables}
