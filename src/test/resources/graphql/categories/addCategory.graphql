@@ -1,5 +1,5 @@
 mutation AddCategory($categoryDTO: CategoryDTO!) {
-    addNewCategory(categoryDTO: $categoryDTO) {
+    addCategory(categoryDTO: $categoryDTO) {
         id
         name
         description

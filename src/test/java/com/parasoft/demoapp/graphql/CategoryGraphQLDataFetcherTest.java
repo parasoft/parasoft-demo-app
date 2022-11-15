@@ -52,8 +52,8 @@ public class CategoryGraphQLDataFetcherTest {
     private static final String DELETE_CATEGORY_GRAPHQL_RESOURCE = "graphql/categories/deleteCategoryById.graphql";
     private static final String DELETE_CATEGORY_DATA_JSON_PATH = DATA_PATH + ".deleteCategoryById";
 
-    private static final String ADD_NEW_CATEGORY_GRAPHQL_RESOURCE = "graphql/categories/addNewCategory.graphql";
-    private static final String ADD_NEW_CATEGORY_DATA_JSON_PATH = DATA_PATH + ".addNewCategory";
+    private static final String ADD_NEW_CATEGORY_GRAPHQL_RESOURCE = "graphql/categories/addCategory.graphql";
+    private static final String ADD_NEW_CATEGORY_DATA_JSON_PATH = DATA_PATH + ".addCategory";
 
     @Autowired private GraphQLTestTemplate graphQLTestTemplate;
 
@@ -73,14 +73,14 @@ public class CategoryGraphQLDataFetcherTest {
 
     @Before
     public void conditionalBefore() {
-        if ("test_addNewCategory_normal".equals(testName.getMethodName())) {
+        if ("test_addCategory_normal".equals(testName.getMethodName())) {
             resetDatabase();
         }
     }
 
     @After
     public void conditionalAfter() {
-        if ("test_addNewCategory_normal".equals(testName.getMethodName())) {
+        if ("test_addCategory_normal".equals(testName.getMethodName())) {
             resetDatabase();
         }
     }
@@ -349,7 +349,7 @@ public class CategoryGraphQLDataFetcherTest {
     }
 
     @Test
-    public void test_addNewCategory_normal() throws IOException {
+    public void test_addCategory_normal() throws IOException {
         final String name = "New Category";
         final String description = "Description for New Category";
         final String imagePath = "/uploaded_images/outdoor/new-category.png";
@@ -372,7 +372,7 @@ public class CategoryGraphQLDataFetcherTest {
     }
 
     @Test
-    public void test_addNewCategory_400_nameAlreadyExists() throws IOException {
+    public void test_addCategory_400_nameAlreadyExists() throws IOException {
         final String name = "Sleeping bags";
         ObjectNode variables = objectMapper.createObjectNode();
         variables.set("categoryDTO", objectMapper.valueToTree(
@@ -388,7 +388,7 @@ public class CategoryGraphQLDataFetcherTest {
     }
 
     @Test
-    public void test_addNewCategory_400_emptyName() throws IOException {
+    public void test_addCategory_400_emptyName() throws IOException {
         ObjectNode variables = objectMapper.createObjectNode();
         variables.set("categoryDTO", objectMapper.valueToTree(
                 createCategoryDTO("", "Description for New Category", null)));
@@ -403,7 +403,7 @@ public class CategoryGraphQLDataFetcherTest {
     }
 
     @Test
-    public void test_addNewCategory_400_emptyDescription() throws IOException {
+    public void test_addCategory_400_emptyDescription() throws IOException {
         ObjectNode variables = objectMapper.createObjectNode();
         variables.set("categoryDTO", objectMapper.valueToTree(
                 createCategoryDTO("New Category", "", null)));
@@ -418,7 +418,7 @@ public class CategoryGraphQLDataFetcherTest {
     }
 
     @Test
-    public void test_addNewCategory_401_notAuthenticated() throws IOException {
+    public void test_addCategory_401_notAuthenticated() throws IOException {
         ObjectNode variables = objectMapper.createObjectNode();
         variables.set("categoryDTO", objectMapper.valueToTree(
                 createCategoryDTO("New Category", "Description for New Category", null)));
@@ -431,7 +431,7 @@ public class CategoryGraphQLDataFetcherTest {
     }
 
     @Test
-    public void test_addNewCategory_401_incorrectAuthentication() throws IOException {
+    public void test_addCategory_401_incorrectAuthentication() throws IOException {
         ObjectNode variables = objectMapper.createObjectNode();
         variables.set("categoryDTO", objectMapper.valueToTree(
                 createCategoryDTO("New Category", "Description for New Category", null)));

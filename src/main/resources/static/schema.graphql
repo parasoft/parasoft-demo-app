@@ -16,7 +16,7 @@ type Query {
 }
 type Mutation {
     # category
-    addNewCategory(categoryDTO: CategoryDTO!): Category
+    addCategory(categoryDTO: CategoryDTO!): Category
     deleteCategoryById(categoryId: ID): Int
     # order
     createOrder(orderDTO: OrderDTO): Order

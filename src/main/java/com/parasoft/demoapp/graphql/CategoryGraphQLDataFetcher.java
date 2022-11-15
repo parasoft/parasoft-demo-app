@@ -133,7 +133,7 @@ public class CategoryGraphQLDataFetcher {
         };
     }
 
-    public DataFetcher<CategoryEntity> addNewCategory() {
+    public DataFetcher<CategoryEntity> addCategory() {
         return environment -> {
             try {
                 ResponseEntity<ResponseResult<CategoryEntity>> entity =
