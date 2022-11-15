@@ -17,7 +17,7 @@ import static com.parasoft.demoapp.config.ParasoftJDBCProxyConfig.*;
 @Service
 public class GlobalPreferencesDefaultSettingsService {
 
-    public static final String HOST_WITHOUT_PORT = "http://localhost:";
+    public static final String HOST = "http://localhost:";
 
     public static final String GRAPHQL_ENDPOINT_ID = "graphql";
     public static final String GRAPHQL_ENDPOINT_PATH = "/proxy/graphql/**";
@@ -116,27 +116,27 @@ public class GlobalPreferencesDefaultSettingsService {
 
     public RestEndpointEntity defaultCategoriesEndpoint(){
         return new RestEndpointEntity(CATEGORIES_ENDPOINT_ID, CATEGORIES_ENDPOINT_PATH,
-                HOST_WITHOUT_PORT + webConfig.getServerPort() + CATEGORIES_ENDPOINT_REAL_PATH);
+                HOST + webConfig.getServerPort() + CATEGORIES_ENDPOINT_REAL_PATH);
     }
 
     public RestEndpointEntity defaultItemsEndpoint(){
         return new RestEndpointEntity(ITEMS_ENDPOINT_ID, ITEMS_ENDPOINT_PATH,
-                HOST_WITHOUT_PORT + webConfig.getServerPort() + ITEMS_ENDPOINT_REAL_PATH);
+                HOST + webConfig.getServerPort() + ITEMS_ENDPOINT_REAL_PATH);
     }
 
     public RestEndpointEntity defaultCartItemsEndpoint(){
         return new RestEndpointEntity(CART_ENDPOINT_ID, CART_ENDPOINT_PATH,
-                HOST_WITHOUT_PORT + webConfig.getServerPort() + CART_ENDPOINT_REAL_PATH);
+                HOST + webConfig.getServerPort() + CART_ENDPOINT_REAL_PATH);
     }
 
     public RestEndpointEntity defaultOrdersEndpoint(){
         return new RestEndpointEntity(ORDERS_ENDPOINT_ID, ORDERS_ENDPOINT_PATH,
-                HOST_WITHOUT_PORT + webConfig.getServerPort() + ORDERS_ENDPOINT_REAL_PATH);
+                HOST + webConfig.getServerPort() + ORDERS_ENDPOINT_REAL_PATH);
     }
 
     public RestEndpointEntity defaultLocationsEndpoint(){
         return new RestEndpointEntity(LOCATIONS_ENDPOINT_ID, LOCATIONS_ENDPOINT_PATH,
-                HOST_WITHOUT_PORT + webConfig.getServerPort() + LOCATIONS_ENDPOINT_REAL_PATH);
+                HOST + webConfig.getServerPort() + LOCATIONS_ENDPOINT_REAL_PATH);
     }
 
     public Set<RestEndpointEntity> defaultEndpoints(){
@@ -160,7 +160,7 @@ public class GlobalPreferencesDefaultSettingsService {
     }
 
     public String defaultGraphQLEndpoint() {
-        return HOST_WITHOUT_PORT + webConfig.getServerPort() + GRAPHQL_ENDPOINT_REAL_PATH;
+        return HOST + webConfig.getServerPort() + GRAPHQL_ENDPOINT_REAL_PATH;
     }
 
     public boolean defaultAdvertisingEnabled(){

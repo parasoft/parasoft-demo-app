@@ -207,18 +207,12 @@ public class ItemService {
      * @param searchString filter by name, if it is empty("" or null), this filter is ignored.
      * @param pageable page option
      * @return paged result
-     * @throws ItemNotFoundException
      */
-    public Page<ItemEntity> getItems(Long categoryId, RegionType[] regions, String searchString, Pageable pageable)
-            throws ItemNotFoundException {
+    public Page<ItemEntity> getItems(Long categoryId, RegionType[] regions, String searchString, Pageable pageable){
 
         Specification<ItemEntity> spec = new ItemSpecification(categoryId, regions, searchString);
 
         Page<ItemEntity> items = itemRepository.findAll(spec, pageable);
-
-        if (items.getSize() == 0) {
-            throw new ItemNotFoundException(AssetMessages.NO_ITEMS);
-        }
 
         items.forEach(item -> {
             try {

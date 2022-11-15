@@ -37,8 +37,6 @@ public class ItemController {
 
 	@Operation(description = "Obtain all items under current conditions.")
 	@ApiResponse(responseCode = "200", description = "All items under current conditions were returned.")
-	@ApiResponse(responseCode = "404", description = "No items under current conditions.",
-				 content = {@Content(schema = @Schema(hidden = true)) })
 	@GetMapping
 	@ResponseBody
 	public ResponseResult<PageInfo<ItemEntity>> getItems(
@@ -46,8 +44,7 @@ public class ItemController {
 			@RequestParam(required = false) RegionType[] regions,
 			@RequestParam(required = false) String searchString,
 			@ParameterObject
-			@PageableDefault(sort = "name", direction = Direction.ASC, size = Integer.MAX_VALUE) Pageable pageable)
-				throws ItemNotFoundException {
+			@PageableDefault(sort = "name", direction = Direction.ASC, size = Integer.MAX_VALUE) Pageable pageable) {
 		ResponseResult<PageInfo<ItemEntity>> response = ResponseResult.getInstance(ResponseResult.STATUS_OK,
 				ResponseResult.MESSAGE_OK);
 
