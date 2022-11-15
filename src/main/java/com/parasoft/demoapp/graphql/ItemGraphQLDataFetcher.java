@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.HOST_WITHOUT_PORT;
+import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.HOST;
 
 @RequiredArgsConstructor
 @Component
@@ -37,7 +37,7 @@ public class ItemGraphQLDataFetcher {
 
     @PostConstruct
     private void init() {
-        itemBaseUrl = HOST_WITHOUT_PORT + webConfig.getServerPort() + "/v1/assets/items";
+        itemBaseUrl = HOST + webConfig.getServerPort() + "/v1/assets/items";
     }
 
     public DataFetcher<PageInfo<ItemEntity>> getItems() {

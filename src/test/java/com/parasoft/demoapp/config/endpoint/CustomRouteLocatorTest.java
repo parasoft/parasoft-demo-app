@@ -263,15 +263,15 @@ public class CustomRouteLocatorTest {
 		List<RestEndpointEntity> endpoints = new ArrayList<>();
 		int serverPort = 8080;
 		endpoints.add(new RestEndpointEntity(CATEGORIES_ENDPOINT_ID, CATEGORIES_ENDPOINT_PATH,
-				HOST_WITHOUT_PORT + serverPort + CATEGORIES_ENDPOINT_REAL_PATH));
+				HOST + serverPort + CATEGORIES_ENDPOINT_REAL_PATH));
 		endpoints.add(new RestEndpointEntity(ITEMS_ENDPOINT_ID, ITEMS_ENDPOINT_PATH,
-				HOST_WITHOUT_PORT + serverPort + ITEMS_ENDPOINT_REAL_PATH));
+				HOST + serverPort + ITEMS_ENDPOINT_REAL_PATH));
 		endpoints.add(new RestEndpointEntity(CART_ENDPOINT_ID, CART_ENDPOINT_PATH,
-				HOST_WITHOUT_PORT + serverPort + CART_ENDPOINT_REAL_PATH));
+				HOST + serverPort + CART_ENDPOINT_REAL_PATH));
 		endpoints.add(new RestEndpointEntity(ORDERS_ENDPOINT_ID, ORDERS_ENDPOINT_PATH,
-				HOST_WITHOUT_PORT + serverPort + ORDERS_ENDPOINT_REAL_PATH));
+				HOST + serverPort + ORDERS_ENDPOINT_REAL_PATH));
 		endpoints.add(new RestEndpointEntity(LOCATIONS_ENDPOINT_ID, LOCATIONS_ENDPOINT_PATH,
-				HOST_WITHOUT_PORT + 8080 + LOCATIONS_ENDPOINT_REAL_PATH));
+				HOST + 8080 + LOCATIONS_ENDPOINT_REAL_PATH));
 
 		return endpoints;
 	}
