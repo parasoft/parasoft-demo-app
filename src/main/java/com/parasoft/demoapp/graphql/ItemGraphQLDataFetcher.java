@@ -17,9 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Objects;
+import java.util.*;
 
 import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.HOST;
 
@@ -76,6 +74,29 @@ public class ItemGraphQLDataFetcher {
                         HttpMethod.GET,
                         new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
                         new ParameterizedTypeReference<ResponseResult<PageInfo<ItemEntity>>>() {});
+                return Objects.requireNonNull(entity.getBody()).getData();
+            } catch (Exception e) {
+                throw RestTemplateUtil.convertException(e);
+            }
+        };
+    }
+
+    public DataFetcher<ItemEntity> updateItemInStockByItemId() {
+        return dataFetchingEnvironment -> {
+            try {
+                UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(itemBaseUrl + "/inStock/{itemId}");
+                if (dataFetchingEnvironment.containsArgument("itemId")) {
+                    builder.uriVariables(Collections.singletonMap("itemId", dataFetchingEnvironment.getArgument("itemId")));
+                }
+                if (dataFetchingEnvironment.containsArgument("newInStock")) {
+                    builder.queryParam("newInStock", (Object) dataFetchingEnvironment.getArgument("newInStock"));
+                }
+                URI uri = builder.build().encode().toUri();
+                ResponseEntity<ResponseResult<ItemEntity>> entity =
+                        restTemplate.exchange(uri,
+                                HttpMethod.PUT,
+                                new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
+                                new ParameterizedTypeReference<ResponseResult<ItemEntity>>() {});
                 return Objects.requireNonNull(entity.getBody()).getData();
             } catch (Exception e) {
                 throw RestTemplateUtil.convertException(e);

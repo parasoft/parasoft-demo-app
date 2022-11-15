@@ -30,6 +30,9 @@ public class ItemGraphQLDataFetcherTest {
     private static final String ITEM_GRAPHQL_RESOURCE = "graphql/items/getItems.graphql";
     private static final String ITEM_DATA_JSON_PATH = DATA_PATH + ".getItems";
 
+    private static final String UPDATE_ITEM_IN_STOCK_BY_ITEM_ID_GRAPHQL_RESOURCE = "graphql/items/updateItemInStockByItemId.graphql";
+    private static final String UPDATE_ITEM_IN_STOCK_BY_ITEM_ID_DATA_JSON_PATH = DATA_PATH + ".updateItemInStockByItemId";
+
     @Autowired
     private GraphQLTestTemplate graphQLTestTemplate;
 
@@ -67,7 +70,7 @@ public class ItemGraphQLDataFetcherTest {
                 .and()
                 .assertThatField(ITEM_DATA_JSON_PATH + ".content")
                 .asListOf(ItemEntity.class)
-                .has(new Condition<ItemEntity>(c -> c.getName().equals("Blue Sleeping Bag"),"name Blue Sleeping Bag"), Index.atIndex(0))
+                .has(new Condition<>(c -> c.getName().equals("Blue Sleeping Bag"), "name Blue Sleeping Bag"), Index.atIndex(0))
                 .size()
                 .isEqualTo(1);
     }
@@ -107,5 +110,101 @@ public class ItemGraphQLDataFetcherTest {
                 })
                 .and()
                 .assertThatField(ITEM_DATA_JSON_PATH).isNull();
+    }
+
+    private ObjectNode getVariablesForUpdateItemInStockByItemId() {
+        ObjectNode variables = objectMapper.createObjectNode();
+        variables.put("itemId", 1);
+        variables.put("newInStock", 100000);
+        return variables;
+    }
+
+    @Test
+    public void test_updateItemInStockByItemId_normal() throws IOException {
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(UPDATE_ITEM_IN_STOCK_BY_ITEM_ID_GRAPHQL_RESOURCE, getVariablesForUpdateItemInStockByItemId());
+        assertThat(response).isNotNull();
+        assertThat(response.isOk()).isTrue();
+        response.assertThatNoErrorsArePresent()
+                .assertThatDataField().isNotNull()
+                .and()
+                .assertThatField(UPDATE_ITEM_IN_STOCK_BY_ITEM_ID_DATA_JSON_PATH)
+                .as(ItemEntity.class)
+                .hasNoNullFieldsOrPropertiesExcept()
+                .matches((item) -> item.getId() == 1 && item.getInStock() == 100000);
+    }
+
+    @Test
+    public void test_updateItemInStockByItemId_invalidNewInStockValue() throws IOException {
+        ObjectNode variables = getVariablesForUpdateItemInStockByItemId();
+        variables.put("newInStock", (Integer) null);
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(UPDATE_ITEM_IN_STOCK_BY_ITEM_ID_GRAPHQL_RESOURCE, variables);
+        assertThat(response).isNotNull();
+        assertThat(response.isOk()).isTrue();
+
+        response.assertThatErrorsField().isNotNull()
+                .asListOf(GraphQLTestError.class)
+                .hasOnlyOneElementSatisfying(error -> {
+                    assertThat(error.getMessage()).isEqualTo("In stock cannot be null.");
+                    assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.BAD_REQUEST.value());
+                })
+                .and()
+                .assertThatField(UPDATE_ITEM_IN_STOCK_BY_ITEM_ID_DATA_JSON_PATH).isNull();
+    }
+
+    @Test
+    public void test_updateItemInStockByItemId_invalidItemIdValue() throws IOException {
+        ObjectNode variables = getVariablesForUpdateItemInStockByItemId();
+        variables.put("itemId", (Integer) null);
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(UPDATE_ITEM_IN_STOCK_BY_ITEM_ID_GRAPHQL_RESOURCE, variables);
+        assertThat(response).isNotNull();
+        assertThat(response.isOk()).isTrue();
+
+        response.assertThatErrorsField().isNotNull()
+                .asListOf(GraphQLTestError.class)
+                .hasOnlyOneElementSatisfying(error -> {
+                    assertThat(error.getExtensions().get("classification")).isEqualTo("ValidationError");
+                    assertThat(error.getExtensions().get("statusCode")).isNull();
+                })
+                .and()
+                .assertThatField(UPDATE_ITEM_IN_STOCK_BY_ITEM_ID_DATA_JSON_PATH).isNotPresent();
+    }
+
+    @Test
+    public void test_updateItemInStockByItemId_incorrectAuthentication() throws IOException {
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, "invalidPass")
+                .perform(UPDATE_ITEM_IN_STOCK_BY_ITEM_ID_GRAPHQL_RESOURCE, getVariablesForUpdateItemInStockByItemId());
+        assertThat(response).isNotNull();
+        assertThat(response.isOk()).isTrue();
+        response.assertThatErrorsField().isNotNull()
+                .asListOf(GraphQLTestError.class)
+                .hasOnlyOneElementSatisfying(error -> {
+                    assertThat(error.getMessage()).isEqualTo(GraphQLTestErrorType.UNAUTHORIZED.toString());
+                    assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+                })
+                .and()
+                .assertThatField(UPDATE_ITEM_IN_STOCK_BY_ITEM_ID_DATA_JSON_PATH).isNull();
+    }
+
+    @Test
+    public void test_updateItemInStockByItemId_noAuthentication() throws IOException {
+        GraphQLResponse response = graphQLTestTemplate
+                .perform(UPDATE_ITEM_IN_STOCK_BY_ITEM_ID_GRAPHQL_RESOURCE, getVariablesForUpdateItemInStockByItemId());
+        assertThat(response).isNotNull();
+        assertThat(response.isOk()).isTrue();
+        response.assertThatErrorsField().isNotNull()
+                .asListOf(GraphQLTestError.class)
+                .hasOnlyOneElementSatisfying(error -> {
+                    assertThat(error.getMessage()).isEqualTo(GraphQLTestErrorType.UNAUTHORIZED.toString());
+                    assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+                })
+                .and()
+                .assertThatField(UPDATE_ITEM_IN_STOCK_BY_ITEM_ID_DATA_JSON_PATH).isNull();
     }
 }
