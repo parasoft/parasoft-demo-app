@@ -1,0 +1,3 @@
+mutation deleteCategoryById($categoryId: ID) {
+    deleteCategoryById(categoryId: $categoryId)
+}

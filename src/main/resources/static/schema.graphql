@@ -3,12 +3,24 @@ scalar DateTime
 type Query {
     # category
     getCategoryById(categoryId: ID): Category
+    getCategoryByName(categoryName: String): Category
     getCategories(searchString: String, page: Int, size: Int, sort: [String]): CategoryPageInfo
     # location
-    getLocation(region: RegionType!): Location
+    getLocation(region: RegionType): Location
     # order
     getOrderByOrderNumber(orderNumber: String): Order
+    #item
+    getItems(categoryId: Int, regions: [RegionType], searchString: String, page: Int, size: Int, sort: [String]): ItemPageInfo
+    # cartItem
+    getCartItems: [CartItemEntity]
 }
+type Mutation {
+    # category
+    deleteCategoryById(categoryId: ID): Int
+    # order
+    createOrder(orderDTO: OrderDTO): Order
+}
+
 # category
 type Category {
     id: ID
@@ -59,30 +71,67 @@ enum RegionType {
 }
 # order
 type Order {
-    id: ID,
-    orderNumber: String,
-    requestedBy: String,
-    status: String,
-    reviewedByAPV: Boolean,
-    reviewedByPRCH: Boolean,
-    respondedBy: String,
-    orderItems: [OrderItem],
-    region: String,
-    location: String,
-    orderImage: String,
-    receiverId: String,
-    eventId: String,
-    eventNumber: String,
-    submissionDate: DateTime,
-    approverReplyDate: DateTime,
+    id: ID
+    orderNumber: String
+    requestedBy: String
+    status: String
+    reviewedByAPV: Boolean
+    reviewedByPRCH: Boolean
+    respondedBy: String
+    orderItems: [OrderItem]
+    region: String
+    location: String
+    orderImage: String
+    receiverId: String
+    eventId: String
+    eventNumber: String
+    submissionDate: DateTime
+    approverReplyDate: DateTime
     comments: String
 }
 type OrderItem {
+    id: ID
+    name: String
+    description: String
+    image: String
+    itemId: ID
+    quantity: Int
+}
+input OrderDTO {
+    region: RegionType
+    location: String
+    receiverId: String
+    eventId: String
+    eventNumber: String
+}
+#item
+type Item {
+    id: ID
+    name: String
+    description: String
+    inStock: Int
+    image: String
+    region: RegionType
+    lastAccessedDate: DateTime
+    categoryId: Int
+}
+type ItemPageInfo {
+    totalElements: Int
+    totalPages: Int
+    size: Int
+    number: Int
+    numberOfElements: Int
+    sort: String
+    content: [Item]
+}
+#cartItems
+type CartItemEntity {
     id: ID,
+    userId: ID,
+    itemId: ID,
     name: String,
     description: String,
     image: String,
-    order: Order,
-    itemId: ID,
+    realInStock: Int,
     quantity: Int
 }
