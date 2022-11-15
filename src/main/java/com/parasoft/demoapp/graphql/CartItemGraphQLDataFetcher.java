@@ -56,7 +56,6 @@ public class CartItemGraphQLDataFetcher {
         };
     }
     public DataFetcher<CartItemEntity> addItemInCart() {
-        System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         return dataFetchingEnvironment -> {
             try {
                 ResponseEntity<ResponseResult<CartItemEntity>> entity =
