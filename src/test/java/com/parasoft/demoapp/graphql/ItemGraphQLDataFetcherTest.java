@@ -92,7 +92,7 @@ public class ItemGraphQLDataFetcherTest {
     }
 
     @Test
-    public void test_getItems_notAuthenticated() throws IOException {
+    public void test_getItems_incorrectAuthentication() throws IOException {
         ObjectNode variables = objectMapper.createObjectNode();
         GraphQLResponse response = graphQLTestTemplate
                 .withBasicAuth(USERNAME_PURCHASER, "invalidPass")
