@@ -45,5 +45,12 @@ angular
                     success(response.data.data.getLocation);
                 }, error);
             }
+            //cartItems
+            instance.getCartItems = function(success, error) {
+                let requestBody = {"query": "query{getCartItems{id,userId,itemId,name,description,image,realInStock,quantity}}"}
+                makeCall(requestBody, function(response) {
+                    success(response.data.data.getCartItems);
+                }, error);
+            }
             return instance;
         });

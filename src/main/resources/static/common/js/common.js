@@ -122,14 +122,14 @@ function initHeaderController(app){
 }
 
 function initRequisitionBarController(app){
-    app.controller('requisitionBarController', function($rootScope, $http, $filter, $location) {
+    app.controller('requisitionBarController', function($rootScope, $http, $filter, $location, graphQLService) {
         var req = this;
         //Get current industry
         var industry = $rootScope.industry;
         //Get current itemId
         var currentItemId = $location.absUrl().substr($location.absUrl().lastIndexOf("/")+1);
         //Get requisition data from database
-        loadShoppingCartData($rootScope,$http,$filter);
+        loadShoppingCartData($rootScope,$http,$filter,graphQLService);
 
         //Get related assets data from database TODO
         var testNums = [0,1,2];
@@ -269,7 +269,7 @@ function initRequisitionBarController(app){
             var status = angular.element("#requisition_bar").attr("class");
             if(angular.equals(status,"collapse_out collapse") || angular.equals(status,"collapse_in collapse")){
                 //Get requisition data from database
-                loadShoppingCartData($rootScope,$http,$filter);
+                loadShoppingCartData($rootScope,$http,$filter,graphQLService);
                 req.collapse = "collapse_out";
             }else{
                 req.collapse = "collapse_in";
@@ -279,17 +279,13 @@ function initRequisitionBarController(app){
         //Check whether there are items in the requisition request
         req.checkItems = function(){
             //Get the newest cart items from database
-            $http({
-                method: 'GET',
-                url: '/proxy/v1/cartItems',
-            }).then(function(result) {
-                var cartItems = result.data.data;
-                if(cartItems.length < 1){
+            let success = (data) => {
+                if(data.length < 1){
                     toastrService().error($filter('translate')('NO_SUBMIT_ITEM_ERROR'));
                 }else{
-                    for(var i = 0; i < cartItems.length; i++){
-                        var inventory = cartItems[i].realInStock;
-                        var quantity = cartItems[i].quantity;
+                    for(var i = 0; i < data.length; i++){
+                        var inventory = data[i].realInStock;
+                        var quantity = data[i].quantity;
 
                         if(inventory === 0 || quantity > inventory){
                             toastrService().error($filter('translate')('SUBMIT_ITEM_FAIL'));
@@ -298,9 +294,23 @@ function initRequisitionBarController(app){
                     }
                     window.location.href= "/orderWizard";
                 }
-            }).catch(function(result) {
-                console.info(result);
-            });
+            }
+            let error = (data) => {
+                console.info(data);
+            }
+
+            if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+                graphQLService.getCartItems(success, (data) => {error(data, "graphQL")});
+            } else {
+                $http({
+                    method: 'GET',
+                    url: '/proxy/v1/cartItems',
+                }).then(function(result) {
+                    success(result.data.data);
+                }).catch(function(result) {
+                    error(result,"carts");
+                });
+            }
         }
 
         req.isInventoryEnough = function(inventory,quantity,index){
@@ -476,14 +486,10 @@ function sum(requisitionNums){
     return sum;
 }
 
-function loadShoppingCartData($rootScope,$http,$filter){
+function loadShoppingCartData($rootScope,$http,$filter,graphQLService){
     // Set time out for avoiding to get the key when using $filter('translate') fliter.
     setTimeout(function(){
-        $http({
-            method: 'GET',
-            url: '/proxy/v1/cartItems',
-        }).then(function(result) {
-            var data = result.data.data;
+        let success = (data) => {
             $rootScope.cartItems = data;
             var requisitionNums = new Array();
             var errorFlag = false;
@@ -539,14 +545,28 @@ function loadShoppingCartData($rootScope,$http,$filter){
             }else{
                 $rootScope.disableSubmitBtn = false;
             }
-        }).catch(function(result) {
-            console.info(result);
+        }
+        let error = (data, endpointType) => {
+            console.info(data);
             $rootScope.shoppingCart = {
                 "visibility" : "hidden"
             };
-            displayLoadError(result,$rootScope,$filter,$http,true,'cart');
+            displayLoadError(data,$rootScope,$filter,$http,true,endpointType);
             $rootScope.cartItemLoadError = true;
-        });
+        }
+
+        if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+            graphQLService.getCartItems(success, (data) => {error(data, "graphQL")});
+        } else {
+            $http({
+                method: 'GET',
+                url: '/proxy/v1/cartItems',
+            }).then(function(result) {
+                success(result.data.data);
+            }).catch(function(result) {
+                error(result, "cart");
+            })
+        }
     }, 500);
 }
 
