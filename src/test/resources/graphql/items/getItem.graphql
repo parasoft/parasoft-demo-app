@@ -1,0 +1,12 @@
+query GetItemByItemId($itemId: ID) {
+    getItemByItemId(itemId: $itemId) {
+        id
+        name
+        description
+        inStock
+        image
+        region
+        lastAccessedDate
+        categoryId
+    }
+}

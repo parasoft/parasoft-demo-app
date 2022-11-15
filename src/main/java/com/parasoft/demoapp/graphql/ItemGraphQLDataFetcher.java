@@ -17,9 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Objects;
+import java.util.*;
 
 import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.HOST;
 
@@ -76,6 +74,26 @@ public class ItemGraphQLDataFetcher {
                         HttpMethod.GET,
                         new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
                         new ParameterizedTypeReference<ResponseResult<PageInfo<ItemEntity>>>() {});
+                return Objects.requireNonNull(entity.getBody()).getData();
+            } catch (Exception e) {
+                throw RestTemplateUtil.convertException(e);
+            }
+        };
+    }
+
+    public DataFetcher<ItemEntity> getItemByItemId() {
+        return dataFetchingEnvironment -> {
+            try {
+                Map<String, String> uriVariables = new HashMap<>();
+                if (dataFetchingEnvironment.containsArgument("itemId")) {
+                    uriVariables.put("itemId", dataFetchingEnvironment.getArgument("itemId"));
+                }
+                ResponseEntity<ResponseResult<ItemEntity>> entity  =
+                        restTemplate.exchange(itemBaseUrl + "/{itemId}",
+                                HttpMethod.GET,
+                                new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
+                                new ParameterizedTypeReference<ResponseResult<ItemEntity>>() {},
+                                uriVariables);
                 return Objects.requireNonNull(entity.getBody()).getData();
             } catch (Exception e) {
                 throw RestTemplateUtil.convertException(e);

@@ -9,6 +9,11 @@ import com.parasoft.demoapp.controller.PageInfo;
 import com.parasoft.demoapp.model.industry.ItemEntity;
 import org.assertj.core.api.Condition;
 import org.assertj.core.data.Index;
+import com.graphql.spring.boot.test.GraphQLTestTemplate;
+import com.parasoft.demoapp.defaultdata.ResetEntrance;
+import com.parasoft.demoapp.model.industry.ItemEntity;
+import com.parasoft.demoapp.model.industry.OrderEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,8 +32,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(SpringRunner.class)
 @GraphQLTest
 public class ItemGraphQLDataFetcherTest {
-    private static final String ITEM_GRAPHQL_RESOURCE = "graphql/items/getItems.graphql";
-    private static final String ITEM_DATA_JSON_PATH = DATA_PATH + ".getItems";
+
+    private static final String GET_ITEMS_GRAPHQL_RESOURCE = "graphql/items/getItems.graphql";
+    private static final String GET_ITEMS_DATA_JSON_PATH = DATA_PATH + ".getItems";
+    private static final String GET_ITEM_BY_ITEM_ID_GRAPHQL_RESOURCE = "graphql/items/getItem.graphql";
+    private static final String GET_ITEM_BY_ITEM_ID_DATA_JSON_PATH = DATA_PATH + ".getItemByItemId";
 
     @Autowired
     private GraphQLTestTemplate graphQLTestTemplate;
@@ -36,9 +44,13 @@ public class ItemGraphQLDataFetcherTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    ResetEntrance resetEntrance;
+
     @Before
     public void setUp() {
         graphQLTestTemplate.getHeaders().clear();
+        resetEntrance.run();
     }
 
     @Test
@@ -52,20 +64,20 @@ public class ItemGraphQLDataFetcherTest {
         variables.put("sort", "name");
         GraphQLResponse response = graphQLTestTemplate
                 .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
-                .perform(ITEM_GRAPHQL_RESOURCE, variables);
+                .perform(GET_ITEMS_GRAPHQL_RESOURCE, variables);
         assertThat(response).isNotNull();
         assertThat(response.isOk()).isTrue();
         response.assertThatNoErrorsArePresent()
                 .assertThatDataField().isNotNull()
                 .and()
-                .assertThatField(ITEM_DATA_JSON_PATH)
+                .assertThatField(GET_ITEMS_DATA_JSON_PATH)
                 .as(PageInfo.class)
                 .hasFieldOrPropertyWithValue("totalElements", 1L)
                 .hasFieldOrPropertyWithValue("sort", "name: ASC")
                 .hasFieldOrPropertyWithValue("totalPages", 1)
                 .hasFieldOrPropertyWithValue("size", 10)
                 .and()
-                .assertThatField(ITEM_DATA_JSON_PATH + ".content")
+                .assertThatField(GET_ITEMS_DATA_JSON_PATH + ".content")
                 .asListOf(ItemEntity.class)
                 .has(new Condition<ItemEntity>(c -> c.getName().equals("Blue Sleeping Bag"),"name Blue Sleeping Bag"), Index.atIndex(0))
                 .size()
@@ -78,7 +90,7 @@ public class ItemGraphQLDataFetcherTest {
         variable.put("sort", "sort");
         GraphQLResponse response = graphQLTestTemplate
                 .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
-                .perform(ITEM_GRAPHQL_RESOURCE, variable);
+                .perform(GET_ITEMS_GRAPHQL_RESOURCE, variable);
         assertThat(response).isNotNull();
         assertThat(response.isOk()).isTrue();
         response.assertThatErrorsField().isNotNull()
@@ -88,7 +100,7 @@ public class ItemGraphQLDataFetcherTest {
                     assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
                 })
                 .and()
-                .assertThatField(ITEM_DATA_JSON_PATH).isNull();
+                .assertThatField(GET_ITEMS_DATA_JSON_PATH).isNull();
     }
 
     @Test
@@ -96,7 +108,7 @@ public class ItemGraphQLDataFetcherTest {
         ObjectNode variables = objectMapper.createObjectNode();
         GraphQLResponse response = graphQLTestTemplate
                 .withBasicAuth(USERNAME_PURCHASER, "invalidPass")
-                .perform(ITEM_GRAPHQL_RESOURCE, variables);
+                .perform(GET_ITEMS_GRAPHQL_RESOURCE, variables);
         assertThat(response).isNotNull();
         assertThat(response.isOk()).isTrue();
         response.assertThatErrorsField().isNotNull()
@@ -106,6 +118,42 @@ public class ItemGraphQLDataFetcherTest {
                     assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.UNAUTHORIZED.value());
                 })
                 .and()
-                .assertThatField(ITEM_DATA_JSON_PATH).isNull();
+                .assertThatField(GET_ITEMS_DATA_JSON_PATH).isNull();
+    }
+
+    @Test
+    public void getItemByItemId_normal() throws Throwable {
+        String itemId = "1";
+        ObjectNode variable = objectMapper.createObjectNode();
+        variable.put("itemId", itemId);
+        GraphQLResponse graphQLResponse = graphQLTestTemplate
+                .perform(GET_ITEM_BY_ITEM_ID_GRAPHQL_RESOURCE, variable);
+        assertThat(graphQLResponse).isNotNull();
+        assertThat(graphQLResponse.isOk()).isTrue();
+        graphQLResponse.assertThatNoErrorsArePresent()
+                .assertThatDataField().isNotNull()
+                .and()
+                .assertThatField(GET_ITEM_BY_ITEM_ID_DATA_JSON_PATH)
+                .as(ItemEntity.class)
+                .hasFieldOrPropertyWithValue("id", 1L);
+    }
+
+    @Test
+    public void getItemByItemId_NotFound() throws Throwable {
+        String itemId = "0";
+        ObjectNode variable = objectMapper.createObjectNode();
+        variable.put("itemId", itemId);
+        GraphQLResponse graphQLResponse = graphQLTestTemplate
+                .perform(GET_ITEM_BY_ITEM_ID_GRAPHQL_RESOURCE, variable);
+        assertThat(graphQLResponse).isNotNull();
+        assertThat(graphQLResponse.isOk()).isTrue();
+        graphQLResponse.assertThatErrorsField().isNotNull()
+                .asListOf(GraphQLTestError.class)
+                .hasOnlyOneElementSatisfying(error -> {
+                    assertThat(error.getMessage()).isEqualTo("Item with ID 0 is not found.");
+                    assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.NOT_FOUND.value());
+                })
+                .and()
+                .assertThatField(GET_ITEM_BY_ITEM_ID_DATA_JSON_PATH).isNull();
     }
 }

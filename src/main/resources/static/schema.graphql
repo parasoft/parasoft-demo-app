@@ -9,6 +9,7 @@ type Query {
     getLocation(region: RegionType!): Location
     #item
     getItems(categoryId: Int, regions: [RegionType], searchString: String, page: Int, size: Int, sort: [String]): ItemPageInfo
+    getItemByItemId(itemId: ID): Item
     # cartItem
     getCartItems: [CartItemEntity]
 }
@@ -74,7 +75,7 @@ type Item {
     image: String
     region: RegionType
     lastAccessedDate: DateTime
-    categoryId: Int
+    categoryId: ID
 }
 
 type ItemPageInfo {
