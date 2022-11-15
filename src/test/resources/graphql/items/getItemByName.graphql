@@ -1,0 +1,5 @@
+query GetItemByName($itemName: String) {
+    getItemByName(itemName: $itemName) {
+        name
+    }
+}

@@ -30,6 +30,9 @@ public class ItemGraphQLDataFetcherTest {
     private static final String ITEM_GRAPHQL_RESOURCE = "graphql/items/getItems.graphql";
     private static final String ITEM_DATA_JSON_PATH = DATA_PATH + ".getItems";
 
+    private static final String GET_ITEM_BY_NAME_GRAPHQL_RESOURCE="graphql/items/getItemByName.graphql";
+    private static final String GET_ITEM_BY_NAME_DATA_JSON_PATH = DATA_PATH + ".getItemByName";
+
     @Autowired
     private GraphQLTestTemplate graphQLTestTemplate;
 
@@ -107,5 +110,80 @@ public class ItemGraphQLDataFetcherTest {
                 })
                 .and()
                 .assertThatField(ITEM_DATA_JSON_PATH).isNull();
+    }
+
+    @Test
+    public void test_getItemByName_normal() throws IOException {
+        ObjectNode variables = objectMapper.createObjectNode();
+        variables.put("itemName", "3 Person Tent");
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(GET_ITEM_BY_NAME_GRAPHQL_RESOURCE, variables);
+        assertThat(response).isNotNull();
+        assertThat(response.isOk()).isTrue();
+        response.assertThatNoErrorsArePresent()
+                .assertThatDataField().isNotNull()
+                .and()
+                .assertThatField(GET_ITEM_BY_NAME_DATA_JSON_PATH)
+                .as(ItemEntity.class)
+                .has(new Condition<ItemEntity>(c -> c.getName().equals("3 Person Tent"), "name 3 Person Tent"));
+
+    }
+
+    @Test
+    public void test_getItemByName_ParameterException() throws IOException {
+        ObjectNode variables = objectMapper.createObjectNode();
+        variables.put("itemName", " ");
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(GET_ITEM_BY_NAME_GRAPHQL_RESOURCE, variables);
+        assertThat(response).isNotNull();
+        assertThat(response.isOk()).isTrue();
+        response.assertThatErrorsField().isNotNull()
+                .asListOf(GraphQLTestError.class)
+                .hasOnlyOneElementSatisfying(error -> {
+                    assertThat(error.getMessage()).isEqualTo("Item name cannot be an empty string(null, '' or '  ').");
+                    assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.BAD_REQUEST.value());
+                })
+                .and()
+                .assertThatField(GET_ITEM_BY_NAME_DATA_JSON_PATH).isNull();
+    }
+
+    @Test
+    public void test_getItemByName_ItemNotFoundException() throws IOException {
+        ObjectNode variables = objectMapper.createObjectNode();
+        variables.put("itemName", "Tent");
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(GET_ITEM_BY_NAME_GRAPHQL_RESOURCE, variables);
+        assertThat(response).isNotNull();
+        assertThat(response.isOk()).isTrue();
+        response.assertThatErrorsField().isNotNull()
+                .asListOf(GraphQLTestError.class)
+                .hasOnlyOneElementSatisfying(error -> {
+                    assertThat(error.getMessage()).isEqualTo("Item with name Tent is not found.");
+                    assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.NOT_FOUND.value());
+                })
+                .and()
+                .assertThatField(GET_ITEM_BY_NAME_DATA_JSON_PATH).isNull();
+    }
+
+    @Test
+    public void test_getItemByName_incorrectAuthentication() throws IOException {
+        ObjectNode variables = objectMapper.createObjectNode();
+        variables.put("itemName", "Tent");
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, "invalidPass")
+                .perform(GET_ITEM_BY_NAME_GRAPHQL_RESOURCE, variables);
+        assertThat(response).isNotNull();
+        assertThat(response.isOk()).isTrue();
+        response.assertThatErrorsField().isNotNull()
+                .asListOf(GraphQLTestError.class)
+                .hasOnlyOneElementSatisfying(error -> {
+                    assertThat(error.getMessage()).isEqualTo(GraphQLTestErrorType.UNAUTHORIZED.toString());
+                    assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+                })
+                .and()
+                .assertThatField(GET_ITEM_BY_NAME_DATA_JSON_PATH).isNull();
     }
 }
