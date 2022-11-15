@@ -45,6 +45,24 @@ angular
                     success(response.data.data.getLocation);
                 }, error);
             }
+            // Orders
+            instance.createOrder = function(variables, success, error) {
+                let requestBody = {
+                    "query": "mutation($orderDTO:OrderDTO!){" +
+                            "createOrder(orderDTO: $orderDTO)" +
+                                "{" +
+                                    "id,orderNumber,requestedBy,status,reviewedByAPV,reviewedByPRCH,respondedBy," +
+                                    "orderItems" +
+                                        "{" +
+                                            "id,name,description,image,itemId,quantity" +
+                                        "}," +
+                                    "region,location,orderImage,receiverId,eventId,eventNumber,submissionDate,approverReplyDate,comments}" +
+                                "}",
+                                "variables": variables}
+                makeCall(requestBody, function(response) {
+                    success(response.data.data.createOrder);
+                }, error);
+            }
             // items
             instance.getItems = function (variables, success, error) {
                 let requestBody = {"query": "query($categoryId: Int, $regions: [RegionType], $searchString: String, $page: Int, $size: Int, $sort: [String])" +
