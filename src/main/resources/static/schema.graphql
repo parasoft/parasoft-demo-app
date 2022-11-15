@@ -2,13 +2,13 @@ scalar DateTime
 
 type Query {
     # category
-    getCategoryById(categoryId: ID): Category
-    getCategoryByName(categoryName: String): Category
+    getCategoryById(categoryId: ID!): Category
+    getCategoryByName(categoryName: String!): Category
     getCategories(searchString: String, page: Int, size: Int, sort: [String]): CategoryPageInfo
     # location
-    getLocation(region: RegionType): Location
+    getLocation(region: RegionType!): Location
     # order
-    getOrderByOrderNumber(orderNumber: String): Order
+    getOrderByOrderNumber(orderNumber: String!): Order
     #item
     getItems(categoryId: Int, regions: [RegionType], searchString: String, page: Int, size: Int, sort: [String]): ItemPageInfo
     # cartItem
@@ -16,9 +16,9 @@ type Query {
 }
 type Mutation {
     # category
-    deleteCategoryById(categoryId: ID): Int
+    deleteCategoryById(categoryId: ID!): Int
     # order
-    createOrder(orderDTO: OrderDTO): Order
+    createOrder(orderDTO: OrderDTO!): Order
 }
 
 # category
@@ -39,7 +39,7 @@ type CategoryPageInfo {
 }
 # location
 type Location {
-    id: ID!
+    id: ID
     locationInfo: String
     locationImage: String
 }
@@ -98,11 +98,11 @@ type OrderItem {
     quantity: Int
 }
 input OrderDTO {
-    region: RegionType
-    location: String
-    receiverId: String
-    eventId: String
-    eventNumber: String
+    region: RegionType!
+    location: String!
+    receiverId: String!
+    eventId: String!
+    eventNumber: String!
 }
 #item
 type Item {
@@ -126,12 +126,12 @@ type ItemPageInfo {
 }
 #cartItems
 type CartItemEntity {
-    id: ID,
-    userId: ID,
-    itemId: ID,
-    name: String,
-    description: String,
-    image: String,
-    realInStock: Int,
+    id: ID
+    userId: ID
+    itemId: ID
+    name: String
+    description: String
+    image: String
+    realInStock: Int
     quantity: Int
 }
