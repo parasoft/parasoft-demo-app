@@ -132,4 +132,20 @@ public class CategoryGraphQLDataFetcher {
             }
         };
     }
+
+    public DataFetcher<CategoryEntity> addNewCategory() {
+        return environment -> {
+            try {
+                ResponseEntity<ResponseResult<CategoryEntity>> entity =
+                        restTemplate.exchange(categoryBaseUrl,
+                                HttpMethod.POST,
+                                new HttpEntity<>(environment.getArgument("categoryDTO"),
+                                        RestTemplateUtil.createHeaders(httpRequest)),
+                                new ParameterizedTypeReference<ResponseResult<CategoryEntity>>() {});
+                return Objects.requireNonNull(entity.getBody()).getData();
+            } catch (Exception e) {
+                throw RestTemplateUtil.convertException(e);
+            }
+        };
+    }
 }
