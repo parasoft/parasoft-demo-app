@@ -102,12 +102,14 @@ app.controller('orderHistoryController', function($rootScope, $http, $filter, gr
                     history.order.comments = $filter('translate')('INVENTORY_ITEM_NOT_EXIST');
                 }
             }
-        }
-
+        };
+        let error = (data) => {
+            console.log(data);
+        };
         let params = {"orderNumber": orderNumber};
         if (CURRENT_WEB_SERVICE_MODE === 'GraphQL') {
             graphQLService.getOrderByOrderNumber(params, success, (data) => {
-                console.log(data);
+                error(data, "graphQL");
             });
         } else {
             $http({
@@ -116,7 +118,7 @@ app.controller('orderHistoryController', function($rootScope, $http, $filter, gr
             }).then(function(result) {
                 success(result.data.data);
             }).catch(function(result) {
-                console.log(result);
+                error(result, "order");
             });
         }
 

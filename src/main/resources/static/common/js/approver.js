@@ -26,9 +26,13 @@ app.controller('approverHomePageController', function($rootScope, $http, $filter
     approver.openOrderDetail = function(orderNum) {
         let params = {"orderNumber": orderNum};
 
+        let error = (data) => {
+            console.log(data);
+        };
+
         if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
             graphQLService.getOrderByOrderNumber(params, handleOrderDetail, (data) => {
-                console.log(data);
+                error(data, "graphQL");
             })
         } else {
             $http({
@@ -37,7 +41,7 @@ app.controller('approverHomePageController', function($rootScope, $http, $filter
             }).then(function(result) {
                 handleOrderDetail(result.data.data);
             }).catch(function(result) {
-                console.log(result);
+                error(result, "approver");
             });
         }
     }
