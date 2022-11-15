@@ -176,4 +176,23 @@ public class ItemGraphQLDataFetcherTest {
                 .and()
                 .assertThatField(GET_ITEM_BY_ITEM_ID_DATA_JSON_PATH).isNull();
     }
+
+    @Test
+    public void getItemByItemId_invalidItemId() throws Throwable {
+        String itemId = "notNumber";
+        ObjectNode variable = objectMapper.createObjectNode();
+        variable.put("itemId", itemId);
+        GraphQLResponse response = graphQLTestTemplate
+                .perform(GET_ITEM_BY_ITEM_ID_GRAPHQL_RESOURCE, variable);
+        assertThat(response).isNotNull();
+        assertThat(response.isOk()).isTrue();
+        response.assertThatErrorsField().isNotNull()
+                .asListOf(GraphQLTestError.class)
+                .hasOnlyOneElementSatisfying(error -> {
+                    assertThat(error.getMessage()).isEqualTo("Failed to convert value of type 'java.lang.String' to required type 'java.lang.Long'; nested exception is java.lang.NumberFormatException: For input string: \"notNumber\"");
+                    assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                })
+                .and()
+                .assertThatField(GET_ITEM_BY_ITEM_ID_DATA_JSON_PATH).isNull();
+    }
 }
