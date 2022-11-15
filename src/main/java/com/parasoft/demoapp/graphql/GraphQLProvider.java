@@ -32,6 +32,8 @@ public class GraphQLProvider {
 
     private final LocationGraphQLDataFetcher locationDataFetcher;
 
+    private final OrderGraphQLDataFetcher orderGraphQLDataFetcher;
+
     private final ItemGraphQLDataFetcher itemDataFetcher;
 
     private final CartItemGraphQLDataFetcher cartItemGraphQLDataFetcher;
@@ -56,6 +58,7 @@ public class GraphQLProvider {
         RuntimeWiring.Builder builder = RuntimeWiring.newRuntimeWiring();
         categoryTypeWiring(builder);
         locationTypeWiring(builder);
+        orderTypeWiring(builder);
         itemTypeWiring(builder);
         cartItemTypeWiring(builder);
         return builder
@@ -73,6 +76,11 @@ public class GraphQLProvider {
     private void locationTypeWiring(RuntimeWiring.Builder builder) {
         builder.type("Query", typeWiring ->
                 typeWiring.dataFetcher("getLocation", locationDataFetcher.getLocation()));
+    }
+
+    private void orderTypeWiring(RuntimeWiring.Builder builder) {
+        builder.type("Query", typeWriting -> typeWriting.dataFetcher("getOrderByOrderNumber", orderGraphQLDataFetcher.getOrderByOrderNumber()));
+        builder.type("Mutation", typeWriting -> typeWriting.dataFetcher("createOrder", orderGraphQLDataFetcher.createOrder()));
     }
 
     private void itemTypeWiring(RuntimeWiring.Builder builder) {
