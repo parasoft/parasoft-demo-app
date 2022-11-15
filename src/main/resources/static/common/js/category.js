@@ -5,7 +5,7 @@ setLocale(app);
 initImportPageControllers(app);
 initToastr();
 
-app.controller('categoryController', function($rootScope, $http, $location, $filter, $interval, $cookies) {
+app.controller('categoryController', function($rootScope, $http, $location, $filter, $interval, $cookies, graphQLService) {
     var category = this;
     var items;
     var categoryId = $location.absUrl().substr($location.absUrl().lastIndexOf("/")+1);
@@ -71,17 +71,29 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
         });
 
         //Get category by id
-        $http({
-            method: 'GET',
-            url: '/proxy/v1/assets/categories/' + categoryId,
-            params: {categoryId: categoryId},
-        }).then(function(result) {
-            data = result.data.data;
-            category.title = data.name;
-        }).catch(function(result) {
+        let success = (result) => {
+            category.title = result.name;
+        }
+        let error = (result) => {
             console.info(result);
-            displayLoadError(result,$rootScope,$filter,$http,true,'categories');
-        });
+            displayLoadError(result, $rootScope, $filter, $http, true, 'categories');
+        }
+
+        let params = {"categoryId": categoryId};
+        if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+            graphQLService.getCategoryById(params, success, (data) => {error(data, "graphQL")});
+        } else {
+            $http({
+                method: 'GET',
+                url: '/proxy/v1/assets/categories/' + categoryId,
+                params: {categoryId: categoryId},
+            }).then(function (result) {
+                let data = result.data.data;
+                success(data);
+            }).catch(function (result) {
+                error(result);
+            });
+        }
 
         function handleRegionError(result,category,$rootScope,$filter,$http){
             displayLoadError(result,$rootScope,$filter,$http,false,'locations');
