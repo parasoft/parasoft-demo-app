@@ -8,13 +8,13 @@ mutation order($orderDTO: OrderDTO) {
         reviewedByPRCH
         respondedBy
         orderItems {
-                        id
-                        name
-                        description
-                        image
-                        itemId
-                        quantity
-                    }
+            id
+            name
+            description
+            image
+            itemId
+            quantity
+        }
         region
         location
         orderImage
