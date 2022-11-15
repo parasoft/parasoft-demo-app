@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.HOST_WITHOUT_PORT;
+
 @RequiredArgsConstructor
 @Component
 public class CategoryGraphQLDataFetcher {
@@ -36,7 +38,7 @@ public class CategoryGraphQLDataFetcher {
 
     @PostConstruct
     private void init() {
-        categoryBaseUrl = "http://localhost:" + webConfig.getServerPort() +"/v1/assets/categories";
+        categoryBaseUrl = HOST_WITHOUT_PORT + webConfig.getServerPort() +"/v1/assets/categories";
     }
 
     public DataFetcher<CategoryEntity> getCategoryById() {
@@ -52,6 +54,26 @@ public class CategoryGraphQLDataFetcher {
                         new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
                         new ParameterizedTypeReference<ResponseResult<CategoryEntity>>() {},
                         uriVariables);
+                return Objects.requireNonNull(entity.getBody()).getData();
+            } catch (Exception e) {
+                throw RestTemplateUtil.convertException(e);
+            }
+        };
+    }
+
+    public DataFetcher<CategoryEntity> getCategoryByName() {
+        return dataFetchingEnvironment -> {
+            try {
+                Map<String, String> uriVariables = new HashMap<>();
+                if (dataFetchingEnvironment.containsArgument("categoryName")) {
+                    uriVariables.put("categoryName", dataFetchingEnvironment.getArgument("categoryName"));
+                }
+                ResponseEntity<ResponseResult<CategoryEntity>> entity =
+                        restTemplate.exchange(categoryBaseUrl + "/name/{categoryName}",
+                                HttpMethod.GET,
+                                new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
+                                new ParameterizedTypeReference<ResponseResult<CategoryEntity>>() {},
+                                uriVariables);
                 return Objects.requireNonNull(entity.getBody()).getData();
             } catch (Exception e) {
                 throw RestTemplateUtil.convertException(e);
@@ -84,6 +106,26 @@ public class CategoryGraphQLDataFetcher {
                         HttpMethod.GET,
                         new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
                         new ParameterizedTypeReference<ResponseResult<PageInfo<CategoryEntity>>>() {});
+                return Objects.requireNonNull(entity.getBody()).getData();
+            } catch (Exception e) {
+                throw RestTemplateUtil.convertException(e);
+            }
+        };
+    }
+
+    public DataFetcher<Integer> deleteCategoryById() {
+        return dataFetchingEnvironment -> {
+            try {
+                Map<String, String> uriVariables = new HashMap<>();
+                if (dataFetchingEnvironment.containsArgument("categoryId")) {
+                    uriVariables.put("categoryId", dataFetchingEnvironment.getArgument("categoryId"));
+                }
+                ResponseEntity<ResponseResult<Integer>> entity =
+                        restTemplate.exchange(categoryBaseUrl + "/{categoryId}",
+                                HttpMethod.DELETE,
+                                new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
+                                new ParameterizedTypeReference<ResponseResult<Integer>>() {},
+                                uriVariables);
                 return Objects.requireNonNull(entity.getBody()).getData();
             } catch (Exception e) {
                 throw RestTemplateUtil.convertException(e);

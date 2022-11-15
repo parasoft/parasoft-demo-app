@@ -1,0 +1,12 @@
+query{
+    getCartItems{
+        id
+        userId
+        itemId
+        name
+        description
+        image
+        realInStock
+        quantity
+    }
+}

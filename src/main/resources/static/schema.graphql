@@ -3,11 +3,18 @@ scalar DateTime
 type Query {
     # category
     getCategoryById(categoryId: ID): Category
+    getCategoryByName(categoryName: String): Category
     getCategories(searchString: String, page: Int, size: Int, sort: [String]): CategoryPageInfo
     # location
     getLocation(region: RegionType!): Location
     #item
     getItems(categoryId: Int, regions: [RegionType], searchString: String, page: Int, size: Int, sort: [String]): ItemPageInfo
+    # cartItem
+    getCartItems: [CartItemEntity]
+}
+type Mutation {
+    # category
+    deleteCategoryById(categoryId: ID): Int
 }
 # category
 type Category {
@@ -78,4 +85,16 @@ type ItemPageInfo {
     numberOfElements: Int
     sort: String
     content: [Item]
+}
+
+#cartItems
+type CartItemEntity {
+    id: ID,
+    userId: ID,
+    itemId: ID,
+    name: String,
+    description: String,
+    image: String,
+    realInStock: Int,
+    quantity: Int
 }
