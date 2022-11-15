@@ -288,7 +288,7 @@ public class GlobalPreferencesServiceSpringTest {
 			routeMap.put(route.getId(), route);
 		}
 
-		String host = HOST_WITHOUT_PORT + webConfig.getServerPort();
+		String host = HOST + webConfig.getServerPort();
 
 		Route locationsRoute = routeMap.get(LOCATIONS_ENDPOINT_ID);
 		assertNotNull(locationsRoute);

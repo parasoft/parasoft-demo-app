@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.HOST_WITHOUT_PORT;
+import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.HOST;
 
 @RequiredArgsConstructor
 @Component
@@ -38,15 +38,16 @@ public class CategoryGraphQLDataFetcher {
 
     @PostConstruct
     private void init() {
-        categoryBaseUrl = HOST_WITHOUT_PORT + webConfig.getServerPort() +"/v1/assets/categories";
+        categoryBaseUrl = HOST + webConfig.getServerPort() +"/v1/assets/categories";
     }
 
     public DataFetcher<CategoryEntity> getCategoryById() {
         return dataFetchingEnvironment -> {
             try {
                 Map<String, String> uriVariables = new HashMap<>();
-                if (dataFetchingEnvironment.containsArgument("categoryId")) {
-                    uriVariables.put("categoryId", dataFetchingEnvironment.getArgument("categoryId"));
+                String categoryId = dataFetchingEnvironment.getArgument("categoryId");
+                if (categoryId != null && !categoryId.isEmpty()) {
+                    uriVariables.put("categoryId", categoryId);
                 }
                 ResponseEntity<ResponseResult<CategoryEntity>> entity =
                     restTemplate.exchange(categoryBaseUrl + "/{categoryId}",
@@ -65,8 +66,9 @@ public class CategoryGraphQLDataFetcher {
         return dataFetchingEnvironment -> {
             try {
                 Map<String, String> uriVariables = new HashMap<>();
-                if (dataFetchingEnvironment.containsArgument("categoryName")) {
-                    uriVariables.put("categoryName", dataFetchingEnvironment.getArgument("categoryName"));
+                String categoryName = dataFetchingEnvironment.getArgument("categoryName");
+                if (categoryName != null && !categoryName.isEmpty()) {
+                    uriVariables.put("categoryName", categoryName);
                 }
                 ResponseEntity<ResponseResult<CategoryEntity>> entity =
                         restTemplate.exchange(categoryBaseUrl + "/name/{categoryName}",
@@ -117,8 +119,9 @@ public class CategoryGraphQLDataFetcher {
         return dataFetchingEnvironment -> {
             try {
                 Map<String, String> uriVariables = new HashMap<>();
-                if (dataFetchingEnvironment.containsArgument("categoryId")) {
-                    uriVariables.put("categoryId", dataFetchingEnvironment.getArgument("categoryId"));
+                String categoryId = dataFetchingEnvironment.getArgument("categoryId");
+                if (categoryId != null && !categoryId.isEmpty()) {
+                    uriVariables.put("categoryId", categoryId);
                 }
                 ResponseEntity<ResponseResult<Integer>> entity =
                         restTemplate.exchange(categoryBaseUrl + "/{categoryId}",
@@ -126,6 +129,22 @@ public class CategoryGraphQLDataFetcher {
                                 new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
                                 new ParameterizedTypeReference<ResponseResult<Integer>>() {},
                                 uriVariables);
+                return Objects.requireNonNull(entity.getBody()).getData();
+            } catch (Exception e) {
+                throw RestTemplateUtil.convertException(e);
+            }
+        };
+    }
+
+    public DataFetcher<CategoryEntity> addCategory() {
+        return environment -> {
+            try {
+                ResponseEntity<ResponseResult<CategoryEntity>> entity =
+                        restTemplate.exchange(categoryBaseUrl,
+                                HttpMethod.POST,
+                                new HttpEntity<>(environment.getArgument("categoryDTO"),
+                                        RestTemplateUtil.createHeaders(httpRequest)),
+                                new ParameterizedTypeReference<ResponseResult<CategoryEntity>>() {});
                 return Objects.requireNonNull(entity.getBody()).getData();
             } catch (Exception e) {
                 throw RestTemplateUtil.convertException(e);

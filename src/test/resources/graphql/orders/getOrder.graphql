@@ -1,0 +1,28 @@
+query getOrder($orderNumber: String!) {
+    getOrderByOrderNumber(orderNumber: $orderNumber) {
+        id,
+        orderNumber,
+        requestedBy,
+        status,
+        reviewedByAPV,
+        reviewedByPRCH,
+        respondedBy,
+        orderItems {
+            id,
+            name,
+            description,
+            image,
+            itemId,
+            quantity
+        },
+        region,
+        location,
+        orderImage,
+        receiverId,
+        eventId,
+        eventNumber,
+        submissionDate,
+        approverReplyDate,
+        comments
+    }
+}
