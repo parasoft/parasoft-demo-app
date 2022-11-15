@@ -5,7 +5,7 @@ setLocale(app);
 initImportPageControllers(app);
 initToastr();
 
-app.controller('categoryController', function($rootScope, $http, $location, $filter, $interval, $cookies) {
+app.controller('categoryController', function($rootScope, $http, $location, $filter, $interval, $cookies, graphQLService) {
     var category = this;
     var items;
     var categoryId = $location.absUrl().substr($location.absUrl().lastIndexOf("/")+1);
@@ -42,18 +42,13 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
         checkedRegions = checkedRegions === 'undefined' ? null : checkedRegions;
         var regionFilterDisabled = checkedRegions === "" || checkedRegions === null || checkedRegions === undefined;
 
-        //Get all items from database
-        $http({
-            method: 'GET',
-            url: '/proxy/v1/assets/items',
-            params: {categoryId: categoryId, regions: checkedRegions},
-        }).then(function(result) {
-            if(!regionFilterDisabled){
-                checkedRegions = checkedRegions.split(",");
-                category.checkedRegions = checkedRegions;
-            }
+        if(!regionFilterDisabled){
+            checkedRegions = checkedRegions.split(",");
+            category.checkedRegions = checkedRegions;
+        }
 
-            items = result.data.data.content;
+        let getItemsSuccessfully = (data) => {
+            items = data.content;
             category.items = items;
 
             if(items.length === 0){
@@ -64,11 +59,33 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
                     category.emptyContentsMessage = true;
                 }
             }
-        }).catch(function(result) {
-            console.info(result);
-            displayLoadError(result,$rootScope,$filter,$http,false,'items');
+        };
+
+        let failToGetItems = (data, endpointType) => {
+            category.checkedRegions = null;
+            console.info(data);
+            displayLoadError(data,$rootScope,$filter,$http,false,endpointType);
             category.itemsLoadError = true;
-        });
+        }
+
+        let params = {
+            categoryId: categoryId,
+            regions: checkedRegions
+        }
+        //Get all items from database
+        if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+            graphQLService.getItems(params, getItemsSuccessfully, (data) => {failToGetItems(data, "graphQL")});
+        } else {
+            $http({
+                method: 'GET',
+                url: '/proxy/v1/assets/items',
+                params: params,
+            }).then(function(result) {
+                getItemsSuccessfully(result.data.data);
+            }).catch(function(result) {
+                failToGetItems(result, "items");
+            })
+        }
 
         //Get category by id
         $http({
@@ -199,15 +216,11 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
     }
 
     category.search = function() {
-        $http({
-            method: 'GET',
-            url: '/proxy/v1/assets/items',
-            params: angular.element('.category_filter_container').serializeJSON(),
-        }).then(function (result) {
-            items = result.data.data.content;
+        let params = angular.element('.category_filter_container').serializeJSON();
+        let searchSucceeded = (data) => {
+            items = data.content;
             category.items = items;
-            var checkedRegions = result.config.params.regions;
-            var regionFilterDisabled = checkedRegions === "" || checkedRegions === null || checkedRegions === undefined;
+            var checkedRegions = params.regions;
 
             //Save checked region options to cookie
             $cookies.put("regionFilter", checkedRegions);
@@ -217,10 +230,26 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
             } else {
                 category.showNoResultText = false;
             }
-        }).catch(function (result) {
-            console.info(result);
-            displayLoadError(result, $rootScope, $filter, $http, true, 'items');
-        });
+        };
+
+        let searchFailed = (data, endpointType) => {
+            console.info(data);
+            displayLoadError(data, $rootScope, $filter, $http, true, endpointType);
+        };
+
+        if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+            graphQLService.getItems(params, searchSucceeded, (data) => {searchFailed(data, "graphQL")});
+        } else {
+            $http({
+                method: 'GET',
+                url: '/proxy/v1/assets/items',
+                params: params,
+            }).then(function(result) {
+                searchSucceeded(result.data.data);
+            }).catch(function(result) {
+               searchFailed(result, "items");
+            });
+        }
     }
 
     function closeRequisitionDetail(index){

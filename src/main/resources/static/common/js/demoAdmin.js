@@ -112,11 +112,13 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
     }
 
     function getAllItems(){
-        $http({
-            method: 'GET',
-            url: '/proxy/v1/assets/items',
-        }).then(function(result) {
-            var items = result.data.data.content;
+        let failToGetData = (data, endpointType) => {
+            console.info(data);
+            displayLoadError(data,$rootScope,$filter,$http,true,endpointType);
+        };
+
+        let getItemsSuccessfully = (data) => {
+            items = data.content;
             demo.items = items;
 
             //Define the height of footer in 'items' tab
@@ -143,13 +145,22 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
                 demo.modalCategories = categories;
                 demo.categoryMap = map;
             }).catch(function(result) {
-                console.info(result);
-                displayLoadError(result,$rootScope,$filter,$http,true,'categories');
+                failToGetData(result, 'categories');
             });
-        }).catch(function(result) {
-            console.info(result);
-            displayLoadError(result,$rootScope,$filter,$http,true,'items');
-        });
+        };
+
+        if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+            graphQLService.getItems(null, getItemsSuccessfully, (data) => {failToGetData(data, "graphQL")});
+        } else {
+            $http({
+                method: 'GET',
+                url: '/proxy/v1/assets/items',
+            }).then(function(result) {
+                getItemsSuccessfully(result.data.data);
+            }).catch(function (result) {
+                failToGetData(result, "items");
+            });
+        }
     }
 
     function getAllCategories(){
