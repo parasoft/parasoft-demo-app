@@ -71,12 +71,12 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
         });
 
         //Get category by id
-        let success = (result) => {
-            category.title = result.name;
+        let success = (data) => {
+            category.title = data.name;
         }
-        let error = (result) => {
+        let error = (result, endpointType) => {
             console.info(result);
-            displayLoadError(result, $rootScope, $filter, $http, true, 'categories');
+            displayLoadError(result, $rootScope, $filter, $http, true, endpointType);
         }
 
         let params = {"categoryId": categoryId};
@@ -86,12 +86,10 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
             $http({
                 method: 'GET',
                 url: '/proxy/v1/assets/categories/' + categoryId,
-                params: {categoryId: categoryId},
             }).then(function (result) {
-                let data = result.data.data;
-                success(data);
+                success(result.data.data);
             }).catch(function (result) {
-                error(result);
+                error(result, "categories");
             });
         }
 

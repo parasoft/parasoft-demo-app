@@ -39,9 +39,9 @@ app.controller('itemDetailController', function($rootScope, $http, $location, $f
             let success = (result) => {
                 itemDetail.categoryName = result.name;
             }
-            let error = (result) => {
+            let error = (result, endpointType) => {
                 console.info(result);
-                displayLoadError(result, $rootScope, $filter, $http, true, 'categories');
+                displayLoadError(result, $rootScope, $filter, $http, true, endpointType);
             }
 
             let params = {"categoryId": item.categoryId};
@@ -51,12 +51,10 @@ app.controller('itemDetailController', function($rootScope, $http, $location, $f
                 $http({
                     method: 'GET',
                     url: '/proxy/v1/assets/categories/' + item.categoryId,
-                    params: {categoryId: item.categoryId},
                 }).then(function (result) {
-                    let data = result.data.data;
-                    success(data);
+                    success(result.data.data);
                 }).catch(function (result) {
-                    error(result);
+                    error(result, "categories");
                 });
             }
         }).catch(function(result) {
