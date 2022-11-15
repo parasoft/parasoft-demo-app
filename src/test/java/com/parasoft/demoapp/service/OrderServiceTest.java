@@ -28,7 +28,6 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.anyList;
 import static org.mockito.Mockito.*;
@@ -91,7 +90,9 @@ public class OrderServiceTest {
 
         // Then
         Mockito.verify(orderMQService, times(1)).sendToApprover(any());
-        assertNull(requestMessage);
+        assertEquals(requestMessage.getOrderNumber(),orderNumber);
+        assertEquals(requestMessage.getOperation(), InventoryOperation.NONE);
+        assertEquals(requestMessage.getInfo(), OrderMessages.INVALID_OPERATION);
         assertEquals(OrderStatus.PROCESSED, order.getStatus());
     }
 
@@ -118,7 +119,9 @@ public class OrderServiceTest {
 
         // Then
         Mockito.verify(orderMQService, times(1)).sendToApprover(any());
-        assertEquals(requestMessage, null);
+        assertEquals(requestMessage.getInfo(), OrderMessages.INVALID_OPERATION);
+        assertEquals(requestMessage.getOrderNumber(), orderNumber);
+        assertEquals(requestMessage.getOperation(), InventoryOperation.NONE);
         assertEquals(OrderStatus.CANCELED, order.getStatus());
         assertEquals(cancelledInfo, order.getComments());
     }

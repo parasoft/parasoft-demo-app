@@ -1,11 +1,11 @@
 package com.parasoft.demoapp.service;
 
-import com.parasoft.demoapp.dto.InventoryInfoDTO;
-import com.parasoft.demoapp.dto.InventoryOperationRequestMessageDTO;
-import com.parasoft.demoapp.dto.InventoryOperationResultMessageDTO;
+import com.parasoft.demoapp.dto.*;
 import com.parasoft.demoapp.exception.ParameterException;
 import com.parasoft.demoapp.messages.AssetMessages;
+import com.parasoft.demoapp.messages.ItemInventoryMessages;
 import com.parasoft.demoapp.model.industry.ItemInventoryEntity;
+import com.parasoft.demoapp.model.industry.OrderStatus;
 import com.parasoft.demoapp.repository.industry.ItemInventoryRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,8 +16,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static com.parasoft.demoapp.dto.InventoryOperation.DECREASE;
-import static com.parasoft.demoapp.dto.InventoryOperation.INCREASE;
+import static com.parasoft.demoapp.dto.InventoryOperation.*;
 import static com.parasoft.demoapp.dto.InventoryOperationStatus.FAIL;
 import static com.parasoft.demoapp.dto.InventoryOperationStatus.SUCCESS;
 import static org.junit.Assert.assertEquals;
@@ -97,8 +96,9 @@ public class ItemInventoryServiceTest {
     @Test
     public void testDecrease_noRequestItem() {
         // Given
+        String orderNumber = "23-456-001";
         InventoryOperationRequestMessageDTO requestMessage =
-                new InventoryOperationRequestMessageDTO(DECREASE, "23-456-001",
+                new InventoryOperationRequestMessageDTO(DECREASE, orderNumber,
                         new ArrayList<>(), null);
 
         // When
@@ -106,7 +106,10 @@ public class ItemInventoryServiceTest {
                 itemInventoryService.handleMessageFromRequestQueue(requestMessage);
 
         // Then
-        assertNull(resultMessage);
+        assertEquals(resultMessage.getInfo(), ItemInventoryMessages.EMPTY_INVENTORYINFOS);
+        assertEquals(resultMessage.getOperation(), InventoryOperation.NONE);
+        assertEquals(resultMessage.getOrderNumber(), orderNumber);
+        assertEquals(resultMessage.getStatus(), FAIL);
     }
 
     private static InventoryOperationRequestMessageDTO createRequestMessageForDecrease() {
@@ -156,8 +159,9 @@ public class ItemInventoryServiceTest {
     @Test
     public void testIncrease_noRequestItem() {
         // Given
+        String orderNumber = "23-456-002";
         InventoryOperationRequestMessageDTO requestMessage =
-                new InventoryOperationRequestMessageDTO(INCREASE, "23-456-002",
+                new InventoryOperationRequestMessageDTO(INCREASE, orderNumber,
                         new ArrayList<>(), null);
 
         // When
@@ -165,7 +169,10 @@ public class ItemInventoryServiceTest {
                 itemInventoryService.handleMessageFromRequestQueue(requestMessage);
 
         // Then
-        assertNull(resultMessage);
+        assertEquals(resultMessage.getOrderNumber(), orderNumber);
+        assertEquals(resultMessage.getStatus(), FAIL);
+        assertEquals(resultMessage.getInfo(), ItemInventoryMessages.EMPTY_INVENTORYINFOS);
+        assertEquals(resultMessage.getOperation(), InventoryOperation.NONE);
     }
 
     private static InventoryOperationRequestMessageDTO createRequestMessageForIncrease() {
@@ -379,5 +386,26 @@ public class ItemInventoryServiceTest {
         // Then
         assertEquals(AssetMessages.ITEM_ID_CANNOT_BE_NULL, message);
         verify(itemInventoryRepository, times(0)).deleteById(itemId);
+    }
+
+    @Test
+    public void testInvalidOperation_NONE() {
+        // Given
+        String orderNumber = "23-456-002";
+        InventoryOperationRequestMessageDTO requestMessage =
+                new InventoryOperationRequestMessageDTO(NONE, orderNumber,
+                        Arrays.asList(
+                                new InventoryInfoDTO(1L, 1),
+                                new InventoryInfoDTO(2L, 2)), null);
+
+        // When
+        InventoryOperationResultMessageDTO resultMessage =
+                itemInventoryService.handleMessageFromRequestQueue(requestMessage);
+
+        // Then
+        assertEquals(resultMessage.getOrderNumber(), orderNumber);
+        assertEquals(resultMessage.getStatus(), FAIL);
+        assertEquals(resultMessage.getInfo(), ItemInventoryMessages.INVALID_OPERATION);
+        assertEquals(resultMessage.getOperation(), InventoryOperation.NONE);
     }
 }
