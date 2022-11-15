@@ -5,7 +5,7 @@ setLocale(app);
 initImportPageControllers(app);
 initToastr();
 
-app.controller('categoryController', function($rootScope, $http, $location, $filter, $interval, $cookies) {
+app.controller('categoryController', function($rootScope, $http, $location, $filter, $interval, $cookies, graphQLService) {
     var category = this;
     var items;
     var categoryId = $location.absUrl().substr($location.absUrl().lastIndexOf("/")+1);
@@ -149,7 +149,7 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
         }).then(function(result) {
             closeRequisitionDetail(id);
             //Update shopping cart items
-            loadShoppingCartData($rootScope,$http,$filter);
+            loadShoppingCartData($rootScope,$http,$filter,graphQLService);
             //If the requisition bar is visible, it should be closed after adding successfully
             //This is to avoid some format errors
             angular.element("#requisition_cross").click();

@@ -236,7 +236,7 @@ function initRequisitionBarController(app){
                 method: 'DELETE',
                 url: '/proxy/v1/cartItems/'+itemId,
             }).then(function(result) {
-                loadShoppingCartData($rootScope,$http,$filter);
+                loadShoppingCartData($rootScope,$http,$filter,graphQLService);
                 $rootScope.inRequisition = 0;
                 toastr.success($filter('translate')('REMOVE_ITEM_SUCCESS'));
             }).catch(function(result) {
@@ -338,7 +338,7 @@ function initRequisitionBarController(app){
                     $rootScope.itemInventory = inventory;
                     checkInventoryInItemDetail(inventory,quantity);
                 }
-                loadShoppingCartData($rootScope,$http,$filter);
+                loadShoppingCartData($rootScope,$http,$filter,graphQLService);
             }).catch(function(result) {
                 console.info(result);
             });
