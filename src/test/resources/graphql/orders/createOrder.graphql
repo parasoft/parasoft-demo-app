@@ -1,4 +1,4 @@
-mutation order($orderDTO: OrderDTO) {
+mutation order($orderDTO: OrderDTO!) {
     createOrder(orderDTO: $orderDTO) {
         id
         orderNumber
