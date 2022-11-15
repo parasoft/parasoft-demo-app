@@ -19,6 +19,8 @@ type Mutation {
     deleteCategoryById(categoryId: ID): Int
     # order
     createOrder(orderDTO: OrderDTO): Order
+    # cartItem
+    addItemInCart(shoppingCartDTO: ShoppingCartDTO!): CartItemEntity
 }
 
 # category
@@ -134,4 +136,9 @@ type CartItemEntity {
     image: String,
     realInStock: Int,
     quantity: Int
+}
+#shoppingCartDTO
+input ShoppingCartDTO {
+    itemId: ID!,
+    itemQty: Int!
 }

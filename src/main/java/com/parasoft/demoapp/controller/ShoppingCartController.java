@@ -68,6 +68,7 @@ public class ShoppingCartController {
 				ResponseResult.MESSAGE_OK);
 
 		Long currentUserId = AuthenticationUtil.getUserIdInAuthentication(auth);
+		System.out.println(shoppingCartDto);
 		response.setData(
 				shoppingCartService.addCartItemInShoppingCart(
 						currentUserId, shoppingCartDto.getItemId(), shoppingCartDto.getItemQty()));

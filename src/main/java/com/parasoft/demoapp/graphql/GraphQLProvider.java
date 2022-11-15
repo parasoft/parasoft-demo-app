@@ -89,6 +89,7 @@ public class GraphQLProvider {
 
     private void cartItemTypeWiring(RuntimeWiring.Builder builder) {
         builder.type("Query", typeWriting -> typeWriting.dataFetcher("getCartItems", cartItemGraphQLDataFetcher.getCartItems()));
+        builder.type("Mutation", typeWriting -> typeWriting.dataFetcher("addItemInCart", cartItemGraphQLDataFetcher.addItemInCart()));
     }
 
     @Bean

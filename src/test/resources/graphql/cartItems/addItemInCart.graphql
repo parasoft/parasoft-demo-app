@@ -1,0 +1,5 @@
+mutation addItemInCart($shoppingCartDTO: ShoppingCartDTO!) {
+    addItemInCart(shoppingCartDTO: $shoppingCartDTO) {
+        quantity
+    }
+}
