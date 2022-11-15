@@ -7,6 +7,8 @@ type Query {
     getCategories(searchString: String, page: Int, size: Int, sort: [String]): CategoryPageInfo
     # location
     getLocation(region: RegionType!): Location
+    # cartItem
+    getCartItems: [CartItemEntity]
 }
 type Mutation {
     # category
@@ -59,4 +61,15 @@ enum RegionType {
     LOCATION_6
     LOCATION_7
     LOCATION_8
+}
+
+type CartItemEntity {
+    id: ID,
+    userId: ID,
+    itemId: ID,
+    name: String,
+    description: String,
+    image: String,
+    realInStock: Int,
+    quantity: Int
 }
