@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.Objects;
 
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.HOST_WITHOUT_PORT;
+import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.HOST;
 
 @RequiredArgsConstructor
 @Component
@@ -34,7 +34,7 @@ public class LocationGraphQLDataFetcher {
 
     @PostConstruct
     private void init() {
-        locationBaseUrl = HOST_WITHOUT_PORT + webConfig.getServerPort() + "/v1/locations/location";
+        locationBaseUrl = HOST + webConfig.getServerPort() + "/v1/locations/location";
     }
 
     public DataFetcher<LocationEntity> getLocation() {

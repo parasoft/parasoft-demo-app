@@ -12,12 +12,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.HOST_WITHOUT_PORT;
+import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.HOST;
 
 @Component
 public class CartItemGraphQLDataFetcher {
@@ -30,7 +28,7 @@ public class CartItemGraphQLDataFetcher {
     public CartItemGraphQLDataFetcher(RestTemplate restTemplate, HttpServletRequest httpServletRequest, WebConfig webConfig) {
         this.restTemplate = restTemplate;
         this.httpServletRequest = httpServletRequest;
-        this.cartItemBaseUrl = HOST_WITHOUT_PORT + webConfig.getServerPort() + "/v1/cartItems";
+        this.cartItemBaseUrl = HOST + webConfig.getServerPort() + "/v1/cartItems";
     }
 
     public DataFetcher<List<CartItemEntity>> getCartItems() {
