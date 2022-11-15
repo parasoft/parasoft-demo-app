@@ -1,4 +1,4 @@
-query getOrder($orderNumber: String) {
+query getOrder($orderNumber: String!) {
     getOrderByOrderNumber(orderNumber: $orderNumber) {
         id,
         orderNumber,
