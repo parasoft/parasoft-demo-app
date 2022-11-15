@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.HOST;
+
 @Component
 public class OrderGraphQLDataFetcher {
 
@@ -29,7 +31,7 @@ public class OrderGraphQLDataFetcher {
 
         this.restTemplate = restTemplate;
         this.httpRequest = httpRequest;
-        this.orderBaseUrl = "http://localhost:" + webConfig.getServerPort() +"/v1/orders";
+        this.orderBaseUrl = HOST + webConfig.getServerPort() +"/v1/orders";
     }
 
     public DataFetcher<OrderEntity> getOrderByOrderNumber() {

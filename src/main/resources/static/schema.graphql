@@ -9,7 +9,6 @@ type Query {
     getLocation(region: RegionType): Location
     # order
     getOrderByOrderNumber(orderNumber: String): Order
-    getLocation(region: RegionType!): Location
     #item
     getItems(categoryId: Int, regions: [RegionType], searchString: String, page: Int, size: Int, sort: [String]): ItemPageInfo
     # cartItem
@@ -18,9 +17,7 @@ type Query {
 type Mutation {
     # category
     deleteCategoryById(categoryId: ID): Int
-}
-
-type Mutation {
+    # order
     createOrder(orderDTO: OrderDTO): Order
 }
 
@@ -107,7 +104,6 @@ input OrderDTO {
     eventId: String
     eventNumber: String
 }
-
 #item
 type Item {
     id: ID
@@ -119,7 +115,6 @@ type Item {
     lastAccessedDate: DateTime
     categoryId: Int
 }
-
 type ItemPageInfo {
     totalElements: Int
     totalPages: Int
@@ -129,7 +124,6 @@ type ItemPageInfo {
     sort: String
     content: [Item]
 }
-
 #cartItems
 type CartItemEntity {
     id: ID,
