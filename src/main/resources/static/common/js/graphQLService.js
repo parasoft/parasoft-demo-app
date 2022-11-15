@@ -45,5 +45,14 @@ angular
                     success(response.data.data.getLocation);
                 }, error);
             }
+            // items
+            instance.getItems = function (variables, success, error) {
+                let requestBody = {"query": "query($categoryId: Int, $regions: [RegionType], $searchString: String, $page: Int, $size: Int, $sort: [String])" +
+                        "{getItems(categoryId: $categoryId, regions: $regions, searchString: $searchString, page: $page, size: $size, sort: $sort){" +
+                        "totalElements,totalPages,size,number,numberOfElements,sort,content{id,name,description,inStock,image,region,lastAccessedDate,categoryId}}}", "variables": variables};
+                makeCall(requestBody, function (response) {
+                    success(response.data.data.getItems);
+                }, error);
+            }
             return instance;
         });
