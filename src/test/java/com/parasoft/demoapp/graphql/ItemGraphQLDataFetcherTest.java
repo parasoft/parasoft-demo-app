@@ -7,6 +7,7 @@ import com.graphql.spring.boot.test.GraphQLTestError;
 import com.graphql.spring.boot.test.GraphQLTestTemplate;
 import com.parasoft.demoapp.controller.PageInfo;
 import com.parasoft.demoapp.model.industry.ItemEntity;
+import com.parasoft.demoapp.service.ItemService;
 import org.assertj.core.api.Condition;
 import org.assertj.core.data.Index;
 import org.junit.Before;
@@ -38,6 +39,9 @@ public class ItemGraphQLDataFetcherTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private ItemService itemService;
 
     @Before
     public void setUp() {
@@ -113,9 +117,11 @@ public class ItemGraphQLDataFetcherTest {
     }
 
     @Test
-    public void test_getItemByName_normal() throws IOException {
+    public void test_getItemByName_normal() throws Throwable {
+        String itemName = "3 Person Tent";
+        ItemEntity item = itemService.getItemByName(itemName);
         ObjectNode variables = objectMapper.createObjectNode();
-        variables.put("itemName", "3 Person Tent");
+        variables.put("itemName", itemName);
         GraphQLResponse response = graphQLTestTemplate
                 .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
                 .perform(GET_ITEM_BY_NAME_GRAPHQL_RESOURCE, variables);
@@ -126,12 +132,15 @@ public class ItemGraphQLDataFetcherTest {
                 .and()
                 .assertThatField(GET_ITEM_BY_NAME_DATA_JSON_PATH)
                 .as(ItemEntity.class)
-                .has(new Condition<ItemEntity>(c -> c.getName().equals("3 Person Tent"), "name 3 Person Tent"));
-
+                .matches((itemEntity) ->
+                    itemEntity.getName().equals(itemName) && itemEntity.getDescription().equals(item.getDescription())
+                        && itemEntity.getId().equals(item.getId()) && itemEntity.getRegion().equals(item.getRegion())
+                        && itemEntity.getInStock().equals(item.getInStock()) && itemEntity.getCategoryId().equals(item.getCategoryId())
+                        && itemEntity.getImage().equals(item.getImage()) && itemEntity.getLastAccessedDate().equals(item.getLastAccessedDate()));
     }
 
     @Test
-    public void test_getItemByName_ParameterException() throws IOException {
+    public void test_getItemByName_invalidOrNullItemNameValue() throws IOException {
         ObjectNode variables = objectMapper.createObjectNode();
         variables.put("itemName", " ");
         GraphQLResponse response = graphQLTestTemplate
@@ -150,7 +159,7 @@ public class ItemGraphQLDataFetcherTest {
     }
 
     @Test
-    public void test_getItemByName_ItemNotFoundException() throws IOException {
+    public void test_getItemByName_itemNotFoundException() throws IOException {
         ObjectNode variables = objectMapper.createObjectNode();
         variables.put("itemName", "Tent");
         GraphQLResponse response = graphQLTestTemplate

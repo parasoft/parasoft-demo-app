@@ -1,5 +1,12 @@
 query GetItemByName($itemName: String) {
     getItemByName(itemName: $itemName) {
+        id
         name
+        description
+        inStock
+        image
+        region
+        lastAccessedDate
+        categoryId
     }
 }
