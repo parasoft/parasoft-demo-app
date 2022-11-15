@@ -88,17 +88,27 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
         }
 
         //Get category by id
-        $http({
-            method: 'GET',
-            url: '/proxy/v1/assets/categories/' + categoryId,
-            params: {categoryId: categoryId},
-        }).then(function(result) {
-            data = result.data.data;
+        let success = (data) => {
             category.title = data.name;
-        }).catch(function(result) {
+        }
+        let error = (result, endpointType) => {
             console.info(result);
-            displayLoadError(result,$rootScope,$filter,$http,true,'categories');
-        });
+            displayLoadError(result, $rootScope, $filter, $http, true, endpointType);
+        }
+
+        let params = {"categoryId": categoryId};
+        if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+            graphQLService.getCategoryById(params, success, (data) => {error(data, "graphQL")});
+        } else {
+            $http({
+                method: 'GET',
+                url: '/proxy/v1/assets/categories/' + categoryId,
+            }).then(function (result) {
+                success(result.data.data);
+            }).catch(function (result) {
+                error(result, "categories");
+            });
+        }
 
         function handleRegionError(result,category,$rootScope,$filter,$http){
             displayLoadError(result,$rootScope,$filter,$http,false,'locations');
