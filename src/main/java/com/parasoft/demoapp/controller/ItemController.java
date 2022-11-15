@@ -129,8 +129,8 @@ public class ItemController {
 	@PutMapping("/{itemId}")
 	@ResponseBody
 	public ResponseResult<ItemEntity> updateItemById(@PathVariable Long itemId, @RequestBody ItemsDTO itemsDto)
-			throws CategoryNotFoundException, ItemNameExistsAlreadyException, ItemNotFoundException, ParameterException, 
-					GlobalPreferencesNotFoundException, UnsupportedOperationInCurrentIndustryException, GlobalPreferencesMoreThanOneException {
+			throws CategoryNotFoundException, ItemNameExistsAlreadyException, ItemNotFoundException, ParameterException,
+					UnsupportedOperationInCurrentIndustryException {
 
 		ResponseResult<ItemEntity> response = ResponseResult.getInstance(ResponseResult.STATUS_OK,
 				ResponseResult.MESSAGE_OK);

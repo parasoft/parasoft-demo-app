@@ -19,6 +19,8 @@ type Mutation {
     deleteCategoryById(categoryId: ID): Int
     # order
     createOrder(orderDTO: OrderDTO): Order
+    #item
+    updateItemById(itemId: ID!, itemDTO: ItemDTO): Item
 }
 
 # category
@@ -114,6 +116,14 @@ type Item {
     region: RegionType
     lastAccessedDate: DateTime
     categoryId: Int
+}
+input ItemDTO {
+    name: String
+    description: String
+    categoryId: Int
+    inStock: Int
+    imagePath: String
+    region: RegionType
 }
 type ItemPageInfo {
     totalElements: Int
