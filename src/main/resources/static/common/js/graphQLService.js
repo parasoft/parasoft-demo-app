@@ -1,6 +1,6 @@
 angular
     .module('pdaApp')
-        .factory('graphQLService', function($http, $filter) {
+        .factory('graphQLService', function($http) {
             let instance = {};
             let formatError = (response) => {
                 return {
@@ -58,19 +58,19 @@ angular
                 }, error);
             }
             // Orders
-            instance.createOrder = function(variables, success, error) {
-                let requestBody = {
-                    "query": "mutation($orderDTO:OrderDTO!){" +
-                            "createOrder(orderDTO: $orderDTO)" +
-                                "{" +
+            instance.createOrder = function(variables, success, error, selectionSet) {
+                if(!selectionSet) {
+                    selectionSet = "{" +
                                     "id,orderNumber,requestedBy,status,reviewedByAPV,reviewedByPRCH,respondedBy," +
                                     "orderItems" +
-                                        "{" +
-                                            "id,name,description,image,itemId,quantity" +
-                                        "}," +
-                                    "region,location,orderImage,receiverId,eventId,eventNumber,submissionDate,approverReplyDate,comments}" +
-                                "}",
-                                "variables": variables}
+                                    "{" +
+                                        "id,name,description,image,itemId,quantity" +
+                                    "}," +
+                                    "region,location,orderImage,receiverId,eventId,eventNumber,submissionDate,approverReplyDate,comments" +
+                                "}";
+                }
+                let requestBody = {
+                    "query": "mutation CreateOrder($orderDTO:OrderDTO!){createOrder(orderDTO: $orderDTO)" + selectionSet + "}", "variables": variables}
                 makeCall(requestBody, function(response) {
                     success(response.data.data.createOrder);
                 }, error);
