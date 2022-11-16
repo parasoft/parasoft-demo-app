@@ -17,9 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Objects;
+import java.util.*;
 
 import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.HOST;
 
@@ -76,6 +74,30 @@ public class ItemGraphQLDataFetcher {
                         HttpMethod.GET,
                         new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
                         new ParameterizedTypeReference<ResponseResult<PageInfo<ItemEntity>>>() {});
+                return Objects.requireNonNull(entity.getBody()).getData();
+            } catch (Exception e) {
+                throw RestTemplateUtil.convertException(e);
+            }
+        };
+    }
+
+    public DataFetcher<ItemEntity> updateItemInStockByItemId() {
+        return dataFetchingEnvironment -> {
+            try {
+                Map<String, Object> uriVariables = new HashMap<>();
+                String itemId = dataFetchingEnvironment.getArgument("itemId");
+                if (itemId != null && !itemId.trim().isEmpty()) {
+                    uriVariables.put("itemId", itemId);
+                }
+                Integer newInStock = dataFetchingEnvironment.getArgument("newInStock");
+                if (newInStock != null) {
+                    uriVariables.put("newInStock", newInStock);
+                }
+                ResponseEntity<ResponseResult<ItemEntity>> entity =
+                        restTemplate.exchange(itemBaseUrl + "/inStock/{itemId}?newInStock={newInStock}",
+                                HttpMethod.PUT,
+                                new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
+                                new ParameterizedTypeReference<ResponseResult<ItemEntity>>() {}, uriVariables);
                 return Objects.requireNonNull(entity.getBody()).getData();
             } catch (Exception e) {
                 throw RestTemplateUtil.convertException(e);

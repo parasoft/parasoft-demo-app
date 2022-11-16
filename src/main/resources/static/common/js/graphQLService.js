@@ -39,13 +39,13 @@ angular
                 }, error);
             }
             instance.deleteCategoryById = function(variables, success, error) {
-                let requestBody = {"query": "mutation($categoryId:ID){deleteCategoryById(categoryId:$categoryId)}", "variables": variables}
+                let requestBody = {"query": "mutation($categoryId:ID!){deleteCategoryById(categoryId:$categoryId)}", "variables": variables}
                 makeCall(requestBody, function(response) {
                     success(response.data.data.deleteCategoryById);
                 }, error);
             }
             instance.getCategoryById = function(variables, success, error) {
-                let requestBody = {"query": "query($categoryId:ID){getCategoryById(categoryId:$categoryId){id,name,description,image}}", "variables": variables}
+                let requestBody = {"query": "query($categoryId:ID!){getCategoryById(categoryId:$categoryId){id,name,description,image}}", "variables": variables}
                 makeCall(requestBody, function(response) {
                     success(response.data.data.getCategoryById);
                 }, error);
@@ -76,7 +76,7 @@ angular
                 }, error);
             }
             instance.getOrderByOrderNumber = function (variables, success, error) {
-                let requestBody = {"query": "query($orderNumber:String){getOrderByOrderNumber(orderNumber:$orderNumber){orderNumber,status,reviewedByAPV,reviewedByPRCH,orderItems {name,description,image,quantity},region,location,orderImage,receiverId,eventId,eventNumber,comments}}", "variables": variables};
+                let requestBody = {"query": "query($orderNumber:String!){getOrderByOrderNumber(orderNumber:$orderNumber){orderNumber,status,reviewedByAPV,reviewedByPRCH,orderItems {name,description,image,quantity},region,location,orderImage,receiverId,eventId,eventNumber,comments}}", "variables": variables};
                 makeCall(requestBody, function (response) {
                     success(response.data.data.getOrderByOrderNumber);
                 }, error)

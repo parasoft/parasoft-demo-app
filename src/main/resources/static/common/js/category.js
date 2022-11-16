@@ -68,18 +68,18 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
             category.itemsLoadError = true;
         }
 
-        let params = {
+        let getItemsParams = {
             categoryId: categoryId,
             regions: checkedRegions
         }
         //Get all items from database
         if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
-            graphQLService.getItems(params, getItemsSuccessfully, (data) => {failToGetItems(data, "graphQL")});
+            graphQLService.getItems(getItemsParams, getItemsSuccessfully, (data) => {failToGetItems(data, "graphQL")});
         } else {
             $http({
                 method: 'GET',
                 url: '/proxy/v1/assets/items',
-                params: params,
+                params: getItemsParams,
             }).then(function(result) {
                 getItemsSuccessfully(result.data.data);
             }).catch(function(result) {
@@ -96,9 +96,9 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
             displayLoadError(result, $rootScope, $filter, $http, true, endpointType);
         }
 
-        let params = {"categoryId": categoryId};
+        let getCategoryByIdParams = {"categoryId": categoryId};
         if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
-            graphQLService.getCategoryById(params, success, (data) => {error(data, "graphQL")});
+            graphQLService.getCategoryById(getCategoryByIdParams, success, (data) => {error(data, "graphQL")});
         } else {
             $http({
                 method: 'GET',
