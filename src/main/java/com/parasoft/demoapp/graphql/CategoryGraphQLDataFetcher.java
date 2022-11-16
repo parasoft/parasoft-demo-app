@@ -151,4 +151,25 @@ public class CategoryGraphQLDataFetcher {
             }
         };
     }
+
+    public DataFetcher<CategoryEntity> updateCategory() {
+        return dataFetchingEnvironment -> {
+            try {
+                Map<String, String> uriVariables = new HashMap<>();
+                String categoryId = dataFetchingEnvironment.getArgument("categoryId");
+                if (categoryId != null && !categoryId.trim().isEmpty()) {
+                    uriVariables.put("categoryId", categoryId);
+                }
+                ResponseEntity<ResponseResult<CategoryEntity>> entity =
+                        restTemplate.exchange(  categoryBaseUrl + "/{categoryId}",
+                                HttpMethod.PUT,
+                                new HttpEntity<>(dataFetchingEnvironment.getArgument("categoryDto"), RestTemplateUtil.createHeaders(httpRequest)),
+                                new ParameterizedTypeReference<ResponseResult<CategoryEntity>>() {},
+                                uriVariables);
+                return Objects.requireNonNull(entity.getBody()).getData();
+            } catch (Exception e) {
+                throw RestTemplateUtil.convertException(e);
+            }
+        };
+    }
 }

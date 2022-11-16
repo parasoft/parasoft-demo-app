@@ -18,6 +18,7 @@ type Mutation {
     # category
     addCategory(categoryDTO: CategoryDTO!): Category
     deleteCategoryById(categoryId: ID!): Int
+    updateCategory(categoryId: ID!, categoryDto: CategoryDTO!): Category
     # order
     createOrder(orderDTO: OrderDTO!): Order
 }
