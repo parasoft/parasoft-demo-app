@@ -110,7 +110,7 @@ public class ItemGraphQLDataFetcher {
             try {
                 Map<String, String> uriVariables = new HashMap<>();
                 String itemName = dataFetchingEnvironment.getArgument("itemName");
-                if (itemName != null && !itemName.isEmpty()) {
+                if (itemName != null && !itemName.trim().isEmpty()) {
                     uriVariables.put("itemName", itemName);
                 }
                 ResponseEntity<ResponseResult<ItemEntity>> entity =

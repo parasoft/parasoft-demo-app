@@ -239,26 +239,7 @@ public class ItemGraphQLDataFetcherTest {
     }
 
     @Test
-    public void test_getItemByName_400_invalidOrNullItemNameValue() throws IOException {
-        ObjectNode variables = objectMapper.createObjectNode();
-        variables.put("itemName", " ");
-        GraphQLResponse response = graphQLTestTemplate
-                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
-                .perform(GET_ITEM_BY_NAME_GRAPHQL_RESOURCE, variables);
-        assertThat(response).isNotNull();
-        assertThat(response.isOk()).isTrue();
-        response.assertThatErrorsField().isNotNull()
-                .asListOf(GraphQLTestError.class)
-                .hasOnlyOneElementSatisfying(error -> {
-                    assertThat(error.getMessage()).isEqualTo("Item name cannot be an empty string(null, '' or '  ').");
-                    assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.BAD_REQUEST.value());
-                })
-                .and()
-                .assertThatField(GET_ITEM_BY_NAME_DATA_JSON_PATH).isNull();
-    }
-
-    @Test
-    public void test_getItemByName_500_invalidOrNullItemNameValue() throws IOException {
+    public void test_getItemByName_invalidOrNullItemNameValue() throws IOException {
         ObjectNode variables = objectMapper.createObjectNode();
         variables.put("itemName", "");
         GraphQLResponse response = graphQLTestTemplate
