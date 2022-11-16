@@ -363,4 +363,22 @@ public class ItemGraphQLDataFetcherTest {
                 .and()
                 .assertThatField(ADD_NEW_ITEM_DATA_JSON_PATH).isNull();
     }
+
+    @Test
+    public void test_addNewItem_withoutAuthorisation() throws IOException {
+        ObjectNode variables = objectMapper.createObjectNode().putPOJO("itemsDTO",
+                new ItemsDTO("ten", "description", 1L, 10, null, LOCATION_1));
+        GraphQLResponse response = graphQLTestTemplate
+                .perform(ADD_NEW_ITEM_GRAPHQL_RESOURCE, variables);
+        assertThat(response).isNotNull();
+        assertThat(response.isOk()).isTrue();
+        response.assertThatErrorsField().isNotNull()
+                .asListOf(GraphQLTestError.class)
+                .hasOnlyOneElementSatisfying(error -> {
+                    assertThat(error.getMessage()).isEqualTo(GraphQLTestErrorType.UNAUTHORIZED.toString());
+                    assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+                })
+                .and()
+                .assertThatField(ADD_NEW_ITEM_DATA_JSON_PATH).isNull();
+    }
 }
