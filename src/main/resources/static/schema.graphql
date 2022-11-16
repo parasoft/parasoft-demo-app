@@ -12,6 +12,7 @@ type Query {
     #item
     getItems(categoryId: Int, regions: [RegionType], searchString: String, page: Int, size: Int, sort: [String]): ItemPageInfo
     getItemByItemId(itemId: ID!): Item
+    getItemByName(itemName: String!): Item
     # cartItem
     getCartItems: [CartItemEntity]
 }
