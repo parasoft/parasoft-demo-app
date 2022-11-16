@@ -1,4 +1,4 @@
-query GetItemByName($itemName: String) {
+query GetItemByName($itemName: String!) {
     getItemByName(itemName: $itemName) {
         id
         name

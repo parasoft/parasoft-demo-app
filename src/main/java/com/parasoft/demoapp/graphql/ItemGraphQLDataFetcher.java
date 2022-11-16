@@ -85,8 +85,9 @@ public class ItemGraphQLDataFetcher {
         return dataFetchingEnvironment -> {
             try {
                 Map<String, String> uriVariables = new HashMap<>();
-                if (dataFetchingEnvironment.containsArgument("itemName")) {
-                    uriVariables.put("itemName", dataFetchingEnvironment.getArgument("itemName"));
+                String itemName = dataFetchingEnvironment.getArgument("itemName");
+                if (itemName != null && !itemName.isEmpty()) {
+                    uriVariables.put("itemName", itemName);
                 }
                 ResponseEntity<ResponseResult<ItemEntity>> entity =
                         restTemplate.exchange(itemBaseUrl + "/name/{itemName}",
