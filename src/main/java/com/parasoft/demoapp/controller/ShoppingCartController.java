@@ -61,7 +61,7 @@ public class ShoppingCartController {
 	@PostMapping
 	@ResponseBody
 	public ResponseResult<CartItemEntity> addItemInCart(
-			Authentication auth, @Parameter(hidden = true) @RequestBody ShoppingCartDTO shoppingCartDto)
+			Authentication auth,  @RequestBody ShoppingCartDTO shoppingCartDto)
 			throws ItemNotFoundException, ParameterException, InventoryNotFoundException {
 
 		ResponseResult<CartItemEntity> response = ResponseResult.getInstance(ResponseResult.STATUS_OK,
