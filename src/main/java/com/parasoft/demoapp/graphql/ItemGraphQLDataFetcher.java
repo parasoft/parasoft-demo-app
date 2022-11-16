@@ -104,4 +104,25 @@ public class ItemGraphQLDataFetcher {
             }
         };
     }
+
+    public DataFetcher<ItemEntity> getItemByName() {
+        return dataFetchingEnvironment -> {
+            try {
+                Map<String, String> uriVariables = new HashMap<>();
+                String itemName = dataFetchingEnvironment.getArgument("itemName");
+                if (itemName != null && !itemName.trim().isEmpty()) {
+                    uriVariables.put("itemName", itemName);
+                }
+                ResponseEntity<ResponseResult<ItemEntity>> entity =
+                        restTemplate.exchange(itemBaseUrl + "/name/{itemName}",
+                                HttpMethod.GET,
+                                new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
+                                new ParameterizedTypeReference<ResponseResult<ItemEntity>>() {},
+                                uriVariables);
+                return Objects.requireNonNull(entity.getBody()).getData();
+            } catch (Exception e) {
+                throw RestTemplateUtil.convertException(e);
+            }
+        };
+    }
 }
