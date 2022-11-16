@@ -1,4 +1,5 @@
 scalar DateTime
+scalar Long
 
 type Query {
     # category
@@ -20,7 +21,7 @@ type Mutation {
     # order
     createOrder(orderDTO: OrderDTO): Order
     #item
-    updateItemInStockByItemId(itemId: ID!, newInStock: Int): Item
+    updateItemInStockByItemId(itemId: Long!, newInStock: Int!): Item
 }
 
 # category

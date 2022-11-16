@@ -63,6 +63,7 @@ public class GraphQLProvider {
         cartItemTypeWiring(builder);
         return builder
                 .scalar(DateTimeScalar.getInstance())
+                .scalar(LongScalar.getInstance())
                 .build();
     }
 
