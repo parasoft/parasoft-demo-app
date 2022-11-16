@@ -21,6 +21,8 @@ type Mutation {
     deleteCategoryById(categoryId: ID!): Int
     # order
     createOrder(orderDTO: OrderDTO!): Order
+    #item
+    updateItemInStockByItemId(itemId: ID!, newInStock: Int!): Item
 }
 
 # category

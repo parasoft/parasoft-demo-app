@@ -46,7 +46,7 @@ public class CategoryGraphQLDataFetcher {
             try {
                 Map<String, String> uriVariables = new HashMap<>();
                 String categoryId = dataFetchingEnvironment.getArgument("categoryId");
-                if (categoryId != null && !categoryId.isEmpty()) {
+                if (categoryId != null && !categoryId.trim().isEmpty()) {
                     uriVariables.put("categoryId", categoryId);
                 }
                 ResponseEntity<ResponseResult<CategoryEntity>> entity =
@@ -67,7 +67,7 @@ public class CategoryGraphQLDataFetcher {
             try {
                 Map<String, String> uriVariables = new HashMap<>();
                 String categoryName = dataFetchingEnvironment.getArgument("categoryName");
-                if (categoryName != null && !categoryName.isEmpty()) {
+                if (categoryName != null && !categoryName.trim().isEmpty()) {
                     uriVariables.put("categoryName", categoryName);
                 }
                 ResponseEntity<ResponseResult<CategoryEntity>> entity =
@@ -120,7 +120,7 @@ public class CategoryGraphQLDataFetcher {
             try {
                 Map<String, String> uriVariables = new HashMap<>();
                 String categoryId = dataFetchingEnvironment.getArgument("categoryId");
-                if (categoryId != null && !categoryId.isEmpty()) {
+                if (categoryId != null && !categoryId.trim().isEmpty()) {
                     uriVariables.put("categoryId", categoryId);
                 }
                 ResponseEntity<ResponseResult<Integer>> entity =
