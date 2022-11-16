@@ -98,7 +98,7 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
 
         let getCategoryByIdParams = {"categoryId": categoryId};
         if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
-            graphQLService.getCategoryById(getCategoryByIdParams, success, (data) => {error(data, "graphQL")});
+            graphQLService.getCategoryById(getCategoryByIdParams, success, (data) => {error(data, "graphQL")}, "{name}");
         } else {
             $http({
                 method: 'GET',
