@@ -88,6 +88,7 @@ public class GraphQLProvider {
     private void itemTypeWiring(RuntimeWiring.Builder builder) {
         builder.type("Query", typeWriting -> typeWriting.dataFetcher("getItems", itemDataFetcher.getItems()));
         builder.type("Mutation", typeWriting -> typeWriting.dataFetcher("updateItemInStockByItemId", itemDataFetcher.updateItemInStockByItemId()));
+        builder.type("Mutation", typeWriting -> typeWriting.dataFetcher("addNewItem", itemDataFetcher.addNewItem()));
     }
 
     private void cartItemTypeWiring(RuntimeWiring.Builder builder) {
