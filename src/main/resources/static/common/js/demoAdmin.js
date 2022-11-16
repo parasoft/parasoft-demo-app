@@ -1070,21 +1070,32 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 	    }
 
 		function addNewCategory(){
-			$http({
-	            method: 'POST',
-	            url: '/proxy/v1/assets/categories/',
-	            data: angular.element('#category_form').serializeJSON(),
-	            headers : {'Content-Type': 'application/json'}
-	        }).then(function(response) {
-	        	 toastr.success($filter('translate')("ADD_CATEGORY_SUCCESS"));
-	        	 demo.categoryModal.showErrorBox = false;
-	        	 getAllCategories(); // refresh all categories
-	        	 $('#category_modal').modal('hide');
-	        }, function error(response) {
-	        	handleErrorMessageForCategoryEdit(response);
-	        }).catch(function(response) {
-	        	handleErrorMessageForCategoryEdit(response);
-	        });
+			let success = (data) => {
+				toastr.success($filter('translate')("ADD_CATEGORY_SUCCESS"));
+	        	demo.categoryModal.showErrorBox = false;
+	        	getAllCategories(); // refresh all categories
+	        	$('#category_modal').modal('hide');
+			}
+			let error = (data) => {
+				handleErrorMessageForCategoryEdit(data);
+			}
+			let formData = angular.element('#category_form').serializeJSON();
+			if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+				graphQLService.addCategory(formData, 'id', success, (data) => {error(data)});
+			} else {
+				$http({
+					method: 'POST',
+					url: '/proxy/v1/assets/categories/',
+					data: formData,
+					headers : {'Content-Type': 'application/json'}
+				}).then(function(response) {
+					success(response.data.data);
+				}, function(response) {
+					error(response);
+				}).catch(function(response) {
+					error(response);
+				});
+			}
 		}
 
 		function updateCategory(categoryId){

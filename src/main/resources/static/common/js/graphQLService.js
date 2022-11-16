@@ -50,6 +50,15 @@ angular
                     success(response.data.data.getCategoryById);
                 }, error);
             }
+            instance.addCategory = function(categoryData, selectionSet, success, error) {
+                let requestBody = {
+                    "query": "mutation AddCategory($categoryDTO: CategoryDTO!){addCategory(categoryDTO: $categoryDTO){" + selectionSet + "}}",
+                    "variables": { "categoryDTO": categoryData }
+                }
+                makeCall(requestBody, function(response) {
+                    success(response.data.data.addCategory);
+                }, error);
+            }
             // locations
             instance.getLocation = function(variables, success, error) {
                 let requestBody = {"query": "query($region:RegionType!){getLocation(region:$region){id,locationInfo,locationImage}}", "variables": variables}
