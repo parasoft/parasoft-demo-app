@@ -150,7 +150,9 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
         };
 
         if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
-            graphQLService.getItems(null, getItemsSuccessfully, (data) => {failToGetData(data, "graphQL")});
+            graphQLService.getItems(null, getItemsSuccessfully,
+                (data) => {failToGetData(data, "graphQL")},
+                "{content{id,name,description,inStock,image,region,categoryId}}");
         } else {
             $http({
                 method: 'GET',
