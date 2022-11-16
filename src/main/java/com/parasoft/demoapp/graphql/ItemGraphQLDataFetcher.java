@@ -84,19 +84,20 @@ public class ItemGraphQLDataFetcher {
     public DataFetcher<ItemEntity> updateItemInStockByItemId() {
         return dataFetchingEnvironment -> {
             try {
-                UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(itemBaseUrl + "/inStock/{itemId}");
-                if (dataFetchingEnvironment.containsArgument("itemId")) {
-                    builder.uriVariables(Collections.singletonMap("itemId", dataFetchingEnvironment.getArgument("itemId")));
+                Map<String, Object> uriVariables = new HashMap<>();
+                String itemId = dataFetchingEnvironment.getArgument("itemId");
+                if (itemId != null && !itemId.trim().isEmpty()) {
+                    uriVariables.put("itemId", itemId);
                 }
-                if (dataFetchingEnvironment.containsArgument("newInStock")) {
-                    builder.queryParam("newInStock", (Object) dataFetchingEnvironment.getArgument("newInStock"));
+                Integer newInStock = dataFetchingEnvironment.getArgument("newInStock");
+                if (newInStock != null) {
+                    uriVariables.put("newInStock", newInStock);
                 }
-                URI uri = builder.build().encode().toUri();
                 ResponseEntity<ResponseResult<ItemEntity>> entity =
-                        restTemplate.exchange(uri,
+                        restTemplate.exchange(itemBaseUrl + "/inStock/{itemId}?newInStock={newInStock}",
                                 HttpMethod.PUT,
                                 new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
-                                new ParameterizedTypeReference<ResponseResult<ItemEntity>>() {});
+                                new ParameterizedTypeReference<ResponseResult<ItemEntity>>() {}, uriVariables);
                 return Objects.requireNonNull(entity.getBody()).getData();
             } catch (Exception e) {
                 throw RestTemplateUtil.convertException(e);

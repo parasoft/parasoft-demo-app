@@ -20,7 +20,7 @@ type Mutation {
     # order
     createOrder(orderDTO: OrderDTO): Order
     #item
-    updateItemInStockByItemId(itemId: ID!, newInStock: Int): Item
+    updateItemInStockByItemId(itemId: ID!, newInStock: Int!): Item
 }
 
 # category
