@@ -1,4 +1,4 @@
-query GetCategoryById($categoryId: ID) {
+query GetCategoryById($categoryId: ID!) {
     getCategoryById(categoryId: $categoryId) {
         id
         name

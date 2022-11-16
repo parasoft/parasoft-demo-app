@@ -300,8 +300,8 @@ function initRequisitionBarController(app){
             }
 
             if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
-                let arguments = "{realInStock, quantity}";
-                graphQLService.getCartItems(success, (data) => {error(data, "graphQL")}, arguments);
+                let selectionSet = "{realInStock, quantity}";
+                graphQLService.getCartItems(success, (data) => {error(data, "graphQL")}, selectionSet);
             } else {
                 $http({
                     method: 'GET',
@@ -557,8 +557,8 @@ function loadShoppingCartData($rootScope,$http,$filter,graphQLService){
         }
 
         if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
-            let arguments = "{id, userId, itemId, name, description, image, realInStock, quantity}";
-            graphQLService.getCartItems(success, (data) => {error(data, "graphQL")}, arguments);
+            let selectionSet = "{id, userId, itemId, name, description, image, realInStock, quantity}";
+            graphQLService.getCartItems(success, (data) => {error(data, "graphQL")}, selectionSet);
         } else {
             $http({
                 method: 'GET',

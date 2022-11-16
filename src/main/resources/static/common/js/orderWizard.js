@@ -84,8 +84,8 @@ app.controller('orderWizardController', function($scope, $rootScope, $http, $fil
             }
 
             if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
-                let arguments = "{realInStock, quantity}";
-                graphQLService.getCartItems(success, (data) => {error(data, "graphQL")}, arguments);
+                let selectionSet = "{realInStock, quantity}";
+                graphQLService.getCartItems(success, (data) => {error(data, "graphQL")}, selectionSet);
             } else {
                 $http({
                     method: 'GET',
@@ -113,38 +113,61 @@ app.controller('orderWizardController', function($scope, $rootScope, $http, $fil
 	//Show submitted status
 	$scope.isSubmitted = false;
 	$scope.submitForApproval = function(){
-		$http({
-	        method: 'POST',
-	        url: '/proxy/v1/orders',
-	        data: {region: $scope.region, location: $scope.locationInfo, receiverId: $scope.platoonId, eventId: $scope.campaignID, eventNumber: $scope.campaignNumber},
-	        headers: { 'Content-Type': 'application/json' }
-	    }).then(function(result) {
-	    	$scope.isSubmitted = true;
+		let success = (data) => {
+			$scope.isSubmitted = true;
+			$scope.orderNumber = data.orderNumber;
+		};
+		let errorMessageHandled = false;
+		let error = (result, endpointType) => {
+			let errCode = result.status;
+			let errMsg;
+			switch (errCode) {
+				case -1:
+					errMsg = $filter('translate')('ERR_CONNECTION_REFUSED');
+					break;
+				case 400:
+					errMsg = $filter('translate')('CREATING_REQUEST_ERROR');
+					break;
+				case 404:
+					if(result.data.message.indexOf("No message available") > -1){
+						displayLoadError(result,$rootScope,$filter,$http,true,endpointType);
+						errorMessageHandled = true;
+					}else{
+						errMsg = $filter('translate')('NO_SUCH_ITEMS');
+					}
+					break;
+				default:
+					errMsg = $filter('translate')('SUBMIT_ERROR');
+			}
+			if(!errorMessageHandled) {
+				toastrService().error(errMsg);
+			}
+		};
 
-	    	var response = result.data.data;
-	        $scope.orderNumber = response.orderNumber;
-	    }).catch(function(result) {
-	        var errCode = result.status;
-	        var errMsg;
-	        switch (errCode) {
-	            case -1:
-	                errMsg = $filter('translate')('ERR_CONNECTION_REFUSED');
-	                break;
-	            case 400:
-	                errMsg = $filter('translate')('INSUFFICIENT_INVENTORY');
-	                break;
-	            case 404:
-	                if(result.data.message.indexOf("No message available") > -1){
-	                    displayLoadError(response,$rootScope,$filter,$http,true,"orders");
-	                }else{
-	                    errMsg = $filter('translate')('NO_SUCH_ITEMS');
-	                }
-	                break;
-	            default:
-	                errMsg = $filter('translate')('SUBMIT_ERROR');
-	        }
-	        toastrService().error(errMsg);
-	    });
+		let params = {
+			"region": $scope.region,
+			"location": $scope.locationInfo,
+			"receiverId": $scope.platoonId,
+			"eventId": $scope.campaignID,
+			"eventNumber": $scope.campaignNumber
+		};
+		if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+			graphQLService.createOrder(
+				{"orderDTO": params},
+				success,
+				(data) => {error(data, "graphQL")});
+		} else {
+			$http({
+				method: 'POST',
+				url: '/proxy/v1/orders',
+				data: params,
+				headers: {'Content-Type': 'application/json'}
+			}).then(function (result) {
+				success(result.data.data);
+			}).catch(function (result) {
+				error(result, "orders");
+			});
+		}
 	}
 
 	//Clear landmark

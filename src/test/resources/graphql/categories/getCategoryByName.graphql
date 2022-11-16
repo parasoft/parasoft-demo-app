@@ -1,4 +1,4 @@
-query GetCategoryByName($categoryName: String) {
+query GetCategoryByName($categoryName: String!) {
     getCategoryByName(categoryName: $categoryName) {
         name
     }
