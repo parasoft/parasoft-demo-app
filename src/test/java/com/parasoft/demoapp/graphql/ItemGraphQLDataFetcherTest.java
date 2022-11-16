@@ -148,11 +148,11 @@ public class ItemGraphQLDataFetcherTest {
         response.assertThatErrorsField().isNotNull()
                 .asListOf(GraphQLTestError.class)
                 .hasOnlyOneElementSatisfying(error -> {
-                    assertThat(error.getExtensions().get("classification")).isEqualTo("ValidationError");
-                    assertThat(error.getExtensions().get("statusCode")).isNull();
+                    assertThat(error.getMessage()).isEqualTo("In stock cannot be null.");
+                    assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.BAD_REQUEST.value());
                 })
                 .and()
-                .assertThatField(UPDATE_ITEM_IN_STOCK_BY_ITEM_ID_DATA_JSON_PATH).isNotPresent();
+                .assertThatField(UPDATE_ITEM_IN_STOCK_BY_ITEM_ID_DATA_JSON_PATH).isNull();
     }
 
     @Test
