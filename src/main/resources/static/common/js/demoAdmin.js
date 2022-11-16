@@ -146,7 +146,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 
         if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
             graphQLService.makeGraphQLCall(
-                {"query": "query{getCategories{content{id,name}},getItems{content{id,name,description,inStock,image,region,categoryId}}}"},
+                {"query": "query GetItemsCombinedCategories{getCategories{content{id,name}},getItems{content{id,name,description,inStock,image,region,categoryId}}}"},
                 function(response) {
                     getItemsSuccess(response.data.data.getItems, response.data.data.getCategories, true);
                 },
