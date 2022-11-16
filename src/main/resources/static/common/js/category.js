@@ -11,7 +11,7 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
     var categoryId = $location.absUrl().substr($location.absUrl().lastIndexOf("/")+1);
     category.categoryId = categoryId;
     category.sort="name";
-    let itemReturnParams = "{content{id,name,description,image}}"
+    let getItemsSelectionSet = "{content{id,name,description,image}}"
     getUnreviewedAmount($http,$rootScope,$filter);
     connectAndSubscribeMQ(CURRENT_ROLE,$http,$rootScope, $filter);
 
@@ -76,7 +76,7 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
         //Get all items from database
         if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
             graphQLService.getItems(getItemsParams, getItemsSuccessfully,
-                (data) => {failToGetItems(data, "graphQL")}, itemReturnParams);
+                (data) => {failToGetItems(data, "graphQL")}, getItemsSelectionSet);
         } else {
             $http({
                 method: 'GET',
@@ -251,7 +251,7 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
 
         if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
             graphQLService.getItems(params, searchSucceeded,
-                (data) => {searchFailed(data, "graphQL")}, itemReturnParams);
+                (data) => {searchFailed(data, "graphQL")}, getItemsSelectionSet);
         } else {
             $http({
                 method: 'GET',
