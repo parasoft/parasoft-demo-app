@@ -11,7 +11,7 @@ type Query {
     getOrderByOrderNumber(orderNumber: String): Order
     #item
     getItems(categoryId: Int, regions: [RegionType], searchString: String, page: Int, size: Int, sort: [String]): ItemPageInfo
-    getItemByItemId(itemId: ID): Item
+    getItemByItemId(itemId: ID!): Item
     # cartItem
     getCartItems: [CartItemEntity]
 }

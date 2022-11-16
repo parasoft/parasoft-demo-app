@@ -1,4 +1,4 @@
-query GetItemByItemId($itemId: ID) {
+query GetItemByItemId($itemId: ID!) {
     getItemByItemId(itemId: $itemId) {
         id
         name
