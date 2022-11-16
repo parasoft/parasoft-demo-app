@@ -46,8 +46,13 @@ angular
                 }, error);
             }
             //cartItems
-            instance.getCartItems = function(success, error) {
-                let requestBody = {"query": "query{getCartItems{id,userId,itemId,name,description,image,realInStock,quantity}}"}
+            instance.getCartItems = function(success, error, arguments) {
+                let requestBody;
+                if (arguments === null) {
+                    requestBody = {"query": "query{getCartItems{id, userId, itemId, name, description, image, realInStock, quantity}}"}
+                } else {
+                    requestBody = {"query": "query{getCartItems" + arguments + "}"}
+                }
                 makeCall(requestBody, function(response) {
                     success(response.data.data.getCartItems);
                 }, error);

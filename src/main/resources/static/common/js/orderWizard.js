@@ -84,7 +84,8 @@ app.controller('orderWizardController', function($scope, $rootScope, $http, $fil
             }
 
             if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
-                graphQLService.getCartItems(success, (data) => {error(data, "graphQL")});
+                let arguments = "{realInStock, quantity}";
+                graphQLService.getCartItems(success, (data) => {error(data, "graphQL")}, arguments);
             } else {
                 $http({
                     method: 'GET',
