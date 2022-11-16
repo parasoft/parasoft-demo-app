@@ -1081,7 +1081,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 			}
 			let formData = angular.element('#category_form').serializeJSON();
 			if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
-				graphQLService.addCategory(formData, 'id', success, (data) => {error(data)});
+				graphQLService.addCategory(formData, success, (data) => {error(data)}, '{id}');
 			} else {
 				$http({
 					method: 'POST',

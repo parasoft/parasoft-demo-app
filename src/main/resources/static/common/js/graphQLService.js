@@ -50,9 +50,12 @@ angular
                     success(response.data.data.getCategoryById);
                 }, error);
             }
-            instance.addCategory = function(categoryData, selectionSet, success, error) {
+            instance.addCategory = function(categoryData, success, error, selectionSet) {
+                if (!selectionSet) {
+                    selectionSet = "{id,name,description,image}"
+                }
                 let requestBody = {
-                    "query": "mutation AddCategory($categoryDTO: CategoryDTO!){addCategory(categoryDTO: $categoryDTO){" + selectionSet + "}}",
+                    "query": "mutation AddCategory($categoryDTO: CategoryDTO!){addCategory(categoryDTO: $categoryDTO)" + selectionSet + "}",
                     "variables": { "categoryDTO": categoryData }
                 }
                 makeCall(requestBody, function(response) {
