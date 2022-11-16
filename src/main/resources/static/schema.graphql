@@ -16,9 +16,12 @@ type Query {
 }
 type Mutation {
     # category
+    addCategory(categoryDTO: CategoryDTO!): Category
     deleteCategoryById(categoryId: ID!): Int
     # order
     createOrder(orderDTO: OrderDTO!): Order
+    #item
+    updateItemInStockByItemId(itemId: ID!, newInStock: Int!): Item
 }
 
 # category
@@ -36,6 +39,11 @@ type CategoryPageInfo {
     numberOfElements: Int
     sort: String
     content: [Category]
+}
+input CategoryDTO {
+    name: String!
+    description: String!
+    imagePath: String
 }
 # location
 type Location {
