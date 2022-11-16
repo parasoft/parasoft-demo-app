@@ -5,7 +5,7 @@ setLocale(app);
 initImportPageControllers(app);
 initToastr();
 
-app.controller('itemDetailController', function($rootScope, $http, $location, $filter, $interval) {
+app.controller('itemDetailController', function($rootScope, $http, $location, $filter, $interval, graphQLService) {
 	//Get some data
 	var itemDetail = this;
 	var itemId = $location.absUrl().substr($location.absUrl().lastIndexOf("/")+1);
@@ -35,24 +35,34 @@ app.controller('itemDetailController', function($rootScope, $http, $location, $f
 			var item = result.data.data;
 			itemDetail.item = item;
 			itemDetail.showItemDetail = true;
-			
-			$http({
-				method: 'GET',
-				url: '/proxy/v1/assets/categories/' + item.categoryId,
-				params: {categoryId: item.categoryId},
-			}).then(function(result) {
-				data = result.data.data;
-				itemDetail.categoryName = data.name;
-			}).catch(function(result) {
-				console.info(result);
-				displayLoadError(result,$rootScope,$filter,$http,true,'categories');
-			});
-		}).catch(function(result) {
-			console.info(result);
-			itemDetail.itemDetailError = true;
-			displayLoadError(result,$rootScope,$filter,$http,false,'items');
-		});
-	}, 500);
+
+            let success = (result) => {
+                itemDetail.categoryName = result.name;
+            }
+            let error = (result, endpointType) => {
+                console.info(result);
+                displayLoadError(result, $rootScope, $filter, $http, true, endpointType);
+            }
+
+            let params = {"categoryId": item.categoryId};
+            if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+                graphQLService.getCategoryById(params, success, (data) => {error(data, "graphQL")});
+            } else {
+                $http({
+                    method: 'GET',
+                    url: '/proxy/v1/assets/categories/' + item.categoryId,
+                }).then(function (result) {
+                    success(result.data.data);
+                }).catch(function (result) {
+                    error(result, "categories");
+                });
+            }
+        }).catch(function(result) {
+            console.info(result);
+            itemDetail.itemDetailError = true;
+            displayLoadError(result,$rootScope,$filter,$http,false,'items');
+        });
+    }, 500);
 	
 	//Get cartItem by item id
 	$http({

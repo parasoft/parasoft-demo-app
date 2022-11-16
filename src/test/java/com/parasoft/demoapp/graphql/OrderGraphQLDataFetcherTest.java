@@ -139,7 +139,7 @@ public class OrderGraphQLDataFetcherTest {
                 .withBasicAuth(purchaser.getUsername(), purchaser.getPassword())
                 .perform(GET_ORDER_BY_ORDER_NUMBER_GRAPHQL_RESOURCE, variable);
 
-        assertErrorForGetOrderByOrderNumber(graphQLResponse, HttpStatus.BAD_REQUEST, "Order number should not be blank(null, '' or '  ').");
+        assertErrorForGetOrderByOrderNumber(graphQLResponse, HttpStatus.INTERNAL_SERVER_ERROR, "Map has no value for 'orderNumber'");
     }
 
     @Test
@@ -213,22 +213,9 @@ public class OrderGraphQLDataFetcherTest {
     }
 
     @Test
-    public void test_createOrder_invalidOrNullRegionValue() throws IOException {
+    public void test_createOrder_emptyLocationValue() throws IOException {
         OrderDTO orderDTO = getOrderDTOInstance();
-        orderDTO.setRegion(null);
-        ObjectNode orderDtoObjectNode = objectMapper.createObjectNode().putPOJO("orderDTO", orderDTO);
-
-        GraphQLResponse response = graphQLTestTemplate
-                .withBasicAuth(purchaser.getUsername(), purchaser.getPassword())
-                .perform(CREATE_ORDER_GRAPHQL_RESOURCE, orderDtoObjectNode);
-
-        assertErrorForCreateOrder(response, HttpStatus.BAD_REQUEST, "Region should not be null.");
-    }
-
-    @Test
-    public void test_createOrder_nullLocationValue() throws IOException {
-        OrderDTO orderDTO = getOrderDTOInstance();
-        orderDTO.setLocation(null);
+        orderDTO.setLocation("");
         ObjectNode orderDtoObjectNode = objectMapper.createObjectNode().putPOJO("orderDTO", orderDTO);
 
         GraphQLResponse response = graphQLTestTemplate
@@ -239,9 +226,9 @@ public class OrderGraphQLDataFetcherTest {
     }
 
     @Test
-    public void test_createOrder_nullReceiverIdValue() throws IOException {
+    public void test_createOrder_emptyReceiverIdValue() throws IOException {
         OrderDTO orderDTO = getOrderDTOInstance();
-        orderDTO.setReceiverId(null);
+        orderDTO.setReceiverId("");
         ObjectNode orderDtoObjectNode = objectMapper.createObjectNode().putPOJO("orderDTO", orderDTO);
 
         GraphQLResponse response = graphQLTestTemplate
@@ -252,9 +239,9 @@ public class OrderGraphQLDataFetcherTest {
     }
 
     @Test
-    public void test_createOrder_nullEventIdValue() throws IOException {
+    public void test_createOrder_emptyEventIdValue() throws IOException {
         OrderDTO orderDTO = getOrderDTOInstance();
-        orderDTO.setEventId(null);
+        orderDTO.setEventId("");
         ObjectNode orderDtoObjectNode = objectMapper.createObjectNode().putPOJO("orderDTO", orderDTO);
 
         GraphQLResponse response = graphQLTestTemplate
@@ -265,9 +252,9 @@ public class OrderGraphQLDataFetcherTest {
     }
 
     @Test
-    public void test_createOrder_nullEventNumberValue() throws IOException {
+    public void test_createOrder_emptyEventNumberValue() throws IOException {
         OrderDTO orderDTO = getOrderDTOInstance();
-        orderDTO.setEventNumber(null);
+        orderDTO.setEventNumber("");
         ObjectNode orderDtoObjectNode = objectMapper.createObjectNode().putPOJO("orderDTO", orderDTO);
 
         GraphQLResponse response = graphQLTestTemplate

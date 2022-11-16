@@ -6,7 +6,7 @@ initProductBuildInfo(app);
 initAuthorizationHeader(app);
 initToastr();
 
-app.controller('approverHomePageController', function($rootScope, $http, $filter) {
+app.controller('approverHomePageController', function($rootScope, $http, $filter, graphQLService) {
     var approver = this;
 
     var mqConsumeCallback = function mqConsumeCallback(){
@@ -24,15 +24,27 @@ app.controller('approverHomePageController', function($rootScope, $http, $filter
     //To control whether the order detail is visible or hidden
     approver.showOrderDetail = {'show':false}
     approver.openOrderDetail = function(orderNum) {
-        
-        $http({
-            method: 'GET',
-            url: '/proxy/v1/orders/'+orderNum,
-        }).then(function(result) {
-            handleOrderDetail(result.data.data);
-        }).catch(function(result) {
-            console.log(result);
-        });
+        let success = (data) => {
+            handleOrderDetail(data);
+        }
+        let error = (data) => {
+            console.log(data);
+        };
+        let params = {"orderNumber": orderNum};
+        if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+            graphQLService.getOrderByOrderNumber(params, success, (data) => {
+                error(data, "graphQL");
+            })
+        } else {
+            $http({
+                method: 'GET',
+                url: '/proxy/v1/orders/'+orderNum,
+            }).then(function(result) {
+                success(result.data.data);
+            }).catch(function(result) {
+                error(result, "approver");
+            });
+        }
     }
 
     function handleOrderDetail(orderDetail){

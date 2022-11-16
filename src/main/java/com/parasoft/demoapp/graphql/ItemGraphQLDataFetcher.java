@@ -87,16 +87,41 @@ public class ItemGraphQLDataFetcher {
                 Map<String, String> uriVariables = new HashMap<>();
                 if (dataFetchingEnvironment.containsArgument("itemId")) {
                     String itemId = dataFetchingEnvironment.getArgument("itemId");
-                    if (itemId!= null && !itemId.isEmpty()) {
+                    if (itemId != null && !itemId.isEmpty()) {
                         uriVariables.put("itemId", itemId);
                     }
                 }
-                ResponseEntity<ResponseResult<ItemEntity>> entity  =
+                ResponseEntity<ResponseResult<ItemEntity>> entity =
                         restTemplate.exchange(itemBaseUrl + "/{itemId}",
                                 HttpMethod.GET,
                                 new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
-                                new ParameterizedTypeReference<ResponseResult<ItemEntity>>() {},
+                                new ParameterizedTypeReference<ResponseResult<ItemEntity>>() {
+                                },
                                 uriVariables);
+                return Objects.requireNonNull(entity.getBody()).getData();
+            } catch (Exception e) {
+                throw RestTemplateUtil.convertException(e);
+            }
+        };
+    }
+
+    public DataFetcher<ItemEntity> updateItemInStockByItemId() {
+        return dataFetchingEnvironment -> {
+            try {
+                Map<String, Object> uriVariables = new HashMap<>();
+                String itemId = dataFetchingEnvironment.getArgument("itemId");
+                if (itemId != null && !itemId.trim().isEmpty()) {
+                    uriVariables.put("itemId", itemId);
+                }
+                Integer newInStock = dataFetchingEnvironment.getArgument("newInStock");
+                if (newInStock != null) {
+                    uriVariables.put("newInStock", newInStock);
+                }
+                ResponseEntity<ResponseResult<ItemEntity>> entity =
+                        restTemplate.exchange(itemBaseUrl + "/inStock/{itemId}?newInStock={newInStock}",
+                                HttpMethod.PUT,
+                                new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
+                                new ParameterizedTypeReference<ResponseResult<ItemEntity>>() {}, uriVariables);
                 return Objects.requireNonNull(entity.getBody()).getData();
             } catch (Exception e) {
                 throw RestTemplateUtil.convertException(e);
