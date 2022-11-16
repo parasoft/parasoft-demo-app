@@ -53,7 +53,8 @@ public class ItemGraphQLDataFetcherTest {
 
     @Autowired
     ResetEntrance resetEntrance;
-    
+
+    @Autowired
     private ItemService itemService;
 
     @Before
