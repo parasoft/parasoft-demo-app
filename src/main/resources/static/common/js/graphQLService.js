@@ -110,5 +110,7 @@ angular
                     success(response.data.data.getItems);
                 }, error);
             }
+            // customized call
+            instance.makeGraphQLCall = makeCall;
             return instance;
         });
