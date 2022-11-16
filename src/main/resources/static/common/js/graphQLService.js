@@ -44,8 +44,14 @@ angular
                     success(response.data.data.deleteCategoryById);
                 }, error);
             }
-            instance.getCategoryById = function(variables, success, error) {
-                let requestBody = {"query": "query($categoryId:ID!){getCategoryById(categoryId:$categoryId){id,name,description,image}}", "variables": variables}
+            instance.getCategoryById = function(variables, success, error, selectionSet) {
+                if(!selectionSet) {
+                    selectionSet = "{id,name,description,image}";
+                }
+                let requestBody = {
+                    "query": "query($categoryId:ID!){getCategoryById(categoryId:$categoryId)"+ selectionSet +"}",
+                    "variables": variables
+                }
                 makeCall(requestBody, function(response) {
                     success(response.data.data.getCategoryById);
                 }, error);
