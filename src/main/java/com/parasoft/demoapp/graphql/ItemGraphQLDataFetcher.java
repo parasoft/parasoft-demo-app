@@ -81,6 +81,30 @@ public class ItemGraphQLDataFetcher {
         };
     }
 
+    public DataFetcher<ItemEntity> getItemByItemId() {
+        return dataFetchingEnvironment -> {
+            try {
+                Map<String, String> uriVariables = new HashMap<>();
+                if (dataFetchingEnvironment.containsArgument("itemId")) {
+                    String itemId = dataFetchingEnvironment.getArgument("itemId");
+                    if (itemId != null && !itemId.isEmpty()) {
+                        uriVariables.put("itemId", itemId);
+                    }
+                }
+                ResponseEntity<ResponseResult<ItemEntity>> entity =
+                        restTemplate.exchange(itemBaseUrl + "/{itemId}",
+                                HttpMethod.GET,
+                                new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
+                                new ParameterizedTypeReference<ResponseResult<ItemEntity>>() {
+                                },
+                                uriVariables);
+                return Objects.requireNonNull(entity.getBody()).getData();
+            } catch (Exception e) {
+                throw RestTemplateUtil.convertException(e);
+            }
+        };
+    }
+
     public DataFetcher<ItemEntity> updateItemInStockByItemId() {
         return dataFetchingEnvironment -> {
             try {
@@ -118,6 +142,27 @@ public class ItemGraphQLDataFetcher {
                                 HttpMethod.DELETE,
                                 new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
                                 new ParameterizedTypeReference<ResponseResult<String>>() {}, uriVariables);
+                return Objects.requireNonNull(entity.getBody()).getData();
+            } catch (Exception e) {
+                throw RestTemplateUtil.convertException(e);
+            }
+        };
+    }
+
+    public DataFetcher<ItemEntity> getItemByName() {
+        return dataFetchingEnvironment -> {
+            try {
+                Map<String, String> uriVariables = new HashMap<>();
+                String itemName = dataFetchingEnvironment.getArgument("itemName");
+                if (itemName != null && !itemName.trim().isEmpty()) {
+                    uriVariables.put("itemName", itemName);
+                }
+                ResponseEntity<ResponseResult<ItemEntity>> entity =
+                        restTemplate.exchange(itemBaseUrl + "/name/{itemName}",
+                                HttpMethod.GET,
+                                new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
+                                new ParameterizedTypeReference<ResponseResult<ItemEntity>>() {},
+                                uriVariables);
                 return Objects.requireNonNull(entity.getBody()).getData();
             } catch (Exception e) {
                 throw RestTemplateUtil.convertException(e);
