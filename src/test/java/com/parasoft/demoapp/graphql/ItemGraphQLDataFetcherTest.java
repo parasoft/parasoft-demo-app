@@ -26,6 +26,7 @@ import java.io.IOException;
 import static com.graphql.spring.boot.test.helper.GraphQLTestConstantsHelper.DATA_PATH;
 import static com.parasoft.demoapp.defaultdata.global.GlobalUsersCreator.PASSWORD;
 import static com.parasoft.demoapp.defaultdata.global.GlobalUsersCreator.USERNAME_PURCHASER;
+import static com.parasoft.demoapp.messages.AssetMessages.ITEM_NAME_CANNOT_BE_BLANK;
 import static com.parasoft.demoapp.model.industry.RegionType.LOCATION_1;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -251,6 +252,20 @@ public class ItemGraphQLDataFetcherTest {
                 .assertThatField(DELETE_ITEM_BY_NAME_DATA_JSON_PATH)
                 .as(String.class)
                 .isEqualTo(itemName);
+    }
+
+    @Test
+    public void test_deleteItemByName_400_emptyName() throws IOException {
+        ObjectNode variables = objectMapper.createObjectNode();
+        variables.put("itemName", " ");
+
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(DELETE_ITEM_BY_NAME_GRAPHQL_RESOURCE, variables);
+
+        assertResponseOk(response);
+        assertErrorWithNullData(response, ITEM_NAME_CANNOT_BE_BLANK,
+                HttpStatus.BAD_REQUEST.value(), DELETE_ITEM_BY_NAME_DATA_JSON_PATH);
     }
 
     @Test
