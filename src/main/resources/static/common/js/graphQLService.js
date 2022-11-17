@@ -33,26 +33,44 @@ angular
             };
             // categories
             instance.getCategories = function(success, error) {
-                let requestBody = {"query": "{getCategories{totalElements,totalPages,size,number,numberOfElements,sort,content{id,name,description,image}}}"}
+                let requestBody = {"query": "query GetCategories{getCategories{totalElements,totalPages,size,number,numberOfElements,sort,content{id,name,description,image}}}"}
                 makeCall(requestBody, function(response) {
                     success(response.data.data.getCategories);
                 }, error);
             }
             instance.deleteCategoryById = function(variables, success, error) {
-                let requestBody = {"query": "mutation($categoryId:ID!){deleteCategoryById(categoryId:$categoryId)}", "variables": variables}
+                let requestBody = {"query": "mutation DeleteCategoryById($categoryId:ID!){deleteCategoryById(categoryId:$categoryId)}", "variables": variables}
                 makeCall(requestBody, function(response) {
                     success(response.data.data.deleteCategoryById);
                 }, error);
             }
-            instance.getCategoryById = function(variables, success, error) {
-                let requestBody = {"query": "query($categoryId:ID!){getCategoryById(categoryId:$categoryId){id,name,description,image}}", "variables": variables}
+            instance.getCategoryById = function(variables, success, error, selectionSet) {
+                if(!selectionSet) {
+                    selectionSet = "{id,name,description,image}";
+                }
+                let requestBody = {
+                    "query": "query getCategoryById($categoryId:ID!){getCategoryById(categoryId:$categoryId)"+ selectionSet +"}",
+                    "variables": variables
+                }
                 makeCall(requestBody, function(response) {
                     success(response.data.data.getCategoryById);
                 }, error);
             }
+            instance.addCategory = function(categoryData, success, error, selectionSet) {
+                if (!selectionSet) {
+                    selectionSet = "{id,name,description,image}"
+                }
+                let requestBody = {
+                    "query": "mutation AddCategory($categoryDTO: CategoryDTO!){addCategory(categoryDTO: $categoryDTO)" + selectionSet + "}",
+                    "variables": { "categoryDTO": categoryData }
+                }
+                makeCall(requestBody, function(response) {
+                    success(response.data.data.addCategory);
+                }, error);
+            }
             // locations
             instance.getLocation = function(variables, success, error) {
-                let requestBody = {"query": "query($region:RegionType!){getLocation(region:$region){id,locationInfo,locationImage}}", "variables": variables}
+                let requestBody = {"query": "query GetLocation($region:RegionType!){getLocation(region:$region){id,locationInfo,locationImage}}", "variables": variables}
                 makeCall(requestBody, function(response) {
                     success(response.data.data.getLocation);
                 }, error);
@@ -76,7 +94,7 @@ angular
                 }, error);
             }
             instance.getOrderByOrderNumber = function (variables, success, error) {
-                let requestBody = {"query": "query($orderNumber:String!){getOrderByOrderNumber(orderNumber:$orderNumber){orderNumber,status,reviewedByAPV,reviewedByPRCH,orderItems {name,description,image,quantity},region,location,orderImage,receiverId,eventId,eventNumber,comments}}", "variables": variables};
+                let requestBody = {"query": "query GetOrderByOrderNumber($orderNumber:String!){getOrderByOrderNumber(orderNumber:$orderNumber){orderNumber,status,reviewedByAPV,reviewedByPRCH,orderItems {name,description,image,quantity},region,location,orderImage,receiverId,eventId,eventNumber,comments}}", "variables": variables};
                 makeCall(requestBody, function (response) {
                     success(response.data.data.getOrderByOrderNumber);
                 }, error)
@@ -86,11 +104,13 @@ angular
                 if (!selectionSet) {
                     selectionSet = "{totalElements,totalPages,size,number,numberOfElements,sort,content{id,name,description,inStock,image,region,lastAccessedDate,categoryId}}";
                 }
-                let requestBody = {"query": "query($categoryId: Int, $regions: [RegionType], $searchString: String, $page: Int, $size: Int, $sort: [String])" +
+                let requestBody = {"query": "query GetItems($categoryId: Int, $regions: [RegionType], $searchString: String, $page: Int, $size: Int, $sort: [String])" +
                         "{getItems(categoryId: $categoryId, regions: $regions, searchString: $searchString, page: $page, size: $size, sort: $sort)" + selectionSet + "}", "variables": variables};
                 makeCall(requestBody, function (response) {
                     success(response.data.data.getItems);
                 }, error);
             }
+            // customized call
+            instance.makeGraphQLCall = makeCall;
             return instance;
         });

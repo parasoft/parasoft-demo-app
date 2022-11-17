@@ -10,7 +10,6 @@ import com.parasoft.demoapp.exception.InventoryNotFoundException;
 import com.parasoft.demoapp.exception.ItemNotFoundException;
 import com.parasoft.demoapp.exception.ParameterException;
 import com.parasoft.demoapp.model.industry.CartItemEntity;
-import com.parasoft.demoapp.service.ItemService;
 import com.parasoft.demoapp.service.ShoppingCartService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
@@ -45,9 +44,6 @@ public class CartItemGraphQLDataFetcherTest {
     ShoppingCartService shoppingCartService;
 
     @Autowired
-    private ItemService itemService;
-
-    @Autowired
     private ResetEntrance resetEntrance;
 
     @Before
@@ -58,12 +54,12 @@ public class CartItemGraphQLDataFetcherTest {
 
     @Test
     public void test_getCartItems_normal() throws IOException, ParameterException, ItemNotFoundException, InventoryNotFoundException {
-        ObjectNode varibles = objectMapper.createObjectNode();
+        ObjectNode variables = objectMapper.createObjectNode();
         shoppingCartService.addCartItemInShoppingCart(1L, 1L, 1);
         List<CartItemEntity> cartItemEntities = shoppingCartService.getCartItemsByUserId(1L);
         GraphQLResponse response = graphQLTestTemplate
                 .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
-                .perform(GET_CART_ITEMS_GRAPHQL_RESOURCE, varibles);
+                .perform(GET_CART_ITEMS_GRAPHQL_RESOURCE, variables);
         assertThat(response).isNotNull();
         log.info(response.getRawResponse().getBody());
         assertThat(response.isOk()).isTrue();

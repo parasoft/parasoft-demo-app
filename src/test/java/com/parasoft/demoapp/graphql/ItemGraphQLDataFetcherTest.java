@@ -6,15 +6,11 @@ import com.graphql.spring.boot.test.GraphQLResponse;
 import com.graphql.spring.boot.test.GraphQLTestError;
 import com.graphql.spring.boot.test.GraphQLTestTemplate;
 import com.parasoft.demoapp.controller.PageInfo;
+import com.parasoft.demoapp.defaultdata.ResetEntrance;
 import com.parasoft.demoapp.model.industry.ItemEntity;
 import com.parasoft.demoapp.service.ItemService;
 import org.assertj.core.api.Condition;
 import org.assertj.core.data.Index;
-import com.graphql.spring.boot.test.GraphQLTestTemplate;
-import com.parasoft.demoapp.defaultdata.ResetEntrance;
-import com.parasoft.demoapp.model.industry.ItemEntity;
-import com.parasoft.demoapp.model.industry.OrderEntity;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -208,18 +204,15 @@ public class ItemGraphQLDataFetcherTest {
 
     @Test
     public void getItemByItemId_nullItemId() throws Throwable {
-        String itemId = null;
         ObjectNode variable = objectMapper.createObjectNode();
-        variable.put("itemId", itemId);
+        variable.put("itemId", (String)null);
         GraphQLResponse response = graphQLTestTemplate
                 .perform(GET_ITEM_BY_ITEM_ID_GRAPHQL_RESOURCE, variable);
         assertThat(response).isNotNull();
         assertThat(response.isOk()).isTrue();
         response.assertThatErrorsField().isNotNull()
                 .asListOf(GraphQLTestError.class)
-                .hasOnlyOneElementSatisfying(error -> {
-                    assertThat(error.getExtensions().get("classification")).isEqualTo("ValidationError");
-                });
+                .hasOnlyOneElementSatisfying(error -> assertThat(error.getExtensions().get("classification")).isEqualTo("ValidationError"));
     }
 
     @Test
