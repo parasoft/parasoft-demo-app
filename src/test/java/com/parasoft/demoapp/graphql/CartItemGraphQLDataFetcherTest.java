@@ -5,9 +5,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.graphql.spring.boot.test.GraphQLResponse;
 import com.graphql.spring.boot.test.GraphQLTestTemplate;
 import com.parasoft.demoapp.defaultdata.ResetEntrance;
+import com.parasoft.demoapp.dto.ShoppingCartDTO;
 import com.parasoft.demoapp.exception.InventoryNotFoundException;
 import com.parasoft.demoapp.exception.ItemNotFoundException;
 import com.parasoft.demoapp.exception.ParameterException;
+import com.parasoft.demoapp.messages.AssetMessages;
 import com.parasoft.demoapp.messages.ConfigMessages;
 import com.parasoft.demoapp.model.industry.CartItemEntity;
 import com.parasoft.demoapp.service.GlobalPreferencesService;
@@ -25,6 +27,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Set;
 
@@ -37,6 +40,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class CartItemGraphQLDataFetcherTest {
     private static final String GET_CART_ITEMS_GRAPHQL_RESOURCE = "graphql/cartItems/getCartItems.graphql";
     private static final String GET_CART_ITEMS_DATA_JSON_PATH = DATA_PATH + ".getCartItems";
+    private static final String ADD_ITEM_IN_CART_GRAPHQL_RESOURCE = "graphql/cartItems/addItemInCart.graphql";
+    private static final String ADD_ITEM_IN_CART_DATA_JSON_PATH = DATA_PATH + ".addItemInCart";
 
     @Autowired
     private GraphQLTestTemplate graphQLTestTemplate;
@@ -63,7 +68,7 @@ public class CartItemGraphQLDataFetcherTest {
 
     @Before
     public void conditionalBefore() {
-        Set<String> testNames = new HashSet<>(Arrays.asList("test_getCartItems_normal"));
+        Set<String> testNames = new HashSet<>(Arrays.asList("test_getCartItems_normal", "test_addItemInCart_normal"));
         if (testNames.contains(testName.getMethodName())) {
             GraphQLTestUtil.resetDatabase(globalPreferencesService);
         }
@@ -71,7 +76,7 @@ public class CartItemGraphQLDataFetcherTest {
 
     @After
     public void conditionalAfter() {
-        Set<String> testNames = new HashSet<>(Arrays.asList("test_getCartItems_normal"));
+        Set<String> testNames = new HashSet<>(Arrays.asList("test_getCartItems_normal", "test_addItemInCart_normal"));
         if (testNames.contains(testName.getMethodName())) {
             GraphQLTestUtil.resetDatabase(globalPreferencesService);
         }
@@ -125,7 +130,115 @@ public class CartItemGraphQLDataFetcherTest {
         assertError_getCartItems(response, HttpStatus.FORBIDDEN, ConfigMessages.USER_HAS_NO_PERMISSION);
     }
 
+    @Test
+    public void test_addItemInCart_normal() throws IOException {
+        final Long itemId = 1L;
+        final Integer itemQty = 2;
+        ObjectNode variables = objectMapper.createObjectNode();
+        variables.set("shoppingCartDTO", objectMapper.valueToTree(new ShoppingCartDTO(itemId, itemQty)));
+
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(ADD_ITEM_IN_CART_GRAPHQL_RESOURCE, variables);
+
+        assertThat(response).isNotNull();
+        assertThat(response.isOk()).isTrue();
+        response.assertThatNoErrorsArePresent()
+                .assertThatField(ADD_ITEM_IN_CART_DATA_JSON_PATH)
+                .as(CartItemEntity.class)
+                .hasFieldOrPropertyWithValue("quantity", itemQty);
+    }
+
+    @Test
+    public void test_addItemInCart_invalidItemQty() throws IOException {
+        final Long itemId = 1L;
+        final Integer itemQty = 100;
+        ObjectNode variables = objectMapper.createObjectNode();
+        variables.set("shoppingCartDTO", objectMapper.valueToTree(new ShoppingCartDTO(itemId, itemQty)));
+
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(ADD_ITEM_IN_CART_GRAPHQL_RESOURCE, variables);
+
+        assertError_addItemInCart(response, HttpStatus.BAD_REQUEST, AssetMessages.INCLUDES_SHOPPING_CART_IN_STOCK_OF_CART_ITEM_IS_INSUFFICIENT);
+    }
+
+    @Test
+    public void test_addItemInCart_invalidItemQty_IsZero() throws IOException {
+        final Long itemId = 1L;
+        final Integer itemQty = 0;
+        ObjectNode variables = objectMapper.createObjectNode();
+        variables.set("shoppingCartDTO", objectMapper.valueToTree(new ShoppingCartDTO(itemId, itemQty)));
+
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(ADD_ITEM_IN_CART_GRAPHQL_RESOURCE, variables);
+
+        assertError_addItemInCart(response, HttpStatus.BAD_REQUEST, AssetMessages.QUANTITY_CANNOT_BE_ZERO);
+    }
+
+    @Test
+    public void test_addItemInCart_invalidItemQty_IsNegative() throws IOException {
+        final Long itemId = 1L;
+        final Integer itemQty = -1;
+        ObjectNode variables = objectMapper.createObjectNode();
+        variables.set("shoppingCartDTO", objectMapper.valueToTree(new ShoppingCartDTO(itemId, itemQty)));
+
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(ADD_ITEM_IN_CART_GRAPHQL_RESOURCE, variables);
+
+        assertError_addItemInCart(response, HttpStatus.BAD_REQUEST, AssetMessages.QUANTITY_CANNOT_BE_A_NEGATIVE_NUMBER_OR_ZERO);
+    }
+
+    @Test
+    public void test_addItemInCart_noAuthentication() throws IOException {
+        final Long itemId = 1L;
+        final Integer itemQty = 2;
+        ObjectNode variables = objectMapper.createObjectNode();
+        variables.set("shoppingCartDTO", objectMapper.valueToTree(new ShoppingCartDTO(itemId, itemQty)));
+
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, "invalidPass")
+                .perform(ADD_ITEM_IN_CART_GRAPHQL_RESOURCE, variables);
+
+        assertError_addItemInCart(response, HttpStatus.UNAUTHORIZED, ConfigMessages.USER_IS_NOT_AUTHORIZED);
+    }
+
+    @Test
+    public void test_addItemInCart_noPermission() throws IOException {
+        final Long itemId = 1L;
+        final Integer itemQty = 2;
+        ObjectNode variables = objectMapper.createObjectNode();
+        variables.set("shoppingCartDTO", objectMapper.valueToTree(new ShoppingCartDTO(itemId, itemQty)));
+
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_APPROVER, PASSWORD)
+                .perform(ADD_ITEM_IN_CART_GRAPHQL_RESOURCE, variables);
+
+        assertError_addItemInCart(response, HttpStatus.FORBIDDEN, ConfigMessages.USER_HAS_NO_PERMISSION);
+    }
+
+    @Test
+    public void test_addItemInCart_itemIdNotFound() throws IOException {
+        final Long itemId = 100L;
+        final Integer itemQty = 2;
+        ObjectNode variables = objectMapper.createObjectNode();
+        variables.set("shoppingCartDTO", objectMapper.valueToTree(new ShoppingCartDTO(itemId, itemQty)));
+
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(ADD_ITEM_IN_CART_GRAPHQL_RESOURCE, variables);
+
+        assertError_addItemInCart(response, HttpStatus.NOT_FOUND, MessageFormat.format(AssetMessages.ITEM_ID_NOT_FOUND, itemId));
+    }
+
     private void assertError_getCartItems(GraphQLResponse response, HttpStatus expectedHttpStatus, String expectedErrorMessage) {
         GraphQLTestUtil.assertErrorResponse(response, expectedHttpStatus, expectedErrorMessage, GET_CART_ITEMS_DATA_JSON_PATH);
     }
+
+    private void assertError_addItemInCart(GraphQLResponse response, HttpStatus expectedHttpStatus, String expectedErrorMessage) {
+        GraphQLTestUtil.assertErrorResponse(response, expectedHttpStatus, expectedErrorMessage, ADD_ITEM_IN_CART_DATA_JSON_PATH);
+    }
+
 }
