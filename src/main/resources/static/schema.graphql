@@ -26,7 +26,7 @@ type Mutation {
     #item
     updateItemInStockByItemId(itemId: ID!, newInStock: Int!): Item
     #item
-    updateItemById(itemId: ID!, itemDTO: ItemDTO): Item
+    updateItemById(itemId: ID!, itemDTO: ItemDTO!): Item
 }
 
 # category
@@ -129,12 +129,12 @@ type Item {
     categoryId: ID
 }
 input ItemDTO {
-    name: String
-    description: String
-    categoryId: Int
-    inStock: Int
+    name: String!
+    description: String!
+    categoryId: Int!
+    inStock: Int!
     imagePath: String
-    region: RegionType
+    region: RegionType!
 }
 type ItemPageInfo {
     totalElements: Int

@@ -1,4 +1,4 @@
-mutation updateItemById($itemId: ID!, $itemDTO: ItemDTO) {
+mutation updateItemById($itemId: ID!, $itemDTO: ItemDTO!) {
     updateItemById(itemId: $itemId, itemDTO: $itemDTO) {
         id
         name

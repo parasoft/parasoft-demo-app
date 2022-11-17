@@ -485,6 +485,72 @@ public class ItemGraphQLDataFetcherTest {
     }
 
     @Test
+    public void test_updateItemById_emptyItemName() throws IOException {
+        ItemsDTO itemDTO = getItemDTOInstance();
+        itemDTO.setName("");
+        ObjectNode variables = objectMapper.createObjectNode()
+                .put("itemId", 10)
+                .putPOJO("itemDTO", itemDTO);
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(UPDATE_ITEM_BY_ID_GRAPHQL_RESOURCE, variables);
+        assertThat(response).isNotNull();
+        assertThat(response.isOk()).isTrue();
+        response.assertThatErrorsField().isNotNull()
+                .asListOf(GraphQLTestError.class)
+                .hasOnlyOneElementSatisfying(error -> {
+                    assertThat(error.getMessage()).isEqualTo("Item name cannot be an empty string(null, '' or '  ').");
+                    assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.BAD_REQUEST.value());
+                })
+                .and()
+                .assertThatField(UPDATE_ITEM_BY_ID_DATA_JSON_PATH).isNull();
+    }
+
+    @Test
+    public void test_updateItemById_emptyItemDescription() throws IOException {
+        ItemsDTO itemDTO = getItemDTOInstance();
+        itemDTO.setDescription("");
+        ObjectNode variables = objectMapper.createObjectNode()
+                .put("itemId", 10)
+                .putPOJO("itemDTO", itemDTO);
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(UPDATE_ITEM_BY_ID_GRAPHQL_RESOURCE, variables);
+        assertThat(response).isNotNull();
+        assertThat(response.isOk()).isTrue();
+        response.assertThatErrorsField().isNotNull()
+                .asListOf(GraphQLTestError.class)
+                .hasOnlyOneElementSatisfying(error -> {
+                    assertThat(error.getMessage()).isEqualTo("Description cannot be an empty string(null, '' or '  ').");
+                    assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.BAD_REQUEST.value());
+                })
+                .and()
+                .assertThatField(UPDATE_ITEM_BY_ID_DATA_JSON_PATH).isNull();
+    }
+
+    @Test
+    public void test_updateItemById_negativeInStock() throws IOException {
+        ItemsDTO itemDTO = getItemDTOInstance();
+        itemDTO.setInStock(-10);
+        ObjectNode variables = objectMapper.createObjectNode()
+                .put("itemId", 10)
+                .putPOJO("itemDTO", itemDTO);
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(UPDATE_ITEM_BY_ID_GRAPHQL_RESOURCE, variables);
+        assertThat(response).isNotNull();
+        assertThat(response.isOk()).isTrue();
+        response.assertThatErrorsField().isNotNull()
+                .asListOf(GraphQLTestError.class)
+                .hasOnlyOneElementSatisfying(error -> {
+                    assertThat(error.getMessage()).isEqualTo("In stock cannot be a negative number.");
+                    assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.BAD_REQUEST.value());
+                })
+                .and()
+                .assertThatField(UPDATE_ITEM_BY_ID_DATA_JSON_PATH).isNull();
+    }
+
+    @Test
     public void test_updateItemById_itemNameExistsAlready() throws IOException {
         ItemsDTO itemDTO = getItemDTOInstance();
         itemDTO.setName("Green Sleeping Bag");
