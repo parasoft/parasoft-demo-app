@@ -32,9 +32,17 @@ app.controller('approverHomePageController', function($rootScope, $http, $filter
         };
         let params = {"orderNumber": orderNum};
         if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+            let selectionSet = "{" +
+                "orderNumber,requestedBy,status,reviewedByAPV," +
+                "orderItems" +
+                "{" +
+                "name,description,image,quantity" +
+                "}," +
+                "region,location,orderImage,receiverId,eventId,eventNumber,comments" +
+                "}";
             graphQLService.getOrderByOrderNumber(params, success, (data) => {
                 error(data, "graphQL");
-            })
+            }, selectionSet);
         } else {
             $http({
                 method: 'GET',

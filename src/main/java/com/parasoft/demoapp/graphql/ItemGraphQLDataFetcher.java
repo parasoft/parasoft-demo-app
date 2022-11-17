@@ -129,6 +129,26 @@ public class ItemGraphQLDataFetcher {
         };
     }
 
+    public DataFetcher<String> deleteItemByName() {
+        return dataFetchingEnvironment -> {
+            try {
+                Map<String, Object> uriVariables = new HashMap<>();
+                String itemName = dataFetchingEnvironment.getArgument("itemName");
+                if (itemName != null && !itemName.isEmpty()) {
+                    uriVariables.put("itemName", itemName);
+                }
+                ResponseEntity<ResponseResult<String>> entity =
+                        restTemplate.exchange(itemBaseUrl + "/name/{itemName}",
+                                HttpMethod.DELETE,
+                                new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
+                                new ParameterizedTypeReference<ResponseResult<String>>() {}, uriVariables);
+                return Objects.requireNonNull(entity.getBody()).getData();
+            } catch (Exception e) {
+                throw RestTemplateUtil.convertException(e);
+            }
+        };
+    }
+
     public DataFetcher<ItemEntity> getItemByName() {
         return dataFetchingEnvironment -> {
             try {

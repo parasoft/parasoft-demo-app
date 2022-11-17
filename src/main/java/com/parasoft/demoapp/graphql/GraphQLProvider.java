@@ -92,6 +92,7 @@ public class GraphQLProvider {
         builder.type("Query", typeWiring ->
                 typeWiring.dataFetcher("getItemByItemId", itemDataFetcher.getItemByItemId()));
         builder.type("Mutation", typeWriting -> typeWriting.dataFetcher("updateItemInStockByItemId", itemDataFetcher.updateItemInStockByItemId()));
+        builder.type("Mutation", typeWriting -> typeWriting.dataFetcher("deleteItemByName", itemDataFetcher.deleteItemByName()));
         builder.type("Query", typeWriting -> typeWriting.dataFetcher("getItemByName", itemDataFetcher.getItemByName()));
     }
 
