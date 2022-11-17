@@ -28,7 +28,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 
 import static com.graphql.spring.boot.test.helper.GraphQLTestConstantsHelper.DATA_PATH;
 import static com.parasoft.demoapp.defaultdata.global.GlobalUsersCreator.PASSWORD;
@@ -97,7 +97,7 @@ public class CategoryGraphQLDataFetcherTest {
         variables.put("searchString", "e");
         variables.put("page", 0);
         variables.put("size", 100);
-        ArrayNode sortArray = objectMapper.valueToTree(new ArrayList<String>(Arrays.asList("id,desc")));
+        ArrayNode sortArray = objectMapper.valueToTree(new ArrayList<>(Collections.singletonList("id,desc")));
         variables.putArray("sort").addAll(sortArray);
         GraphQLResponse response = graphQLTestTemplate
                 .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
@@ -115,8 +115,8 @@ public class CategoryGraphQLDataFetcherTest {
                 .and()
                 .assertThatField(CATEGORIES_DATA_JSON_PATH + ".content")
                 .asListOf(CategoryEntity.class)
-                .has(new Condition<CategoryEntity>(c -> c.getName().equals("Tents"), "name Tents"), Index.atIndex(0))
-                .has(new Condition<CategoryEntity>(c -> c.getName().equals("Sleeping bags"), "name Sleeping bags"), Index.atIndex(1))
+                .has(new Condition<>(c -> c.getName().equals("Tents"), "name Tents"), Index.atIndex(0))
+                .has(new Condition<>(c -> c.getName().equals("Sleeping bags"), "name Sleeping bags"), Index.atIndex(1))
                 .size()
                 .isEqualTo(2);
     }
@@ -124,7 +124,7 @@ public class CategoryGraphQLDataFetcherTest {
     @Test
     public void test_getCategories_invalidSort() throws IOException {
         ObjectNode variables = objectMapper.createObjectNode();
-        ArrayNode sortArray = objectMapper.valueToTree(new ArrayList<String>(Arrays.asList("id,invalid")));
+        ArrayNode sortArray = objectMapper.valueToTree(new ArrayList<>(Collections.singletonList("id,invalid")));
         variables.putArray("sort").addAll(sortArray);
         GraphQLResponse response = graphQLTestTemplate
                 .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
@@ -232,7 +232,7 @@ public class CategoryGraphQLDataFetcherTest {
                 .and()
                 .assertThatField(CATEGORY_BY_ID_DATA_JSON_PATH)
                 .as(CategoryEntity.class)
-                .has(new Condition<CategoryEntity>(c -> c.getName().equals("Tents"), "name Tents"));;
+                .has(new Condition<>(c -> c.getName().equals("Tents"), "name Tents"));
     }
 
     @Test
@@ -277,7 +277,7 @@ public class CategoryGraphQLDataFetcherTest {
     
     @SneakyThrows
     @Test
-    public void test_deleteCategoryById_normal() throws IOException {
+    public void test_deleteCategoryById_normal() {
         CategoryEntity categoryEntity = categoryService.addNewCategory(
                 "foo", "name foo", "/foo");
         ObjectNode variables = objectMapper.createObjectNode();
@@ -290,8 +290,8 @@ public class CategoryGraphQLDataFetcherTest {
         assertThat(response.isOk()).isTrue();
         response.assertThatNoErrorsArePresent()
                 .assertThatField(DELETE_CATEGORY_DATA_JSON_PATH)
-                .as(Integer.class)
-                .isEqualTo(Long.valueOf(categoryEntity.getId()).intValue());
+                .as(Long.class)
+                .isEqualTo(categoryEntity.getId());
     }
 
     @Test
