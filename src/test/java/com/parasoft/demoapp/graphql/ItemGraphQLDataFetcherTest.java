@@ -6,20 +6,16 @@ import com.graphql.spring.boot.test.GraphQLResponse;
 import com.graphql.spring.boot.test.GraphQLTestError;
 import com.graphql.spring.boot.test.GraphQLTestTemplate;
 import com.parasoft.demoapp.controller.PageInfo;
+import com.parasoft.demoapp.defaultdata.ResetEntrance;
 import com.parasoft.demoapp.dto.ItemsDTO;
 import com.parasoft.demoapp.messages.AssetMessages;
-import com.parasoft.demoapp.defaultdata.ResetEntrance;
 import com.parasoft.demoapp.model.industry.ItemEntity;
 import com.parasoft.demoapp.model.industry.RegionType;
-import com.parasoft.demoapp.service.GlobalPreferencesService;
 import com.parasoft.demoapp.service.ItemService;
 import org.assertj.core.api.Condition;
 import org.assertj.core.data.Index;
-import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -65,34 +61,10 @@ public class ItemGraphQLDataFetcherTest {
     @Autowired
     private ItemService itemService;
 
-    @Autowired
-    private GlobalPreferencesService globalPreferencesService;
-
-    @Rule
-    public TestName testName = new TestName();
-
     @Before
     public void setUp() {
         graphQLTestTemplate.getHeaders().clear();
         resetEntrance.run();
-    }
-
-    @Before
-    public void conditionalBefore() {
-        if ("test_addNewItem_normal".equals(testName.getMethodName())) {
-            resetDatabase();
-        }
-    }
-
-    @After
-    public void conditionalAfter() {
-        if ("test_addNewItem_normal".equals(testName.getMethodName())) {
-            resetDatabase();
-        }
-    }
-
-    private void resetDatabase() {
-        globalPreferencesService.resetAllIndustriesDatabase();
     }
 
     @Test
@@ -567,7 +539,7 @@ public class ItemGraphQLDataFetcherTest {
     }
 
     @Test
-    public void test_addNewItem_withoutAuthorisation() throws IOException {
+    public void test_addNewItem_noAuthentication() throws IOException {
         ObjectNode variables = objectMapper.createObjectNode().putPOJO("itemsDTO",
                 new ItemsDTO("ten", "description", 1L, 10, null, LOCATION_1));
         GraphQLResponse response = graphQLTestTemplate
@@ -579,6 +551,44 @@ public class ItemGraphQLDataFetcherTest {
                 .hasOnlyOneElementSatisfying(error -> {
                     assertThat(error.getMessage()).isEqualTo(GraphQLTestErrorType.UNAUTHORIZED.toString());
                     assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+                })
+                .and()
+                .assertThatField(ADD_NEW_ITEM_DATA_JSON_PATH).isNull();
+    }
+
+    @Test
+    public void test_addNewItem_invalidOrNullDescriptionValue() throws IOException {
+        ObjectNode variables = objectMapper.createObjectNode().putPOJO("itemsDTO",
+                new ItemsDTO("ten", "", 1L, 10, null, LOCATION_1));
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(ADD_NEW_ITEM_GRAPHQL_RESOURCE, variables);
+        assertThat(response).isNotNull();
+        assertThat(response.isOk()).isTrue();
+        response.assertThatErrorsField().isNotNull()
+                .asListOf(GraphQLTestError.class)
+                .hasOnlyOneElementSatisfying(error -> {
+                    assertThat(error.getMessage()).isEqualTo(AssetMessages.DESCRIPTION_CANNOT_BE_BLANK);
+                    assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.BAD_REQUEST.value());
+                })
+                .and()
+                .assertThatField(ADD_NEW_ITEM_DATA_JSON_PATH).isNull();
+    }
+
+    @Test
+    public void test_addNewItem_invalidOrNegativeNumberInStockValue() throws IOException {
+        ObjectNode variables = objectMapper.createObjectNode().putPOJO("itemsDTO",
+                new ItemsDTO("ten", "name ten", 1L, -10, null, LOCATION_1));
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(ADD_NEW_ITEM_GRAPHQL_RESOURCE, variables);
+        assertThat(response).isNotNull();
+        assertThat(response.isOk()).isTrue();
+        response.assertThatErrorsField().isNotNull()
+                .asListOf(GraphQLTestError.class)
+                .hasOnlyOneElementSatisfying(error -> {
+                    assertThat(error.getMessage()).isEqualTo(AssetMessages.IN_STOCK_CANNOT_BE_A_NEGATIVE_NUMBER);
+                    assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.BAD_REQUEST.value());
                 })
                 .and()
                 .assertThatField(ADD_NEW_ITEM_DATA_JSON_PATH).isNull();
