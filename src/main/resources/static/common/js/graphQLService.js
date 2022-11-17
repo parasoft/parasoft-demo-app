@@ -93,8 +93,18 @@ angular
                     success(response.data.data.createOrder);
                 }, error);
             }
-            instance.getOrderByOrderNumber = function (variables, success, error) {
-                let requestBody = {"query": "query GetOrderByOrderNumber($orderNumber:String!){getOrderByOrderNumber(orderNumber:$orderNumber){orderNumber,status,reviewedByAPV,reviewedByPRCH,orderItems {name,description,image,quantity},region,location,orderImage,receiverId,eventId,eventNumber,comments}}", "variables": variables};
+            instance.getOrderByOrderNumber = function (variables, success, error, selectionSet) {
+                if(!selectionSet) {
+                    selectionSet = "{" +
+                        "id,orderNumber,requestedBy,status,reviewedByAPV,reviewedByPRCH,respondedBy," +
+                        "orderItems" +
+                        "{" +
+                            "id,name,description,image,itemId,quantity" +
+                        "}," +
+                        "region,location,orderImage,receiverId,eventId,eventNumber,submissionDate,approverReplyDate,comments" +
+                        "}";
+                }
+                let requestBody = {"query": "query GetOrderByOrderNumber($orderNumber:String!){getOrderByOrderNumber(orderNumber:$orderNumber)" + selectionSet + "}", "variables": variables};
                 makeCall(requestBody, function (response) {
                     success(response.data.data.getOrderByOrderNumber);
                 }, error)
@@ -108,6 +118,16 @@ angular
                         "{getItems(categoryId: $categoryId, regions: $regions, searchString: $searchString, page: $page, size: $size, sort: $sort)" + selectionSet + "}", "variables": variables};
                 makeCall(requestBody, function (response) {
                     success(response.data.data.getItems);
+                }, error);
+            }
+            //cartItems
+            instance.getCartItems = function(success, error, selectionSet) {
+                if (!selectionSet) {
+                    selectionSet = "{id, userId, itemId, name, description, image, realInStock, quantity}"
+                }
+                let requestBody = {"query": "query GetCartItems{getCartItems" + selectionSet + "}"}
+                makeCall(requestBody, function(response) {
+                    success(response.data.data.getCartItems);
                 }, error);
             }
             // customized call

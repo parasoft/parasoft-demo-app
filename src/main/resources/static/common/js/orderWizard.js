@@ -69,26 +69,35 @@ app.controller('orderWizardController', function($scope, $rootScope, $http, $fil
 			$scope.isCampaignClickable = true;
 
 			//Get cart items from database to avoid the changes of items in other pages
-			$http({
-		        method: 'GET',
-		        url: '/proxy/v1/cartItems',
-		    }).then(function(result) {
-		    	var cartItems = result.data.data;
-		    	var totalAmount = 0;
+            let success = (data) => {
+                var totalAmount = 0;
+                for(var i = 0; i < data.length; i++){
+                    //Calculate the total amount of cart items
+                    totalAmount += data[i].quantity;
+            }
+                $scope.cartItems = data;
+                $scope.totalAmount = totalAmount;
+            }
+			let error = (data, endpointType) => {
+			    console.info(data);
+                displayLoadError(data,$rootScope,$filter,$http,true,endpointType);
+            }
 
-		    	for(var i = 0; i < cartItems.length; i++){
-					//Calculate the total amount of cart items
-					totalAmount += cartItems[i].quantity;
-				}
-
-				$scope.cartItems = cartItems;
-				$scope.totalAmount = totalAmount;
-		    }).catch(function(result) {
-		        console.info(result);
-		        displayLoadError(result,$rootScope,$filter,$http,true,'cart');
-		    });
-		}
-	}
+            if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+                let selectionSet = "{name, image, description, quantity}";
+                graphQLService.getCartItems(success, (data) => {error(data, "graphQL")}, selectionSet);
+            } else {
+                $http({
+                    method: 'GET',
+                    url: '/proxy/v1/cartItems',
+                }).then(function(result) {
+                    success(result.data.data);
+                }).catch(function(result) {
+                    error(result, "cart");
+                });
+            }
+        }
+    }
 
 	//Show order delivery position
 	$scope.showPosition = function(){

@@ -129,6 +129,26 @@ public class ItemGraphQLDataFetcher {
         };
     }
 
+    public DataFetcher<String> deleteItemByName() {
+        return dataFetchingEnvironment -> {
+            try {
+                Map<String, Object> uriVariables = new HashMap<>();
+                String itemName = dataFetchingEnvironment.getArgument("itemName");
+                if (itemName != null && !itemName.isEmpty()) {
+                    uriVariables.put("itemName", itemName);
+                }
+                ResponseEntity<ResponseResult<String>> entity =
+                        restTemplate.exchange(itemBaseUrl + "/name/{itemName}",
+                                HttpMethod.DELETE,
+                                new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
+                                new ParameterizedTypeReference<ResponseResult<String>>() {}, uriVariables);
+                return Objects.requireNonNull(entity.getBody()).getData();
+            } catch (Exception e) {
+                throw RestTemplateUtil.convertException(e);
+            }
+        };
+    }
+
     public DataFetcher<ItemEntity> getItemByName() {
         return dataFetchingEnvironment -> {
             try {
@@ -143,6 +163,22 @@ public class ItemGraphQLDataFetcher {
                                 new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
                                 new ParameterizedTypeReference<ResponseResult<ItemEntity>>() {},
                                 uriVariables);
+                return Objects.requireNonNull(entity.getBody()).getData();
+            } catch (Exception e) {
+                throw RestTemplateUtil.convertException(e);
+            }
+        };
+    }
+
+    public DataFetcher<ItemEntity> addNewItem() {
+        return dataFetchingEnvironment -> {
+            try {
+                ResponseEntity<ResponseResult<ItemEntity>> entity =
+                        restTemplate.exchange(itemBaseUrl,
+                                HttpMethod.POST,
+                                new HttpEntity<>(dataFetchingEnvironment.getArgument("itemsDTO"),
+                                        RestTemplateUtil.createHeaders(httpRequest)),
+                                new ParameterizedTypeReference<ResponseResult<ItemEntity>>() {});
                 return Objects.requireNonNull(entity.getBody()).getData();
             } catch (Exception e) {
                 throw RestTemplateUtil.convertException(e);

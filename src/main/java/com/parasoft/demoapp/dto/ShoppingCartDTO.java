@@ -12,4 +12,5 @@ public class ShoppingCartDTO {
 	private Long itemId;
 	
 	private Integer itemQty;
+
 }

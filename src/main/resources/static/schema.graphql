@@ -25,6 +25,8 @@ type Mutation {
     createOrder(orderDTO: OrderDTO!): Order
     #item
     updateItemInStockByItemId(itemId: ID!, newInStock: Int!): Item
+    deleteItemByName(itemName: String!): String
+    addNewItem(itemsDTO: ItemsDTO!): Item
     # cartItem
     addItemInCart(shoppingCartDTO: ShoppingCartDTO!): CartItemEntity
 }
@@ -136,6 +138,14 @@ type ItemPageInfo {
     numberOfElements: Int
     sort: String
     content: [Item]
+}
+input ItemsDTO {
+    name: String!
+    description: String!
+    categoryId: Int!
+    inStock: Int!
+    imagePath: String
+    region: RegionType!
 }
 #cartItems
 type CartItemEntity {

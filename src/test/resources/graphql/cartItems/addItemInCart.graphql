@@ -1,4 +1,4 @@
-mutation addItemInCart($shoppingCartDTO: ShoppingCartDTO!) {
+mutation AddItemInCart($shoppingCartDTO: ShoppingCartDTO!) {
     addItemInCart(shoppingCartDTO: $shoppingCartDTO) {
         quantity
     }
