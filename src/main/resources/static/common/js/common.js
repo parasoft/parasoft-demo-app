@@ -666,8 +666,6 @@ function connectAndSubscribeMQ(role, $http, $rootScope, $filter, mqConsumeCallba
                             toastr.success(orderProcessMsg, '', {timeOut: 4000});
                         }
                         if(mqProduceCallback){mqProduceCallback();}
-                        // update the number on the icon
-                        getUnreviewedAmount($http,$rootScope,$filter);
                         $rootScope.totalAmount = 0;
                     }
                 }else if(role === ROLE_APPROVER){ // approver consume this message from this topic
