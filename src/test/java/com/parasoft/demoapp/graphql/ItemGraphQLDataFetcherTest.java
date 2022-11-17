@@ -9,7 +9,6 @@ import com.parasoft.demoapp.controller.PageInfo;
 import com.parasoft.demoapp.defaultdata.ResetEntrance;
 import com.parasoft.demoapp.dto.ItemsDTO;
 import com.parasoft.demoapp.messages.AssetMessages;
-import com.parasoft.demoapp.defaultdata.ResetEntrance;
 import com.parasoft.demoapp.model.industry.ItemEntity;
 import com.parasoft.demoapp.model.industry.RegionType;
 import com.parasoft.demoapp.service.ItemService;
@@ -741,7 +740,7 @@ public class ItemGraphQLDataFetcherTest {
                 .and()
                 .assertThatField(DELETE_ITEM_BY_ITEM_ID_DATA_JSON_PATH)
                 .as(Long.class)
-                .equals(itemId);
+                .isEqualTo(itemId);
     }
 
     @Test
@@ -819,9 +818,7 @@ public class ItemGraphQLDataFetcherTest {
 
         response.assertThatErrorsField().isNotNull()
                 .asListOf(GraphQLTestError.class)
-                .hasOnlyOneElementSatisfying(error -> {
-                    assertThat(error.getExtensions().get("classification")).isEqualTo("ValidationError");
-                });
+                .hasOnlyOneElementSatisfying(error -> assertThat(error.getExtensions().get("classification")).isEqualTo("ValidationError"));
     }
 
     @Test
