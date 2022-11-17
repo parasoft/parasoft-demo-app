@@ -59,6 +59,9 @@ public class ItemGraphQLDataFetcherTest {
     private static final String DELETE_ITEM_BY_NAME_GRAPHQL_RESOURCE = "graphql/items/deleteItemByName.graphql";
     private static final String DELETE_ITEM_BY_NAME_DATA_JSON_PATH = DATA_PATH + ".deleteItemByName";
 
+    private static final String DELETE_ITEM_BY_ITEM_ID_GRAPHQL_RESOURCE = "graphql/items/deleteItemByItemId.graphql";
+    private static final String DELETE_ITEM_BY_ITEM_ID_DATA_JSON_PATH = DATA_PATH + ".deleteItemByItemId";
+
     @Autowired
     private GraphQLTestTemplate graphQLTestTemplate;
 
@@ -66,7 +69,7 @@ public class ItemGraphQLDataFetcherTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    ResetEntrance resetEntrance;
+    private ResetEntrance resetEntrance;
 
     @Autowired
     private ItemService itemService;
@@ -719,5 +722,144 @@ public class ItemGraphQLDataFetcherTest {
                 })
                 .and()
                 .assertThatField(ADD_NEW_ITEM_DATA_JSON_PATH).isNull();
+    }
+
+    @Test
+    public void test_deleteItemByItemId_normal() throws IOException {
+        Long itemId = 1L;
+        ObjectNode variables = objectMapper.createObjectNode();
+        variables.put("itemId", itemId);
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(DELETE_ITEM_BY_ITEM_ID_GRAPHQL_RESOURCE, variables);
+        assertThat(response).isNotNull();
+        assertThat(response.isOk()).isTrue();
+
+        response.assertThatNoErrorsArePresent()
+                .assertThatDataField().isNotNull()
+                .and()
+                .assertThatField(DELETE_ITEM_BY_ITEM_ID_DATA_JSON_PATH)
+                .as(Long.class)
+                .isEqualTo(itemId);
+    }
+
+    @Test
+    public void test_deleteItemByItemId_notFound() throws IOException {
+        Long itemId = 0L;
+        ObjectNode variables = objectMapper.createObjectNode();
+        variables.put("itemId", itemId);
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(DELETE_ITEM_BY_ITEM_ID_GRAPHQL_RESOURCE, variables);
+        assertThat(response).isNotNull();
+        assertThat(response.isOk()).isTrue();
+
+        response.assertThatErrorsField().isNotNull()
+                .asListOf(GraphQLTestError.class)
+                .hasOnlyOneElementSatisfying(error -> {
+                    assertThat(error.getMessage()).isEqualTo("Item with ID 0 is not found.");
+                    assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.NOT_FOUND.value());
+                })
+                .and()
+                .assertThatField(DELETE_ITEM_BY_ITEM_ID_DATA_JSON_PATH).isNull();
+    }
+
+    @Test
+    public void test_deleteItemByItemId_notAuthorized() throws IOException {
+        Long itemId = 0L;
+        ObjectNode variables = objectMapper.createObjectNode();
+        variables.put("itemId", itemId);
+        GraphQLResponse response = graphQLTestTemplate
+                .perform(DELETE_ITEM_BY_ITEM_ID_GRAPHQL_RESOURCE, variables);
+        assertThat(response).isNotNull();
+        assertThat(response.isOk()).isTrue();
+
+        response.assertThatErrorsField().isNotNull()
+                .asListOf(GraphQLTestError.class)
+                .hasOnlyOneElementSatisfying(error -> {
+                    assertThat(error.getMessage()).isEqualTo("Current user is not authorized.");
+                    assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+                })
+                .and()
+                .assertThatField(DELETE_ITEM_BY_ITEM_ID_DATA_JSON_PATH).isNull();
+    }
+
+    @Test
+    public void test_deleteItemByItemId_incorrectAuthorized() throws IOException {
+        Long itemId = 0L;
+        ObjectNode variables = objectMapper.createObjectNode();
+        variables.put("itemId", itemId);
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, "invalidPassword")
+                .perform(DELETE_ITEM_BY_ITEM_ID_GRAPHQL_RESOURCE, variables);
+        assertThat(response).isNotNull();
+        assertThat(response.isOk()).isTrue();
+
+        response.assertThatErrorsField().isNotNull()
+                .asListOf(GraphQLTestError.class)
+                .hasOnlyOneElementSatisfying(error -> {
+                    assertThat(error.getMessage()).isEqualTo("Current user is not authorized.");
+                    assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+                })
+                .and()
+                .assertThatField(DELETE_ITEM_BY_ITEM_ID_DATA_JSON_PATH).isNull();
+    }
+
+    @Test
+    public void test_deleteItemByItemId_nullItemId() throws IOException {
+        Long itemId = null;
+        ObjectNode variables = objectMapper.createObjectNode();
+        variables.put("itemId", itemId);
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(DELETE_ITEM_BY_ITEM_ID_GRAPHQL_RESOURCE, variables);
+        assertThat(response).isNotNull();
+        assertThat(response.isOk()).isTrue();
+
+        response.assertThatErrorsField().isNotNull()
+                .asListOf(GraphQLTestError.class)
+                .hasOnlyOneElementSatisfying(error -> assertThat(error.getExtensions().get("classification")).isEqualTo("ValidationError"));
+    }
+
+    @Test
+    public void test_deleteItemByItemId_emptyItemId() throws IOException {
+        String itemId = "  ";
+        ObjectNode variables = objectMapper.createObjectNode();
+        variables.put("itemId", itemId);
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(DELETE_ITEM_BY_ITEM_ID_GRAPHQL_RESOURCE, variables);
+        assertThat(response).isNotNull();
+        assertThat(response.isOk()).isTrue();
+
+        response.assertThatErrorsField().isNotNull()
+                .asListOf(GraphQLTestError.class)
+                .hasOnlyOneElementSatisfying(error -> {
+                    assertThat(error.getMessage()).isEqualTo("Map has no value for 'itemId'");
+                    assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                })
+                .and()
+                .assertThatField(DELETE_ITEM_BY_ITEM_ID_DATA_JSON_PATH).isNull();
+    }
+
+    @Test
+    public void test_deleteItemByItemId_invalidItemId() throws IOException {
+        String itemId = "invalidId";
+        ObjectNode variables = objectMapper.createObjectNode();
+        variables.put("itemId", itemId);
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(DELETE_ITEM_BY_ITEM_ID_GRAPHQL_RESOURCE, variables);
+        assertThat(response).isNotNull();
+        assertThat(response.isOk()).isTrue();
+
+        response.assertThatErrorsField().isNotNull()
+                .asListOf(GraphQLTestError.class)
+                .hasOnlyOneElementSatisfying(error -> {
+                    assertThat(error.getMessage()).isEqualTo("Failed to convert value of type 'java.lang.String' to required type 'java.lang.Long'; nested exception is java.lang.NumberFormatException: For input string: \"invalidId\"");
+                    assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                })
+                .and()
+                .assertThatField(DELETE_ITEM_BY_ITEM_ID_DATA_JSON_PATH).isNull();
     }
 }
