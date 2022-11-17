@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.enums.ParameterStyle;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -61,14 +60,13 @@ public class ShoppingCartController {
 	@PostMapping
 	@ResponseBody
 	public ResponseResult<CartItemEntity> addItemInCart(
-			Authentication auth,  @RequestBody ShoppingCartDTO shoppingCartDto)
+			Authentication auth, @Parameter(hidden = true)  @RequestBody ShoppingCartDTO shoppingCartDto)
 			throws ItemNotFoundException, ParameterException, InventoryNotFoundException {
 
 		ResponseResult<CartItemEntity> response = ResponseResult.getInstance(ResponseResult.STATUS_OK,
 				ResponseResult.MESSAGE_OK);
 
 		Long currentUserId = AuthenticationUtil.getUserIdInAuthentication(auth);
-		System.out.println(shoppingCartDto);
 		response.setData(
 				shoppingCartService.addCartItemInShoppingCart(
 						currentUserId, shoppingCartDto.getItemId(), shoppingCartDto.getItemQty()));

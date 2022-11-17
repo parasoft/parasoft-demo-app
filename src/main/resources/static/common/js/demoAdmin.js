@@ -66,7 +66,6 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
     		demo.ITEMS = "";
     		demo.LABELS = "";
     		demo.isShowImgModal = false;
-    		$rootScope.footerHeight = {};
     	}
     }
 
@@ -111,54 +110,58 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
         }
     }
 
-    function getAllItems(){
-        let failToGetData = (data, endpointType) => {
-            console.info(data);
-            displayLoadError(data,$rootScope,$filter,$http,true,endpointType);
+    function getAllItems() {
+        let getCategoriesSuccess = (data) => {
+            demo.modalCategories = data.content;
+            $.each(demo.modalCategories,function(i, category) {
+                if (!demo.categoryMap) {
+                    demo.categoryMap = new Map();
+                }
+                demo.categoryMap.set(category.id,category.name);
+            }.bind(this));
         };
 
-        let getItemsSuccessfully = (data) => {
-            items = data.content;
-            demo.items = items;
+        let getItemsError = (data, endpointType) => {
+            console.info(data);
+            displayLoadError(data, $rootScope, $filter, $http, true, endpointType);
+        };
 
-            //Define the height of footer in 'items' tab
-            if(items.length > 3){
-                $rootScope.footerHeight = {
-                    "top" : (items.length - 3) * 41 + 757 + "px"
-                };
-            }else{
-                $rootScope.footerHeight = {
-                    "top" : "874px"
-                };
-            }
+        let getItemsSuccess = (dataItems, dataCategories, isGraphQL) => {
+            demo.items = dataItems.content;
 
             //Get category name and store in a map
-            $http({
-                method: 'GET',
-                url: '/proxy/v1/assets/categories',
-            }).then(function(result) {
-                var categories = result.data.data.content;
-                var map = new Map();
-                $.each(categories,function(i,category){
-                    map.set(category.id,category.name);
+            if (isGraphQL) {
+                getCategoriesSuccess(dataCategories);
+            } else {
+                $http({
+                    method: 'GET',
+                    url: '/proxy/v1/assets/categories',
+                }).then(function(result) {
+                    getCategoriesSuccess(result.data.data);
+                }).catch(function(result) {
+                    getItemsError(result, 'categories');
                 });
-                demo.modalCategories = categories;
-                demo.categoryMap = map;
-            }).catch(function(result) {
-                failToGetData(result, 'categories');
-            });
+            }
         };
 
         if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
-            graphQLService.getItems(null, getItemsSuccessfully, (data) => {failToGetData(data, "graphQL")});
+            graphQLService.makeGraphQLCall(
+                {"query": "query GetItemsCombinedCategories{getCategories{content{id,name}},getItems{content{id,name,description,inStock,image,region,categoryId}}}"},
+                function(response) {
+                    getItemsSuccess(response.data.data.getItems, response.data.data.getCategories, true);
+                },
+                function(response) {
+                    getItemsError(response, "graphQL")
+                }
+            );
         } else {
             $http({
                 method: 'GET',
                 url: '/proxy/v1/assets/items',
-            }).then(function(result) {
-                getItemsSuccessfully(result.data.data);
-            }).catch(function (result) {
-                failToGetData(result, "items");
+            }).then(function(response) {
+                getItemsSuccess(response.data.data);
+            }).catch(function (response) {
+                getItemsError(response, "items");
             });
         }
     }
@@ -167,16 +170,6 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
         let success = (data) => {
             categories = data.content;
             demo.categories = categories;
-            //Define the height of footer in 'categories' tab
-            if (categories.length > 3) {
-                $rootScope.footerHeight = {
-                    "top" : (categories.length - 3) * 40 + 757 + "px"
-                };
-            } else {
-                $rootScope.footerHeight = {
-                    "top" : "874px"
-                };
-            }
         };
         let error = (data, endpointType) => {
             console.info(data);
@@ -214,13 +207,8 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
     		method: 'GET',
     		url: '/v1/labels/overrided?language='+$rootScope.lang,
     	}).then(function(result) {
-    		var overridedLabels = result.data.data;
-    		demo.overridedLabels = overridedLabels;
+    		demo.overridedLabels = result.data.data;
             demo.useLabelsOverrided = demo.overridedLabels.labelsOverrided;
-            var length = Object.keys(overridedLabels.labelPairs).length;
-            $rootScope.footerHeight = {
-    	    		"top" : "3290px"
-	    	};
     	}).catch(function(result) {
     		console.info(result);
     	});
@@ -1070,21 +1058,32 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 	    }
 
 		function addNewCategory(){
-			$http({
-	            method: 'POST',
-	            url: '/proxy/v1/assets/categories/',
-	            data: angular.element('#category_form').serializeJSON(),
-	            headers : {'Content-Type': 'application/json'}
-	        }).then(function(response) {
-	        	 toastr.success($filter('translate')("ADD_CATEGORY_SUCCESS"));
-	        	 demo.categoryModal.showErrorBox = false;
-	        	 getAllCategories(); // refresh all categories
-	        	 $('#category_modal').modal('hide');
-	        }, function error(response) {
-	        	handleErrorMessageForCategoryEdit(response);
-	        }).catch(function(response) {
-	        	handleErrorMessageForCategoryEdit(response);
-	        });
+			let success = (data) => {
+				toastr.success($filter('translate')("ADD_CATEGORY_SUCCESS"));
+	        	demo.categoryModal.showErrorBox = false;
+	        	getAllCategories(); // refresh all categories
+	        	$('#category_modal').modal('hide');
+			}
+			let error = (data) => {
+				handleErrorMessageForCategoryEdit(data);
+			}
+			let formData = angular.element('#category_form').serializeJSON();
+			if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+				graphQLService.addCategory(formData, success, (data) => {error(data)}, '{id}');
+			} else {
+				$http({
+					method: 'POST',
+					url: '/proxy/v1/assets/categories/',
+					data: formData,
+					headers : {'Content-Type': 'application/json'}
+				}).then(function(response) {
+					success(response.data.data);
+				}, function(response) {
+					error(response);
+				}).catch(function(response) {
+					error(response);
+				});
+			}
 		}
 
 		function updateCategory(categoryId){

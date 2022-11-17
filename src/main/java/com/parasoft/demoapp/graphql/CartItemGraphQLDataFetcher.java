@@ -23,11 +23,11 @@ public class CartItemGraphQLDataFetcher {
 
     private final RestTemplate restTemplate;
 
-    private final HttpServletRequest httpRequest;
+    private final HttpServletRequest httpServletRequest;
 
     public CartItemGraphQLDataFetcher(RestTemplate restTemplate, HttpServletRequest httpServletRequest, WebConfig webConfig) {
         this.restTemplate = restTemplate;
-        this.httpRequest = httpServletRequest;
+        this.httpServletRequest = httpServletRequest;
         this.cartItemBaseUrl = HOST + webConfig.getServerPort() + "/v1/cartItems";
     }
 
@@ -37,7 +37,7 @@ public class CartItemGraphQLDataFetcher {
                 ResponseEntity<ResponseResult<List<CartItemEntity>>> entity =
                         restTemplate.exchange(cartItemBaseUrl,
                             HttpMethod.GET,
-                            new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
+                            new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpServletRequest)),
                             new ParameterizedTypeReference<ResponseResult<List<CartItemEntity>>>() {});
                 return Objects.requireNonNull(entity.getBody()).getData();
             } catch (Exception e) {
@@ -53,7 +53,7 @@ public class CartItemGraphQLDataFetcher {
                         restTemplate.exchange(cartItemBaseUrl,
                                 HttpMethod.POST,
                                 new HttpEntity<>(dataFetchingEnvironment.getArgument("shoppingCartDTO"),
-                                        RestTemplateUtil.createHeaders(httpRequest)),
+                                        RestTemplateUtil.createHeaders(httpServletRequest)),
                                 new ParameterizedTypeReference<ResponseResult<CartItemEntity>>() {});
                 return Objects.requireNonNull(entity.getBody()).getData();
             } catch (Exception e) {
