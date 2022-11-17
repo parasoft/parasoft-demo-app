@@ -25,6 +25,7 @@ type Mutation {
     createOrder(orderDTO: OrderDTO!): Order
     #item
     updateItemInStockByItemId(itemId: ID!, newInStock: Int!): Item
+    deleteItemByName(itemName: String!): String
     addNewItem(itemsDTO: ItemsDTO!): Item
 }
 
