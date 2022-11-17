@@ -15,7 +15,7 @@ type Query {
     getItemByItemId(itemId: Long!): Item
     getItemByName(itemName: String!): Item
     # cartItem
-    getCartItems: [CartItemEntity]
+    getCartItems: [CartItem]
 }
 type Mutation {
     # category
@@ -130,7 +130,7 @@ type Item {
     categoryId: Long
 }
 type ItemPageInfo {
-    totalElements: Int
+    totalElements: Long
     totalPages: Int
     size: Int
     number: Int
@@ -147,7 +147,7 @@ input ItemsDTO {
     region: RegionType!
 }
 #cartItems
-type CartItemEntity {
+type CartItem {
     id: Long
     userId: Long
     itemId: Long

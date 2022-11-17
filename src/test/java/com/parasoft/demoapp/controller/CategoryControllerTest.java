@@ -176,7 +176,7 @@ public class CategoryControllerTest {
      * @see CategoryController#getCategories(String, Pageable) 
      */
     @Test
-    public void testGetCategories_normal() throws Throwable {
+    public void testGetCategories_normal() {
         // Given
         Page<CategoryEntity> page = new PageImpl<>(new ArrayList<>());
         String searchString = "";
