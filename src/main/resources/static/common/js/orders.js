@@ -108,10 +108,17 @@ app.controller('orderHistoryController', function($rootScope, $http, $filter, gr
         };
         let params = {"orderNumber": orderNumber};
         if (CURRENT_WEB_SERVICE_MODE === 'GraphQL') {
-            let queryField = "reviewedByPRCH";
+            let selectionSet = "{" +
+                "orderNumber,requestedBy,status,reviewedByPRCH," +
+                "orderItems" +
+                "{" +
+                    "name,description,image,quantity" +
+                "}," +
+                "region,location,orderImage,receiverId,eventId,eventNumber,comments" +
+                "}";
             graphQLService.getOrderByOrderNumber(params, success, (data) => {
                 error(data, "graphQL");
-            }, queryField);
+            }, selectionSet);
         } else {
             $http({
                 method: 'GET',
