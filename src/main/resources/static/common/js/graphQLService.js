@@ -120,6 +120,16 @@ angular
                     success(response.data.data.getItems);
                 }, error);
             }
+            //cartItems
+            instance.getCartItems = function(success, error, selectionSet) {
+                if (!selectionSet) {
+                    selectionSet = "{id, userId, itemId, name, description, image, realInStock, quantity}"
+                }
+                let requestBody = {"query": "query GetCartItems{getCartItems" + selectionSet + "}"}
+                makeCall(requestBody, function(response) {
+                    success(response.data.data.getCartItems);
+                }, error);
+            }
             // customized call
             instance.makeGraphQLCall = makeCall;
             return instance;

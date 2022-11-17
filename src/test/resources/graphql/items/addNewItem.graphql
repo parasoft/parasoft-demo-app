@@ -1,0 +1,12 @@
+mutation AddNewItem($itemsDTO: ItemsDTO!) {
+    addNewItem(itemsDTO: $itemsDTO) {
+        id
+        name
+        description
+        inStock
+        image
+        region
+        lastAccessedDate
+        categoryId
+    }
+}
