@@ -11,6 +11,8 @@ type Query {
     getOrderByOrderNumber(orderNumber: String!): Order
     #item
     getItems(categoryId: Int, regions: [RegionType], searchString: String, page: Int, size: Int, sort: [String]): ItemPageInfo
+    getItemByItemId(itemId: ID!): Item
+    getItemByName(itemName: String!): Item
     # cartItem
     getCartItems: [CartItemEntity]
 }
@@ -18,6 +20,7 @@ type Mutation {
     # category
     addCategory(categoryDTO: CategoryDTO!): Category
     deleteCategoryById(categoryId: ID!): Int
+    updateCategory(categoryId: ID!, categoryDto: CategoryDTO!): Category
     # order
     createOrder(orderDTO: OrderDTO!): Order
     #item
@@ -121,7 +124,7 @@ type Item {
     image: String
     region: RegionType
     lastAccessedDate: DateTime
-    categoryId: Int
+    categoryId: ID
 }
 type ItemPageInfo {
     totalElements: Int

@@ -73,6 +73,8 @@ public class GraphQLProvider {
         builder.type("Mutation", typeWriting -> typeWriting.dataFetcher("deleteCategoryById", categoryDataFetcher.deleteCategoryById()));
         builder.type("Mutation", typeWiring ->
                 typeWiring.dataFetcher("addCategory", categoryDataFetcher.addCategory()));
+        builder.type("Mutation", typeWriting ->
+                typeWriting.dataFetcher("updateCategory", categoryDataFetcher.updateCategory()));
     }
 
     private void locationTypeWiring(RuntimeWiring.Builder builder) {
@@ -87,7 +89,10 @@ public class GraphQLProvider {
 
     private void itemTypeWiring(RuntimeWiring.Builder builder) {
         builder.type("Query", typeWriting -> typeWriting.dataFetcher("getItems", itemDataFetcher.getItems()));
+        builder.type("Query", typeWiring ->
+                typeWiring.dataFetcher("getItemByItemId", itemDataFetcher.getItemByItemId()));
         builder.type("Mutation", typeWriting -> typeWriting.dataFetcher("updateItemInStockByItemId", itemDataFetcher.updateItemInStockByItemId()));
+        builder.type("Query", typeWriting -> typeWriting.dataFetcher("getItemByName", itemDataFetcher.getItemByName()));
     }
 
     private void cartItemTypeWiring(RuntimeWiring.Builder builder) {
