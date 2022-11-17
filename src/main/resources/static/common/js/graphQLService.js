@@ -75,8 +75,12 @@ angular
                     success(response.data.data.createOrder);
                 }, error);
             }
-            instance.getOrderByOrderNumber = function (variables, success, error) {
-                let requestBody = {"query": "query($orderNumber:String!){getOrderByOrderNumber(orderNumber:$orderNumber){orderNumber,status,reviewedByAPV,reviewedByPRCH,orderItems {name,description,image,quantity},region,location,orderImage,receiverId,eventId,eventNumber,comments}}", "variables": variables};
+            instance.getOrderByOrderNumber = function (variables, success, error, queryField) {
+                let requestBody = {"query": "query($orderNumber:String!){" +
+                        "getOrderByOrderNumber(orderNumber:$orderNumber){" +
+                            "orderNumber,status,orderItems {name,description,image,quantity},region,location,orderImage,receiverId,eventId,eventNumber,comments," + queryField + "}" +
+                        "}",
+                        "variables": variables};
                 makeCall(requestBody, function (response) {
                     success(response.data.data.getOrderByOrderNumber);
                 }, error)
