@@ -122,7 +122,7 @@ function initHeaderController(app){
 }
 
 function initRequisitionBarController(app){
-    app.controller('requisitionBarController', function($rootScope, $http, $filter, $location) {
+    app.controller('requisitionBarController', function($rootScope, $http, $filter, $location, graphQLService) {
         var req = this;
         //Get current industry
         var industry = $rootScope.industry;
@@ -246,18 +246,28 @@ function initRequisitionBarController(app){
             //Update the data in item detail page
             if(Number(itemId) === Number(currentItemId)){
                 //Get the number of item in stock
-                $http({
-                    method: 'GET',
-                    url: '/proxy/v1/assets/items/' + itemId,
-                }).then(function(result) {
-                    var item = result.data.data;
-                    var quantity = 0;
-                    var inventory = item.inStock;
-                    $rootScope.itemInventory = inventory;
-                    checkInventoryInItemDetail(inventory,quantity);
-                }).catch(function(result) {
-                    console.info(result);
-                });
+                let success = (data) => {
+                    $rootScope.itemInventory = data.inStock;
+                    checkInventoryInItemDetail(data.inStock,0);
+                };
+                let error = (data) => {
+                    console.info(data);
+                }
+                let params = {"itemId": itemId};
+
+                if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+                    let selectionSet = "{inStock}"
+                    graphQLService.getItemByItemId(params, success, (data) => {error(data, "graphQL")}, selectionSet);
+                } else {
+                    $http({
+                        method: 'GET',
+                        url: '/proxy/v1/assets/items/' + itemId,
+                    }).then(function(result) {
+                        success(result.data.data);
+                    }).catch(function(result) {
+                        error(result, 'items')
+                    });
+                }
             }
         }
 
