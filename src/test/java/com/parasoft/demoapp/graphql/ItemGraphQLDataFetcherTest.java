@@ -232,11 +232,12 @@ public class ItemGraphQLDataFetcherTest {
         response.assertThatErrorsField().isNotNull()
                 .asListOf(GraphQLTestError.class)
                 .hasOnlyOneElementSatisfying(error -> {
-                    assertThat(error.getMessage()).isEqualTo("Failed to convert value of type 'java.lang.String' to required type 'java.lang.Long'; nested exception is java.lang.NumberFormatException: For input string: \"notNumber\"");
-                    assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                    assertThat(error.getMessage()).isEqualTo("Variable 'itemId' has an invalid value: Expected type 'Long' but was 'String'.");
+                    assertThat(error.getExtensions().get("classification")).isEqualTo("ValidationError");
+                    assertThat(error.getExtensions().get("statusCode")).isNull();
                 })
                 .and()
-                .assertThatField(GET_ITEM_BY_ITEM_ID_DATA_JSON_PATH).isNull();
+                .assertThatField(GET_ITEM_BY_ITEM_ID_DATA_JSON_PATH).isNotPresent();
     }
 
     @Test
@@ -250,25 +251,6 @@ public class ItemGraphQLDataFetcherTest {
         response.assertThatErrorsField().isNotNull()
                 .asListOf(GraphQLTestError.class)
                 .hasOnlyOneElementSatisfying(error -> assertThat(error.getExtensions().get("classification")).isEqualTo("ValidationError"));
-    }
-
-    @Test
-    public void getItemByItemId_emptyItemId() throws Throwable {
-        String itemId = "";
-        ObjectNode variable = objectMapper.createObjectNode();
-        variable.put("itemId", itemId);
-        GraphQLResponse response = graphQLTestTemplate
-                .perform(GET_ITEM_BY_ITEM_ID_GRAPHQL_RESOURCE, variable);
-        assertThat(response).isNotNull();
-        assertThat(response.isOk()).isTrue();
-        response.assertThatErrorsField().isNotNull()
-                .asListOf(GraphQLTestError.class)
-                .hasOnlyOneElementSatisfying(error -> {
-                    assertThat(error.getMessage()).isEqualTo("Map has no value for 'itemId'");
-                    assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
-                })
-                .and()
-                .assertThatField(GET_ITEM_BY_ITEM_ID_DATA_JSON_PATH).isNull();
     }
 
     private ObjectNode getVariablesForUpdateItemInStockByItemId() {
@@ -393,7 +375,7 @@ public class ItemGraphQLDataFetcherTest {
     @Test
     public void test_getItemByName_invalidOrNullItemNameValue() throws IOException {
         ObjectNode variables = objectMapper.createObjectNode();
-        variables.put("itemName", "");
+        variables.put("itemName", " ");
         GraphQLResponse response = graphQLTestTemplate
                 .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
                 .perform(GET_ITEM_BY_NAME_GRAPHQL_RESOURCE, variables);
@@ -402,8 +384,8 @@ public class ItemGraphQLDataFetcherTest {
         response.assertThatErrorsField().isNotNull()
                 .asListOf(GraphQLTestError.class)
                 .hasOnlyOneElementSatisfying(error -> {
-                    assertThat(error.getMessage()).isEqualTo("Map has no value for 'itemName'");
-                    assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                    assertThat(error.getMessage()).isEqualTo("Item name cannot be an empty string(null, '' or '  ').");
+                    assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.BAD_REQUEST.value());
                 })
                 .and()
                 .assertThatField(GET_ITEM_BY_NAME_DATA_JSON_PATH).isNull();

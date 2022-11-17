@@ -138,8 +138,16 @@ public class OrderGraphQLDataFetcherTest {
         GraphQLResponse graphQLResponse = graphQLTestTemplate
                 .withBasicAuth(purchaser.getUsername(), purchaser.getPassword())
                 .perform(GET_ORDER_BY_ORDER_NUMBER_GRAPHQL_RESOURCE, variable);
-
-        assertErrorForGetOrderByOrderNumber(graphQLResponse, HttpStatus.INTERNAL_SERVER_ERROR, "Map has no value for 'orderNumber'");
+        assertThat(graphQLResponse).isNotNull();
+        assertThat(graphQLResponse.isOk()).isTrue();
+        graphQLResponse.assertThatErrorsField().isNotNull()
+                .asListOf(GraphQLTestError.class)
+                .hasOnlyOneElementSatisfying(error -> {
+                    assertThat(error.getMessage()).isEqualTo("Order number should not be blank(null, '' or '  ').");
+                    assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.BAD_REQUEST.value());
+                })
+                .and()
+                .assertThatField(GET_ORDER_BY_ORDER_NUMBER_DATA_JSON_PATH).isNull();
     }
 
     @Test
