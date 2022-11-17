@@ -126,7 +126,7 @@ public class CartItemGraphQLDataFetcherTest {
         final Long itemId = 1L;
         final Integer itemQty = 2;
         ObjectNode variables = objectMapper.createObjectNode();
-        variables.set("shoppingCartDTO", objectMapper.valueToTree(createShoppingCartDTO(itemId, itemQty)));
+        variables.set("shoppingCartDTO", objectMapper.valueToTree(new ShoppingCartDTO(itemId, itemQty)));
         GraphQLResponse response = graphQLTestTemplate
                 .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
                 .perform(ADD_ITEM_IN_CART_GRAPHQL_RESOURCE, variables);
@@ -144,7 +144,7 @@ public class CartItemGraphQLDataFetcherTest {
         final Long itemId = 1L;
         final Integer itemQty = 100;
         ObjectNode variables = objectMapper.createObjectNode();
-        variables.set("shoppingCartDTO", objectMapper.valueToTree(createShoppingCartDTO(itemId, itemQty)));
+        variables.set("shoppingCartDTO", objectMapper.valueToTree(new ShoppingCartDTO(itemId, itemQty)));
         GraphQLResponse response = graphQLTestTemplate
                 .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
                 .perform(ADD_ITEM_IN_CART_GRAPHQL_RESOURCE, variables);
@@ -154,7 +154,7 @@ public class CartItemGraphQLDataFetcherTest {
         response.assertThatErrorsField().isNotNull()
                 .asListOf(GraphQLTestError.class)
                 .hasOnlyOneElementSatisfying(error -> {
-                    assertThat(error.getMessage()).isEqualTo(GraphQLTestErrorType.BAD_REQUEST.toString());
+                    assertThat(error.getMessage()).isEqualTo("There is not enough inventory to fulfill your order. Edit your requisition and resubmit.");
                     assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.BAD_REQUEST.value());
                 })
                 .and()
@@ -166,7 +166,7 @@ public class CartItemGraphQLDataFetcherTest {
         final Long itemId = 1L;
         final Integer itemQty = 0;
         ObjectNode variables = objectMapper.createObjectNode();
-        variables.set("shoppingCartDTO", objectMapper.valueToTree(createShoppingCartDTO(itemId, itemQty)));
+        variables.set("shoppingCartDTO", objectMapper.valueToTree(new ShoppingCartDTO(itemId, itemQty)));
         GraphQLResponse response = graphQLTestTemplate
                 .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
                 .perform(ADD_ITEM_IN_CART_GRAPHQL_RESOURCE, variables);
@@ -176,7 +176,7 @@ public class CartItemGraphQLDataFetcherTest {
         response.assertThatErrorsField().isNotNull()
                 .asListOf(GraphQLTestError.class)
                 .hasOnlyOneElementSatisfying(error -> {
-                    assertThat(error.getMessage()).isEqualTo(GraphQLTestErrorType.QUANTITY_CANNOT_BE_ZERO.toString());
+                    assertThat(error.getMessage()).isEqualTo("Quantity cannot be zero.");
                     assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.BAD_REQUEST.value());
                 })
                 .and()
@@ -188,7 +188,7 @@ public class CartItemGraphQLDataFetcherTest {
         final Long itemId = 1L;
         final Integer itemQty = -1;
         ObjectNode variables = objectMapper.createObjectNode();
-        variables.set("shoppingCartDTO", objectMapper.valueToTree(createShoppingCartDTO(itemId, itemQty)));
+        variables.set("shoppingCartDTO", objectMapper.valueToTree(new ShoppingCartDTO(itemId, itemQty)));
         GraphQLResponse response = graphQLTestTemplate
                 .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
                 .perform(ADD_ITEM_IN_CART_GRAPHQL_RESOURCE, variables);
@@ -198,7 +198,7 @@ public class CartItemGraphQLDataFetcherTest {
         response.assertThatErrorsField().isNotNull()
                 .asListOf(GraphQLTestError.class)
                 .hasOnlyOneElementSatisfying(error -> {
-                    assertThat(error.getMessage()).isEqualTo(GraphQLTestErrorType.QUANTITY_CANNOT_BE_A_NEGATIVE_NUMBER_OR_ZERO.toString());
+                    assertThat(error.getMessage()).isEqualTo("Quantity cannot be a negative number or zero.");
                     assertThat(error.getExtensions().get("statusCode")).isEqualTo(HttpStatus.BAD_REQUEST.value());
                 })
                 .and()
@@ -210,7 +210,7 @@ public class CartItemGraphQLDataFetcherTest {
         final Long itemId = 1L;
         final Integer itemQty = 2;
         ObjectNode variables = objectMapper.createObjectNode();
-        variables.set("shoppingCartDTO", objectMapper.valueToTree(createShoppingCartDTO(itemId, itemQty)));
+        variables.set("shoppingCartDTO", objectMapper.valueToTree(new ShoppingCartDTO(itemId, itemQty)));
         GraphQLResponse response = graphQLTestTemplate
                 .withBasicAuth(USERNAME_PURCHASER, "invalidPass")
                 .perform(ADD_ITEM_IN_CART_GRAPHQL_RESOURCE, variables);
@@ -232,7 +232,7 @@ public class CartItemGraphQLDataFetcherTest {
         final Long itemId = 1L;
         final Integer itemQty = 2;
         ObjectNode variables = objectMapper.createObjectNode();
-        variables.set("shoppingCartDTO", objectMapper.valueToTree(createShoppingCartDTO(itemId, itemQty)));
+        variables.set("shoppingCartDTO", objectMapper.valueToTree(new ShoppingCartDTO(itemId, itemQty)));
         GraphQLResponse response = graphQLTestTemplate
                 .withBasicAuth(USERNAME_APPROVER, PASSWORD)
                 .perform(ADD_ITEM_IN_CART_GRAPHQL_RESOURCE, variables);
@@ -253,9 +253,9 @@ public class CartItemGraphQLDataFetcherTest {
     public void test_addItemInCart_404_itemDoesNotExist() throws IOException {
         final Long itemId = 100L;
         final Integer itemQty = 2;
-        String errorMessage = MessageFormat.format(GraphQLTestErrorType.NOT_FOUND.toString(), itemId);
+        String errorMessage = MessageFormat.format("Item with ID {0} is not found.", itemId);
         ObjectNode variables = objectMapper.createObjectNode();
-        variables.set("shoppingCartDTO", objectMapper.valueToTree(createShoppingCartDTO(itemId, itemQty)));
+        variables.set("shoppingCartDTO", objectMapper.valueToTree(new ShoppingCartDTO(itemId, itemQty)));
         GraphQLResponse response = graphQLTestTemplate
                 .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
                 .perform(ADD_ITEM_IN_CART_GRAPHQL_RESOURCE, variables);
@@ -272,7 +272,4 @@ public class CartItemGraphQLDataFetcherTest {
                 .assertThatField(ADD_ITEM_IN_CART_DATA_JSON_PATH).isNull();
     }
 
-    private static ShoppingCartDTO createShoppingCartDTO(Long itemId, Integer itemQty) {
-        return new ShoppingCartDTO(itemId, itemQty);
-    }
 }

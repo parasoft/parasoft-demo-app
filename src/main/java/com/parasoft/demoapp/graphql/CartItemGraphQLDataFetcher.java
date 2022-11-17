@@ -48,7 +48,6 @@ public class CartItemGraphQLDataFetcher {
     public DataFetcher<CartItemEntity> addItemInCart() {
         return dataFetchingEnvironment -> {
             try {
-                Object o = dataFetchingEnvironment.getArgument("shoppingCartDTO");
                 ResponseEntity<ResponseResult<CartItemEntity>> entity =
                         restTemplate.exchange(cartItemBaseUrl,
                                 HttpMethod.POST,
