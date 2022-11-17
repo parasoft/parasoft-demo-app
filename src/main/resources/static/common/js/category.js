@@ -190,7 +190,7 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
         }).then(function(result) {
             closeRequisitionDetail(id);
             //Update shopping cart items
-            loadShoppingCartData($rootScope,$http,$filter);
+            loadShoppingCartData($rootScope,$http,$filter,graphQLService);
             //If the requisition bar is visible, it should be closed after adding successfully
             //This is to avoid some format errors
             angular.element("#requisition_cross").click();

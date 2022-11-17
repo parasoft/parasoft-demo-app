@@ -1,0 +1,3 @@
+mutation DeleteItemByName($itemName: String!) {
+    deleteItemByName(itemName: $itemName)
+}

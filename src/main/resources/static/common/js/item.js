@@ -184,7 +184,7 @@ app.controller('itemDetailController', function($rootScope, $http, $location, $f
 			params: {itemId:itemId,itemQty:itemNum},
 		}).then(function(result) {
 			//Update shopping cart items
-			loadShoppingCartData($rootScope,$http,$filter);
+			loadShoppingCartData($rootScope,$http,$filter,graphQLService);
 			var cartItem = result.data.data;
 			$rootScope.inRequisition = cartItem.quantity;
 			checkInventory(cartItem.realInStock,cartItem.quantity,itemNum);
