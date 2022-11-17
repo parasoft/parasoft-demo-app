@@ -1,0 +1,8 @@
+mutation AddCategory($categoryDTO: CategoryDTO!) {
+    addCategory(categoryDTO: $categoryDTO) {
+        id
+        name
+        description
+        image
+    }
+}
