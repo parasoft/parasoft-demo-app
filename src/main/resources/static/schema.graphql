@@ -28,6 +28,8 @@ type Mutation {
     deleteItemByName(itemName: String!): String
     addNewItem(itemsDTO: ItemsDTO!): Item
     deleteItemByItemId(itemId: ID!): ID
+    # cartItem
+    addItemInCart(shoppingCartDTO: ShoppingCartDTO!): CartItemEntity
 }
 
 # category
@@ -156,4 +158,9 @@ type CartItemEntity {
     image: String
     realInStock: Int
     quantity: Int
+}
+#shoppingCartDTO
+input ShoppingCartDTO {
+    itemId: ID!
+    itemQty: Int!
 }
