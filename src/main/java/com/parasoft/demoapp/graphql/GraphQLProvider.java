@@ -95,10 +95,12 @@ public class GraphQLProvider {
         builder.type("Mutation", typeWriting -> typeWriting.dataFetcher("deleteItemByName", itemDataFetcher.deleteItemByName()));
         builder.type("Query", typeWriting -> typeWriting.dataFetcher("getItemByName", itemDataFetcher.getItemByName()));
         builder.type("Mutation", typeWriting -> typeWriting.dataFetcher("addNewItem", itemDataFetcher.addNewItem()));
+        builder.type("Mutation", typeWriting -> typeWriting.dataFetcher("deleteItemByItemId", itemDataFetcher.deleteItemByItemId()));
     }
 
     private void cartItemTypeWiring(RuntimeWiring.Builder builder) {
         builder.type("Query", typeWriting -> typeWriting.dataFetcher("getCartItems", cartItemGraphQLDataFetcher.getCartItems()));
+        builder.type("Mutation", typeWriting -> typeWriting.dataFetcher("addItemInCart", cartItemGraphQLDataFetcher.addItemInCart()));
     }
 
     @Bean
