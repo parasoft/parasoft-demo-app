@@ -11,6 +11,7 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
     var categoryId = $location.absUrl().substr($location.absUrl().lastIndexOf("/")+1);
     category.categoryId = categoryId;
     category.sort="name";
+    let getItemsSelectionSet = "{content{id,name,description,image}}"
     getUnreviewedAmount($http,$rootScope,$filter);
     connectAndSubscribeMQ(CURRENT_ROLE,$http,$rootScope, $filter);
 
@@ -68,18 +69,19 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
             category.itemsLoadError = true;
         }
 
-        let params = {
+        let getItemsParams = {
             categoryId: categoryId,
             regions: checkedRegions
         }
         //Get all items from database
         if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
-            graphQLService.getItems(params, getItemsSuccessfully, (data) => {failToGetItems(data, "graphQL")});
+            graphQLService.getItems(getItemsParams, getItemsSuccessfully,
+                (data) => {failToGetItems(data, "graphQL")}, getItemsSelectionSet);
         } else {
             $http({
                 method: 'GET',
                 url: '/proxy/v1/assets/items',
-                params: params,
+                params: getItemsParams,
             }).then(function(result) {
                 getItemsSuccessfully(result.data.data);
             }).catch(function(result) {
@@ -96,9 +98,9 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
             displayLoadError(result, $rootScope, $filter, $http, true, endpointType);
         }
 
-        let params = {"categoryId": categoryId};
+        let getCategoryByIdParams = {"categoryId": categoryId};
         if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
-            graphQLService.getCategoryById(params, success, (data) => {error(data, "graphQL")});
+            graphQLService.getCategoryById(getCategoryByIdParams, success, (data) => {error(data, "graphQL")}, "{name}");
         } else {
             $http({
                 method: 'GET',
@@ -248,7 +250,8 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
         };
 
         if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
-            graphQLService.getItems(params, searchSucceeded, (data) => {searchFailed(data, "graphQL")});
+            graphQLService.getItems(params, searchSucceeded,
+                (data) => {searchFailed(data, "graphQL")}, getItemsSelectionSet);
         } else {
             $http({
                 method: 'GET',

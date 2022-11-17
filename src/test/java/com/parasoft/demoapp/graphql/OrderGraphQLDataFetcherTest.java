@@ -139,7 +139,7 @@ public class OrderGraphQLDataFetcherTest {
                 .withBasicAuth(purchaser.getUsername(), purchaser.getPassword())
                 .perform(GET_ORDER_BY_ORDER_NUMBER_GRAPHQL_RESOURCE, variable);
 
-        assertErrorForGetOrderByOrderNumber(graphQLResponse, HttpStatus.BAD_REQUEST, "Order number should not be blank(null, '' or '  ').");
+        assertErrorForGetOrderByOrderNumber(graphQLResponse, HttpStatus.INTERNAL_SERVER_ERROR, "Map has no value for 'orderNumber'");
     }
 
     @Test

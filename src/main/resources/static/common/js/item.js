@@ -44,9 +44,9 @@ app.controller('itemDetailController', function($rootScope, $http, $location, $f
                 displayLoadError(result, $rootScope, $filter, $http, true, endpointType);
             }
 
-            let params = {"categoryId": item.categoryId};
+            let getCategoryByIdParams = {"categoryId": item.categoryId};
             if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
-                graphQLService.getCategoryById(params, success, (data) => {error(data, "graphQL")});
+                graphQLService.getCategoryById(getCategoryByIdParams, success, (data) => {error(data, "graphQL")}, "{name}");
             } else {
                 $http({
                     method: 'GET',

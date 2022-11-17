@@ -41,7 +41,7 @@ public class LocationGraphQLDataFetcher {
         return environment -> {
             try {
                 UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(locationBaseUrl);
-                Object regionType = (Object) environment.getArgument("region");
+                Object regionType = environment.getArgument("region");
                 if (regionType != null) {
                     builder.queryParam("region", regionType);
                 }

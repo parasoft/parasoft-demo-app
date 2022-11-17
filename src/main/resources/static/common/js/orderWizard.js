@@ -84,7 +84,7 @@ app.controller('orderWizardController', function($scope, $rootScope, $http, $fil
             }
 
             if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
-                let selectionSet = "{realInStock, quantity}";
+                let selectionSet = "{name, image, description, quantity}";
                 graphQLService.getCartItems(success, (data) => {error(data, "graphQL")}, selectionSet);
             } else {
                 $http({
@@ -155,7 +155,8 @@ app.controller('orderWizardController', function($scope, $rootScope, $http, $fil
 			graphQLService.createOrder(
 				{"orderDTO": params},
 				success,
-				(data) => {error(data, "graphQL")});
+				(data) => {error(data, "graphQL")},
+				"{orderNumber}");
 		} else {
 			$http({
 				method: 'POST',
