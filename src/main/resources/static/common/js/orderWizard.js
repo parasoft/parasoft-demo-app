@@ -146,7 +146,8 @@ app.controller('orderWizardController', function($scope, $rootScope, $http, $fil
 			graphQLService.createOrder(
 				{"orderDTO": params},
 				success,
-				(data) => {error(data, "graphQL")});
+				(data) => {error(data, "graphQL")},
+				"{orderNumber}");
 		} else {
 			$http({
 				method: 'POST',

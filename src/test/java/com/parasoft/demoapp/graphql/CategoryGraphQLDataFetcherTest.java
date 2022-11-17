@@ -28,7 +28,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 
 import static com.graphql.spring.boot.test.helper.GraphQLTestConstantsHelper.DATA_PATH;
 import static com.parasoft.demoapp.defaultdata.global.GlobalUsersCreator.PASSWORD;
@@ -43,6 +43,7 @@ public class CategoryGraphQLDataFetcherTest {
 
     private static final String CATEGORIES_GRAPHQL_RESOURCE = "graphql/categories/getCategories.graphql";
     private static final String CATEGORIES_DATA_JSON_PATH = DATA_PATH + ".getCategories";
+
     private static final String CATEGORY_BY_ID_GRAPHQL_RESOURCE = "graphql/categories/getCategoryById.graphql";
     private static final String CATEGORY_BY_ID_DATA_JSON_PATH = DATA_PATH + ".getCategoryById";
 
@@ -54,6 +55,9 @@ public class CategoryGraphQLDataFetcherTest {
 
     private static final String ADD_NEW_CATEGORY_GRAPHQL_RESOURCE = "graphql/categories/addCategory.graphql";
     private static final String ADD_NEW_CATEGORY_DATA_JSON_PATH = DATA_PATH + ".addCategory";
+
+    private static final String UPDATE_CATEGORY_GRAPHQL_RESOURCE = "graphql/categories/updateCategory.graphql";
+    private static final String UPDATE_CATEGORY_DATA_JSON_PATH = DATA_PATH + ".updateCategory";
 
     @Autowired private GraphQLTestTemplate graphQLTestTemplate;
 
@@ -73,14 +77,16 @@ public class CategoryGraphQLDataFetcherTest {
 
     @Before
     public void conditionalBefore() {
-        if ("test_addCategory_normal".equals(testName.getMethodName())) {
+        if ("test_addCategory_normal".equals(testName.getMethodName())
+                || "test_updateCategory_normal".equals(testName.getMethodName())) {
             resetDatabase();
         }
     }
 
     @After
     public void conditionalAfter() {
-        if ("test_addCategory_normal".equals(testName.getMethodName())) {
+        if ("test_addCategory_normal".equals(testName.getMethodName())
+                || "test_updateCategory_normal".equals(testName.getMethodName())) {
             resetDatabase();
         }
     }
@@ -91,7 +97,7 @@ public class CategoryGraphQLDataFetcherTest {
         variables.put("searchString", "e");
         variables.put("page", 0);
         variables.put("size", 100);
-        ArrayNode sortArray = objectMapper.valueToTree(new ArrayList<String>(Arrays.asList("id,desc")));
+        ArrayNode sortArray = objectMapper.valueToTree(new ArrayList<>(Collections.singletonList("id,desc")));
         variables.putArray("sort").addAll(sortArray);
         GraphQLResponse response = graphQLTestTemplate
                 .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
@@ -109,8 +115,8 @@ public class CategoryGraphQLDataFetcherTest {
                 .and()
                 .assertThatField(CATEGORIES_DATA_JSON_PATH + ".content")
                 .asListOf(CategoryEntity.class)
-                .has(new Condition<CategoryEntity>(c -> c.getName().equals("Tents"), "name Tents"), Index.atIndex(0))
-                .has(new Condition<CategoryEntity>(c -> c.getName().equals("Sleeping bags"), "name Sleeping bags"), Index.atIndex(1))
+                .has(new Condition<>(c -> c.getName().equals("Tents"), "name Tents"), Index.atIndex(0))
+                .has(new Condition<>(c -> c.getName().equals("Sleeping bags"), "name Sleeping bags"), Index.atIndex(1))
                 .size()
                 .isEqualTo(2);
     }
@@ -118,7 +124,7 @@ public class CategoryGraphQLDataFetcherTest {
     @Test
     public void test_getCategories_invalidSort() throws IOException {
         ObjectNode variables = objectMapper.createObjectNode();
-        ArrayNode sortArray = objectMapper.valueToTree(new ArrayList<String>(Arrays.asList("id,invalid")));
+        ArrayNode sortArray = objectMapper.valueToTree(new ArrayList<>(Collections.singletonList("id,invalid")));
         variables.putArray("sort").addAll(sortArray);
         GraphQLResponse response = graphQLTestTemplate
                 .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
@@ -212,7 +218,7 @@ public class CategoryGraphQLDataFetcherTest {
     }
 
     @Test
-    public void testGetCategoryById_normal() throws IOException {
+    public void test_getCategoryById_normal() throws IOException {
         ObjectNode variables = objectMapper.createObjectNode();
         variables.put("categoryId", 3);
         GraphQLResponse response = graphQLTestTemplate
@@ -226,11 +232,11 @@ public class CategoryGraphQLDataFetcherTest {
                 .and()
                 .assertThatField(CATEGORY_BY_ID_DATA_JSON_PATH)
                 .as(CategoryEntity.class)
-                .has(new Condition<CategoryEntity>(c -> c.getName().equals("Tents"), "name Tents"));;
+                .has(new Condition<>(c -> c.getName().equals("Tents"), "name Tents"));
     }
 
     @Test
-    public void testGetCategoryById_invalidId() throws IOException {
+    public void test_getCategoryById_invalidId() throws IOException {
         ObjectNode variables = objectMapper.createObjectNode();
         variables.put("categoryId", 77);
         GraphQLResponse response = graphQLTestTemplate
@@ -250,7 +256,7 @@ public class CategoryGraphQLDataFetcherTest {
     }
 
     @Test
-    public void testGetCategoryById_notAuthenticated() throws IOException {
+    public void test_getCategoryById_notAuthenticated() throws IOException {
         ObjectNode variables = objectMapper.createObjectNode();
         variables.put("categoryId", "3");
         GraphQLResponse response = graphQLTestTemplate
@@ -271,7 +277,7 @@ public class CategoryGraphQLDataFetcherTest {
     
     @SneakyThrows
     @Test
-    public void test_deleteCategoryById_normal() throws IOException {
+    public void test_deleteCategoryById_normal() {
         CategoryEntity categoryEntity = categoryService.addNewCategory(
                 "foo", "name foo", "/foo");
         ObjectNode variables = objectMapper.createObjectNode();
@@ -284,8 +290,8 @@ public class CategoryGraphQLDataFetcherTest {
         assertThat(response.isOk()).isTrue();
         response.assertThatNoErrorsArePresent()
                 .assertThatField(DELETE_CATEGORY_DATA_JSON_PATH)
-                .as(Integer.class)
-                .isEqualTo(Long.valueOf(categoryEntity.getId()).intValue());
+                .as(Long.class)
+                .isEqualTo(categoryEntity.getId());
     }
 
     @Test
@@ -442,6 +448,125 @@ public class CategoryGraphQLDataFetcherTest {
 
         assertResponseOk(response);
         assert401NotAuthorizedError(response, ADD_NEW_CATEGORY_DATA_JSON_PATH);
+    }
+
+    @Test
+    public void test_updateCategory_normal() throws IOException {
+        final String name = "foo";
+        final String description = "name foo";
+        final String imagePath = "/foo";
+
+        ObjectNode variables = objectMapper.createObjectNode();
+        variables.put("categoryId", 1L);
+        variables.set("categoryDto", objectMapper.valueToTree(createCategoryDTO(name, description, imagePath)));
+
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(UPDATE_CATEGORY_GRAPHQL_RESOURCE, variables);
+
+        assertResponseOk(response);
+        response.assertThatNoErrorsArePresent()
+                .assertThatField(UPDATE_CATEGORY_DATA_JSON_PATH)
+                .as(CategoryEntity.class).satisfies( categoryEntity -> {
+                    assertThat(categoryEntity.getId()).isEqualTo(1L);
+                    assertThat(categoryEntity.getName()).isEqualTo(name);
+                    assertThat(categoryEntity.getDescription()).isEqualTo(description);
+                    assertThat(categoryEntity.getImage()).isEqualTo(imagePath);
+                });
+    }
+
+    @Test
+    public void test_updateCategory_400_nameAlreadyExists() throws IOException {
+        final String name = "Sleeping bags";
+        ObjectNode variables = objectMapper.createObjectNode();
+        variables.put("categoryId", 2L);
+        variables.set("categoryDto", objectMapper.valueToTree(
+                createCategoryDTO(name, "Description for Sleeping bags", null)));
+
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(UPDATE_CATEGORY_GRAPHQL_RESOURCE, variables);
+
+        assertResponseOk(response);
+        assertErrorWithNullData(response, MessageFormat.format(CATEGORY_NAME_EXISTS_ALREADY, name),
+                HttpStatus.BAD_REQUEST.value(), UPDATE_CATEGORY_DATA_JSON_PATH);
+    }
+
+    @Test
+    public void test_updateCategory_400_emptyName() throws IOException {
+        ObjectNode variables = objectMapper.createObjectNode();
+        variables.put("categoryId", 1L);
+        variables.set("categoryDto", objectMapper.valueToTree(
+                createCategoryDTO("", "foo name", null)));
+
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(UPDATE_CATEGORY_GRAPHQL_RESOURCE, variables);
+
+        assertResponseOk(response);
+        assertErrorWithNullData(response, CATEGORY_NAME_CANNOT_BE_BLANK,
+                HttpStatus.BAD_REQUEST.value(), UPDATE_CATEGORY_DATA_JSON_PATH);
+    }
+
+    @Test
+    public void test_updateCategory_400_emptyDescription() throws IOException {
+        ObjectNode variables = objectMapper.createObjectNode();
+        variables.put("categoryId", 1L);
+        variables.set("categoryDto", objectMapper.valueToTree(
+                createCategoryDTO("foo", "", null)));
+
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(UPDATE_CATEGORY_GRAPHQL_RESOURCE, variables);
+
+        assertResponseOk(response);
+        assertErrorWithNullData(response, DESCRIPTION_CANNOT_BE_BLANK,
+                HttpStatus.BAD_REQUEST.value(), UPDATE_CATEGORY_DATA_JSON_PATH);
+    }
+
+    @Test
+    public void test_updateCategory_404_categoryNotFoundException() throws IOException {
+        ObjectNode variables = objectMapper.createObjectNode();
+        variables.put("categoryId", 5L);
+        variables.set("categoryDto", objectMapper.valueToTree(
+                createCategoryDTO("foo", "name foo", "/foo")));
+
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(UPDATE_CATEGORY_GRAPHQL_RESOURCE, variables);
+
+        assertResponseOk(response);
+        assertErrorWithNullData(response, "Category with ID 5 is not found.",
+                HttpStatus.NOT_FOUND.value(), UPDATE_CATEGORY_DATA_JSON_PATH);
+    }
+
+    @Test
+    public void test_updateCategory_401_notAuthenticated() throws IOException {
+        ObjectNode variables = objectMapper.createObjectNode();
+        variables.put("categoryId", 1L);
+        variables.set("categoryDto", objectMapper.valueToTree(
+                createCategoryDTO("foo", "name foo", null)));
+
+        GraphQLResponse response = graphQLTestTemplate
+                .perform(UPDATE_CATEGORY_GRAPHQL_RESOURCE, variables);
+
+        assertResponseOk(response);
+        assert401NotAuthorizedError(response, UPDATE_CATEGORY_DATA_JSON_PATH);
+    }
+
+    @Test
+    public void test_updateCategory_401_incorrectAuthentication() throws IOException {
+        ObjectNode variables = objectMapper.createObjectNode();
+        variables.put("categoryId", 1L);
+        variables.set("categoryDto", objectMapper.valueToTree(
+                createCategoryDTO("foo", "name foo", null)));
+
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, "invalidPass")
+                .perform(UPDATE_CATEGORY_GRAPHQL_RESOURCE, variables);
+
+        assertResponseOk(response);
+        assert401NotAuthorizedError(response, UPDATE_CATEGORY_DATA_JSON_PATH);
     }
 
     private static CategoryDTO createCategoryDTO(String name, String description, String imagePath) {
