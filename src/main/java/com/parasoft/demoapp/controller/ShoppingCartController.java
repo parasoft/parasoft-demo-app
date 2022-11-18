@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.enums.ParameterStyle;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -36,12 +35,6 @@ public class ShoppingCartController {
 	private ShoppingCartService shoppingCartService;
 
 	@Operation(description = "Add an item to the shopping cart.")
-	@Parameters({
-		@Parameter(name = "itemId", in = ParameterIn.QUERY, required = true,
-				style = ParameterStyle.FORM, schema = @Schema(type = "integer", format = "int64")),
-		@Parameter(name = "itemQty", in = ParameterIn.QUERY, required = true,
-				style = ParameterStyle.FORM, schema = @Schema(type = "integer", format = "int64")),
-	})
 	@ApiResponses({
 		@ApiResponse(responseCode = "200",
 				description = "Item added to the shopping cart successfully."),
@@ -61,7 +54,7 @@ public class ShoppingCartController {
 	@PostMapping
 	@ResponseBody
 	public ResponseResult<CartItemEntity> addItemInCart(
-			Authentication auth, @Parameter(hidden = true) @RequestBody ShoppingCartDTO shoppingCartDto)
+			Authentication auth, @RequestBody ShoppingCartDTO shoppingCartDto)
 			throws ItemNotFoundException, ParameterException, InventoryNotFoundException {
 
 		ResponseResult<CartItemEntity> response = ResponseResult.getInstance(ResponseResult.STATUS_OK,

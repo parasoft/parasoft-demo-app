@@ -9,22 +9,22 @@ app.controller('itemDetailController', function($rootScope, $http, $location, $f
 	//Get some data
 	var itemDetail = this;
 	var itemId = $location.absUrl().substr($location.absUrl().lastIndexOf("/")+1);
-	
+
 	$rootScope.itemNum = 1;
 	getUnreviewedAmount($http,$rootScope,$filter);
 	connectAndSubscribeMQ(CURRENT_ROLE,$http,$rootScope, $filter);
-	
+
 	//Load 'loading' animation
 	itemDetail.loadingAnimation = true;
 	itemDetail.showQuantity = false;
-	
+
 	//get related assets data from database TODO
 	var testNums = [0,1,2];
 	itemDetail.relatedItems = testNums;
 	itemDetail.itemLineExp = function(index){
 		return index % 3 + 1;
 	}
-	
+
 	// Set time out for avoiding to get the key when using $filter('translate') filter.
 	setTimeout(function(){
 		//Get item by item id
@@ -63,7 +63,7 @@ app.controller('itemDetailController', function($rootScope, $http, $location, $f
             displayLoadError(result,$rootScope,$filter,$http,false,'items');
         });
     }, 500);
-	
+
 	//Get cartItem by item id
 	$http({
 		method: 'GET',
@@ -72,7 +72,7 @@ app.controller('itemDetailController', function($rootScope, $http, $location, $f
 		var cartItem = result.data.data;
 		var quantity = cartItem.quantity;
 		var inventory = cartItem.realInStock;
-		
+
 		if(inventory === 0){$rootScope.itemNum = 0;}
 		$rootScope.itemInventory = inventory;
 		$rootScope.inRequisition = quantity;
@@ -86,7 +86,7 @@ app.controller('itemDetailController', function($rootScope, $http, $location, $f
 		if(status === 500){
 			console.log(data.message);
 		}
-		
+
 		$http({
 			method: 'GET',
 			url: '/proxy/v1/assets/items/' + itemId,
@@ -99,7 +99,7 @@ app.controller('itemDetailController', function($rootScope, $http, $location, $f
 		});
 		$interval(function(){itemDetail.loadingAnimation = false;itemDetail.showQuantity = true;},500,1);
 	});
-	
+
 	itemDetail.minusItemNum = function(itemNum, inventory, quantity){
 		clearPlusDisabled();
 		if(itemNum - 1 < 2){
@@ -157,7 +157,8 @@ app.controller('itemDetailController', function($rootScope, $http, $location, $f
 		$http({
 			method: 'POST',
 			url: '/proxy/v1/cartItems',
-			params: {itemId:itemId,itemQty:itemNum},
+			data: {itemId:itemId,itemQty:itemNum},
+			headers: {'Content-Type': 'application/json'}
 		}).then(function(result) {
 			//Update shopping cart items
 			loadShoppingCartData($rootScope,$http,$filter,graphQLService);
@@ -188,7 +189,7 @@ app.controller('itemDetailController', function($rootScope, $http, $location, $f
 		};
 		$rootScope.minusBtnDisabled = true;
 	}
-	
+
 	//Make 'add to requisition' button disabled in detail page
 	function setAddToBtnDisabled(){
 		$rootScope.btnDisabled = {
@@ -197,25 +198,25 @@ app.controller('itemDetailController', function($rootScope, $http, $location, $f
 		};
 		$rootScope.addToBtnDisabled = true;
 	}
-	
+
 	//Clear the plus button disabled in detail page
 	function clearPlusDisabled(){
 		$rootScope.plusDisabled = {};
 		$rootScope.plusBtnDisabled = false;
 	}
-	
+
 	//Clear the minus button disabled in detail page
 	function clearMinusDisabled(){
 		$rootScope.minusDisabled = {};
 		$rootScope.minusBtnDisabled = false;
 	}
-	
+
 	//Clear 'add to requisition' button disabled in detail page
 	function clearAddToBtnDisabled(){
 		$rootScope.btnDisabled = {};
 		$rootScope.addToBtnDisabled = false;
 	}
-	
+
 	function checkInventory(inventory,quantity,inputNum){
 		if(inventory === 0 || inventory - quantity <= 0){
 			setPlusDisabled();
@@ -242,7 +243,7 @@ app.controller('itemDetailController', function($rootScope, $http, $location, $f
 			angular.element("#item_number_input").attr("readonly",false);
 		}
 	}
-	
+
 	// To avoid displaying page without styles due to the slow loading of CSS files
 	setTimeout(function(){ angular.element("body").css("visibility", "visible") }, 500);
 });
