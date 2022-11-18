@@ -186,7 +186,8 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
         $http({
             method: 'POST',
             url: '/proxy/v1/cartItems',
-            params: {itemId:id,itemQty:itemNum},
+            data: {itemId:id,itemQty:itemNum},
+            headers: {'Content-Type': 'application/json'}
         }).then(function(result) {
             closeRequisitionDetail(id);
             //Update shopping cart items
