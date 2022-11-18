@@ -120,6 +120,12 @@ angular
                     success(response.data.data.getItems);
                 }, error);
             }
+            instance.deleteItemByItemId = function(variables, success, error) {
+                let requestBody = {"query": "mutation DeleteItemByItemId($itemId:Long!){deleteItemByItemId(itemId:$itemId)}", "variables": variables}
+                makeCall(requestBody, function(response) {
+                    success(response.data.data.deleteItemByItemId);
+                }, error);
+            }
             //cartItems
             instance.getCartItems = function(success, error, selectionSet) {
                 if (!selectionSet) {
