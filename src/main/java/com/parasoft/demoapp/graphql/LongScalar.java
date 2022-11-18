@@ -78,7 +78,7 @@ public class LongScalar {
                     return Long.parseLong(((StringValue) input).getValue());
                 } catch (NumberFormatException e) {
                     throw new CoercingParseLiteralException(
-                            "Expected value to be a Long but it was '" + input + "'"
+                            "Expected value to be a Long but it was '" + input + "'", e
                     );
                 }
             } else if (input instanceof IntValue) {
