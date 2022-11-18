@@ -130,6 +130,16 @@ angular
                     success(response.data.data.getCartItems);
                 }, error);
             }
+            instance.addItemInCart = function(variables, success, error, selectionSet) {
+                if (!selectionSet) {
+                    selectionSet = "{id, userId, itemId, name, description, image, realInStock, quantity}"
+                }
+                let requestBody = {"query": "mutation AddItemInCart($shoppingCartDTO:ShoppingCartDTO!){addItemInCart(shoppingCartDTO:$shoppingCartDTO)" + selectionSet + "}", "variables": variables}
+                makeCall(requestBody, function(response) {
+
+                    success(response.data.data.addItemInCart);
+                }, error);
+            }
             // customized call
             instance.makeGraphQLCall = makeCall;
             return instance;
