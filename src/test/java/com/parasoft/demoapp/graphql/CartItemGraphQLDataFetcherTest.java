@@ -44,6 +44,8 @@ public class CartItemGraphQLDataFetcherTest {
     private static final String ADD_ITEM_IN_CART_DATA_JSON_PATH = DATA_PATH + ".addItemInCart";
     private static final String REMOVE_CART_ITEM_GRAPHQL_RESOURCE = "graphql/cartItems/removeCartItem.graphql";
     private static final String REMOVE_CART_ITEM_DATA_JSON_PATH = DATA_PATH + ".removeCartItem";
+    private static final String REMOVE_ALL_CART_ITEMS_GRAPHQL_RESOURCE = "graphql/cartItems/removeAllCartItems.graphql";
+    private static final String REMOVE_ALL_CART_ITEMS_DATA_JSON_PATH = DATA_PATH + ".removeAllCartItems";
 
     @Autowired
     private GraphQLTestTemplate graphQLTestTemplate;
@@ -71,7 +73,7 @@ public class CartItemGraphQLDataFetcherTest {
     @Before
     public void conditionalBefore() {
         Set<String> testNames = new HashSet<>(Arrays.asList("test_getCartItems_normal", "test_addItemInCart_normal",
-                "test_removeCartItem_normal"));
+                "test_removeCartItem_normal", "test_removeAllCartItems_normal"));
         if (testNames.contains(testName.getMethodName())) {
             GraphQLTestUtil.resetDatabase(globalPreferencesService);
         }
@@ -80,7 +82,7 @@ public class CartItemGraphQLDataFetcherTest {
     @After
     public void conditionalAfter() {
         Set<String> testNames = new HashSet<>(Arrays.asList("test_getCartItems_normal", "test_addItemInCart_normal",
-                "test_removeCartItem_normal"));
+                "test_removeCartItem_normal", "test_removeAllCartItems_normal"));
         if (testNames.contains(testName.getMethodName())) {
             GraphQLTestUtil.resetDatabase(globalPreferencesService);
         }
@@ -237,7 +239,7 @@ public class CartItemGraphQLDataFetcherTest {
         assertError_addItemInCart(response, HttpStatus.NOT_FOUND, MessageFormat.format(AssetMessages.ITEM_ID_NOT_FOUND, itemId));
     }
 
-    @Test
+@Test
     public void test_removeCartItem_normal() throws InventoryNotFoundException, ParameterException, ItemNotFoundException, IOException {
         Long itemId = 1L;
         shoppingCartService.addCartItemInShoppingCart(1L, itemId, 1);
@@ -304,6 +306,68 @@ public class CartItemGraphQLDataFetcherTest {
 
         assertError_removeCartItem(response, HttpStatus.FORBIDDEN, ConfigMessages.USER_HAS_NO_PERMISSION);
     }
+    
+    @Test
+    public void test_removeAllCartItems_normal() throws Throwable {
+        ObjectNode variables = objectMapper.createObjectNode();
+        shoppingCartService.addCartItemInShoppingCart(1L, 1L, 1);
+
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(REMOVE_ALL_CART_ITEMS_GRAPHQL_RESOURCE, variables);
+
+        assertThat(response).isNotNull();
+        assertThat(response.isOk()).isTrue();
+        response.assertThatNoErrorsArePresent()
+                .assertThatDataField().isNotNull()
+                .and()
+                .assertThatField(REMOVE_ALL_CART_ITEMS_DATA_JSON_PATH)
+                .asBoolean()
+                .isTrue();
+    }
+
+    @Test
+    public void test_removeAllCartItems_incorrectAuthentication() throws IOException {
+        ObjectNode variables = objectMapper.createObjectNode();
+
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, "invalidPass")
+                .perform(REMOVE_ALL_CART_ITEMS_GRAPHQL_RESOURCE, variables);
+
+        assertError_removeAllCartItems(response, HttpStatus.UNAUTHORIZED, ConfigMessages.USER_IS_NOT_AUTHORIZED);
+    }
+
+    @Test
+    public void test_removeAllCartItems_noAuthentication() throws IOException {
+        ObjectNode variables = objectMapper.createObjectNode();
+
+        GraphQLResponse response = graphQLTestTemplate
+                .perform(REMOVE_ALL_CART_ITEMS_GRAPHQL_RESOURCE, variables);
+
+        assertError_removeAllCartItems(response, HttpStatus.UNAUTHORIZED, ConfigMessages.USER_IS_NOT_AUTHORIZED);
+    }
+
+    @Test
+    public void test_removeAllCartItems_noPermission() throws IOException {
+        ObjectNode variables = objectMapper.createObjectNode();
+
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_APPROVER, PASSWORD)
+                .perform(REMOVE_ALL_CART_ITEMS_GRAPHQL_RESOURCE, variables);
+
+        assertError_removeAllCartItems(response, HttpStatus.FORBIDDEN, ConfigMessages.USER_HAS_NO_PERMISSION);
+    }
+
+    @Test
+    public void test_removeAllCartItems_notFound() throws IOException {
+        ObjectNode variables = objectMapper.createObjectNode();
+
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(REMOVE_ALL_CART_ITEMS_GRAPHQL_RESOURCE, variables);
+
+        assertError_removeAllCartItems(response, HttpStatus.NOT_FOUND, AssetMessages.NO_CART_ITEMS);
+    }
 
     private void assertError_getCartItems(GraphQLResponse response, HttpStatus expectedHttpStatus, String expectedErrorMessage) {
         GraphQLTestUtil.assertErrorResponse(response, expectedHttpStatus, expectedErrorMessage, GET_CART_ITEMS_DATA_JSON_PATH);
@@ -315,5 +379,8 @@ public class CartItemGraphQLDataFetcherTest {
 
     private void assertError_removeCartItem(GraphQLResponse response, HttpStatus expectedHttpStatus, String expectedErrorMessage) {
         GraphQLTestUtil.assertErrorResponse(response, expectedHttpStatus, expectedErrorMessage, REMOVE_CART_ITEM_DATA_JSON_PATH);
+    }
+    private void assertError_removeAllCartItems(GraphQLResponse response, HttpStatus expectedHttpStatus, String expectedErrorMessage) {
+        GraphQLTestUtil.assertErrorResponse(response, expectedHttpStatus, expectedErrorMessage, REMOVE_ALL_CART_ITEMS_DATA_JSON_PATH);
     }
 }

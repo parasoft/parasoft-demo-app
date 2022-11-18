@@ -77,4 +77,19 @@ public class CartItemGraphQLDataFetcher {
             }
         };
     }
+
+    public DataFetcher<Boolean> removeAllCartItems() {
+        return dataFetchingEnvironment -> {
+            try {
+                ResponseEntity<ResponseResult<Boolean>> entity =
+                        restTemplate.exchange(cartItemBaseUrl,
+                                HttpMethod.DELETE,
+                                new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpServletRequest)),
+                                new ParameterizedTypeReference<ResponseResult<Boolean>>() {});
+                return Objects.requireNonNull(entity.getBody()).getData();
+            } catch (Exception e) {
+                throw RestTemplateUtil.convertException(e);
+            }
+        };
+    }
 }

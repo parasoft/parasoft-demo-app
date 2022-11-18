@@ -1,6 +1,7 @@
 package com.parasoft.demoapp.controller;
 
 import com.parasoft.demoapp.dto.ShoppingCartDTO;
+import com.parasoft.demoapp.dto.UpdateShoppingCartItemDTO;
 import com.parasoft.demoapp.exception.CartItemNotFoundException;
 import com.parasoft.demoapp.exception.InventoryNotFoundException;
 import com.parasoft.demoapp.exception.ItemNotFoundException;
@@ -9,10 +10,6 @@ import com.parasoft.demoapp.model.industry.CartItemEntity;
 import com.parasoft.demoapp.service.ShoppingCartService;
 import com.parasoft.demoapp.util.AuthenticationUtil;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.enums.ParameterStyle;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -121,14 +118,11 @@ public class ShoppingCartController {
 
 		Long currentUserId = AuthenticationUtil.getUserIdInAuthentication(auth);
 		shoppingCartService.clearShoppingCart(currentUserId);
-
+		response.setData(true);
 		return response;
 	}
 
 	@Operation(description = "Update the quantity of item in the shopping cart.")
-	@Parameters({
-		@Parameter(name = "itemQty", in = ParameterIn.QUERY, required = true,
-				style = ParameterStyle.FORM, schema = @Schema(type = "integer", format = "int64")),})
 	@ApiResponses({
 		@ApiResponse(responseCode = "200",
 				description = "The quantity of item successfully updated in this cart."),
@@ -147,15 +141,15 @@ public class ShoppingCartController {
 	@PutMapping("/{itemId}")
 	@ResponseBody
 	public ResponseResult<CartItemEntity> updateCartItemQuantity(Authentication auth, @PathVariable Long itemId,
-										@Parameter(hidden = true) @RequestBody ShoppingCartDTO shoppingCartDto)
+																 @RequestBody UpdateShoppingCartItemDTO updateShoppingCartItemDTO)
 			throws ParameterException, ItemNotFoundException, CartItemNotFoundException {
 
 		ResponseResult<CartItemEntity> response = ResponseResult.getInstance(ResponseResult.STATUS_OK,
 				ResponseResult.MESSAGE_OK);
 
 		Long currentUserId = AuthenticationUtil.getUserIdInAuthentication(auth);
-		response.setData(shoppingCartService.updateCartItemQuantity(currentUserId,
-				                                                    itemId, shoppingCartDto.getItemQty()));
+		response.setData(shoppingCartService.updateCartItemQuantity(currentUserId, itemId,
+																	updateShoppingCartItemDTO.getItemQty()));
 
 		return response;
 	}
