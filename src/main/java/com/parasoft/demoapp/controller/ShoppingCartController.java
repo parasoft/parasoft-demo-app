@@ -84,14 +84,15 @@ public class ShoppingCartController {
 	})
 	@DeleteMapping("/{itemId}")
 	@ResponseBody
-	public ResponseResult<Boolean> removeCartItem(Authentication auth, @PathVariable Long itemId)
+	public ResponseResult<Long> removeCartItem(Authentication auth, @PathVariable Long itemId)
 			throws CartItemNotFoundException, ParameterException{
 
-		ResponseResult<Boolean> response = ResponseResult.getInstance(ResponseResult.STATUS_OK,
+		ResponseResult<Long> response = ResponseResult.getInstance(ResponseResult.STATUS_OK,
 				ResponseResult.MESSAGE_OK);
 
 		Long currentUserId = AuthenticationUtil.getUserIdInAuthentication(auth);
 		shoppingCartService.removeCartItemByUserIdAndItemId(currentUserId, itemId);
+		response.setData(itemId);
 
 		return response;
 	}
