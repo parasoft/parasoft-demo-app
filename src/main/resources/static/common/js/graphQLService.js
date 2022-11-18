@@ -39,7 +39,7 @@ angular
                 }, error);
             }
             instance.deleteCategoryById = function(variables, success, error) {
-                let requestBody = {"query": "mutation DeleteCategoryById($categoryId:ID!){deleteCategoryById(categoryId:$categoryId)}", "variables": variables}
+                let requestBody = {"query": "mutation DeleteCategoryById($categoryId:Long!){deleteCategoryById(categoryId:$categoryId)}", "variables": variables}
                 makeCall(requestBody, function(response) {
                     success(response.data.data.deleteCategoryById);
                 }, error);
@@ -49,7 +49,7 @@ angular
                     selectionSet = "{id,name,description,image}";
                 }
                 let requestBody = {
-                    "query": "query getCategoryById($categoryId:ID!){getCategoryById(categoryId:$categoryId)"+ selectionSet +"}",
+                    "query": "query getCategoryById($categoryId:Long!){getCategoryById(categoryId:$categoryId)"+ selectionSet +"}",
                     "variables": variables
                 }
                 makeCall(requestBody, function(response) {
@@ -114,7 +114,7 @@ angular
                 if (!selectionSet) {
                     selectionSet = "{totalElements,totalPages,size,number,numberOfElements,sort,content{id,name,description,inStock,image,region,lastAccessedDate,categoryId}}";
                 }
-                let requestBody = {"query": "query GetItems($categoryId: Int, $regions: [RegionType], $searchString: String, $page: Int, $size: Int, $sort: [String])" +
+                let requestBody = {"query": "query GetItems($categoryId: Long, $regions: [RegionType], $searchString: String, $page: Int, $size: Int, $sort: [String])" +
                         "{getItems(categoryId: $categoryId, regions: $regions, searchString: $searchString, page: $page, size: $size, sort: $sort)" + selectionSet + "}", "variables": variables};
                 makeCall(requestBody, function (response) {
                     success(response.data.data.getItems);

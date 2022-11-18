@@ -35,7 +35,7 @@ public class DateTimeScalar {
                 return sdf.format(input);
             } else {
                 throw new CoercingSerializeException(
-                        "Expected a 'Date' but was '" + typeName(input) + "'.");
+                        "Expected a 'Date' but was '" + ScalarUtil.typeName(input) + "'.");
             }
         }
 
@@ -45,7 +45,7 @@ public class DateTimeScalar {
                 return parseDateTime((String)input, CoercingParseValueException::new);
             } else {
                 throw new CoercingParseValueException(
-                        "Expected a 'String' but was '" + typeName(input) + "'."
+                        "Expected a 'String' but was '" + ScalarUtil.typeName(input) + "'."
                 );
             }
         }
@@ -54,7 +54,7 @@ public class DateTimeScalar {
         public Date parseLiteral(Object input) throws CoercingParseLiteralException {
             if (!(input instanceof StringValue)) {
                 throw new CoercingParseLiteralException(
-                        "Expected AST type 'StringValue' but was '" + typeName(input) + "'."
+                        "Expected AST type 'StringValue' but was '" + ScalarUtil.typeName(input) + "'."
                 );
             }
             return parseDateTime(((StringValue) input).getValue(), CoercingParseLiteralException::new);
@@ -73,13 +73,6 @@ public class DateTimeScalar {
             } catch (DateTimeParseException e) {
                 throw exceptionMaker.apply("Invalid RFC3339 value : '" + s + "'. because of : '" + e.getMessage() + "'");
             }
-        }
-
-        public String typeName(Object input) {
-            if (input == null) {
-                return "null";
-            }
-            return input.getClass().getSimpleName();
         }
     }
 }

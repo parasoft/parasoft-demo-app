@@ -38,10 +38,7 @@ public class OrderGraphQLDataFetcher {
         return dataFetchingEnvironment -> {
             try {
                 Map<String, String> uriVariables = new HashMap<>();
-                String orderNumber = dataFetchingEnvironment.getArgument("orderNumber");
-                if (orderNumber != null && !orderNumber.trim().isEmpty()) {
-                    uriVariables.put("orderNumber", dataFetchingEnvironment.getArgument("orderNumber"));
-                }
+                uriVariables.put("orderNumber", dataFetchingEnvironment.getArgument("orderNumber"));
                 ResponseEntity<ResponseResult<OrderEntity>> entity  =
                         restTemplate.exchange(orderBaseUrl + "/{orderNumber}",
                                 HttpMethod.GET,
