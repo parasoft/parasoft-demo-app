@@ -3,6 +3,8 @@
  */
 package com.parasoft.demoapp.controller;
 
+import com.parasoft.demoapp.dto.ShoppingCartDTO;
+import com.parasoft.demoapp.exception.CartItemNotFoundException;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -16,6 +18,11 @@ import java.util.List;
 
 import com.parasoft.demoapp.dto.UpdateShoppingCartItemDTO;
 import com.parasoft.demoapp.exception.InventoryNotFoundException;
+import com.parasoft.demoapp.exception.ItemNotFoundException;
+import com.parasoft.demoapp.exception.ParameterException;
+import com.parasoft.demoapp.model.global.UserEntity;
+import com.parasoft.demoapp.model.industry.CartItemEntity;
+import com.parasoft.demoapp.service.ShoppingCartService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -23,13 +30,13 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.core.Authentication;
 
-import com.parasoft.demoapp.dto.ShoppingCartDTO;
-import com.parasoft.demoapp.exception.CartItemNotFoundException;
-import com.parasoft.demoapp.exception.ItemNotFoundException;
-import com.parasoft.demoapp.exception.ParameterException;
-import com.parasoft.demoapp.model.global.UserEntity;
-import com.parasoft.demoapp.model.industry.CartItemEntity;
-import com.parasoft.demoapp.service.ShoppingCartService;
+import java.util.List;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 
 /**
  * Test class for ShoppingCartController
@@ -262,7 +269,7 @@ public class ShoppingCartControllerTest {
 		doNothing().when(shoppingCartService).removeCartItemByUserIdAndItemId(anyLong(), anyLong());
 
 		// When
-		ResponseResult<Boolean> result = underTest.removeCartItem(auth, itemId);
+		ResponseResult<Long> result = underTest.removeCartItem(auth, itemId);
 
 		// Then
 		assertNotNull(result);
