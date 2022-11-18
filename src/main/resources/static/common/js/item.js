@@ -161,7 +161,7 @@ app.controller('itemDetailController', function($rootScope, $http, $location, $f
 			headers: {'Content-Type': 'application/json'}
 		}).then(function(result) {
 			//Update shopping cart items
-			loadShoppingCartData($rootScope,$http,$filter,graphQLService);
+			loadShoppingCartItemQuantity($rootScope,$http,$filter,graphQLService);
 			var cartItem = result.data.data;
 			$rootScope.inRequisition = cartItem.quantity;
 			checkInventory(cartItem.realInStock,cartItem.quantity,itemNum);
