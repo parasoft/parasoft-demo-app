@@ -120,7 +120,7 @@ public class ShoppingCartController {
 
 		Long currentUserId = AuthenticationUtil.getUserIdInAuthentication(auth);
 		shoppingCartService.clearShoppingCart(currentUserId);
-
+		response.setData(true);
 		return response;
 	}
 
