@@ -30,7 +30,7 @@ type Mutation {
     addNewItem(itemsDTO: ItemsDTO!): Item
     deleteItemByItemId(itemId: ID!): ID
     # cartItem
-    addItemInCart(shoppingCartDTO: ShoppingCartDTO!): CartItemEntity
+    addItemInCart(shoppingCartDTO: ShoppingCartDTO!): CartItem
 }
 
 # category
