@@ -753,21 +753,32 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 	    }
 
 		function addNewItem(){
-			$http({
-	            method: 'POST',
-	            url: '/proxy/v1/assets/items/',
-	            data: angular.element('#item_form').serializeJSON(),
-	            headers : {'Content-Type': 'application/json'}
-	        }).then(function(response) {
-	        	 toastr.success($filter('translate')("ADD_ITEM_SUCCESS"));
-	        	 demo.itemModal.showErrorBox = false;
-	        	 getAllItems();
-	        	 $('#item_modal').modal('hide');
-	        }, function error(response) {
-	        	handleErrorMessageForItemEdit(response);
-	        }).catch(function(response) {
-	        	handleErrorMessageForItemEdit(response);
-	        });
+            let params = angular.element('#item_form').serializeJSON();
+            let success = (data) => {
+                toastr.success($filter('translate')("ADD_ITEM_SUCCESS"));
+                demo.itemModal.showErrorBox = false;
+                getAllItems();
+                $('#item_modal').modal('hide');
+            }
+            let failToAddNewItem = (data) => {
+                handleErrorMessageForItemEdit(data);
+            }
+            if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+                graphQLService.addNewItem(params, success, (data) => {failToAddNewItem(data)}, "{id}");
+            } else {
+                $http({
+                    method: 'POST',
+                    url: '/proxy/v1/assets/items/',
+                    data: params,
+                    headers : {'Content-Type': 'application/json'}
+                }).then(function(response) {
+                    success(response);
+                }, function error(response) {
+                    failToAddNewItem(response);
+                }).catch(function(response) {
+                    failToAddNewItem(response);
+                });
+            }
 		}
 
 		function updateItem(itemId){
@@ -822,8 +833,16 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 		}
 
 		function handleErrorMessageForItemEdit(response){
+            var itemsDTO;
+            var isGraphql;
 			var messageNotFound = false;
 			demo.itemModal.showErrorBox = true;
+            if (response.config) {
+                isGraphql = response.config.url === demo.end_point_for_graphql ? true : false;
+                if (isGraphql) {
+                    itemsDTO = response.config.data.variables.itemsDTO;
+                }
+            }
 
 			if(response.data === null || response.data === undefined){
 				messageNotFound = true;
@@ -837,28 +856,28 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 					}else{
 						messageNotFound = true;
 					}
-				}else if(status === 400){
-					if(message.indexOf("in stock") !== -1){
-						demo.itemModal.formError = "IN_STOCK_NUMBER_IS_INCORRECT";
-					}else if(message.indexOf("exists") !== -1){
-						demo.itemModal.formError = "ITEM_NAME_ALREADY_EXISTS";
-					}else if(message.indexOf("item name") !== -1 && message.indexOf("empty") !== -1){
-						demo.itemModal.formError = "ITEM_NAME_CAN_NOT_BE_EMPTY";
-					}else if(message.indexOf("description") !== -1){
-						demo.itemModal.formError = "DESCRIPTION_VALUE_IS_INCORRECT";
-					}else if(message.indexOf("image file") !== -1 && message.indexOf("empty") !== -1){
-						demo.itemModal.formError = "IMAGE_PATH_CAN_NOT_BE_EMPTY";
-					}else if(message.indexOf("category") !== -1 && message.indexOf("null") !== -1){
-						demo.itemModal.formError = "CATEGORY_CAN_NOT_BE_EMPTY";
-					}else if(message.indexOf("image") !== -1 && message.indexOf("supported") !== -1){
-						demo.itemModal.formError = "UNSUPPORTED_FORMAT";
-					}else{
-						messageNotFound = true;
-					}
-				}else if(status === 500){
-					if(message.indexOf("regiontype") !== -1){
+				}else if(status === 400 || (isGraphql && itemsDTO.region !== "" && (itemsDTO.inStock === "" || itemsDTO.inStock <= (Math.pow(2, 31) - 1)))){
+                    if((message.indexOf("item name") !== -1 && message.indexOf("empty") !== -1) || (isGraphql && itemsDTO.name === "")){
+                        demo.itemModal.formError = "ITEM_NAME_CAN_NOT_BE_EMPTY";
+                    }else if(message.indexOf("exists") !== -1){
+                        demo.itemModal.formError = "ITEM_NAME_ALREADY_EXISTS";
+                    }else if(message.indexOf("description") !== -1 || (isGraphql && itemsDTO.description === "")){
+                        demo.itemModal.formError = "DESCRIPTION_VALUE_IS_INCORRECT";
+                    }else if((message.indexOf("category") !== -1 && message.indexOf("null") !== -1) || (isGraphql && itemsDTO.categoryId === "")){
+                        demo.itemModal.formError = "CATEGORY_CAN_NOT_BE_EMPTY";
+                    }else if(message.indexOf("image file") !== -1 && message.indexOf("empty") !== -1){
+                        demo.itemModal.formError = "IMAGE_PATH_CAN_NOT_BE_EMPTY";
+                    }else if(message.indexOf("in stock") !== -1 || (isGraphql && itemsDTO.inStock === "")){
+                        demo.itemModal.formError = "IN_STOCK_NUMBER_IS_INCORRECT";
+                    }else if(message.indexOf("image") !== -1 && message.indexOf("supported") !== -1){
+                        demo.itemModal.formError = "UNSUPPORTED_FORMAT";
+                    }else{
+                        messageNotFound = true;
+                    }
+				}else if(status === 500 || isGraphql){
+					if(message.indexOf("regiontype") !== -1 || (isGraphql && itemsDTO.region === "")){
 						demo.itemModal.formError = "LOCATION_VALUE_IS_INCORRECT";
-					}else if(message.indexOf("java.lang.integer") !== -1){
+					}else if(message.indexOf("java.lang.integer") !== -1 || (isGraphql && itemsDTO.inStock > 0)){
 						demo.itemModal.formError = "IN_STOCK_NUMBER_IS_INCORRECT";
 					}else if(message.indexOf("maximum upload size exceeded") !== -1){
 						demo.itemModal.formError = "INVALID_FILE_SIZE";
