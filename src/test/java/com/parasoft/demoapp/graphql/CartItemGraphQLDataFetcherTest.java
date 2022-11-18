@@ -239,9 +239,11 @@ public class CartItemGraphQLDataFetcherTest {
     public void test_removeAllCartItems_normal() throws Throwable {
         ObjectNode variables = objectMapper.createObjectNode();
         shoppingCartService.addCartItemInShoppingCart(1L, 1L, 1);
+
         GraphQLResponse response = graphQLTestTemplate
                 .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
                 .perform(REMOVE_ALL_CART_ITEMS_GRAPHQL_RESOURCE, variables);
+
         assertThat(response).isNotNull();
         assertThat(response.isOk()).isTrue();
         response.assertThatNoErrorsArePresent()
@@ -255,6 +257,7 @@ public class CartItemGraphQLDataFetcherTest {
     @Test
     public void test_removeAllCartItems_incorrectAuthentication() throws IOException {
         ObjectNode variables = objectMapper.createObjectNode();
+
         GraphQLResponse response = graphQLTestTemplate
                 .withBasicAuth(USERNAME_PURCHASER, "invalidPass")
                 .perform(REMOVE_ALL_CART_ITEMS_GRAPHQL_RESOURCE, variables);
@@ -265,6 +268,7 @@ public class CartItemGraphQLDataFetcherTest {
     @Test
     public void test_removeAllCartItems_noAuthentication() throws IOException {
         ObjectNode variables = objectMapper.createObjectNode();
+
         GraphQLResponse response = graphQLTestTemplate
                 .perform(REMOVE_ALL_CART_ITEMS_GRAPHQL_RESOURCE, variables);
 
@@ -274,6 +278,7 @@ public class CartItemGraphQLDataFetcherTest {
     @Test
     public void test_removeAllCartItems_noPermission() throws IOException {
         ObjectNode variables = objectMapper.createObjectNode();
+
         GraphQLResponse response = graphQLTestTemplate
                 .withBasicAuth(USERNAME_APPROVER, PASSWORD)
                 .perform(REMOVE_ALL_CART_ITEMS_GRAPHQL_RESOURCE, variables);
@@ -284,6 +289,7 @@ public class CartItemGraphQLDataFetcherTest {
     @Test
     public void test_removeAllCartItems_CartItemNotFoundException() throws IOException {
         ObjectNode variables = objectMapper.createObjectNode();
+
         GraphQLResponse response = graphQLTestTemplate
                 .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
                 .perform(REMOVE_ALL_CART_ITEMS_GRAPHQL_RESOURCE, variables);
