@@ -259,7 +259,7 @@ public class CartItemGraphQLDataFetcherTest {
     }
 
     @Test
-    public void test_removeCartItem_itemNotInCart() throws IOException {
+    public void test_removeCartItem_notFound() throws IOException {
         ObjectNode variables = objectMapper.createObjectNode();
         variables.put("itemId", 1L);
 
