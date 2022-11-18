@@ -1,4 +1,4 @@
-mutation UpdateCategory($categoryId: ID!, $categoryDto: CategoryDTO!) {
+mutation UpdateCategory($categoryId: Long!, $categoryDto: CategoryDTO!) {
     updateCategory(categoryId: $categoryId, categoryDto: $categoryDto) {
         id
         name

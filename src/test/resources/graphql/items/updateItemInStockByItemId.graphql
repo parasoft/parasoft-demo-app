@@ -1,4 +1,4 @@
-mutation UpdateItemInStockByItemId($itemId: ID!, $newInStock: Int!) {
+mutation UpdateItemInStockByItemId($itemId: Long!, $newInStock: Int!) {
     updateItemInStockByItemId(itemId: $itemId, newInStock: $newInStock) {
         id
         name

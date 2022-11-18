@@ -3,30 +3,35 @@ package com.parasoft.demoapp.graphql;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.graphql.spring.boot.test.GraphQLResponse;
-import com.graphql.spring.boot.test.GraphQLTestError;
 import com.graphql.spring.boot.test.GraphQLTestTemplate;
 import com.parasoft.demoapp.defaultdata.ResetEntrance;
 import com.parasoft.demoapp.dto.OrderDTO;
+import com.parasoft.demoapp.messages.ConfigMessages;
+import com.parasoft.demoapp.messages.OrderMessages;
 import com.parasoft.demoapp.model.global.UserEntity;
 import com.parasoft.demoapp.model.industry.*;
 import com.parasoft.demoapp.service.*;
-import lombok.extern.slf4j.Slf4j;
+import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import static com.graphql.spring.boot.test.helper.GraphQLTestConstantsHelper.DATA_PATH;
 import static com.parasoft.demoapp.defaultdata.global.GlobalUsersCreator.*;
-import static com.parasoft.demoapp.model.industry.RegionType.LOCATION_1;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Slf4j
 @RunWith(SpringRunner.class)
 @GraphQLTest
 public class OrderGraphQLDataFetcherTest {
@@ -38,27 +43,25 @@ public class OrderGraphQLDataFetcherTest {
 
     @Autowired
     private GraphQLTestTemplate graphQLTestTemplate;
-
     @Autowired
     private ObjectMapper objectMapper;
-
     @Autowired
     private ShoppingCartService shoppingCartService;
-
     @Autowired
     private OrderService orderService;
-
     @Autowired
     private UserService userService;
-
     @Autowired
     private ItemService itemService;
+    @Autowired
+    private GlobalPreferencesService globalPreferencesService;
 
     @Autowired
     private ResetEntrance resetEntrance;
-
+    @Rule
+    public TestName testName = new TestName();
     private UserEntity purchaser;
-    private UserEntity apporover;
+    private UserEntity approver;
 
     @Before
     public void setup() {
@@ -66,63 +69,38 @@ public class OrderGraphQLDataFetcherTest {
         // Reset database
         resetEntrance.run();
         purchaser = userService.getUserByUsername(USERNAME_PURCHASER);
-        apporover = userService.getUserByUsername(USERNAME_APPROVER);
+        approver = userService.getUserByUsername(USERNAME_APPROVER);
     }
 
-    private String createOrderForTest() throws Throwable {
-        Long userId = purchaser.getId();
-        String username = purchaser.getUsername();
-        OrderDTO orderDTO = getOrderDTOInstance();
-        shoppingCartService.addCartItemInShoppingCart(userId, 1L, 1);
-        OrderEntity orderEntity = orderService.addNewOrder(userId, username, orderDTO.getRegion(), orderDTO.getLocation(),
-                                            orderDTO.getReceiverId(), orderDTO.getEventId(), orderDTO.getEventNumber());
-
-        return orderEntity.getOrderNumber();
+    @Before
+    public void conditionalBefore() {
+        Set<String> testNames = new HashSet<>(Arrays.asList("test_getOrderByOrderNumber_normal", "test_createOrder_normal"));
+        if (testNames.contains(testName.getMethodName())) {
+            GraphQLTestUtil.resetDatabase(globalPreferencesService);
+        }
     }
 
-    private OrderDTO getOrderDTOInstance() {
-        String location = "location info";
-        String receiverId = "receiverId info";
-        String eventId = "eventId info";
-        String eventNumber = "eventNumber info";
-        return new OrderDTO(LOCATION_1, location, receiverId, eventId, eventNumber);
-    }
-
-
-    private void assertErrorForCreateOrder(GraphQLResponse response, HttpStatus expectedHttpStatus, String expectedErrorMessage) {
-        assertErrorForCreateOrder(response, expectedHttpStatus, expectedErrorMessage, CREATE_ORDER_DATA_JSON_PATH);
-    }
-
-    private void assertErrorForGetOrderByOrderNumber(GraphQLResponse response, HttpStatus expectedHttpStatus, String expectedErrorMessage) {
-        assertErrorForCreateOrder(response, expectedHttpStatus, expectedErrorMessage, GET_ORDER_BY_ORDER_NUMBER_DATA_JSON_PATH);
-    }
-
-    private void assertErrorForCreateOrder(GraphQLResponse response, HttpStatus expectedHttpStatus, String expectedErrorMessage, String jsonPathToBeNull) {
-        assertThat(response).isNotNull();
-        log.info(response.getRawResponse().getBody());
-        assertThat(response.isOk()).isTrue();
-        response.assertThatErrorsField().isNotNull()
-                .asListOf(GraphQLTestError.class)
-                .hasOnlyOneElementSatisfying(error -> {
-                    assertThat(error.getMessage()).isEqualTo(expectedErrorMessage);
-                    assertThat(error.getExtensions().get("statusCode")).isEqualTo(expectedHttpStatus.value());
-                })
-                .and()
-                .assertThatField(jsonPathToBeNull).isNull();
+    @After
+    public void conditionalAfter() {
+        Set<String> testNames = new HashSet<>(Arrays.asList("test_getOrderByOrderNumber_normal", "test_createOrder_normal"));
+        if (testNames.contains(testName.getMethodName())) {
+            GraphQLTestUtil.resetDatabase(globalPreferencesService);
+        }
     }
 
     @Test
-    public void getOrderByOrderNumber_normal() throws Throwable {
+    public void test_getOrderByOrderNumber_normal() throws Throwable {
         String orderNumber = createOrderForTest();
         ObjectNode variable = objectMapper.createObjectNode();
         variable.put("orderNumber", orderNumber);
-        GraphQLResponse graphQLResponse = graphQLTestTemplate
+
+        GraphQLResponse response = graphQLTestTemplate
                 .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
                 .perform(GET_ORDER_BY_ORDER_NUMBER_GRAPHQL_RESOURCE, variable);
-        assertThat(graphQLResponse).isNotNull();
-        log.info(graphQLResponse.getRawResponse().getBody());
-        assertThat(graphQLResponse.isOk()).isTrue();
-        graphQLResponse.assertThatNoErrorsArePresent()
+
+        assertThat(response).isNotNull();
+        assertThat(response.isOk()).isTrue();
+        response.assertThatNoErrorsArePresent()
                         .assertThatDataField().isNotNull()
                         .and()
                         .assertThatField(GET_ORDER_BY_ORDER_NUMBER_DATA_JSON_PATH)
@@ -131,46 +109,49 @@ public class OrderGraphQLDataFetcherTest {
     }
 
     @Test
-    public void getOrderByOrderNumber_InvalidParameter() throws Throwable {
+    public void test_getOrderByOrderNumber_emptyOrderNumber() throws Throwable {
         String orderNumber = "  ";
         ObjectNode variable = objectMapper.createObjectNode();
         variable.put("orderNumber", orderNumber);
-        GraphQLResponse graphQLResponse = graphQLTestTemplate
+
+        GraphQLResponse response = graphQLTestTemplate
                 .withBasicAuth(purchaser.getUsername(), purchaser.getPassword())
                 .perform(GET_ORDER_BY_ORDER_NUMBER_GRAPHQL_RESOURCE, variable);
 
-        assertErrorForGetOrderByOrderNumber(graphQLResponse, HttpStatus.INTERNAL_SERVER_ERROR, "Map has no value for 'orderNumber'");
+        assertError_getOrderByOrderNumber(response, HttpStatus.BAD_REQUEST, OrderMessages.ORDER_NUMBER_CANNOT_BE_BLANK);
     }
 
     @Test
-    public void getOrderByOrderNumber_notAuthenticated() throws Throwable {
+    public void test_getOrderByOrderNumber_noAuthentication() throws Throwable {
         String orderNumber = createOrderForTest();
         ObjectNode variable = objectMapper.createObjectNode();
         variable.put("orderNumber", orderNumber);
-        GraphQLResponse graphQLResponse = graphQLTestTemplate
+
+        GraphQLResponse response = graphQLTestTemplate
                 .withBasicAuth(purchaser.getUsername(), "invalidPassword")
                 .perform(GET_ORDER_BY_ORDER_NUMBER_GRAPHQL_RESOURCE, variable);
 
-        assertErrorForGetOrderByOrderNumber(graphQLResponse, HttpStatus.UNAUTHORIZED, GraphQLTestErrorType.UNAUTHORIZED.toString());
+        assertError_getOrderByOrderNumber(response, HttpStatus.UNAUTHORIZED, ConfigMessages.USER_IS_NOT_AUTHORIZED);
     }
 
     @Test
-    public void getOrderByOrderNumber_notFound() throws Throwable {
+    public void test_getOrderByOrderNumber_orderNumberNotFound() throws Throwable {
         String orderNumber = "00-000-000";
         ObjectNode variable = objectMapper.createObjectNode();
         variable.put("orderNumber", orderNumber);
-        GraphQLResponse graphQLResponse = graphQLTestTemplate
+
+        GraphQLResponse response = graphQLTestTemplate
                 .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
                 .perform(GET_ORDER_BY_ORDER_NUMBER_GRAPHQL_RESOURCE, variable);
 
-        assertErrorForGetOrderByOrderNumber(graphQLResponse, HttpStatus.NOT_FOUND, "There is no order corresponding to 00-000-000.");
+        assertError_getOrderByOrderNumber(response, HttpStatus.NOT_FOUND, MessageFormat.format(OrderMessages.THERE_IS_NO_ORDER_CORRESPONDING_TO, orderNumber));
     }
 
     @Test
     public void test_createOrder_normal() throws Exception {
         ItemEntity item = itemService.getItemById(1L);
         CartItemEntity cartItem = shoppingCartService.addCartItemInShoppingCart(purchaser.getId(), item.getId(), item.getInStock());
-        OrderDTO orderDTO = getOrderDTOInstance();
+        OrderDTO orderDTO = createOrderDTOInstance();
         ObjectNode orderDtoObjectNode = objectMapper.createObjectNode().putPOJO("orderDTO", orderDTO);
 
         GraphQLResponse response = graphQLTestTemplate
@@ -178,7 +159,6 @@ public class OrderGraphQLDataFetcherTest {
                 .perform(CREATE_ORDER_GRAPHQL_RESOURCE, orderDtoObjectNode);
 
         assertThat(response).isNotNull();
-        log.info(response.getRawResponse().getBody());
         assertThat(response.isOk()).isTrue();
         response.assertThatNoErrorsArePresent()
                 .assertThatDataField().isNotNull()
@@ -200,8 +180,8 @@ public class OrderGraphQLDataFetcherTest {
     }
 
     @Test
-    public void test_createOrder_regionNotExistOnCurrentIndustry() throws IOException {
-        OrderDTO orderDTO = getOrderDTOInstance();
+    public void test_createOrder_regionNotFound() throws IOException {
+        OrderDTO orderDTO = createOrderDTOInstance();
         orderDTO.setRegion(RegionType.UNITED_STATES);
         ObjectNode orderDtoObjectNode = objectMapper.createObjectNode().putPOJO("orderDTO", orderDTO);
 
@@ -209,12 +189,12 @@ public class OrderGraphQLDataFetcherTest {
                 .withBasicAuth(purchaser.getUsername(), purchaser.getPassword())
                 .perform(CREATE_ORDER_GRAPHQL_RESOURCE, orderDtoObjectNode);
 
-        assertErrorForCreateOrder(response, HttpStatus.BAD_REQUEST, "Location not found for region UNITED_STATES.");
+        assertError_createOrder(response, HttpStatus.BAD_REQUEST, MessageFormat.format(OrderMessages.LOCATION_NOT_FOUND_FOR_REGION, RegionType.UNITED_STATES.toString()));
     }
 
     @Test
-    public void test_createOrder_emptyLocationValue() throws IOException {
-        OrderDTO orderDTO = getOrderDTOInstance();
+    public void test_createOrder_emptyLocation() throws IOException {
+        OrderDTO orderDTO = createOrderDTOInstance();
         orderDTO.setLocation("");
         ObjectNode orderDtoObjectNode = objectMapper.createObjectNode().putPOJO("orderDTO", orderDTO);
 
@@ -222,12 +202,12 @@ public class OrderGraphQLDataFetcherTest {
                 .withBasicAuth(purchaser.getUsername(), purchaser.getPassword())
                 .perform(CREATE_ORDER_GRAPHQL_RESOURCE, orderDtoObjectNode);
 
-        assertErrorForCreateOrder(response, HttpStatus.BAD_REQUEST, "Location should not be blank(null, '' or '  ').");
+        assertError_createOrder(response, HttpStatus.BAD_REQUEST, OrderMessages.LOCATION_CANNOT_BE_BLANK);
     }
 
     @Test
-    public void test_createOrder_emptyReceiverIdValue() throws IOException {
-        OrderDTO orderDTO = getOrderDTOInstance();
+    public void test_createOrder_emptyReceiverId() throws IOException {
+        OrderDTO orderDTO = createOrderDTOInstance();
         orderDTO.setReceiverId("");
         ObjectNode orderDtoObjectNode = objectMapper.createObjectNode().putPOJO("orderDTO", orderDTO);
 
@@ -235,12 +215,12 @@ public class OrderGraphQLDataFetcherTest {
                 .withBasicAuth(purchaser.getUsername(), purchaser.getPassword())
                 .perform(CREATE_ORDER_GRAPHQL_RESOURCE, orderDtoObjectNode);
 
-        assertErrorForCreateOrder(response, HttpStatus.BAD_REQUEST, "Receiver ID should not be blank(null, '' or '  ').");
+        assertError_createOrder(response, HttpStatus.BAD_REQUEST, OrderMessages.RECEIVER_ID_CANNOT_BE_BLANK);
     }
 
     @Test
-    public void test_createOrder_emptyEventIdValue() throws IOException {
-        OrderDTO orderDTO = getOrderDTOInstance();
+    public void test_createOrder_emptyEventId() throws IOException {
+        OrderDTO orderDTO = createOrderDTOInstance();
         orderDTO.setEventId("");
         ObjectNode orderDtoObjectNode = objectMapper.createObjectNode().putPOJO("orderDTO", orderDTO);
 
@@ -248,12 +228,12 @@ public class OrderGraphQLDataFetcherTest {
                 .withBasicAuth(purchaser.getUsername(), purchaser.getPassword())
                 .perform(CREATE_ORDER_GRAPHQL_RESOURCE, orderDtoObjectNode);
 
-        assertErrorForCreateOrder(response, HttpStatus.BAD_REQUEST, "Event ID should not be blank(null, '' or '  ').");
+        assertError_createOrder(response, HttpStatus.BAD_REQUEST, OrderMessages.EVENT_ID_CANNOT_BE_BLANK);
     }
 
     @Test
-    public void test_createOrder_emptyEventNumberValue() throws IOException {
-        OrderDTO orderDTO = getOrderDTOInstance();
+    public void test_createOrder_emptyEventNumber() throws IOException {
+        OrderDTO orderDTO = createOrderDTOInstance();
         orderDTO.setEventNumber("");
         ObjectNode orderDtoObjectNode = objectMapper.createObjectNode().putPOJO("orderDTO", orderDTO);
 
@@ -261,41 +241,69 @@ public class OrderGraphQLDataFetcherTest {
                 .withBasicAuth(purchaser.getUsername(), purchaser.getPassword())
                 .perform(CREATE_ORDER_GRAPHQL_RESOURCE, orderDtoObjectNode);
 
-        assertErrorForCreateOrder(response, HttpStatus.BAD_REQUEST, "Event number should not be blank(null, '' or '  ').");
+        assertError_createOrder(response, HttpStatus.BAD_REQUEST, OrderMessages.EVENT_NUMBER_CANNOT_BE_BLANK);
     }
 
     @Test
-    public void test_createOrder_notAuthenticated() throws IOException {
-        OrderDTO orderDTO = getOrderDTOInstance();
+    public void test_createOrder_noAuthentication() throws IOException {
+        OrderDTO orderDTO = createOrderDTOInstance();
         ObjectNode orderDtoObjectNode = objectMapper.createObjectNode().putPOJO("orderDTO", orderDTO);
 
         GraphQLResponse response = graphQLTestTemplate
                 .perform(CREATE_ORDER_GRAPHQL_RESOURCE, orderDtoObjectNode);
 
-        assertErrorForCreateOrder(response, HttpStatus.UNAUTHORIZED, "Current user is not authorized.");
+        assertError_createOrder(response, HttpStatus.UNAUTHORIZED, ConfigMessages.USER_IS_NOT_AUTHORIZED);
     }
 
     @Test
-    public void test_createOrder_withIncorrectUsernameOrPassword() throws IOException {
-        OrderDTO orderDTO = getOrderDTOInstance();
+    public void test_createOrder_incorrectAuthentication() throws IOException {
+        OrderDTO orderDTO = createOrderDTOInstance();
         ObjectNode orderDtoObjectNode = objectMapper.createObjectNode().putPOJO("orderDTO", orderDTO);
 
         GraphQLResponse response = graphQLTestTemplate
                 .withBasicAuth(purchaser.getUsername(), "incorrectPassword")
                 .perform(CREATE_ORDER_GRAPHQL_RESOURCE, orderDtoObjectNode);
 
-        assertErrorForCreateOrder(response, HttpStatus.UNAUTHORIZED, "Current user is not authorized.");
+        assertError_createOrder(response, HttpStatus.UNAUTHORIZED, ConfigMessages.USER_IS_NOT_AUTHORIZED);
     }
 
     @Test
-    public void test_createOrder_withIncorrectRole() throws IOException {
-        OrderDTO orderDTO = getOrderDTOInstance();
+    public void test_createOrder_noPermission() throws IOException {
+        OrderDTO orderDTO = createOrderDTOInstance();
         ObjectNode orderDtoObjectNode = objectMapper.createObjectNode().putPOJO("orderDTO", orderDTO);
 
         GraphQLResponse response = graphQLTestTemplate
-                .withBasicAuth(apporover.getUsername(), apporover.getPassword())
+                .withBasicAuth(approver.getUsername(), approver.getPassword())
                 .perform(CREATE_ORDER_GRAPHQL_RESOURCE, orderDtoObjectNode);
 
-        assertErrorForCreateOrder(response, HttpStatus.FORBIDDEN, "Current user does not have permission.");
+        assertError_createOrder(response, HttpStatus.FORBIDDEN, ConfigMessages.USER_HAS_NO_PERMISSION);
     }
+
+    private String createOrderForTest() throws Throwable {
+        Long userId = purchaser.getId();
+        String username = purchaser.getUsername();
+        OrderDTO orderDTO = createOrderDTOInstance();
+        shoppingCartService.addCartItemInShoppingCart(userId, 1L, 1);
+        OrderEntity orderEntity = orderService.addNewOrder(userId, username, orderDTO.getRegion(), orderDTO.getLocation(),
+                orderDTO.getReceiverId(), orderDTO.getEventId(), orderDTO.getEventNumber());
+
+        return orderEntity.getOrderNumber();
+    }
+
+    private OrderDTO createOrderDTOInstance() {
+        String location = "location info";
+        String receiverId = "receiverId info";
+        String eventId = "eventId info";
+        String eventNumber = "eventNumber info";
+        return new OrderDTO(RegionType.LOCATION_1, location, receiverId, eventId, eventNumber);
+    }
+
+    private void assertError_createOrder(GraphQLResponse response, HttpStatus expectedHttpStatus, String expectedErrorMessage) {
+        GraphQLTestUtil.assertErrorResponse(response, expectedHttpStatus, expectedErrorMessage, CREATE_ORDER_DATA_JSON_PATH);
+    }
+
+    private void assertError_getOrderByOrderNumber(GraphQLResponse response, HttpStatus expectedHttpStatus, String expectedErrorMessage) {
+        GraphQLTestUtil.assertErrorResponse(response, expectedHttpStatus, expectedErrorMessage, GET_ORDER_BY_ORDER_NUMBER_DATA_JSON_PATH);
+    }
+
 }
