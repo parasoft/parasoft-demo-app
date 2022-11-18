@@ -329,7 +329,7 @@ function initRequisitionBarController(app){
             $http({
                 method: 'PUT',
                 url: '/proxy/v1/cartItems/'+requireItemId,
-                params: {"itemId":requireItemId,"itemQty":requireItemQty}
+                data: {"itemQty":requireItemQty}
             }).then(function(result) {
                 var cartItem = result.data.data;
                 if(Number(requireItemId) === Number(currentItemId)){
