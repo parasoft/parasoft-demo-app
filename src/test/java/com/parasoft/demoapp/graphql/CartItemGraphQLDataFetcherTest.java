@@ -287,7 +287,7 @@ public class CartItemGraphQLDataFetcherTest {
     }
 
     @Test
-    public void test_removeAllCartItems_CartItemNotFoundException() throws IOException {
+    public void test_removeAllCartItems_notFound() throws IOException {
         ObjectNode variables = objectMapper.createObjectNode();
 
         GraphQLResponse response = graphQLTestTemplate
