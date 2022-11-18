@@ -44,11 +44,8 @@ public class CategoryGraphQLDataFetcher {
     public DataFetcher<CategoryEntity> getCategoryById() {
         return dataFetchingEnvironment -> {
             try {
-                Map<String, String> uriVariables = new HashMap<>();
-                String categoryId = dataFetchingEnvironment.getArgument("categoryId");
-                if (categoryId != null && !categoryId.trim().isEmpty()) {
-                    uriVariables.put("categoryId", categoryId);
-                }
+                Map<String, Long> uriVariables = new HashMap<>();
+                uriVariables.put("categoryId", dataFetchingEnvironment.getArgument("categoryId"));
                 ResponseEntity<ResponseResult<CategoryEntity>> entity =
                     restTemplate.exchange(categoryBaseUrl + "/{categoryId}",
                         HttpMethod.GET,
@@ -66,10 +63,7 @@ public class CategoryGraphQLDataFetcher {
         return dataFetchingEnvironment -> {
             try {
                 Map<String, String> uriVariables = new HashMap<>();
-                String categoryName = dataFetchingEnvironment.getArgument("categoryName");
-                if (categoryName != null && !categoryName.trim().isEmpty()) {
-                    uriVariables.put("categoryName", categoryName);
-                }
+                uriVariables.put("categoryName", dataFetchingEnvironment.getArgument("categoryName"));
                 ResponseEntity<ResponseResult<CategoryEntity>> entity =
                         restTemplate.exchange(categoryBaseUrl + "/name/{categoryName}",
                                 HttpMethod.GET,
@@ -118,11 +112,8 @@ public class CategoryGraphQLDataFetcher {
     public DataFetcher<Integer> deleteCategoryById() {
         return dataFetchingEnvironment -> {
             try {
-                Map<String, String> uriVariables = new HashMap<>();
-                String categoryId = dataFetchingEnvironment.getArgument("categoryId");
-                if (categoryId != null && !categoryId.trim().isEmpty()) {
-                    uriVariables.put("categoryId", categoryId);
-                }
+                Map<String, Long> uriVariables = new HashMap<>();
+                uriVariables.put("categoryId", dataFetchingEnvironment.getArgument("categoryId"));
                 ResponseEntity<ResponseResult<Integer>> entity =
                         restTemplate.exchange(categoryBaseUrl + "/{categoryId}",
                                 HttpMethod.DELETE,
@@ -155,11 +146,8 @@ public class CategoryGraphQLDataFetcher {
     public DataFetcher<CategoryEntity> updateCategory() {
         return dataFetchingEnvironment -> {
             try {
-                Map<String, String> uriVariables = new HashMap<>();
-                String categoryId = dataFetchingEnvironment.getArgument("categoryId");
-                if (categoryId != null && !categoryId.trim().isEmpty()) {
-                    uriVariables.put("categoryId", categoryId);
-                }
+                Map<String, Long> uriVariables = new HashMap<>();
+                uriVariables.put("categoryId", dataFetchingEnvironment.getArgument("categoryId"));
                 ResponseEntity<ResponseResult<CategoryEntity>> entity =
                         restTemplate.exchange(  categoryBaseUrl + "/{categoryId}",
                                 HttpMethod.PUT,

@@ -1,8 +1,9 @@
 scalar DateTime
+scalar Long
 
 type Query {
     # category
-    getCategoryById(categoryId: ID!): Category
+    getCategoryById(categoryId: Long!): Category
     getCategoryByName(categoryName: String!): Category
     getCategories(searchString: String, page: Int, size: Int, sort: [String]): CategoryPageInfo
     # location
@@ -10,37 +11,37 @@ type Query {
     # order
     getOrderByOrderNumber(orderNumber: String!): Order
     #item
-    getItems(categoryId: Int, regions: [RegionType], searchString: String, page: Int, size: Int, sort: [String]): ItemPageInfo
-    getItemByItemId(itemId: ID!): Item
+    getItems(categoryId: Long, regions: [RegionType], searchString: String, page: Int, size: Int, sort: [String]): ItemPageInfo
+    getItemByItemId(itemId: Long!): Item
     getItemByName(itemName: String!): Item
     # cartItem
-    getCartItems: [CartItemEntity]
+    getCartItems: [CartItem]
 }
 type Mutation {
     # category
     addCategory(categoryDTO: CategoryDTO!): Category
-    deleteCategoryById(categoryId: ID!): Int
-    updateCategory(categoryId: ID!, categoryDto: CategoryDTO!): Category
+    deleteCategoryById(categoryId: Long!): Int
+    updateCategory(categoryId: Long!, categoryDto: CategoryDTO!): Category
     # order
     createOrder(orderDTO: OrderDTO!): Order
     #item
-    updateItemInStockByItemId(itemId: ID!, newInStock: Int!): Item
+    updateItemInStockByItemId(itemId: Long!, newInStock: Int!): Item
     deleteItemByName(itemName: String!): String
     addNewItem(itemsDTO: ItemsDTO!): Item
     deleteItemByItemId(itemId: ID!): ID
     # cartItem
-    addItemInCart(shoppingCartDTO: ShoppingCartDTO!): CartItemEntity
+    addItemInCart(shoppingCartDTO: ShoppingCartDTO!): CartItem
 }
 
 # category
 type Category {
-    id: ID
+    id: Long
     name: String
     description: String
     image: String
 }
 type CategoryPageInfo {
-    totalElements: ID
+    totalElements: Long
     totalPages: Int
     size: Int
     number: Int
@@ -55,7 +56,7 @@ input CategoryDTO {
 }
 # location
 type Location {
-    id: ID
+    id: Long
     locationInfo: String
     locationImage: String
 }
@@ -87,7 +88,7 @@ enum RegionType {
 }
 # order
 type Order {
-    id: ID
+    id: Long
     orderNumber: String
     requestedBy: String
     status: String
@@ -106,11 +107,11 @@ type Order {
     comments: String
 }
 type OrderItem {
-    id: ID
+    id: Long
     name: String
     description: String
     image: String
-    itemId: ID
+    itemId: Long
     quantity: Int
 }
 input OrderDTO {
@@ -122,17 +123,17 @@ input OrderDTO {
 }
 #item
 type Item {
-    id: ID
+    id: Long
     name: String
     description: String
     inStock: Int
     image: String
     region: RegionType
     lastAccessedDate: DateTime
-    categoryId: ID
+    categoryId: Long
 }
 type ItemPageInfo {
-    totalElements: Int
+    totalElements: Long
     totalPages: Int
     size: Int
     number: Int
@@ -143,16 +144,16 @@ type ItemPageInfo {
 input ItemsDTO {
     name: String!
     description: String!
-    categoryId: Int!
+    categoryId: Long!
     inStock: Int!
     imagePath: String
     region: RegionType!
 }
 #cartItems
-type CartItemEntity {
-    id: ID
-    userId: ID
-    itemId: ID
+type CartItem {
+    id: Long
+    userId: Long
+    itemId: Long
     name: String
     description: String
     image: String
