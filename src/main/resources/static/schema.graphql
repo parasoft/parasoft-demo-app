@@ -162,6 +162,6 @@ type CartItem {
 }
 #shoppingCartDTO
 input ShoppingCartDTO {
-    itemId: ID!
+    itemId: Long!
     itemQty: Int!
 }
