@@ -31,6 +31,7 @@ type Mutation {
     deleteItemByItemId(itemId: Long!): Long
     # cartItem
     addItemInCart(shoppingCartDTO: ShoppingCartDTO!): CartItem
+    removeAllCartItems: Boolean
 }
 
 # category
