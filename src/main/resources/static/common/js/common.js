@@ -257,7 +257,7 @@ function initRequisitionBarController(app){
 
                 if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
                     let selectionSet = "{inStock}"
-                    graphQLService.getItemByItemId(params, success, (data) => {error(data, "graphQL")}, selectionSet);
+                    graphQLService.getItemByItemId(params, success, (data) => {error(data)}, selectionSet);
                 } else {
                     $http({
                         method: 'GET',
@@ -265,7 +265,7 @@ function initRequisitionBarController(app){
                     }).then(function(result) {
                         success(result.data.data);
                     }).catch(function(result) {
-                        error(result, 'items')
+                        error(result)
                     });
                 }
             }

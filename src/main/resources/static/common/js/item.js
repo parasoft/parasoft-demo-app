@@ -45,7 +45,7 @@ app.controller('itemDetailController', function($rootScope, $http, $location, $f
             } else {
                 $http({
                     method: 'GET',
-                    url: '/proxy/v1/assets/categories/' + item.categoryId,
+                    url: '/proxy/v1/assets/categories/' + data.categoryId,
                 }).then(function (result) {
                     success(result.data.data);
                 }).catch(function (result) {
