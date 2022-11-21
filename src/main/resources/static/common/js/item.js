@@ -178,21 +178,32 @@ app.controller('itemDetailController', function($rootScope, $http, $location, $f
 			return;
 		}
 
-		$http({
-			method: 'POST',
-			url: '/proxy/v1/cartItems',
-			data: {itemId:itemId,itemQty:itemNum},
-			headers: {'Content-Type': 'application/json'}
-		}).then(function(result) {
-			//Update shopping cart items
-			loadShoppingCartItemQuantity($rootScope,$http,$filter,graphQLService);
-			var cartItem = result.data.data;
-			$rootScope.inRequisition = cartItem.quantity;
-			checkInventory(cartItem.realInStock,cartItem.quantity,itemNum);
-			toastr.success($filter('translate')('ADD_TO_CART_SUCCESS'));
-		}).catch(function(result) {
-			console.info(result);
-		});
+		let params = {itemId:itemId,itemQty:itemNum};
+        let success = (data) => {
+            //Update shopping cart items
+            loadShoppingCartItemQuantity($rootScope,$http,$filter,graphQLService);
+            $rootScope.inRequisition = data.quantity;
+            checkInventory(data.realInStock,data.quantity,itemNum);
+            toastr.success($filter('translate')('ADD_TO_CART_SUCCESS'));
+        }
+        let error = (data, endpointType) => {
+            console.info(data);
+        }
+
+        if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+            graphQLService.addItemInCart({"shoppingCartDTO": params}, success, (data) => {error(data, "graphQL")}, "{realInStock, quantity}");
+        } else {
+            $http({
+                method: 'POST',
+                url: '/proxy/v1/cartItems',
+                data: params,
+                headers: {'Content-Type': 'application/json'}
+            }).then(function(result) {
+                success(result.data.data);
+            }).catch(function(result) {
+                error(result, "cart");
+            });
+        }
 	}
 
 
