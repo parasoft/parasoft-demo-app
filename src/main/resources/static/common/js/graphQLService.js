@@ -142,6 +142,19 @@ angular
                     success(response.data.data.getCartItems);
                 }, error);
             }
+            // items
+            instance.getItemByItemId = function (variables, success, error, selectionSet) {
+                if (!selectionSet) {
+                    selectionSet = "{id,name,description,inStock,image,region,lastAccessedDate,categoryId}";
+                }
+                let requestBody = {
+                    "query": "query GetItemByItemId($itemId: Long!){getItemByItemId(itemId: $itemId)" + selectionSet + "}",
+                    "variables": variables
+                }
+                makeCall(requestBody, function(response) {
+                    success(response.data.data.getItemByItemId);
+                }, error);
+            }
             // customized call
             instance.makeGraphQLCall = makeCall;
             return instance;
