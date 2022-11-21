@@ -1,0 +1,12 @@
+mutation updateItemInCart($itemId: Long!, $updateShoppingCartItemDTO: UpdateShoppingCartItemDTO!) {
+    updateItemInCart(itemId: $itemId, updateShoppingCartItemDTO: $updateShoppingCartItemDTO) {
+        id
+        userId
+        itemId
+        name
+        description
+        image
+        realInStock
+        quantity
+    }
+}

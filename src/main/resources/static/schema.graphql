@@ -31,6 +31,7 @@ type Mutation {
     deleteItemByItemId(itemId: ID!): ID
     # cartItem
     addItemInCart(shoppingCartDTO: ShoppingCartDTO!): CartItem
+    updateItemInCart(itemId: Long!, updateShoppingCartItemDTO: UpdateShoppingCartItemDTO!): CartItem
 }
 
 # category
@@ -160,8 +161,10 @@ type CartItem {
     realInStock: Int
     quantity: Int
 }
-#shoppingCartDTO
 input ShoppingCartDTO {
     itemId: ID!
+    itemQty: Int!
+}
+input UpdateShoppingCartItemDTO {
     itemQty: Int!
 }
