@@ -138,6 +138,19 @@ angular
                     success(response.data.data.deleteItemByItemId);
                 }, error);
             }
+            instance.addNewItem = function (variables, success, error, selectionSet) {
+                if (!selectionSet) {
+                    selectionSet = "{id,name,description,inStock,image,region,lastAccessedDate,categoryId}";
+                }
+                let requestBody = {
+                    "query": "mutation AddNewItem($itemsDTO: ItemsDTO!){ " +
+                    "addNewItem(itemsDTO: $itemsDTO)" + selectionSet + "}",
+                    "variables": {"itemsDTO": variables}
+                };
+                makeCall(requestBody, function(response) {
+                    success(response.data.data.addNewItem);
+                }, error);
+            }
             //cartItems
             instance.getCartItems = function(success, error, selectionSet) {
                 if (!selectionSet) {
@@ -146,6 +159,37 @@ angular
                 let requestBody = {"query": "query GetCartItems{getCartItems" + selectionSet + "}"}
                 makeCall(requestBody, function(response) {
                     success(response.data.data.getCartItems);
+                }, error);
+            }
+            instance.removeCartItem = function(itemId, success, error) {
+                let requestBody = {
+                    "query": "mutation RemoveCartItem($itemId: Long!){removeCartItem(itemId: $itemId)}",
+                    "variables": { "itemId": itemId }
+                }
+                makeCall(requestBody, function(response) {
+                    success(response.data.data.removeCartItem);
+                }, error);
+            }
+            instance.addItemInCart = function(variables, success, error, selectionSet) {
+                if (!selectionSet) {
+                    selectionSet = "{id, userId, itemId, name, description, image, realInStock, quantity}"
+                }
+                let requestBody = {"query": "mutation AddItemInCart($shoppingCartDTO:ShoppingCartDTO!){addItemInCart(shoppingCartDTO:$shoppingCartDTO)" + selectionSet + "}", "variables": variables}
+                makeCall(requestBody, function(response) {
+                    success(response.data.data.addItemInCart);
+                }, error);
+            }
+            // items
+            instance.getItemByItemId = function (variables, success, error, selectionSet) {
+                if (!selectionSet) {
+                    selectionSet = "{id,name,description,inStock,image,region,lastAccessedDate,categoryId}";
+                }
+                let requestBody = {
+                    "query": "query GetItemByItemId($itemId: Long!){getItemByItemId(itemId: $itemId)" + selectionSet + "}",
+                    "variables": variables
+                }
+                makeCall(requestBody, function(response) {
+                    success(response.data.data.getItemByItemId);
                 }, error);
             }
             // customized call

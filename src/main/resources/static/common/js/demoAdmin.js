@@ -753,21 +753,30 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 	    }
 
 		function addNewItem(){
-			$http({
-	            method: 'POST',
-	            url: '/proxy/v1/assets/items/',
-	            data: angular.element('#item_form').serializeJSON(),
-	            headers : {'Content-Type': 'application/json'}
-	        }).then(function(response) {
-	        	 toastr.success($filter('translate')("ADD_ITEM_SUCCESS"));
-	        	 demo.itemModal.showErrorBox = false;
-	        	 getAllItems();
-	        	 $('#item_modal').modal('hide');
-	        }, function error(response) {
-	        	handleErrorMessageForItemEdit(response);
-	        }).catch(function(response) {
-	        	handleErrorMessageForItemEdit(response);
-	        });
+            let params = angular.element('#item_form').serializeJSON();
+            let success = (data) => {
+                toastr.success($filter('translate')("ADD_ITEM_SUCCESS"));
+                demo.itemModal.showErrorBox = false;
+                getAllItems();
+                $('#item_modal').modal('hide');
+            }
+
+            if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+                graphQLService.addNewItem(params, success, (data) => {handleErrorMessageForItemEdit(data)}, "{id}");
+            } else {
+                $http({
+                    method: 'POST',
+                    url: '/proxy/v1/assets/items/',
+                    data: params,
+                    headers : {'Content-Type': 'application/json'}
+                }).then(function(response) {
+                    success(response);
+                }, function error(response) {
+                    handleErrorMessageForItemEdit(response);
+                }).catch(function(response) {
+                    handleErrorMessageForItemEdit(response);
+                });
+            }
 		}
 
 		function updateItem(itemId){
@@ -831,6 +840,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 				console.log(response);
 				var message = response.data.message.toLowerCase();
 				var status = response.status;
+
 				if(status === 404){
 					if(message.indexOf("category") !== -1){
 						demo.itemModal.formError = "CATEGORY_NOT_FOUND";
@@ -838,34 +848,36 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 						messageNotFound = true;
 					}
 				}else if(status === 400){
-					if(message.indexOf("in stock") !== -1){
-						demo.itemModal.formError = "IN_STOCK_NUMBER_IS_INCORRECT";
-					}else if(message.indexOf("exists") !== -1){
-						demo.itemModal.formError = "ITEM_NAME_ALREADY_EXISTS";
-					}else if(message.indexOf("item name") !== -1 && message.indexOf("empty") !== -1){
-						demo.itemModal.formError = "ITEM_NAME_CAN_NOT_BE_EMPTY";
-					}else if(message.indexOf("description") !== -1){
-						demo.itemModal.formError = "DESCRIPTION_VALUE_IS_INCORRECT";
-					}else if(message.indexOf("image file") !== -1 && message.indexOf("empty") !== -1){
-						demo.itemModal.formError = "IMAGE_PATH_CAN_NOT_BE_EMPTY";
-					}else if(message.indexOf("category") !== -1 && message.indexOf("null") !== -1){
-						demo.itemModal.formError = "CATEGORY_CAN_NOT_BE_EMPTY";
-					}else if(message.indexOf("image") !== -1 && message.indexOf("supported") !== -1){
-						demo.itemModal.formError = "UNSUPPORTED_FORMAT";
-					}else{
-						messageNotFound = true;
-					}
-				}else if(status === 500){
-					if(message.indexOf("regiontype") !== -1){
-						demo.itemModal.formError = "LOCATION_VALUE_IS_INCORRECT";
-					}else if(message.indexOf("java.lang.integer") !== -1){
-						demo.itemModal.formError = "IN_STOCK_NUMBER_IS_INCORRECT";
-					}else if(message.indexOf("maximum upload size exceeded") !== -1){
-						demo.itemModal.formError = "INVALID_FILE_SIZE";
-					}else{
-						messageNotFound = true;
-					}
-				}
+                    if(message.indexOf("in stock") !== -1){
+                        demo.itemModal.formError = "IN_STOCK_NUMBER_IS_INCORRECT";
+                    }else if(message.indexOf("exists") !== -1){
+                        demo.itemModal.formError = "ITEM_NAME_ALREADY_EXISTS";
+                    }else if(message.indexOf("item name") !== -1 && message.indexOf("empty") !== -1){
+                        demo.itemModal.formError = "ITEM_NAME_CAN_NOT_BE_EMPTY";
+                    }else if(message.indexOf("description") !== -1){
+                        demo.itemModal.formError = "DESCRIPTION_VALUE_IS_INCORRECT";
+                    }else if(message.indexOf("image file") !== -1 && message.indexOf("empty") !== -1){
+                        demo.itemModal.formError = "IMAGE_PATH_CAN_NOT_BE_EMPTY";
+                    }else if(message.indexOf("category") !== -1 && message.indexOf("null") !== -1){
+                        demo.itemModal.formError = "CATEGORY_CAN_NOT_BE_EMPTY";
+                    }else if(message.indexOf("image") !== -1 && message.indexOf("supported") !== -1){
+                        demo.itemModal.formError = "UNSUPPORTED_FORMAT";
+                    }else{
+                        messageNotFound = true;
+                    }
+                }else if(status === 500){
+                    if(message.indexOf("regiontype") !== -1){
+                        demo.itemModal.formError = "LOCATION_VALUE_IS_INCORRECT";
+                    }else if(message.indexOf("java.lang.integer") !== -1){
+                        demo.itemModal.formError = "IN_STOCK_NUMBER_IS_INCORRECT";
+                    }else if(message.indexOf("maximum upload size exceeded") !== -1){
+                        demo.itemModal.formError = "INVALID_FILE_SIZE";
+                    }else{
+                        messageNotFound = true;
+                    }
+                } else {
+                    messageNotFound = true;
+                }
 			}
 
 			if(messageNotFound){

@@ -3,6 +3,7 @@ package com.parasoft.demoapp.graphql;
 import com.parasoft.demoapp.config.WebConfig;
 import com.parasoft.demoapp.controller.ResponseResult;
 import com.parasoft.demoapp.model.industry.LocationEntity;
+import com.parasoft.demoapp.model.industry.RegionType;
 import graphql.schema.DataFetcher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
@@ -16,6 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
+import java.util.List;
 import java.util.Objects;
 
 import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.HOST;
@@ -34,13 +36,13 @@ public class LocationGraphQLDataFetcher {
 
     @PostConstruct
     private void init() {
-        locationBaseUrl = HOST + webConfig.getServerPort() + "/v1/locations/location";
+        locationBaseUrl = HOST + webConfig.getServerPort() + "/v1/locations";
     }
 
     public DataFetcher<LocationEntity> getLocation() {
         return environment -> {
             try {
-                UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(locationBaseUrl);
+                UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(locationBaseUrl + "/location");
                 Object regionType = environment.getArgument("region");
                 if (regionType != null) {
                     builder.queryParam("region", regionType);
@@ -52,6 +54,21 @@ public class LocationGraphQLDataFetcher {
                                 new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
                                 new ParameterizedTypeReference<ResponseResult<LocationEntity>>() {});
                 return Objects.requireNonNull(response.getBody()).getData();
+            } catch (Exception e) {
+                throw RestTemplateUtil.convertException(e);
+            }
+        };
+    }
+
+    public DataFetcher<List<RegionType>> getAllRegionTypesOfCurrentIndustry() {
+        return environment -> {
+            try {
+                ResponseEntity<ResponseResult<List<RegionType>>> entity =
+                        restTemplate.exchange(locationBaseUrl + "/regions",
+                                HttpMethod.GET,
+                                new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
+                                new ParameterizedTypeReference<ResponseResult<List<RegionType>>>() {});
+                return Objects.requireNonNull(entity.getBody()).getData();
             } catch (Exception e) {
                 throw RestTemplateUtil.convertException(e);
             }
