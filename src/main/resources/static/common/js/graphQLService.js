@@ -68,6 +68,18 @@ angular
                     success(response.data.data.addCategory);
                 }, error);
             }
+            instance.updateCategory = function(variables, success, error, selectionSet) {
+                if (!selectionSet) {
+                    selectionSet = "{id,name,description,image}"
+                }
+                let requestBody = {
+                    "query": "mutation UpdateCategory($categoryId:Long!,$categoryDto:CategoryDTO!){updateCategory(categoryId:$categoryId,categoryDto:$categoryDto)" + selectionSet + "}",
+                    "variables": variables
+                }
+                makeCall(requestBody, function(response) {
+                    success(response.data.data.updateCategory);
+                }, error);
+            }
             // locations
             instance.getLocation = function(variables, success, error) {
                 let requestBody = {"query": "query GetLocation($region:RegionType!){getLocation(region:$region){id,locationInfo,locationImage}}", "variables": variables}

@@ -561,19 +561,6 @@ public class ItemGraphQLDataFetcherTest {
     }
 
     @Test
-    public void test_deleteItemByItemId_emptyItemId() throws IOException {
-        String itemId = "  ";
-        ObjectNode variables = objectMapper.createObjectNode();
-        variables.put("itemId", itemId);
-
-        GraphQLResponse response = graphQLTestTemplate
-                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
-                .perform(DELETE_ITEM_BY_ITEM_ID_GRAPHQL_RESOURCE, variables);
-
-        assertError_deleteItemByItemId(response, HttpStatus.INTERNAL_SERVER_ERROR, "Map has no value for 'itemId'");
-    }
-
-    @Test
     public void test_deleteItemByItemId_invalidItemId() throws IOException {
         String itemId = "-1";
         ObjectNode variables = objectMapper.createObjectNode();
