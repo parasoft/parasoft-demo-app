@@ -129,7 +129,7 @@ function initRequisitionBarController(app){
         //Get current itemId
         var currentItemId = $location.absUrl().substr($location.absUrl().lastIndexOf("/")+1);
         //Get requisition data from database
-        loadShoppingCartData($rootScope,$http,$filter,graphQLService);
+        loadShoppingCartItemQuantity($rootScope,$http,$filter,graphQLService);
 
         //Get related assets data from database TODO
         var testNums = [0,1,2];
@@ -329,7 +329,7 @@ function initRequisitionBarController(app){
             $http({
                 method: 'PUT',
                 url: '/proxy/v1/cartItems/'+requireItemId,
-                params: {"itemId":requireItemId,"itemQty":requireItemQty}
+                data: {"itemQty":requireItemQty}
             }).then(function(result) {
                 var cartItem = result.data.data;
                 if(Number(requireItemId) === Number(currentItemId)){
@@ -558,6 +558,39 @@ function loadShoppingCartData($rootScope,$http,$filter,graphQLService){
 
         if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
             let selectionSet = "{id, userId, itemId, name, description, image, realInStock, quantity}";
+            graphQLService.getCartItems(success, (data) => {error(data, "graphQL")}, selectionSet);
+        } else {
+            $http({
+                method: 'GET',
+                url: '/proxy/v1/cartItems',
+            }).then(function(result) {
+                success(result.data.data);
+            }).catch(function(result) {
+                error(result, "cart");
+            })
+        }
+    }, 500);
+}
+
+function loadShoppingCartItemQuantity($rootScope,$http,$filter,graphQLService) {
+    // Set time out for avoiding to get the key when using $filter('translate') fliter.
+    setTimeout(function(){
+        let success = (data) => {
+            var requisitionNums = new Array();
+            for(var i = 0; i < data.length; i++) {
+                var cartItem = data[i];
+                var quantity = cartItem.quantity;
+                requisitionNums.push(quantity);
+            }
+            $rootScope.totalAmount = sum(requisitionNums);
+        }
+
+        let error = (data, endpointType) => {
+         console.info(data);
+        }
+
+        if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+            let selectionSet = "{quantity}";
             graphQLService.getCartItems(success, (data) => {error(data, "graphQL")}, selectionSet);
         } else {
             $http({

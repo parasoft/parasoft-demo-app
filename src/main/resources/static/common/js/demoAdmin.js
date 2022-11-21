@@ -1120,23 +1120,36 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 			}
 		}
 
-		function updateCategory(categoryId){
-			$http({
-	            method: 'PUT',
-	            url: '/proxy/v1/assets/categories/' + categoryId,
-	            data: angular.element('#category_form').serializeJSON(),
-	            headers : {'Content-Type': 'application/json'}
-	        }).then(function(response) {
-	        	 toastr.success($filter('translate')("UPDATE_CATEGORY_SUCCESS"));
-	        	 demo.categoryModal.showErrorBox = false;
-	        	 getAllCategories(); // refresh all categories
-	        	 $('#category_modal').modal('hide');
-	        }, function error(response) {
-	        	handleErrorMessageForCategoryEdit(response);
-	        }).catch(function(response) {
-	        	handleErrorMessageForCategoryEdit(response);
-	        });
-		}
+        function updateCategory(categoryId){
+            let updateCategorySuccess = (data) => {
+                toastr.success($filter('translate')("UPDATE_CATEGORY_SUCCESS"));
+                demo.categoryModal.showErrorBox = false;
+                getAllCategories(); // refresh all categories
+                $('#category_modal').modal('hide');
+            }
+            let updateCategoryError = (data) => {
+                handleErrorMessageForCategoryEdit(data);
+            }
+
+            let updateCategoryFormData = angular.element('#category_form').serializeJSON();
+            let updateCategoryParams = {"categoryId": categoryId, "categoryDto": updateCategoryFormData};
+            if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+                graphQLService.updateCategory(updateCategoryParams, updateCategorySuccess, (data) => {updateCategoryError(data)}, "{id}");
+            } else {
+                $http({
+                    method: 'PUT',
+                    url: '/proxy/v1/assets/categories/' + categoryId,
+                    data: updateCategoryFormData,
+                    headers: {'Content-Type': 'application/json'}
+                }).then(function (response) {
+                    updateCategorySuccess(response.data.data);
+                }, function error(response) {
+                    updateCategoryError(response);
+                }).catch(function (response) {
+                    updateCategoryError(response);
+                });
+            }
+        }
 
 		function saveCategoryInfoWithImage(categoryId){
 			var callBackAfterUploadSuccess = function(response) {

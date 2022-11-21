@@ -28,9 +28,11 @@ type Mutation {
     updateItemInStockByItemId(itemId: Long!, newInStock: Int!): Item
     deleteItemByName(itemName: String!): String
     addNewItem(itemsDTO: ItemsDTO!): Item
-    deleteItemByItemId(itemId: ID!): ID
+    deleteItemByItemId(itemId: Long!): Long
     # cartItem
     addItemInCart(shoppingCartDTO: ShoppingCartDTO!): CartItem
+    removeCartItem(itemId: Long!): Long
+    removeAllCartItems: Boolean
 }
 
 # category
@@ -162,6 +164,6 @@ type CartItem {
 }
 #shoppingCartDTO
 input ShoppingCartDTO {
-    itemId: ID!
+    itemId: Long!
     itemQty: Int!
 }
