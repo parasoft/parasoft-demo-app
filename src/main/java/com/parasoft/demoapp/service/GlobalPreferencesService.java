@@ -64,6 +64,11 @@ public class GlobalPreferencesService {
     @Autowired
     private GlobalPreferencesDefaultSettingsService defaultGlobalPreferencesSettingsService;
 
+    /**
+     * A flag indicating whether the destinations of the mq proxy need to be updated when the global preference is updated.
+    * */
+    private boolean mqProxyStatusChanged = false;
+
 
     /**
     * This method is used only when PDA startup first time(it means no db files are created),
@@ -119,7 +124,7 @@ public class GlobalPreferencesService {
 
     @Transactional(transactionManager = "globalTransactionManager",
             rollbackFor = {ParameterException.class, VirtualizeServerUrlException.class})
-    public GlobalPreferencesEntity updateGlobalPreferences(GlobalPreferencesDTO globalPreferencesDto)
+    public synchronized GlobalPreferencesEntity updateGlobalPreferences(GlobalPreferencesDTO globalPreferencesDto)
             throws GlobalPreferencesNotFoundException, GlobalPreferencesMoreThanOneException, ParameterException,
             EndpointInvalidException, VirtualizeServerUrlException {
 
@@ -196,7 +201,9 @@ public class GlobalPreferencesService {
 
         refreshProxyDataSource(preferences);
 
-        refreshInventoryQueueDestinations(preferences);
+        if(mqProxyStatusChanged) {
+            refreshInventoryQueueDestinations(preferences);
+        }
 
         // TODO switch other settings
     }
@@ -388,6 +395,8 @@ public class GlobalPreferencesService {
         Boolean mqProxyEnabled = globalPreferencesDto.getMqProxyEnabled();
         ParameterValidator.requireNonNull(mqProxyEnabled, GlobalPreferencesMessages.MQENABLED_MUST_NOT_BE_NULL);
 
+         boolean mqProxyStatusChangedResult = checkMqProxyStatusHasChanged(currentPreferences, globalPreferencesDto);
+
         if (mqProxyEnabled) {
             MqType mqType = globalPreferencesDto.getMqType();
             validateProxyConfig(globalPreferencesDto);
@@ -398,6 +407,25 @@ public class GlobalPreferencesService {
             currentPreferences.setInventoryServiceDestinationQueue(globalPreferencesDto.getInventoryServiceDestinationQueue());
         }
         currentPreferences.setMqProxyEnabled(mqProxyEnabled);
+
+        mqProxyStatusChanged = mqProxyStatusChangedResult;
+    }
+
+    public boolean checkMqProxyStatusHasChanged(GlobalPreferencesEntity currentPreferences,
+                                                GlobalPreferencesDTO globalPreferencesDto) {
+        Boolean mqProxyEnabled = globalPreferencesDto.getMqProxyEnabled();
+        if(!mqProxyEnabled.equals(currentPreferences.getMqProxyEnabled())) {
+            return true;
+        }
+
+        if(mqProxyEnabled) {
+            return !(globalPreferencesDto.getMqType() == currentPreferences.getMqType()) ||
+                    !(globalPreferencesDto.getOrderServiceDestinationQueue().equals(currentPreferences.getOrderServiceDestinationQueue())) ||
+                    !(globalPreferencesDto.getOrderServiceReplyToQueue().equals(currentPreferences.getOrderServiceReplyToQueue())) ||
+                    !(globalPreferencesDto.getInventoryServiceDestinationQueue().equals(currentPreferences.getInventoryServiceDestinationQueue())) ||
+                    !(globalPreferencesDto.getInventoryServiceReplyToQueue().equals(currentPreferences.getInventoryServiceReplyToQueue()));
+        }
+        return false;
     }
 
     private void switchIndustry(GlobalPreferencesEntity currentPreferences) {
