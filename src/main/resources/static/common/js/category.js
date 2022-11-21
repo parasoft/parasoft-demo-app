@@ -142,18 +142,30 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
             checkInventory(cartItem.realInStock,itemId,cartItem.quantity);
             $interval(function(){category.loadingAnimation = false;category.showQuantity = true;},500,1);
         }).catch(function(result) {
-            category.inRequisition = 0;
+            category.currentItem.inRequisition = 0;
             console.info(result);
-            $http({
-                method: 'GET',
-                url: '/proxy/v1/assets/items/' + itemId,
-            }).then(function(result) {
-                var item = result.data.data;
-                category.inStock = item.inStock;
-                checkInventory(item.inStock,itemId,0);
-            }).catch(function(result) {
-                console.info(result);
-            });
+            let success = (data) => {
+                category.currentItem.inStock = data.inStock;
+                checkInventory(data.inStock,itemId,0);
+            };
+            let error = (data) => {
+                console.info(data);
+            };
+            let param = {"itemId": itemId};
+
+            if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+                let selectionSet = "{inStock}"
+                graphQLService.getItemByItemId(param, success, (data) => {error(data, "graphQL")}, selectionSet);
+            } else {
+                $http({
+                    method: 'GET',
+                    url: '/proxy/v1/assets/items/' + itemId,
+                }).then(function(result) {
+                    success(result.data.data);
+                }).catch(function(result) {
+                    error(result, 'items')
+                });
+            }
 
             $interval(function(){category.loadingAnimation = false;category.showQuantity = true;},500,1);
         });
@@ -171,12 +183,8 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
             return;
         }
 
-        $http({
-            method: 'POST',
-            url: '/proxy/v1/cartItems',
-            data: {itemId:id,itemQty:itemNum},
-            headers: {'Content-Type': 'application/json'}
-        }).then(function(result) {
+        let params = {itemId:id,itemQty:itemNum};
+        let success = (data) => {
             closeRequisitionDetail(id);
             //Update shopping cart items
             loadShoppingCartItemQuantity($rootScope,$http,$filter,graphQLService);
@@ -184,10 +192,26 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
             //This is to avoid some format errors
             angular.element("#requisition_cross").click();
             toastr.success($filter('translate')('ADD_TO_CART_SUCCESS'));
-        }).catch(function(result) {
-            console.info(result);
-            displayLoadError(result,$rootScope,$filter,$http,true,'cart');
-        });
+        }
+        let error = (data, endpointType) => {
+            console.info(data);
+            displayLoadError(data,$rootScope,$filter,$http,true,endpointType);
+        }
+
+        if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+            graphQLService.addItemInCart({"shoppingCartDTO": params}, success, (data) => {error(data, "graphQL")}, "{quantity}");
+        } else {
+            $http({
+                method: 'POST',
+                url: '/proxy/v1/cartItems',
+                data: params,
+                headers: {'Content-Type': 'application/json'}
+            }).then(function(result) {
+                success(result.data.data);
+            }).catch(function(result) {
+                error(result, "cart");
+            });
+        }
     }
 
     category.itemNumMinus = function(itemNum){

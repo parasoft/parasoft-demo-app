@@ -232,32 +232,52 @@ function initRequisitionBarController(app){
         }
 
         req.removeCartItem = function(itemId){
-            $http({
-                method: 'DELETE',
-                url: '/proxy/v1/cartItems/'+itemId,
-            }).then(function(result) {
+            let success = (data) => {
                 loadShoppingCartData($rootScope,$http,$filter,graphQLService);
                 $rootScope.inRequisition = 0;
                 toastr.success($filter('translate')('REMOVE_ITEM_SUCCESS'));
-            }).catch(function(result) {
-                console.info(result);
-            });
+            }
+            let error = (data) => {
+                console.info(data);
+            }
+            if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+				graphQLService.removeCartItem(itemId, success, (data) => {error(data)});
+			} else {
+                $http({
+                    method: 'DELETE',
+                    url: '/proxy/v1/cartItems/'+itemId,
+                }).then(function(result) {
+                    success(result);
+                }).catch(function(result) {
+                    error(result);
+                });
+            }
 
             //Update the data in item detail page
             if(Number(itemId) === Number(currentItemId)){
                 //Get the number of item in stock
-                $http({
-                    method: 'GET',
-                    url: '/proxy/v1/assets/items/' + itemId,
-                }).then(function(result) {
-                    var item = result.data.data;
-                    var quantity = 0;
-                    var inventory = item.inStock;
-                    $rootScope.itemInventory = inventory;
-                    checkInventoryInItemDetail(inventory,quantity);
-                }).catch(function(result) {
-                    console.info(result);
-                });
+                let success = (data) => {
+                    $rootScope.itemInventory = data.inStock;
+                    checkInventoryInItemDetail(data.inStock,0);
+                };
+                let error = (data) => {
+                    console.info(data);
+                }
+                let params = {"itemId": itemId};
+
+                if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+                    let selectionSet = "{inStock}"
+                    graphQLService.getItemByItemId(params, success, (data) => {error(data)}, selectionSet);
+                } else {
+                    $http({
+                        method: 'GET',
+                        url: '/proxy/v1/assets/items/' + itemId,
+                    }).then(function(result) {
+                        success(result.data.data);
+                    }).catch(function(result) {
+                        error(result)
+                    });
+                }
             }
         }
 

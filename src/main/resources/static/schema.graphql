@@ -8,6 +8,7 @@ type Query {
     getCategories(searchString: String, page: Int, size: Int, sort: [String]): CategoryPageInfo
     # location
     getLocation(region: RegionType!): Location
+    getAllRegionTypesOfCurrentIndustry: [RegionType]
     # order
     getOrderByOrderNumber(orderNumber: String!): Order
     #item
@@ -29,6 +30,7 @@ type Mutation {
     deleteItemByName(itemName: String!): String
     addNewItem(itemsDTO: ItemsDTO!): Item
     deleteItemByItemId(itemId: Long!): Long
+    updateItemByItemId(itemId: Long!, itemsDTO: ItemsDTO!): Item
     # cartItem
     addItemInCart(shoppingCartDTO: ShoppingCartDTO!): CartItem
     removeCartItem(itemId: Long!): Long
