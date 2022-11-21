@@ -16,6 +16,7 @@ type Query {
     getItemByName(itemName: String!): Item
     # cartItem
     getCartItems: [CartItem]
+    getCartItemByItemId(itemId: Long!): CartItem
 }
 type Mutation {
     # category
