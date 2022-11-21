@@ -24,6 +24,7 @@ type Mutation {
     updateCategory(categoryId: Long!, categoryDto: CategoryDTO!): Category
     # order
     createOrder(orderDTO: OrderDTO!): Order
+    updateOrderByOrderNumber(orderNumber: String!, orderStatusDTO: OrderStatusDTO!): Order
     #item
     updateItemInStockByItemId(itemId: Long!, newInStock: Int!): Item
     deleteItemByName(itemName: String!): String
@@ -122,6 +123,19 @@ input OrderDTO {
     receiverId: String!
     eventId: String!
     eventNumber: String!
+}
+input OrderStatusDTO {
+    status: OrderStatus
+    comments: String
+    reviewedByPRCH: Boolean
+    reviewedByAPV: Boolean
+}
+enum OrderStatus {
+    SUBMITTED
+    PROCESSED
+    CANCELED
+    APPROVED
+    DECLINED
 }
 #item
 type Item {

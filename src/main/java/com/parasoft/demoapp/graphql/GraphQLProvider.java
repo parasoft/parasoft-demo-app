@@ -86,6 +86,7 @@ public class GraphQLProvider {
     private void orderTypeWiring(RuntimeWiring.Builder builder) {
         builder.type("Query", typeWriting -> typeWriting.dataFetcher("getOrderByOrderNumber", orderGraphQLDataFetcher.getOrderByOrderNumber()));
         builder.type("Mutation", typeWriting -> typeWriting.dataFetcher("createOrder", orderGraphQLDataFetcher.createOrder()));
+        builder.type("Mutation", typeWriting -> typeWriting.dataFetcher("updateOrderByOrderNumber", orderGraphQLDataFetcher.updateOrderByOrderNumber()));
     }
 
     private void itemTypeWiring(RuntimeWiring.Builder builder) {

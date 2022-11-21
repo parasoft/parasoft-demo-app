@@ -69,4 +69,23 @@ public class OrderGraphQLDataFetcher {
         };
     }
 
+    public DataFetcher<OrderEntity> updateOrderByOrderNumber() {
+        return dataFetchingEnvironment -> {
+            try {
+                Map<String, String> uriVariables = new HashMap<>();
+                uriVariables.put("orderNumber", dataFetchingEnvironment.getArgument("orderNumber"));
+                ResponseEntity<ResponseResult<OrderEntity>> entity =
+                        restTemplate.exchange(orderBaseUrl + "/{orderNumber}",
+                                HttpMethod.PUT,
+                                new HttpEntity<>(dataFetchingEnvironment.getArgument("orderStatusDTO"),
+                                        RestTemplateUtil.createHeaders(httpRequest)),
+                                new ParameterizedTypeReference<ResponseResult<OrderEntity>>() {},
+                                uriVariables);
+                return Objects.requireNonNull(entity.getBody()).getData();
+            } catch (Exception e) {
+                throw RestTemplateUtil.convertException(e);
+            }
+        };
+    }
+
 }
