@@ -132,6 +132,19 @@ angular
                     success(response.data.data.getItems);
                 }, error);
             }
+            instance.addNewItem = function (variables, success, error, selectionSet) {
+                if (!selectionSet) {
+                    selectionSet = "{id,name,description,inStock,image,region,lastAccessedDate,categoryId}";
+                }
+                let requestBody = {
+                    "query": "mutation AddNewItem($itemsDTO: ItemsDTO!){ " +
+                    "addNewItem(itemsDTO: $itemsDTO)" + selectionSet + "}",
+                    "variables": {"itemsDTO": variables}
+                };
+                makeCall(requestBody, function(response) {
+                    success(response.data.data.addNewItem);
+                }, error);
+            }
             //cartItems
             instance.getCartItems = function(success, error, selectionSet) {
                 if (!selectionSet) {
@@ -149,6 +162,19 @@ angular
                 let requestBody = {"query": "mutation AddItemInCart($shoppingCartDTO:ShoppingCartDTO!){addItemInCart(shoppingCartDTO:$shoppingCartDTO)" + selectionSet + "}", "variables": variables}
                 makeCall(requestBody, function(response) {
                     success(response.data.data.addItemInCart);
+                }, error);
+            }
+            // items
+            instance.getItemByItemId = function (variables, success, error, selectionSet) {
+                if (!selectionSet) {
+                    selectionSet = "{id,name,description,inStock,image,region,lastAccessedDate,categoryId}";
+                }
+                let requestBody = {
+                    "query": "query GetItemByItemId($itemId: Long!){getItemByItemId(itemId: $itemId)" + selectionSet + "}",
+                    "variables": variables
+                }
+                makeCall(requestBody, function(response) {
+                    success(response.data.data.getItemByItemId);
                 }, error);
             }
             // customized call
