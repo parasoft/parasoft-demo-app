@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -54,6 +55,37 @@ public class CartItemGraphQLDataFetcher {
                                 new HttpEntity<>(dataFetchingEnvironment.getArgument("shoppingCartDTO"),
                                         RestTemplateUtil.createHeaders(httpServletRequest)),
                                 new ParameterizedTypeReference<ResponseResult<CartItemEntity>>() {});
+                return Objects.requireNonNull(entity.getBody()).getData();
+            } catch (Exception e) {
+                throw RestTemplateUtil.convertException(e);
+            }
+        };
+    }
+
+    public DataFetcher<Long> removeCartItem() {
+        return environment -> {
+            try {
+                ResponseEntity<ResponseResult<Long>> entity =
+                        restTemplate.exchange(cartItemBaseUrl + "/{itemId}",
+                                HttpMethod.DELETE,
+                                new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpServletRequest)),
+                                new ParameterizedTypeReference<ResponseResult<Long>>() {},
+                                Collections.singletonMap("itemId", environment.getArgument("itemId")));
+                return Objects.requireNonNull(entity.getBody()).getData();
+            } catch (Exception e) {
+                throw RestTemplateUtil.convertException(e);
+            }
+        };
+    }
+
+    public DataFetcher<Boolean> removeAllCartItems() {
+        return dataFetchingEnvironment -> {
+            try {
+                ResponseEntity<ResponseResult<Boolean>> entity =
+                        restTemplate.exchange(cartItemBaseUrl,
+                                HttpMethod.DELETE,
+                                new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpServletRequest)),
+                                new ParameterizedTypeReference<ResponseResult<Boolean>>() {});
                 return Objects.requireNonNull(entity.getBody()).getData();
             } catch (Exception e) {
                 throw RestTemplateUtil.convertException(e);

@@ -13,13 +13,6 @@ import java.util.function.Function;
 
 public class DateTimeScalar {
 
-    private final static SimpleDateFormat sdf;
-
-    static {
-        sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
-    }
-
     public static GraphQLScalarType getInstance() {
         return GraphQLScalarType.newScalar()
                 .name("DateTime")
@@ -29,6 +22,13 @@ public class DateTimeScalar {
     }
 
     private static class DateTimeCoercing implements Coercing<Date, String> {
+        private final SimpleDateFormat sdf;
+
+        {
+            sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+            sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+        }
+
         @Override
         public String serialize(Object input) throws CoercingSerializeException {
             if(input instanceof Date) {

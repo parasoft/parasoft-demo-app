@@ -174,11 +174,12 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
         $http({
             method: 'POST',
             url: '/proxy/v1/cartItems',
-            params: {itemId:id,itemQty:itemNum},
+            data: {itemId:id,itemQty:itemNum},
+            headers: {'Content-Type': 'application/json'}
         }).then(function(result) {
             closeRequisitionDetail(id);
             //Update shopping cart items
-            loadShoppingCartData($rootScope,$http,$filter,graphQLService);
+            loadShoppingCartItemQuantity($rootScope,$http,$filter,graphQLService);
             //If the requisition bar is visible, it should be closed after adding successfully
             //This is to avoid some format errors
             angular.element("#requisition_cross").click();
