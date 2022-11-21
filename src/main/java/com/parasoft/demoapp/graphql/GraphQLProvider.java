@@ -81,6 +81,8 @@ public class GraphQLProvider {
     private void locationTypeWiring(RuntimeWiring.Builder builder) {
         builder.type("Query", typeWiring ->
                 typeWiring.dataFetcher("getLocation", locationDataFetcher.getLocation()));
+        builder.type("Query", typeWiring ->
+                typeWiring.dataFetcher("getAllRegionTypesOfCurrentIndustry", locationDataFetcher.getAllRegionTypesOfCurrentIndustry()));
     }
 
     private void orderTypeWiring(RuntimeWiring.Builder builder) {
