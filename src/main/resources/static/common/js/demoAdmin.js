@@ -760,11 +760,9 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
                 getAllItems();
                 $('#item_modal').modal('hide');
             }
-            let failToAddNewItem = (data) => {
-                handleErrorMessageForItemEdit(data);
-            }
+
             if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
-                graphQLService.addNewItem(params, success, (data) => {failToAddNewItem(data)}, "{id}");
+                graphQLService.addNewItem(params, success, (data) => {handleErrorMessageForItemEdit(data)}, "{id}");
             } else {
                 $http({
                     method: 'POST',
@@ -774,9 +772,9 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
                 }).then(function(response) {
                     success(response);
                 }, function error(response) {
-                    failToAddNewItem(response);
+                    handleErrorMessageForItemEdit(response);
                 }).catch(function(response) {
-                    failToAddNewItem(response);
+                    handleErrorMessageForItemEdit(response);
                 });
             }
 		}
@@ -834,14 +832,10 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 
 		function handleErrorMessageForItemEdit(response){
             var itemsDTO;
-            var isGraphql;
 			var messageNotFound = false;
 			demo.itemModal.showErrorBox = true;
-            if (response.config) {
-                isGraphql = response.config.url === demo.end_point_for_graphql ? true : false;
-                if (isGraphql) {
-                    itemsDTO = response.config.data.variables.itemsDTO;
-                }
+            if (response.config && (response.config.url === demo.end_point_for_graphql)) {
+                itemsDTO = response.config.data.variables.itemsDTO;
             }
 
 			if(response.data === null || response.data === undefined){
@@ -850,41 +844,62 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 				console.log(response);
 				var message = response.data.message.toLowerCase();
 				var status = response.status;
+                if (!status) {
+                        status = 500;
+                    if (itemsDTO.region === "") {
+                        message = "Regiontype is incorrect"
+                    } else if(itemsDTO.inStock > (Math.pow(2, 31) - 1)) {
+                        message = " Cannot deserialize value of type `java.lang.Integer` from String " + itemsDTO.inStock;
+                    } else {
+                        status = 400;
+                        if (itemsDTO.name === "") {
+                            message = "Item name cannot be an empty string(null, '' or '  ').";
+                        } else if(itemsDTO.description === "") {
+                            message = "Description cannot be an empty string(null, '' or '  ').";
+                        } else if(itemsDTO.categoryId === "") {
+                            message = "Category name cannot be an empty string(null, '' or '  ').";
+                        } else if(itemsDTO.inStock === "") {
+                            message = "In stock cannot be a negative number.";
+                        }
+                    }
+                    message = message.toLowerCase();
+                }
+
 				if(status === 404){
 					if(message.indexOf("category") !== -1){
 						demo.itemModal.formError = "CATEGORY_NOT_FOUND";
 					}else{
 						messageNotFound = true;
 					}
-				}else if(status === 400 || (isGraphql && itemsDTO.region !== "" && (itemsDTO.inStock === "" || itemsDTO.inStock <= (Math.pow(2, 31) - 1)))){
-                    if((message.indexOf("item name") !== -1 && message.indexOf("empty") !== -1) || (isGraphql && itemsDTO.name === "")){
-                        demo.itemModal.formError = "ITEM_NAME_CAN_NOT_BE_EMPTY";
+				}else if(status === 400){
+                    if(message.indexOf("in stock") !== -1){
+                        demo.itemModal.formError = "IN_STOCK_NUMBER_IS_INCORRECT";
                     }else if(message.indexOf("exists") !== -1){
                         demo.itemModal.formError = "ITEM_NAME_ALREADY_EXISTS";
-                    }else if(message.indexOf("description") !== -1 || (isGraphql && itemsDTO.description === "")){
+                    }else if(message.indexOf("item name") !== -1 && message.indexOf("empty") !== -1){
+                        demo.itemModal.formError = "ITEM_NAME_CAN_NOT_BE_EMPTY";
+                    }else if(message.indexOf("description") !== -1){
                         demo.itemModal.formError = "DESCRIPTION_VALUE_IS_INCORRECT";
-                    }else if((message.indexOf("category") !== -1 && message.indexOf("null") !== -1) || (isGraphql && itemsDTO.categoryId === "")){
-                        demo.itemModal.formError = "CATEGORY_CAN_NOT_BE_EMPTY";
                     }else if(message.indexOf("image file") !== -1 && message.indexOf("empty") !== -1){
                         demo.itemModal.formError = "IMAGE_PATH_CAN_NOT_BE_EMPTY";
-                    }else if(message.indexOf("in stock") !== -1 || (isGraphql && itemsDTO.inStock === "")){
-                        demo.itemModal.formError = "IN_STOCK_NUMBER_IS_INCORRECT";
+                    }else if(message.indexOf("category") !== -1 && message.indexOf("null") !== -1){
+                        demo.itemModal.formError = "CATEGORY_CAN_NOT_BE_EMPTY";
                     }else if(message.indexOf("image") !== -1 && message.indexOf("supported") !== -1){
                         demo.itemModal.formError = "UNSUPPORTED_FORMAT";
                     }else{
                         messageNotFound = true;
                     }
-				}else if(status === 500 || isGraphql){
-					if(message.indexOf("regiontype") !== -1 || (isGraphql && itemsDTO.region === "")){
-						demo.itemModal.formError = "LOCATION_VALUE_IS_INCORRECT";
-					}else if(message.indexOf("java.lang.integer") !== -1 || (isGraphql && itemsDTO.inStock > 0)){
-						demo.itemModal.formError = "IN_STOCK_NUMBER_IS_INCORRECT";
-					}else if(message.indexOf("maximum upload size exceeded") !== -1){
-						demo.itemModal.formError = "INVALID_FILE_SIZE";
-					}else{
-						messageNotFound = true;
-					}
-				}
+                }else if(status === 500){
+                    if(message.indexOf("regiontype") !== -1){
+                        demo.itemModal.formError = "LOCATION_VALUE_IS_INCORRECT";
+                    }else if(message.indexOf("java.lang.integer") !== -1){
+                        demo.itemModal.formError = "IN_STOCK_NUMBER_IS_INCORRECT";
+                    }else if(message.indexOf("maximum upload size exceeded") !== -1){
+                        demo.itemModal.formError = "INVALID_FILE_SIZE";
+                    }else{
+                        messageNotFound = true;
+                    }
+                }
 			}
 
 			if(messageNotFound){
