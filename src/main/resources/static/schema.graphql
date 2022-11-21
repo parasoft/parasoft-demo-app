@@ -33,6 +33,7 @@ type Mutation {
     addItemInCart(shoppingCartDTO: ShoppingCartDTO!): CartItem
     removeCartItem(itemId: Long!): Long
     removeAllCartItems: Boolean
+    updateItemInCart(itemId: Long!, updateShoppingCartItemDTO: UpdateShoppingCartItemDTO!): CartItem
 }
 
 # category
@@ -162,8 +163,10 @@ type CartItem {
     realInStock: Int
     quantity: Int
 }
-#shoppingCartDTO
 input ShoppingCartDTO {
     itemId: Long!
+    itemQty: Int!
+}
+input UpdateShoppingCartItemDTO {
     itemQty: Int!
 }
