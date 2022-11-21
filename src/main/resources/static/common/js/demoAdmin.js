@@ -831,12 +831,8 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 		}
 
 		function handleErrorMessageForItemEdit(response){
-            var itemsDTO;
 			var messageNotFound = false;
 			demo.itemModal.showErrorBox = true;
-            if (response.config && (response.config.url === demo.end_point_for_graphql)) {
-                itemsDTO = response.config.data.variables.itemsDTO;
-            }
 
 			if(response.data === null || response.data === undefined){
 				messageNotFound = true;
@@ -844,26 +840,6 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 				console.log(response);
 				var message = response.data.message.toLowerCase();
 				var status = response.status;
-                if (!status) {
-                        status = 500;
-                    if (itemsDTO.region === "") {
-                        message = "Regiontype is incorrect"
-                    } else if(itemsDTO.inStock > (Math.pow(2, 31) - 1)) {
-                        message = " Cannot deserialize value of type `java.lang.Integer` from String " + itemsDTO.inStock;
-                    } else {
-                        status = 400;
-                        if (itemsDTO.name === "") {
-                            message = "Item name cannot be an empty string(null, '' or '  ').";
-                        } else if(itemsDTO.description === "") {
-                            message = "Description cannot be an empty string(null, '' or '  ').";
-                        } else if(itemsDTO.categoryId === "") {
-                            message = "Category name cannot be an empty string(null, '' or '  ').";
-                        } else if(itemsDTO.inStock === "") {
-                            message = "In stock cannot be a negative number.";
-                        }
-                    }
-                    message = message.toLowerCase();
-                }
 
 				if(status === 404){
 					if(message.indexOf("category") !== -1){
@@ -899,6 +875,8 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
                     }else{
                         messageNotFound = true;
                     }
+                } else {
+                    messageNotFound = true;
                 }
 			}
 
