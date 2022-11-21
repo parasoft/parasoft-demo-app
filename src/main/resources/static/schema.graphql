@@ -10,6 +10,7 @@ type Query {
     getLocation(region: RegionType!): Location
     # order
     getOrderByOrderNumber(orderNumber: String!): Order
+    showAllOrders(page: Int, size: Int, sort: [String]): OrderPageInfo
     #item
     getItems(categoryId: Long, regions: [RegionType], searchString: String, page: Int, size: Int, sort: [String]): ItemPageInfo
     getItemByItemId(itemId: Long!): Item
@@ -122,6 +123,15 @@ input OrderDTO {
     receiverId: String!
     eventId: String!
     eventNumber: String!
+}
+type OrderPageInfo {
+    totalElements: Long
+    totalPages: Int
+    size: Int
+    number: Int
+    numberOfElements: Int
+    sort: String
+    content: [Order]
 }
 #item
 type Item {
