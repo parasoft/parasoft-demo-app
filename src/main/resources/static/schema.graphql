@@ -29,6 +29,7 @@ type Mutation {
     deleteItemByName(itemName: String!): String
     addNewItem(itemsDTO: ItemsDTO!): Item
     deleteItemByItemId(itemId: Long!): Long
+    updateItemByItemId(itemId: Long!, itemsDTO: ItemsDTO!): Item
     # cartItem
     addItemInCart(shoppingCartDTO: ShoppingCartDTO!): CartItem
     removeCartItem(itemId: Long!): Long

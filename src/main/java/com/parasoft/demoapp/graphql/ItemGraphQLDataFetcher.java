@@ -186,4 +186,23 @@ public class ItemGraphQLDataFetcher {
             }
         };
     }
+
+    public DataFetcher<ItemEntity> updateItemByItemId() {
+        return dataFetchingEnvironment -> {
+            try {
+                Map<String, Object> uriVariables = new HashMap<>();
+                uriVariables.put("itemId", dataFetchingEnvironment.getArgument("itemId"));
+                ResponseEntity<ResponseResult<ItemEntity>> entity =
+                        restTemplate.exchange(itemBaseUrl + "/{itemId}",
+                                HttpMethod.PUT,
+                                new HttpEntity<>(dataFetchingEnvironment.getArgument("itemsDTO"),
+                                        RestTemplateUtil.createHeaders(httpRequest)),
+                                new ParameterizedTypeReference<ResponseResult<ItemEntity>>() {},
+                                uriVariables);
+                return Objects.requireNonNull(entity.getBody()).getData();
+            } catch (Exception e) {
+                throw RestTemplateUtil.convertException(e);
+            }
+        };
+    }
 }
