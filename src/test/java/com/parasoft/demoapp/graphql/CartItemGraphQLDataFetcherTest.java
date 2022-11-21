@@ -77,7 +77,11 @@ public class CartItemGraphQLDataFetcherTest {
     @Before
     public void conditionalBefore() {
         Set<String> testNames = new HashSet<>(Arrays.asList("test_getCartItems_normal", "test_addItemInCart_normal",
-                "test_removeCartItem_normal", "test_removeAllCartItems_normal"));
+                "test_removeCartItem_normal", "test_removeAllCartItems_normal",
+                "test_updateItemInCart_normal",
+                "test_updateItemInCart_invalidItemQty_equalsZero",
+                "test_updateItemInCart_invalidItemQty_negativeNumber",
+                "test_updateItemInCart_invalidItemQty_inventoryNotEnough"));
         if (testNames.contains(testName.getMethodName())) {
             GraphQLTestUtil.resetDatabase(globalPreferencesService);
         }
@@ -86,7 +90,11 @@ public class CartItemGraphQLDataFetcherTest {
     @After
     public void conditionalAfter() {
         Set<String> testNames = new HashSet<>(Arrays.asList("test_getCartItems_normal", "test_addItemInCart_normal",
-                "test_removeCartItem_normal", "test_removeAllCartItems_normal"));
+                "test_removeCartItem_normal", "test_removeAllCartItems_normal",
+                "test_updateItemInCart_normal",
+                "test_updateItemInCart_invalidItemQty_equalsZero",
+                "test_updateItemInCart_invalidItemQty_negativeNumber",
+                "test_updateItemInCart_invalidItemQty_inventoryNotEnough"));
         if (testNames.contains(testName.getMethodName())) {
             GraphQLTestUtil.resetDatabase(globalPreferencesService);
         }
@@ -398,8 +406,6 @@ public class CartItemGraphQLDataFetcherTest {
 
     @Test
     public void test_updateItemInCart_noPermission() throws IOException {
-        test_addItemInCart_normal();
-
         final Long itemId = 1L;
         final Integer itemQty = 10;
         ObjectNode variables = objectMapper.createObjectNode();
@@ -415,7 +421,6 @@ public class CartItemGraphQLDataFetcherTest {
 
     @Test
     public void test_updateItemInCart_noAuthentication() throws IOException {
-        test_addItemInCart_normal();
         graphQLTestTemplate.getHeaders().clear();
 
         final Long itemId = 1L;
@@ -433,8 +438,6 @@ public class CartItemGraphQLDataFetcherTest {
 
     @Test
     public void test_updateItemInCart_incorrectAuthentication() throws IOException {
-        test_addItemInCart_normal();
-
         final Long itemId = 1L;
         final Integer itemQty = 10;
         ObjectNode variables = objectMapper.createObjectNode();
