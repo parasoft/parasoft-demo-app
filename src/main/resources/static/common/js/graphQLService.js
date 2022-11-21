@@ -155,6 +155,15 @@ angular
                     success(response.data.data.getCartItems);
                 }, error);
             }
+            instance.removeCartItem = function(itemId, success, error) {
+                let requestBody = {
+                    "query": "mutation RemoveCartItem($itemId: Long!){removeCartItem(itemId: $itemId)}",
+                    "variables": { "itemId": itemId }
+                }
+                makeCall(requestBody, function(response) {
+                    success(response.data.data.removeCartItem);
+                }, error);
+            }
             instance.addItemInCart = function(variables, success, error, selectionSet) {
                 if (!selectionSet) {
                     selectionSet = "{id, userId, itemId, name, description, image, realInStock, quantity}"

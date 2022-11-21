@@ -232,16 +232,26 @@ function initRequisitionBarController(app){
         }
 
         req.removeCartItem = function(itemId){
-            $http({
-                method: 'DELETE',
-                url: '/proxy/v1/cartItems/'+itemId,
-            }).then(function(result) {
+            let success = (data) => {
                 loadShoppingCartData($rootScope,$http,$filter,graphQLService);
                 $rootScope.inRequisition = 0;
                 toastr.success($filter('translate')('REMOVE_ITEM_SUCCESS'));
-            }).catch(function(result) {
-                console.info(result);
-            });
+            }
+            let error = (data) => {
+                console.info(data);
+            }
+            if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+				graphQLService.removeCartItem(itemId, success, (data) => {error(data)});
+			} else {
+                $http({
+                    method: 'DELETE',
+                    url: '/proxy/v1/cartItems/'+itemId,
+                }).then(function(result) {
+                    success(result);
+                }).catch(function(result) {
+                    error(result);
+                });
+            }
 
             //Update the data in item detail page
             if(Number(itemId) === Number(currentItemId)){
