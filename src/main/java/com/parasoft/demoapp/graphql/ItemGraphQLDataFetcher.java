@@ -173,10 +173,7 @@ public class ItemGraphQLDataFetcher {
         return dataFetchingEnvironment -> {
             try {
                 Map<String, Object> uriVariables = new HashMap<>();
-                String itemId = dataFetchingEnvironment.getArgument("itemId");
-                if (itemId != null && !itemId.trim().isEmpty()) {
-                    uriVariables.put("itemId", itemId);
-                }
+                uriVariables.put("itemId", dataFetchingEnvironment.getArgument("itemId"));
                 ResponseEntity<ResponseResult<Long>> entity =
                         restTemplate.exchange(itemBaseUrl + "/{itemId}",
                                 HttpMethod.DELETE,
