@@ -129,7 +129,7 @@ function initRequisitionBarController(app){
         //Get current itemId
         var currentItemId = $location.absUrl().substr($location.absUrl().lastIndexOf("/")+1);
         //Get requisition data from database
-        loadShoppingCartItemQuantity($rootScope,$http,$filter,graphQLService);
+        loadShoppingCartData($rootScope,$http,$filter,graphQLService);
 
         //Get related assets data from database TODO
         var testNums = [0,1,2];
