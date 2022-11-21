@@ -171,11 +171,11 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
             return;
         }
 
-        let params = {shoppingCartDTO: {itemId:id,itemQty:itemNum}};
+        let params = {itemId:id,itemQty:itemNum};
         let success = (data) => {
             closeRequisitionDetail(id);
             //Update shopping cart items
-            loadShoppingCartData($rootScope,$http,$filter,graphQLService);
+            loadShoppingCartItemQuantity($rootScope,$http,$filter,graphQLService);
             //If the requisition bar is visible, it should be closed after adding successfully
             //This is to avoid some format errors
             angular.element("#requisition_cross").click();
@@ -187,7 +187,7 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
         }
 
         if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
-            graphQLService.addItemInCart(params, success, (data) => {error(data, "graphQL")}, "{quantity}");
+            graphQLService.addItemInCart({"shoppingCartDTO": params}, success, (data) => {error(data, "graphQL")}, "{quantity}");
         } else {
             $http({
                 method: 'POST',

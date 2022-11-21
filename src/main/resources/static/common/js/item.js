@@ -154,10 +154,10 @@ app.controller('itemDetailController', function($rootScope, $http, $location, $f
 			return;
 		}
 
-		let params = {shoppingCartDTO: {itemId:itemId,itemQty:itemNum}};
+		let params = {itemId:itemId,itemQty:itemNum};
         let success = (data) => {
             //Update shopping cart items
-            loadShoppingCartData($rootScope,$http,$filter,graphQLService);
+            loadShoppingCartItemQuantity($rootScope,$http,$filter,graphQLService);
             $rootScope.inRequisition = data.quantity;
             checkInventory(data.realInStock,data.quantity,itemNum);
             toastr.success($filter('translate')('ADD_TO_CART_SUCCESS'));
@@ -167,7 +167,7 @@ app.controller('itemDetailController', function($rootScope, $http, $location, $f
         }
 
         if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
-            graphQLService.addItemInCart(params, success, (data) => {error(data, "graphQL")}, "{realInStock, quantity}");
+            graphQLService.addItemInCart({"shoppingCartDTO": params}, success, (data) => {error(data, "graphQL")}, "{realInStock, quantity}");
         } else {
             $http({
                 method: 'POST',
@@ -180,22 +180,6 @@ app.controller('itemDetailController', function($rootScope, $http, $location, $f
                 error(result, "cart");
             });
         }
-
-//		$http({
-//			method: 'POST',
-//			url: '/proxy/v1/cartItems',
-//			data: {itemId:itemId,itemQty:itemNum},
-//			headers: {'Content-Type': 'application/json'}
-//		}).then(function(result) {
-//			//Update shopping cart items
-//			loadShoppingCartData($rootScope,$http,$filter,graphQLService);
-//			var cartItem = result.data.data;
-//			$rootScope.inRequisition = cartItem.quantity;
-//			checkInventory(cartItem.realInStock,cartItem.quantity,itemNum);
-//			toastr.success($filter('translate')('ADD_TO_CART_SUCCESS'));
-//		}).catch(function(result) {
-//			console.info(result);
-//		});
 	}
 
 

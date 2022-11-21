@@ -1,3 +1,3 @@
-mutation deleteItemByItemId($itemId: ID!){
+mutation deleteItemByItemId($itemId: Long!){
     deleteItemByItemId(itemId: $itemId)
 }
