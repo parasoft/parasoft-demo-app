@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.graphql.spring.boot.test.GraphQLResponse;
 import com.graphql.spring.boot.test.GraphQLTestTemplate;
+import com.parasoft.demoapp.controller.PageInfo;
 import com.parasoft.demoapp.defaultdata.ResetEntrance;
 import com.parasoft.demoapp.dto.OrderDTO;
 import com.parasoft.demoapp.messages.ConfigMessages;
@@ -11,6 +12,8 @@ import com.parasoft.demoapp.messages.OrderMessages;
 import com.parasoft.demoapp.model.global.UserEntity;
 import com.parasoft.demoapp.model.industry.*;
 import com.parasoft.demoapp.service.*;
+import org.assertj.core.api.Condition;
+import org.assertj.core.data.Index;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -40,6 +43,8 @@ public class OrderGraphQLDataFetcherTest {
     private static final String GET_ORDER_BY_ORDER_NUMBER_DATA_JSON_PATH = DATA_PATH + ".getOrderByOrderNumber";
     private static final String CREATE_ORDER_GRAPHQL_RESOURCE = "graphql/orders/createOrder.graphql";
     private static final String CREATE_ORDER_DATA_JSON_PATH = DATA_PATH + ".createOrder";
+    private static final String GET_ORDERS_GRAPHQL_RESOURCE = "graphql/orders/getOrders.graphql";
+    private static final String GET_ORDERS_DATA_JSON_PATH = DATA_PATH + ".getOrders";
 
     @Autowired
     private GraphQLTestTemplate graphQLTestTemplate;
@@ -277,6 +282,56 @@ public class OrderGraphQLDataFetcherTest {
                 .perform(CREATE_ORDER_GRAPHQL_RESOURCE, orderDtoObjectNode);
 
         assertError_createOrder(response, HttpStatus.FORBIDDEN, ConfigMessages.USER_HAS_NO_PERMISSION);
+    }
+
+    @Test
+    public void test_getOrders_normal() throws Throwable {
+        String orderNumber = createOrderForTest();
+        ObjectNode variable = objectMapper.createObjectNode();
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(purchaser.getUsername(), purchaser.getPassword())
+                .perform(GET_ORDERS_GRAPHQL_RESOURCE, variable);
+
+        assertThat(response).isNotNull();
+        assertThat(response.isOk()).isTrue();
+        response.assertThatNoErrorsArePresent()
+                .assertThatField(GET_ORDERS_DATA_JSON_PATH)
+                .as(PageInfo.class)
+                .hasFieldOrPropertyWithValue("totalElements", 1L)
+                .hasFieldOrPropertyWithValue("totalPages", 1)
+                .hasFieldOrPropertyWithValue("size", 2000)
+                .hasFieldOrPropertyWithValue("sort", "orderNumber: DESC")
+                .and()
+                .assertThatField(GET_ORDERS_DATA_JSON_PATH + ".content")
+                .asListOf(OrderEntity.class)
+                .has(new Condition<>(c -> c.getRequestedBy().equals(purchaser.getUsername()), "name purchaser"), Index.atIndex(0))
+                .and()
+                .assertThatField(GET_ORDERS_DATA_JSON_PATH + ".content")
+                .asListOf(OrderEntity.class)
+                .has(new Condition<>(c -> c.getOrderItems().get(0).getName().equals("Blue Sleeping Bag"), "name Blue Sleeping Bag"), Index.atIndex(0))
+                .size()
+                .isEqualTo(1);
+    }
+
+    @Test
+    public void test_getOrders_incorrectAuthentication() throws Throwable {
+        String orderNumber = createOrderForTest();
+        ObjectNode variable = objectMapper.createObjectNode();
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(purchaser.getUsername(), "invalidPassword")
+                .perform(GET_ORDERS_GRAPHQL_RESOURCE, variable);
+
+        GraphQLTestUtil.assertErrorResponse(response, HttpStatus.UNAUTHORIZED, ConfigMessages.USER_IS_NOT_AUTHORIZED, GET_ORDERS_DATA_JSON_PATH);
+    }
+
+    @Test
+    public void test_getOrders_noAuthentication() throws Throwable {
+        String orderNumber = createOrderForTest();
+        ObjectNode variable = objectMapper.createObjectNode();
+        GraphQLResponse response = graphQLTestTemplate
+                .perform(GET_ORDERS_GRAPHQL_RESOURCE, variable);
+
+        GraphQLTestUtil.assertErrorResponse(response, HttpStatus.UNAUTHORIZED, ConfigMessages.USER_IS_NOT_AUTHORIZED, GET_ORDERS_DATA_JSON_PATH);
     }
 
     private String createOrderForTest() throws Throwable {
