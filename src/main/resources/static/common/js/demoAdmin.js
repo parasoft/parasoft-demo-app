@@ -892,19 +892,32 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 
 	demo.removeItem = function(item){
 		var items = demo.items;
-		$http({
-			method: 'DELETE',
-			url: '/proxy/v1/assets/items/'+item.id,
-		}).then(function(result) {
-			var arrIndex = getArrIndex(items,item);
-			demo.items.splice(arrIndex,1);
-			toastr.success($filter('translate')('ITEMS_REMOVED_SUCCESSFULLY'));
-		}, function error(response) {
-			console.info(response);
-			toastrService().error($filter('translate')('ITEMS_FAILED_TO_REMOVE'));
-		}).catch(function(result) {
-			console.info(result);
-		});
+        let success = () => {
+            var arrIndex = getArrIndex(items,item);
+            demo.items.splice(arrIndex,1);
+            toastr.success($filter('translate')('ITEMS_REMOVED_SUCCESSFULLY'));
+        }
+        let errorhandler = (data) => {
+            console.info(data);
+            toastrService().error($filter('translate')('ITEMS_FAILED_TO_REMOVE'));
+        }
+        let params = {"itemId": item.id};
+
+    if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+        graphQLService.deleteItemByItemId(params, success, (data) => {errorhandler(data)});
+    } else {
+        $http({
+            method: 'DELETE',
+            url: '/proxy/v1/assets/items/'+item.id,
+        }).then(function(result) {
+            success(result);
+        }, function error(result) {
+            errorhandler(result);
+        }).catch(function(result) {
+            console.info(result);
+        });
+    }
+
 		$('#remove_confirm_modal').modal('hide');
 	}
 

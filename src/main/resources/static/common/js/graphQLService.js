@@ -132,6 +132,12 @@ angular
                     success(response.data.data.getItems);
                 }, error);
             }
+            instance.deleteItemByItemId = function(variables, success, error) {
+                let requestBody = {"query": "mutation DeleteItemByItemId($itemId:Long!){deleteItemByItemId(itemId:$itemId)}", "variables": variables}
+                makeCall(requestBody, function(response) {
+                    success(response.data.data.deleteItemByItemId);
+                }, error);
+            }
             instance.addNewItem = function (variables, success, error, selectionSet) {
                 if (!selectionSet) {
                     selectionSet = "{id,name,description,inStock,image,region,lastAccessedDate,categoryId}";
