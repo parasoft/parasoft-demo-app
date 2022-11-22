@@ -132,21 +132,18 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
         category.showCategoryRequisitionDetail = true;
 
         //Get cartItem by item id
-        $http({
-            method: 'GET',
-            url: '/proxy/v1/cartItems/' + itemId
-        }).then(function(result) {
-            var cartItem = result.data.data;
+        let getCartItemByIdSuccess = (cartItem) => {
             category.currentItem.inStock = cartItem.realInStock;
             category.currentItem.inRequisition = cartItem.quantity;
-            checkInventory(cartItem.realInStock,itemId,cartItem.quantity);
-            $interval(function(){category.loadingAnimation = false;category.showQuantity = true;},500,1);
-        }).catch(function(result) {
+            checkInventory(cartItem.realInStock, itemId, cartItem.quantity);
+            $interval(function() {category.loadingAnimation = false;category.showQuantity = true;}, 500, 1);
+        }
+        let getCartItemByIdError = (data) => {
             category.currentItem.inRequisition = 0;
-            console.info(result);
+            console.info(data);
             let success = (data) => {
                 category.currentItem.inStock = data.inStock;
-                checkInventory(data.inStock,itemId,0);
+                checkInventory(data.inStock, itemId, 0);
             };
             let error = (data) => {
                 console.info(data);
@@ -167,8 +164,23 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
                 });
             }
 
-            $interval(function(){category.loadingAnimation = false;category.showQuantity = true;},500,1);
-        });
+            $interval(function() {category.loadingAnimation = false;category.showQuantity = true;}, 500, 1);
+        }
+
+        let getCartItemByIdParams = {"itemId": itemId}
+        if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+            graphQLService.getCartItemByItemId(getCartItemByIdParams, getCartItemByIdSuccess,
+                (data) => {getCartItemByIdError(data)}, "{realInStock, quantity}");
+        } else {
+            $http({
+                method: 'GET',
+                url: '/proxy/v1/cartItems/' + itemId
+            }).then(function(result) {
+                getCartItemByIdSuccess(result.data.data);
+            }).catch(function(result) {
+                getCartItemByIdError(result);
+            });
+        }
     }
 
     category.closeRequisitionDetail = function(index){

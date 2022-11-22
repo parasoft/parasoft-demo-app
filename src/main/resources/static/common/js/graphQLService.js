@@ -173,6 +173,18 @@ angular
                     success(response.data.data.addItemInCart);
                 }, error);
             }
+            instance.getCartItemByItemId = function(variables, success, error, selectionSet) {
+                if (!selectionSet) {
+                    selectionSet = "{id, userId, itemId, name, description, image, realInStock, quantity}"
+                }
+                let requestBody = {
+                    "query": "query GetCartItemByItemId($itemId: Long!){getCartItemByItemId(itemId: $itemId)" + selectionSet + "}",
+                    "variables": variables
+                }
+                makeCall(requestBody, function(response) {
+                    success(response.data.data.getCartItemByItemId);
+                }, error);
+            }
             // items
             instance.getItemByItemId = function (variables, success, error, selectionSet) {
                 if (!selectionSet) {

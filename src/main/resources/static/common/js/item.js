@@ -77,31 +77,28 @@ app.controller('itemDetailController', function($rootScope, $http, $location, $f
 	}, 500);
 	
 	//Get cartItem by item id
-	$http({
-		method: 'GET',
-		url: '/proxy/v1/cartItems/' + itemId
-	}).then(function(result) {
-		var cartItem = result.data.data;
-		var quantity = cartItem.quantity;
-		var inventory = cartItem.realInStock;
+    let getCartItemByIdSuccess = (cartItem) => {
+        var quantity = cartItem.quantity;
+        var inventory = cartItem.realInStock;
 
-		if(inventory === 0){$rootScope.itemNum = 0;}
-		$rootScope.itemInventory = inventory;
-		$rootScope.inRequisition = quantity;
-		checkInventory(inventory,quantity,1);
-		$interval(function(){itemDetail.loadingAnimation = false;itemDetail.showQuantity = true;},500,1);
-	}).catch(function(result) {
-		$rootScope.inRequisition = 0;
-		console.info(result);
-		var data = result.data;
-		var status = result.status;
-		if(status === 500){
-			console.log(data.message);
-		}
+        if(inventory === 0) {$rootScope.itemNum = 0;}
+        $rootScope.itemInventory = inventory;
+        $rootScope.inRequisition = quantity;
+        checkInventory(inventory, quantity, 1);
+        $interval(function() {itemDetail.loadingAnimation = false;itemDetail.showQuantity = true;}, 500, 1);
+    }
+    let getCartItemByIdError = (result) => {
+        $rootScope.inRequisition = 0;
+        console.info(result);
+        var data = result.data;
+        var status = result.status;
+        if(status === 500) {
+            console.log(data.message);
+        }
 
         let success = (data) => {
             $rootScope.itemInventory = data.inStock;
-            checkInventory(data.inStock,0,1);
+            checkInventory(data.inStock, 0, 1);
         };
         let error = (data) => {
             console.info(data);
@@ -121,8 +118,23 @@ app.controller('itemDetailController', function($rootScope, $http, $location, $f
                 error(result, 'items')
             });
         }
-		$interval(function(){itemDetail.loadingAnimation = false;itemDetail.showQuantity = true;},500,1);
-	});
+        $interval(function() {itemDetail.loadingAnimation = false;itemDetail.showQuantity = true;}, 500, 1);
+    }
+
+    let getCartItemByIdParams = {"itemId": itemId}
+    if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+        graphQLService.getCartItemByItemId(getCartItemByIdParams, getCartItemByIdSuccess,
+            (data) => {getCartItemByIdError(data)}, "{realInStock, quantity}");
+    } else {
+        $http({
+            method: 'GET',
+            url: '/proxy/v1/cartItems/' + itemId
+        }).then(function(result) {
+            getCartItemByIdSuccess(result.data.data);
+        }).catch(function(result) {
+            getCartItemByIdError(result)
+        });
+    }
 
 	itemDetail.minusItemNum = function(itemNum, inventory, quantity){
 		clearPlusDisabled();
