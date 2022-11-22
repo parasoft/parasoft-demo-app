@@ -78,7 +78,7 @@ public class ItemGraphQLDataFetcherTest {
 
     @Before
     public void conditionalBefore() {
-        Set<String> testNames = new HashSet<>(Arrays.asList("test_deleteItemByName_normal", "test_updateItemInStockByItemId_normal", "test_deleteItemByName_normal", "test_addNewItem_normal", "test_deleteItemByItemId_normal"));
+        Set<String> testNames = new HashSet<>(Arrays.asList("test_deleteItemByName_normal", "test_updateItemInStockByItemId_normal", "test_updateItemByItemId_normal", "test_addNewItem_normal", "test_deleteItemByItemId_normal"));
         if (testNames.contains(testName.getMethodName())) {
             GraphQLTestUtil.resetDatabase(globalPreferencesService);
         }
@@ -86,7 +86,7 @@ public class ItemGraphQLDataFetcherTest {
 
     @After
     public void conditionalAfter() {
-        Set<String> testNames = new HashSet<>(Arrays.asList("test_deleteItemByName_normal", "test_updateItemInStockByItemId_normal", "test_deleteItemByName_normal", "test_addNewItem_normal", "test_deleteItemByItemId_normal"));
+        Set<String> testNames = new HashSet<>(Arrays.asList("test_deleteItemByName_normal", "test_updateItemInStockByItemId_normal", "test_updateItemByItemId_normal", "test_addNewItem_normal", "test_deleteItemByItemId_normal"));
         if (testNames.contains(testName.getMethodName())) {
             GraphQLTestUtil.resetDatabase(globalPreferencesService);
         }
