@@ -58,22 +58,41 @@ app.controller('orderHistoryController', function($rootScope, $http, $filter, gr
             history.order = data;
 
             if(!history.order.reviewedByPRCH){
-                $http({
-                    method: 'PUT',
-                    url: '/proxy/v1/orders/'+history.order.orderNumber,
-                    data: {
-                        "status": history.order.status,
-                        "reviewedByPRCH": true,
-                        "reviewedByAPV": history.order.reviewedByAPV
-                    },
-                    headers: { 'Content-Type': 'application/json' }
-                }).then(function(result) {
+                let success = (data) => {
                     angular.element(".new_label" + index).css("visibility", "hidden");
                     //Update icon
                     getUnreviewedAmount($http,$rootScope,$filter);
-                }).catch(function(result) {
-                    console.log(result);
-                });
+                }
+
+                let error = (data) => {
+                    console.log(data);
+                }
+
+                let orderStatusData = {
+                    "status": history.order.status,
+                    "reviewedByPRCH": true,
+                    "reviewedByAPV": history.order.reviewedByAPV
+                }
+                let variables = {
+                    "orderNumber": history.order.orderNumber,
+                    "orderStatusDTO": orderStatusData
+                };
+
+                if (CURRENT_WEB_SERVICE_MODE === "GraphQL"){
+                    let selectionSet = "{orderNumber}";
+                    graphQLService.updateOrderByOrderNumber(variables, success, (data) => {error(data)}, selectionSet);
+                } else {
+                    $http({
+                        method: 'PUT',
+                        url: '/proxy/v1/orders/'+history.order.orderNumber,
+                        data: orderStatusData,
+                        headers: { 'Content-Type': 'application/json' }
+                    }).then(function(result) {
+                        success(result.data.data);
+                    }).catch(function(result) {
+                        error(result);
+                    });
+                }
             }
 
             var introduceIncorrectNumberBug = false;
