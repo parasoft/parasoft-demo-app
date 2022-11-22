@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.graphql.spring.boot.test.GraphQLResponse;
 import com.graphql.spring.boot.test.GraphQLTestTemplate;
-import com.parasoft.demoapp.defaultdata.ResetEntrance;
 import com.parasoft.demoapp.dto.OrderDTO;
 import com.parasoft.demoapp.dto.OrderStatusDTO;
 import com.parasoft.demoapp.messages.ConfigMessages;
@@ -63,8 +62,6 @@ public class OrderGraphQLDataFetcherTest {
     @Autowired
     private GlobalPreferencesService globalPreferencesService;
 
-    @Autowired
-    private ResetEntrance resetEntrance;
     @Rule
     public TestName testName = new TestName();
     private UserEntity purchaser;
@@ -73,15 +70,13 @@ public class OrderGraphQLDataFetcherTest {
     @Before
     public void setup() {
         graphQLTestTemplate.getHeaders().clear();
-        // Reset database
-        resetEntrance.run();
         purchaser = userService.getUserByUsername(USERNAME_PURCHASER);
         approver = userService.getUserByUsername(USERNAME_APPROVER);
     }
 
     @Before
     public void conditionalBefore() {
-        Set<String> testNames = new HashSet<>(Arrays.asList("test_getOrderByOrderNumber_normal", "test_createOrder_normal"));
+        Set<String> testNames = new HashSet<>(Arrays.asList("test_getOrderByOrderNumber_normal", "test_createOrder_normal", "test_updateOrderByOrderNumber_normal_purchaser", "test_updateOrderByOrderNumber_normal_approver", "test_updateOrderByOrderNumber_noPermission", "test_updateOrderByOrderNumber_changeToUnreviewed", "test_updateOrderByOrderNumber_updateSubmittedOrder", "test_updateOrderByOrderNumber_updateCanceledOrder", "test_updateOrderByOrderNumber_revertOrderStatus"));
         if (testNames.contains(testName.getMethodName())) {
             GraphQLTestUtil.resetDatabase(globalPreferencesService);
         }
@@ -89,7 +84,7 @@ public class OrderGraphQLDataFetcherTest {
 
     @After
     public void conditionalAfter() {
-        Set<String> testNames = new HashSet<>(Arrays.asList("test_getOrderByOrderNumber_normal", "test_createOrder_normal"));
+        Set<String> testNames = new HashSet<>(Arrays.asList("test_getOrderByOrderNumber_normal", "test_createOrder_normal", "test_updateOrderByOrderNumber_normal_purchaser", "test_updateOrderByOrderNumber_normal_approver", "test_updateOrderByOrderNumber_noPermission", "test_updateOrderByOrderNumber_changeToUnreviewed", "test_updateOrderByOrderNumber_updateSubmittedOrder", "test_updateOrderByOrderNumber_updateCanceledOrder", "test_updateOrderByOrderNumber_revertOrderStatus"));
         if (testNames.contains(testName.getMethodName())) {
             GraphQLTestUtil.resetDatabase(globalPreferencesService);
         }
@@ -342,7 +337,6 @@ public class OrderGraphQLDataFetcherTest {
 
     @Test
     public void test_updateOrderByOrderNumber_orderNotFound() throws Throwable {
-        OrderEntity order = getOrderWithExpectedStatus(OrderStatus.PROCESSED, null, true, false );
         OrderStatusDTO orderStatusDTO = new OrderStatusDTO(OrderStatus.APPROVED, "new comment", true, true);
         String wrongOrderNumber = "00-000-000";
         ObjectNode variables = objectMapper.createObjectNode();
@@ -358,10 +352,9 @@ public class OrderGraphQLDataFetcherTest {
 
     @Test
     public void test_updateOrderByOrderNumber_notAuthorized() throws Throwable {
-        OrderEntity order = getOrderWithExpectedStatus(OrderStatus.PROCESSED, null, true, false );
         OrderStatusDTO orderStatusDTO = new OrderStatusDTO(OrderStatus.APPROVED, "new comment", true, true);
         ObjectNode variables = objectMapper.createObjectNode();
-        variables.put("orderNumber", order.getOrderNumber());
+        variables.put("orderNumber", "orderNumber");
         variables.putPOJO("orderStatusDTO", orderStatusDTO);
 
         GraphQLResponse response = graphQLTestTemplate
@@ -372,10 +365,9 @@ public class OrderGraphQLDataFetcherTest {
 
     @Test
     public void test_updateOrderByOrderNumber_incorrectAuthorized() throws Throwable {
-        OrderEntity order = getOrderWithExpectedStatus(OrderStatus.PROCESSED, null, true, false );
         OrderStatusDTO orderStatusDTO = new OrderStatusDTO(OrderStatus.APPROVED, "new comment", true, true);
         ObjectNode variables = objectMapper.createObjectNode();
-        variables.put("orderNumber", order.getOrderNumber());
+        variables.put("orderNumber", "orderNumber");
         variables.putPOJO("orderStatusDTO", orderStatusDTO);
 
         GraphQLResponse response = graphQLTestTemplate
@@ -402,7 +394,6 @@ public class OrderGraphQLDataFetcherTest {
 
     @Test
     public void test_updateOrderByOrderNumber_emptyOrderNumber() throws Throwable {
-        OrderEntity order = getOrderWithExpectedStatus(OrderStatus.PROCESSED, null, true, false );
         OrderStatusDTO orderStatusDTO = new OrderStatusDTO(OrderStatus.APPROVED, "new comment", true, true);
         ObjectNode variables = objectMapper.createObjectNode();
         variables.put("orderNumber", "   ");
@@ -417,7 +408,6 @@ public class OrderGraphQLDataFetcherTest {
 
     @Test
     public void test_updateOrderByOrderNumber_invalidOrderStatus() throws Throwable {
-        OrderEntity order = getOrderWithExpectedStatus(OrderStatus.PROCESSED, null, true, false );
         OrderStatusDTO orderStatusDTO = new OrderStatusDTO(null, "new comment", true, true);
         ObjectNode variables = objectMapper.createObjectNode();
         variables.put("orderNumber", "   ");
