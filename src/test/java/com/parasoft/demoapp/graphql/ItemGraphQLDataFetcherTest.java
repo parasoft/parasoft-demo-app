@@ -53,6 +53,8 @@ public class ItemGraphQLDataFetcherTest {
     private static final String DELETE_ITEM_BY_NAME_DATA_JSON_PATH = DATA_PATH + ".deleteItemByName";
     private static final String DELETE_ITEM_BY_ITEM_ID_GRAPHQL_RESOURCE = "graphql/items/deleteItemByItemId.graphql";
     private static final String DELETE_ITEM_BY_ITEM_ID_DATA_JSON_PATH = DATA_PATH + ".deleteItemByItemId";
+    private static final String UPDATE_ITEM_BY_ITEM_ID_GRAPHQL_RESOURCE = "graphql/items/updateItemByItemId.graphql";
+    private static final String UPDATE_ITEM_BY_ITEM_ID_DATA_JSON_PATH = DATA_PATH + ".updateItemByItemId";
 
     @Autowired
     private GraphQLTestTemplate graphQLTestTemplate;
@@ -568,6 +570,170 @@ public class ItemGraphQLDataFetcherTest {
         assertError_deleteItemByItemId(response, HttpStatus.NOT_FOUND, MessageFormat.format(AssetMessages.ITEM_ID_NOT_FOUND, itemId));
     }
 
+    @Test
+    public void test_updateItemByItemId_normal() throws IOException {
+        ItemsDTO itemsDTO = getItemsDTOInstance();
+        ObjectNode variables = objectMapper.createObjectNode()
+                .put("itemId", 1L)
+                .putPOJO("itemsDTO", itemsDTO);
+
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(UPDATE_ITEM_BY_ITEM_ID_GRAPHQL_RESOURCE, variables);
+
+        assertThat(response).isNotNull();
+        assertThat(response.isOk()).isTrue();
+        response.assertThatNoErrorsArePresent()
+                .assertThatDataField().isNotNull()
+                .and()
+                .assertThatField(UPDATE_ITEM_BY_ITEM_ID_DATA_JSON_PATH)
+                .as(ItemEntity.class)
+                .matches((item) ->
+                        item.getName().equals(itemsDTO.getName()) &&
+                                item.getDescription().equals(itemsDTO.getDescription()) &&
+                                item.getCategoryId().equals(itemsDTO.getCategoryId()) &&
+                                item.getInStock().equals(itemsDTO.getInStock()) &&
+                                item.getImage().equals(itemsDTO.getImagePath()) &&
+                                item.getRegion() == itemsDTO.getRegion()
+                );
+    }
+
+    @Test
+    public void test_updateItemByItemId_categoryNotFound() throws IOException {
+        Long categoryId = 0L;
+        ItemsDTO itemsDTO = getItemsDTOInstance();
+        itemsDTO.setCategoryId(categoryId);
+        ObjectNode variables = objectMapper.createObjectNode()
+                .put("itemId", 1L)
+                .putPOJO("itemsDTO", itemsDTO);
+
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(UPDATE_ITEM_BY_ITEM_ID_GRAPHQL_RESOURCE, variables);
+
+        assertError_updateItemByItemId(response, HttpStatus.NOT_FOUND, MessageFormat.format(AssetMessages.CATEGORY_ID_NOT_FOUND, categoryId));
+    }
+
+    @Test
+    public void test_updateItemByItemId_itemNotFound() throws IOException {
+        Long itemId = 0L;
+        ObjectNode variables = objectMapper.createObjectNode()
+                .put("itemId", itemId)
+                .putPOJO("itemsDTO", getItemsDTOInstance());
+
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(UPDATE_ITEM_BY_ITEM_ID_GRAPHQL_RESOURCE, variables);
+
+        assertError_updateItemByItemId(response, HttpStatus.NOT_FOUND, MessageFormat.format(AssetMessages.ITEM_ID_NOT_FOUND, itemId));
+    }
+
+    @Test
+    public void test_updateItemByItemId_regionNotFound() throws IOException {
+        RegionType regionType  = RegionType.MERCURY; // this region does not belong to the current industry
+        ItemsDTO itemsDTO = getItemsDTOInstance();
+        itemsDTO.setRegion(regionType);
+        ObjectNode variables = objectMapper.createObjectNode()
+                .put("itemId", 1L)
+                .putPOJO("itemsDTO", itemsDTO);
+
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(UPDATE_ITEM_BY_ITEM_ID_GRAPHQL_RESOURCE, variables);
+
+        assertError_updateItemByItemId(response, HttpStatus.BAD_REQUEST, AssetMessages.INCORRECT_REGION_IN_CURRENT_INDUSTRY);
+    }
+
+    @Test
+    public void test_updateItemByItemId_emptyItemName() throws IOException {
+        String itemName = "";
+        ItemsDTO itemsDTO = getItemsDTOInstance();
+        itemsDTO.setName(itemName);
+        ObjectNode variables = objectMapper.createObjectNode()
+                .put("itemId", 1L)
+                .putPOJO("itemsDTO", itemsDTO);
+
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(UPDATE_ITEM_BY_ITEM_ID_GRAPHQL_RESOURCE, variables);
+
+        assertError_updateItemByItemId(response, HttpStatus.BAD_REQUEST, AssetMessages.ITEM_NAME_CANNOT_BE_BLANK);
+    }
+
+    @Test
+    public void test_updateItemByItemId_emptyItemDescription() throws IOException {
+        String itemDescription = "";
+        ItemsDTO itemsDTO = getItemsDTOInstance();
+        itemsDTO.setDescription(itemDescription);
+        ObjectNode variables = objectMapper.createObjectNode()
+                .put("itemId", 1L)
+                .putPOJO("itemsDTO", itemsDTO);
+
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(UPDATE_ITEM_BY_ITEM_ID_GRAPHQL_RESOURCE, variables);
+
+        assertError_updateItemByItemId(response, HttpStatus.BAD_REQUEST, AssetMessages.DESCRIPTION_CANNOT_BE_BLANK);
+    }
+
+    @Test
+    public void test_updateItemByItemId_invalidNumberInStock() throws IOException {
+        Integer inStock  = -1;
+        ItemsDTO itemsDTO = getItemsDTOInstance();
+        itemsDTO.setInStock(inStock);
+        ObjectNode variables = objectMapper.createObjectNode()
+                .put("itemId", 1L)
+                .putPOJO("itemsDTO", itemsDTO);
+
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(UPDATE_ITEM_BY_ITEM_ID_GRAPHQL_RESOURCE, variables);
+
+        assertError_updateItemByItemId(response, HttpStatus.BAD_REQUEST, AssetMessages.IN_STOCK_CANNOT_BE_A_NEGATIVE_NUMBER);
+    }
+
+    @Test
+    public void test_updateItemByItemId_itemNameExist() throws IOException {
+        String itemName  = "Green Sleeping Bag";
+        ItemsDTO itemsDTO = getItemsDTOInstance();
+        itemsDTO.setName(itemName);
+        ObjectNode variables = objectMapper.createObjectNode()
+                .put("itemId", 1L)
+                .putPOJO("itemsDTO", itemsDTO);
+
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
+                .perform(UPDATE_ITEM_BY_ITEM_ID_GRAPHQL_RESOURCE, variables);
+
+        assertError_updateItemByItemId(response, HttpStatus.BAD_REQUEST, AssetMessages.ITEM_NAME_EXISTS_ALREADY);
+    }
+
+    @Test
+    public void test_updateItemByItemId_incorrectAuthentication() throws IOException {
+        String invalidPassword = "invalidPass";
+        ObjectNode variables = objectMapper.createObjectNode()
+                .put("itemId", 1L)
+                .putPOJO("itemsDTO", getItemsDTOInstance());
+
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(USERNAME_PURCHASER, invalidPassword)
+                .perform(UPDATE_ITEM_BY_ITEM_ID_GRAPHQL_RESOURCE, variables);
+
+        assertError_updateItemByItemId(response, HttpStatus.UNAUTHORIZED, ConfigMessages.USER_IS_NOT_AUTHORIZED);
+    }
+
+    @Test
+    public void test_updateItemByItemId_noAuthentication() throws IOException {
+        ObjectNode variables = objectMapper.createObjectNode()
+                .put("itemId", 1L)
+                .putPOJO("itemsDTO", getItemsDTOInstance());
+
+        GraphQLResponse response = graphQLTestTemplate
+                .perform(UPDATE_ITEM_BY_ITEM_ID_GRAPHQL_RESOURCE, variables);
+
+        assertError_updateItemByItemId(response, HttpStatus.UNAUTHORIZED, ConfigMessages.USER_IS_NOT_AUTHORIZED);
+    }
+
     private void assertError_getItems(GraphQLResponse response, HttpStatus expectedHttpStatus, String expectedErrorMessage) {
         GraphQLTestUtil.assertErrorResponse(response, expectedHttpStatus, expectedErrorMessage, GET_ITEMS_DATA_JSON_PATH);
     }
@@ -596,4 +762,18 @@ public class ItemGraphQLDataFetcherTest {
         GraphQLTestUtil.assertErrorResponse(response, expectedHttpStatus, expectedErrorMessage, DELETE_ITEM_BY_ITEM_ID_DATA_JSON_PATH);
     }
 
+    private void assertError_updateItemByItemId(GraphQLResponse response, HttpStatus expectedHttpStatus, String expectedErrorMessage) {
+        GraphQLTestUtil.assertErrorResponse(response, expectedHttpStatus, expectedErrorMessage, UPDATE_ITEM_BY_ITEM_ID_DATA_JSON_PATH);
+    }
+
+    private ItemsDTO getItemsDTOInstance() {
+        ItemsDTO itemsDTO = new ItemsDTO();
+        itemsDTO.setName("foo-name");
+        itemsDTO.setDescription("foo-desc");
+        itemsDTO.setCategoryId(1L);
+        itemsDTO.setInStock(10);
+        itemsDTO.setImagePath("/foo");
+        itemsDTO.setRegion(RegionType.LOCATION_1);
+        return itemsDTO;
+    }
 }
