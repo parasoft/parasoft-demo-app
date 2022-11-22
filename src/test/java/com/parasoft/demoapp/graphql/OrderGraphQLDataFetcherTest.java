@@ -43,8 +43,8 @@ public class OrderGraphQLDataFetcherTest {
     private static final String GET_ORDER_BY_ORDER_NUMBER_DATA_JSON_PATH = DATA_PATH + ".getOrderByOrderNumber";
     private static final String CREATE_ORDER_GRAPHQL_RESOURCE = "graphql/orders/createOrder.graphql";
     private static final String CREATE_ORDER_DATA_JSON_PATH = DATA_PATH + ".createOrder";
-    private static final String SHOW_ALL_ORDERS_GRAPHQL_RESOURCE = "graphql/orders/showAllOrders.graphql";
-    private static final String SHOW_ALL_ORDERS_DATA_JSON_PATH = DATA_PATH + ".showAllOrders";
+    private static final String GET_ORDERS_GRAPHQL_RESOURCE = "graphql/orders/getOrders.graphql";
+    private static final String GET_ORDERS_DATA_JSON_PATH = DATA_PATH + ".getOrders";
 
     @Autowired
     private GraphQLTestTemplate graphQLTestTemplate;
@@ -285,28 +285,28 @@ public class OrderGraphQLDataFetcherTest {
     }
 
     @Test
-    public void test_showAllOrders_normal() throws Throwable {
+    public void test_getOrders_normal() throws Throwable {
         String orderNumber = createOrderForTest();
         ObjectNode variable = objectMapper.createObjectNode();
         GraphQLResponse response = graphQLTestTemplate
                 .withBasicAuth(purchaser.getUsername(), purchaser.getPassword())
-                .perform(SHOW_ALL_ORDERS_GRAPHQL_RESOURCE, variable);
+                .perform(GET_ORDERS_GRAPHQL_RESOURCE, variable);
 
         assertThat(response).isNotNull();
         assertThat(response.isOk()).isTrue();
         response.assertThatNoErrorsArePresent()
-                .assertThatField(SHOW_ALL_ORDERS_DATA_JSON_PATH)
+                .assertThatField(GET_ORDERS_DATA_JSON_PATH)
                 .as(PageInfo.class)
                 .hasFieldOrPropertyWithValue("totalElements", 1L)
                 .hasFieldOrPropertyWithValue("totalPages", 1)
                 .hasFieldOrPropertyWithValue("size", 2000)
                 .hasFieldOrPropertyWithValue("sort", "orderNumber: DESC")
                 .and()
-                .assertThatField(SHOW_ALL_ORDERS_DATA_JSON_PATH + ".content")
+                .assertThatField(GET_ORDERS_DATA_JSON_PATH + ".content")
                 .asListOf(OrderEntity.class)
                 .has(new Condition<>(c -> c.getRequestedBy().equals(purchaser.getUsername()), "name purchaser"), Index.atIndex(0))
                 .and()
-                .assertThatField(SHOW_ALL_ORDERS_DATA_JSON_PATH + ".content")
+                .assertThatField(GET_ORDERS_DATA_JSON_PATH + ".content")
                 .asListOf(OrderEntity.class)
                 .has(new Condition<>(c -> c.getOrderItems().get(0).getName().equals("Blue Sleeping Bag"), "name Blue Sleeping Bag"), Index.atIndex(0))
                 .size()
@@ -314,14 +314,24 @@ public class OrderGraphQLDataFetcherTest {
     }
 
     @Test
-    public void test_showAllOrders_noAuthentication() throws Throwable {
+    public void test_getOrders_incorrectAuthentication() throws Throwable {
         String orderNumber = createOrderForTest();
         ObjectNode variable = objectMapper.createObjectNode();
         GraphQLResponse response = graphQLTestTemplate
                 .withBasicAuth(purchaser.getUsername(), "invalidPassword")
-                .perform(SHOW_ALL_ORDERS_GRAPHQL_RESOURCE, variable);
+                .perform(GET_ORDERS_GRAPHQL_RESOURCE, variable);
 
-        GraphQLTestUtil.assertErrorResponse(response, HttpStatus.UNAUTHORIZED, ConfigMessages.USER_IS_NOT_AUTHORIZED, SHOW_ALL_ORDERS_DATA_JSON_PATH);
+        GraphQLTestUtil.assertErrorResponse(response, HttpStatus.UNAUTHORIZED, ConfigMessages.USER_IS_NOT_AUTHORIZED, GET_ORDERS_DATA_JSON_PATH);
+    }
+
+    @Test
+    public void test_getOrders_noAuthentication() throws Throwable {
+        String orderNumber = createOrderForTest();
+        ObjectNode variable = objectMapper.createObjectNode();
+        GraphQLResponse response = graphQLTestTemplate
+                .perform(GET_ORDERS_GRAPHQL_RESOURCE, variable);
+
+        GraphQLTestUtil.assertErrorResponse(response, HttpStatus.UNAUTHORIZED, ConfigMessages.USER_IS_NOT_AUTHORIZED, GET_ORDERS_DATA_JSON_PATH);
     }
 
     private String createOrderForTest() throws Throwable {

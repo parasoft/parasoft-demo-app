@@ -1,5 +1,5 @@
-query ShowAllOrders($page: Int, $size: Int, $sort: [String]){
-    showAllOrders(page: $page, size: $size, sort: $sort){
+query GetOrders($page: Int, $size: Int, $sort: [String]){
+    getOrders(page: $page, size: $size, sort: $sort){
         totalElements
         totalPages
         size

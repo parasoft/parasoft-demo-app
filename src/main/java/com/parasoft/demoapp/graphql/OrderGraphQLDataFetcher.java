@@ -73,7 +73,7 @@ public class OrderGraphQLDataFetcher {
         };
     }
 
-    public DataFetcher<PageInfo<OrderEntity>> showAllOrders() {
+    public DataFetcher<PageInfo<OrderEntity>> getOrders() {
         return dataFetchingEnvironment -> {
             try {
                 UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(orderBaseUrl);
