@@ -87,6 +87,12 @@ angular
                     success(response.data.data.getLocation);
                 }, error);
             }
+            instance.getAllRegionTypesOfCurrentIndustry = function(success, error) {
+                let requestBody = {"query": "query GetAllRegionTypesOfCurrentIndustry{getAllRegionTypesOfCurrentIndustry}"};
+                makeCall(requestBody, function(response){
+                    success(response.data.data.getAllRegionTypesOfCurrentIndustry);
+                }, error);
+            }
             // Orders
             instance.createOrder = function(variables, success, error, selectionSet) {
                 if(!selectionSet) {
