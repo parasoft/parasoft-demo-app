@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.graphql.spring.boot.test.GraphQLResponse;
 import com.graphql.spring.boot.test.GraphQLTestTemplate;
-import com.parasoft.demoapp.defaultdata.ResetEntrance;
 import com.parasoft.demoapp.dto.ShoppingCartDTO;
 import com.parasoft.demoapp.dto.UpdateShoppingCartItemDTO;
 import com.parasoft.demoapp.exception.InventoryNotFoundException;
@@ -64,16 +63,12 @@ public class CartItemGraphQLDataFetcherTest {
     @Autowired
     private GlobalPreferencesService globalPreferencesService;
 
-    @Autowired
-    private ResetEntrance resetEntrance;
-
     @Rule
     public TestName testName = new TestName();
 
     @Before
     public void setup() {
         graphQLTestTemplate.getHeaders().clear();
-        resetEntrance.run();
     }
 
     @Before
