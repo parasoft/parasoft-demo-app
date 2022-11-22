@@ -897,14 +897,14 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
             demo.items.splice(arrIndex,1);
             toastr.success($filter('translate')('ITEMS_REMOVED_SUCCESSFULLY'));
         }
-        let error = (data) => {
+        let errorhandler = (data) => {
             console.info(data);
             toastrService().error($filter('translate')('ITEMS_FAILED_TO_REMOVE'));
         }
         let params = {"itemId": item.id};
 
     if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
-        graphQLService.deleteItemByItemId(params, success, (data) => {error(data)});
+        graphQLService.deleteItemByItemId(params, success, (data) => {errorhandler(data)});
     } else {
         $http({
             method: 'DELETE',
@@ -912,7 +912,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
         }).then(function(result) {
             success(result);
         }, function error(result) {
-            error(result);
+            errorhandler(result);
         }).catch(function(result) {
             console.info(result);
         });
