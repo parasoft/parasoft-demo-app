@@ -27,22 +27,20 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
         let getAllRegionTypesSuccess = (data) => {
             category.regions = data;
         };
-        let getAllRegionTypesError = (data) => {
+        let getAllRegionTypesError = (data, endpointType) => {
             console.info(data);
-            handleRegionError(data,category,$rootScope,$filter,$http);
+            handleRegionError(data,category,$rootScope,$filter,$http, endpointType);
         };
         if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
-            graphQLService.getAllRegionTypesOfCurrentIndustry(getAllRegionTypesSuccess, (data) => {getAllRegionTypesError(data)})
+            graphQLService.getAllRegionTypesOfCurrentIndustry(getAllRegionTypesSuccess, (data) => {getAllRegionTypesError(data, "graphQL")})
         } else {
             $http({
                 method: 'GET',
                 url: '/proxy/v1/locations/regions',
             }).then(function(result) {
                 getAllRegionTypesSuccess(result.data.data);
-            },function error(result){
-                getAllRegionTypesError(result);
             }).catch(function(result) {
-                getAllRegionTypesError(result);
+                getAllRegionTypesError(result, "locations");
             });
         }
 
@@ -120,8 +118,8 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
             });
         }
 
-        function handleRegionError(result,category,$rootScope,$filter,$http){
-            displayLoadError(result,$rootScope,$filter,$http,false,'locations');
+        function handleRegionError(result,category,$rootScope,$filter,$http,endpointType){
+            displayLoadError(result,$rootScope,$filter,$http,false,endpointType);
             category.regionsLoadError = true;
         }
     }, 500);
