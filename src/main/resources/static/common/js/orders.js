@@ -207,14 +207,14 @@ app.controller('orderHistoryController', function($rootScope, $http, $filter, gr
 
         let error = (data, endpointType) => {
             console.log(data);
-            approver.totalPages = 0;
-            approver.currentPage = 0;
+            history.totalPages = 0;
+            history.currentPage = 0;
             displayLoadError(data,$rootScope,$filter,$http,false,endpointType);
-            approver.ordersLoadError = true;
+            history.ordersLoadError = true;
         }
 
         if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
-            let selectionSet = "{totalElements,content{orderNumber,requestedBy,status,reviewedByAPV,submissionDate,respondedBy,approverReplyDate,orderItems{name,quantity}}}";
+            let selectionSet = "{totalElements,content{orderNumber,requestedBy,status,reviewedByAPV,reviewedByPRCH,submissionDate,respondedBy,approverReplyDate,orderItems{name,quantity}}}";
             graphQLService.getOrders(success, (data) => {error(data, "graphQL")}, selectionSet);
         } else {
             $http({
