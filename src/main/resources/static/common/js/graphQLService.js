@@ -127,6 +127,22 @@ angular
                     success(response.data.data.getOrderByOrderNumber);
                 }, error)
             }
+            instance.updateOrderByOrderNumber = function (variables, success, error, selectionSet) {
+                if(!selectionSet) {
+                    selectionSet = "{" +
+                        "id,orderNumber,requestedBy,status,reviewedByAPV,reviewedByPRCH,respondedBy," +
+                        "orderItems" +
+                        "{" +
+                        "id,name,description,image,itemId,quantity" +
+                        "}," +
+                        "region,location,orderImage,receiverId,eventId,eventNumber,submissionDate,approverReplyDate,comments" +
+                        "}";
+                }
+                let requestBody = {"query": "mutation updateOrderByOrderNumber($orderNumber: String!, $orderStatusDTO: OrderStatusDTO!){updateOrderByOrderNumber(orderNumber: $orderNumber, orderStatusDTO: $orderStatusDTO)" + selectionSet + "}", "variables": variables};
+                makeCall(requestBody, function (response) {
+                    success(response.data.data.updateOrderByOrderNumber);
+                }, error)
+            }
             instance.getOrders = function(success, error, selectionSet) {
                 if (!selectionSet) {
                     selectionSet = "{" +
