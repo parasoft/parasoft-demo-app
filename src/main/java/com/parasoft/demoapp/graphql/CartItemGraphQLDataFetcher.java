@@ -65,6 +65,24 @@ public class CartItemGraphQLDataFetcher {
         };
     }
 
+    public DataFetcher<CartItemEntity> getCartItemByItemId() {
+        return dataFetchingEnvironment -> {
+            try {
+                Map<String, Long> uriVariables = new HashMap<>();
+                uriVariables.put("itemId", dataFetchingEnvironment.getArgument("itemId"));
+                ResponseEntity<ResponseResult<CartItemEntity>> entity =
+                    restTemplate.exchange(cartItemBaseUrl + "/{itemId}",
+                        HttpMethod.GET,
+                        new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpServletRequest)),
+                        new ParameterizedTypeReference<ResponseResult<CartItemEntity>>() {},
+                        uriVariables);
+                return Objects.requireNonNull(entity.getBody()).getData();
+            } catch (Exception e) {
+                throw RestTemplateUtil.convertException(e);
+            }
+        };
+    }
+
     public DataFetcher<Long> removeCartItem() {
         return environment -> {
             try {
