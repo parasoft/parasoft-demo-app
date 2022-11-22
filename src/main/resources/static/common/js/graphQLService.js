@@ -87,6 +87,12 @@ angular
                     success(response.data.data.getLocation);
                 }, error);
             }
+            instance.getAllRegionTypesOfCurrentIndustry = function(success, error) {
+                let requestBody = {"query": "query GetAllRegionTypesOfCurrentIndustry{getAllRegionTypesOfCurrentIndustry}"};
+                makeCall(requestBody, function(response){
+                    success(response.data.data.getAllRegionTypesOfCurrentIndustry);
+                }, error);
+            }
             // Orders
             instance.createOrder = function(variables, success, error, selectionSet) {
                 if(!selectionSet) {
@@ -137,6 +143,26 @@ angular
                     success(response.data.data.updateOrderByOrderNumber);
                 }, error)
             }
+            instance.getOrders = function(success, error, selectionSet) {
+                if (!selectionSet) {
+                    selectionSet = "{" +
+                        "totalElements,totalPages,size,sort," +
+                        "content" +
+                        "{" +
+                            "id,orderNumber,requestedBy,status,reviewedByAPV,reviewedByPRCH,respondedBy," +
+                            "orderItems" +
+                            "{" +
+                                "id,name,description,image,itemId,quantity" +
+                            "}" +
+                            "region,location,orderImage,receiverId,eventId,eventNumber,submissionDate,approverReplyDate,comments" +
+                        "}" +
+                    "}";
+                }
+                let requestBody = {"query": "query GetOrders($page: Int, $size: Int, $sort: [String]){getOrders(page: $page, size: $size, sort: $sort)" + selectionSet + "}"};
+                makeCall(requestBody, function(response) {
+                    success(response.data.data.getOrders);
+                }, error);
+            }
             // items
             instance.getItems = function (variables, success, error, selectionSet) {
                 if (!selectionSet) {
@@ -146,6 +172,12 @@ angular
                         "{getItems(categoryId: $categoryId, regions: $regions, searchString: $searchString, page: $page, size: $size, sort: $sort)" + selectionSet + "}", "variables": variables};
                 makeCall(requestBody, function (response) {
                     success(response.data.data.getItems);
+                }, error);
+            }
+            instance.deleteItemByItemId = function(variables, success, error) {
+                let requestBody = {"query": "mutation DeleteItemByItemId($itemId:Long!){deleteItemByItemId(itemId:$itemId)}", "variables": variables}
+                makeCall(requestBody, function(response) {
+                    success(response.data.data.deleteItemByItemId);
                 }, error);
             }
             instance.addNewItem = function (variables, success, error, selectionSet) {
@@ -210,6 +242,17 @@ angular
                         "{updateItemInCart(itemId: $itemId, updateShoppingCartItemDTO: $updateShoppingCartItemDTO)" + selectionSet + "}", "variables": variables}
                 makeCall(requestBody, function(response) {
                     success(response.data.data.updateItemInCart);
+                }, error);
+            }
+            instance.updateItemByItemId = function (variables, success, error, selectionSet) {
+                if (!selectionSet) {
+                    selectionSet = "{id,name,description,inStock,image,region,lastAccessedDate,categoryId}"
+                }
+                let requestBody = {
+                    "query": "mutation UpdateItemByItemId($itemId:Long!, $itemsDTO:ItemsDTO!){updateItemByItemId(itemId:$itemId, itemsDTO:$itemsDTO)" + selectionSet + "}",
+                    "variables": variables};
+                makeCall(requestBody, function (response) {
+                    success(response.data.data.updateItemByItemId);
                 }, error);
             }
             // customized call
