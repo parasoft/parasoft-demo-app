@@ -190,19 +190,21 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
     }
 
     function getAllRegions(){
+        let getAllRegionsSuccess = (data) => {
+            demo.regions = data;
+        };
         let getAllRegionsError = (result, endpointType) => {
             console.info(result);
             displayLoadError(result,$rootScope,$filter,$http,true,endpointType);
         };
         if(CURRENT_WEB_SERVICE_MODE === "GraphQL") {
-            graphQLService.getAllRegionTypesOfCurrentIndustry((data) => {demo.regions = data},
-                (data) => {getAllRegionsError(data, "graphQL")})
+            graphQLService.getAllRegionTypesOfCurrentIndustry(getAllRegionsSuccess, (data) => {getAllRegionsError(data, "graphQL")})
         } else {
             $http({
                 method: 'GET',
                 url: '/proxy/v1/locations/regions',
             }).then(function(result) {
-                demo.regions = result.data.data;
+                getAllRegionsSuccess(result.data.data);
             }).catch(function(result) {
                 getAllRegionsError(result, "locations");
             });

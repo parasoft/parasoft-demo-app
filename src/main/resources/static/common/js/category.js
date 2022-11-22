@@ -24,19 +24,21 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
     // Set time out for avoiding getting the key when using $filter('translate') filter.
     setTimeout(function(){
         //Get regions from database
+        let getAllRegionTypesSuccess = (data) => {
+            category.regions = data;
+        };
         let getAllRegionTypesError = (data) => {
             console.info(data);
             handleRegionError(data,category,$rootScope,$filter,$http);
         };
         if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
-            graphQLService.getAllRegionTypesOfCurrentIndustry((data) => {category.regions = data},
-                (data) => {getAllRegionTypesError(data)})
+            graphQLService.getAllRegionTypesOfCurrentIndustry(getAllRegionTypesSuccess, (data) => {getAllRegionTypesError(data)})
         } else {
             $http({
                 method: 'GET',
                 url: '/proxy/v1/locations/regions',
             }).then(function(result) {
-                category.regions = result.data.data;
+                getAllRegionTypesSuccess(result.data.data);
             },function error(result){
                 getAllRegionTypesError(result);
             }).catch(function(result) {

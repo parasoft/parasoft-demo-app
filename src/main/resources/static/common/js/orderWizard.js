@@ -21,19 +21,21 @@ app.controller('orderWizardController', function($scope, $rootScope, $http, $fil
 	// Set time out for avoiding to get the key when using $filter('translate') filter.
 	setTimeout(function(){
 		//Get regions
+        let getAllRegionTypesSuccess = (data) => {
+            $scope.regions = data;
+        };
         let getAllRegionTypesError = (data, endpointType) => {
             console.info(data);
             displayLoadError(data,$rootScope,$filter,$http,true,endpointType);
         };
         if(CURRENT_WEB_SERVICE_MODE === "GraphQL") {
-            graphQLService.getAllRegionTypesOfCurrentIndustry((data) => {$scope.regions = data},
-				(data) => {getAllRegionTypesError(data, "graphQL")})
+            graphQLService.getAllRegionTypesOfCurrentIndustry(getAllRegionTypesSuccess, (data) => {getAllRegionTypesError(data, "graphQL")})
         } else {
             $http({
                 method: 'GET',
                 url: '/proxy/v1/locations/regions',
             }).then(function(result) {
-				$scope.regions = result.data.data;
+                getAllRegionTypesSuccess(result.data.data);
             }).catch(function(result) {
                 getAllRegionTypesError(result, "locations");
             });
