@@ -202,6 +202,17 @@ angular
                     success(response.data.data.updateItemInCart);
                 }, error);
             }
+            instance.updateItemByItemId = function (variables, success, error, selectionSet) {
+                if (!selectionSet) {
+                    selectionSet = "{id,name,description,inStock,image,region,lastAccessedDate,categoryId}"
+                }
+                let requestBody = {
+                    "query": "mutation UpdateItemByItemId($itemId:Long!, $itemsDTO:ItemsDTO!){updateItemByItemId(itemId:$itemId, itemsDTO:$itemsDTO)" + selectionSet + "}",
+                    "variables": variables};
+                makeCall(requestBody, function (response) {
+                    success(response.data.data.updateItemByItemId);
+                }, error);
+            }
             // customized call
             instance.makeGraphQLCall = makeCall;
             return instance;
