@@ -13,7 +13,9 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.HOST;
@@ -46,6 +48,7 @@ public class CartItemGraphQLDataFetcher {
             }
         };
     }
+
     public DataFetcher<CartItemEntity> addItemInCart() {
         return dataFetchingEnvironment -> {
             try {
@@ -55,6 +58,24 @@ public class CartItemGraphQLDataFetcher {
                                 new HttpEntity<>(dataFetchingEnvironment.getArgument("shoppingCartDTO"),
                                         RestTemplateUtil.createHeaders(httpServletRequest)),
                                 new ParameterizedTypeReference<ResponseResult<CartItemEntity>>() {});
+                return Objects.requireNonNull(entity.getBody()).getData();
+            } catch (Exception e) {
+                throw RestTemplateUtil.convertException(e);
+            }
+        };
+    }
+
+    public DataFetcher<CartItemEntity> getCartItemByItemId() {
+        return dataFetchingEnvironment -> {
+            try {
+                Map<String, Long> uriVariables = new HashMap<>();
+                uriVariables.put("itemId", dataFetchingEnvironment.getArgument("itemId"));
+                ResponseEntity<ResponseResult<CartItemEntity>> entity =
+                    restTemplate.exchange(cartItemBaseUrl + "/{itemId}",
+                        HttpMethod.GET,
+                        new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpServletRequest)),
+                        new ParameterizedTypeReference<ResponseResult<CartItemEntity>>() {},
+                        uriVariables);
                 return Objects.requireNonNull(entity.getBody()).getData();
             } catch (Exception e) {
                 throw RestTemplateUtil.convertException(e);
@@ -86,6 +107,25 @@ public class CartItemGraphQLDataFetcher {
                                 HttpMethod.DELETE,
                                 new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpServletRequest)),
                                 new ParameterizedTypeReference<ResponseResult<Boolean>>() {});
+                return Objects.requireNonNull(entity.getBody()).getData();
+            } catch (Exception e) {
+                throw RestTemplateUtil.convertException(e);
+            }
+        };
+    }
+
+    public DataFetcher<CartItemEntity> updateItemInCart() {
+        return dataFetchingEnvironment -> {
+            try {
+                Map<String, Long> uriVariables = new HashMap<>();
+                uriVariables.put("itemId", dataFetchingEnvironment.getArgument("itemId"));
+                ResponseEntity<ResponseResult<CartItemEntity>> entity =
+                        restTemplate.exchange(cartItemBaseUrl + "/{itemId}",
+                                HttpMethod.PUT,
+                                new HttpEntity<>(dataFetchingEnvironment.getArgument("updateShoppingCartItemDTO"),
+                                        RestTemplateUtil.createHeaders(httpServletRequest)),
+                                new ParameterizedTypeReference<ResponseResult<CartItemEntity>>() {},
+                                uriVariables);
                 return Objects.requireNonNull(entity.getBody()).getData();
             } catch (Exception e) {
                 throw RestTemplateUtil.convertException(e);

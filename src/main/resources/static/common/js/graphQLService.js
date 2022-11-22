@@ -87,6 +87,12 @@ angular
                     success(response.data.data.getLocation);
                 }, error);
             }
+            instance.getAllRegionTypesOfCurrentIndustry = function(success, error) {
+                let requestBody = {"query": "query GetAllRegionTypesOfCurrentIndustry{getAllRegionTypesOfCurrentIndustry}"};
+                makeCall(requestBody, function(response){
+                    success(response.data.data.getAllRegionTypesOfCurrentIndustry);
+                }, error);
+            }
             // Orders
             instance.createOrder = function(variables, success, error, selectionSet) {
                 if(!selectionSet) {
@@ -130,6 +136,12 @@ angular
                         "{getItems(categoryId: $categoryId, regions: $regions, searchString: $searchString, page: $page, size: $size, sort: $sort)" + selectionSet + "}", "variables": variables};
                 makeCall(requestBody, function (response) {
                     success(response.data.data.getItems);
+                }, error);
+            }
+            instance.deleteItemByItemId = function(variables, success, error) {
+                let requestBody = {"query": "mutation DeleteItemByItemId($itemId:Long!){deleteItemByItemId(itemId:$itemId)}", "variables": variables}
+                makeCall(requestBody, function(response) {
+                    success(response.data.data.deleteItemByItemId);
                 }, error);
             }
             instance.addNewItem = function (variables, success, error, selectionSet) {
@@ -184,6 +196,27 @@ angular
                 }
                 makeCall(requestBody, function(response) {
                     success(response.data.data.getItemByItemId);
+                }, error);
+            }
+            instance.updateItemInCart = function(variables, success, error, selectionSet) {
+                if (!selectionSet) {
+                    selectionSet = "{id, userId, itemId, name, description, image, realInStock, quantity}"
+                }
+                let requestBody = {"query": "mutation UpdateItemInCart($itemId: Long!, $updateShoppingCartItemDTO: UpdateShoppingCartItemDTO!)" +
+                        "{updateItemInCart(itemId: $itemId, updateShoppingCartItemDTO: $updateShoppingCartItemDTO)" + selectionSet + "}", "variables": variables}
+                makeCall(requestBody, function(response) {
+                    success(response.data.data.updateItemInCart);
+                }, error);
+            }
+            instance.updateItemByItemId = function (variables, success, error, selectionSet) {
+                if (!selectionSet) {
+                    selectionSet = "{id,name,description,inStock,image,region,lastAccessedDate,categoryId}"
+                }
+                let requestBody = {
+                    "query": "mutation UpdateItemByItemId($itemId:Long!, $itemsDTO:ItemsDTO!){updateItemByItemId(itemId:$itemId, itemsDTO:$itemsDTO)" + selectionSet + "}",
+                    "variables": variables};
+                makeCall(requestBody, function (response) {
+                    success(response.data.data.updateItemByItemId);
                 }, error);
             }
             // customized call

@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.graphql.spring.boot.test.GraphQLResponse;
 import com.graphql.spring.boot.test.GraphQLTestTemplate;
 import com.parasoft.demoapp.controller.PageInfo;
-import com.parasoft.demoapp.defaultdata.ResetEntrance;
 import com.parasoft.demoapp.dto.ItemsDTO;
 import com.parasoft.demoapp.messages.AssetMessages;
 import com.parasoft.demoapp.messages.ConfigMessages;
@@ -64,9 +63,6 @@ public class ItemGraphQLDataFetcherTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private ResetEntrance resetEntrance;
-
-    @Autowired
     private ItemService itemService;
 
     @Autowired
@@ -78,12 +74,11 @@ public class ItemGraphQLDataFetcherTest {
     @Before
     public void setUp() {
         graphQLTestTemplate.getHeaders().clear();
-        resetEntrance.run();
     }
 
     @Before
     public void conditionalBefore() {
-        Set<String> testNames = new HashSet<>(Arrays.asList("test_deleteItemByName_normal", "test_updateItemInStockByItemId_normal", "test_deleteItemByName_normal", "test_addNewItem_normal", "test_deleteItemByItemId_normal"));
+        Set<String> testNames = new HashSet<>(Arrays.asList("test_deleteItemByName_normal", "test_updateItemInStockByItemId_normal", "test_updateItemByItemId_normal", "test_addNewItem_normal", "test_deleteItemByItemId_normal"));
         if (testNames.contains(testName.getMethodName())) {
             GraphQLTestUtil.resetDatabase(globalPreferencesService);
         }
@@ -91,7 +86,7 @@ public class ItemGraphQLDataFetcherTest {
 
     @After
     public void conditionalAfter() {
-        Set<String> testNames = new HashSet<>(Arrays.asList("test_deleteItemByName_normal", "test_updateItemInStockByItemId_normal", "test_deleteItemByName_normal", "test_addNewItem_normal", "test_deleteItemByItemId_normal"));
+        Set<String> testNames = new HashSet<>(Arrays.asList("test_deleteItemByName_normal", "test_updateItemInStockByItemId_normal", "test_updateItemByItemId_normal", "test_addNewItem_normal", "test_deleteItemByItemId_normal"));
         if (testNames.contains(testName.getMethodName())) {
             GraphQLTestUtil.resetDatabase(globalPreferencesService);
         }

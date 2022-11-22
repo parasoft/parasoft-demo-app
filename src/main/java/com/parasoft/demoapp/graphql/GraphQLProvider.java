@@ -88,6 +88,8 @@ public class GraphQLProvider {
     private void orderTypeWiring(RuntimeWiring.Builder builder) {
         builder.type("Query", typeWriting -> typeWriting.dataFetcher("getOrderByOrderNumber", orderGraphQLDataFetcher.getOrderByOrderNumber()));
         builder.type("Mutation", typeWriting -> typeWriting.dataFetcher("createOrder", orderGraphQLDataFetcher.createOrder()));
+        builder.type("Query", typeWriting-> typeWriting.dataFetcher("getOrders", orderGraphQLDataFetcher.getOrders()));
+        builder.type("Mutation", typeWriting -> typeWriting.dataFetcher("updateOrderByOrderNumber", orderGraphQLDataFetcher.updateOrderByOrderNumber()));
     }
 
     private void itemTypeWiring(RuntimeWiring.Builder builder) {
@@ -108,6 +110,8 @@ public class GraphQLProvider {
         builder.type("Mutation", typeWiring ->
                 typeWiring.dataFetcher("removeCartItem", cartItemGraphQLDataFetcher.removeCartItem()));
         builder.type("Mutation", typeWriting -> typeWriting.dataFetcher("removeAllCartItems", cartItemGraphQLDataFetcher.removeAllCartItems()));
+        builder.type("Query", typeWriting -> typeWriting.dataFetcher("getCartItemByItemId", cartItemGraphQLDataFetcher.getCartItemByItemId()));
+        builder.type("Mutation", typeWriting -> typeWriting.dataFetcher("updateItemInCart", cartItemGraphQLDataFetcher.updateItemInCart()));
     }
 
     @Bean

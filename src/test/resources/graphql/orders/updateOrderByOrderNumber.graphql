@@ -1,0 +1,28 @@
+mutation updateOrder($orderNumber: String!, $orderStatusDTO: OrderStatusDTO! ){
+    updateOrderByOrderNumber(orderNumber: $orderNumber, orderStatusDTO: $orderStatusDTO) {
+        id,
+        orderNumber,
+        requestedBy,
+        status,
+        reviewedByAPV,
+        reviewedByPRCH,
+        respondedBy,
+        orderItems {
+            id,
+            name,
+            description,
+            image,
+            itemId,
+            quantity
+        },
+        region,
+        location,
+        orderImage,
+        receiverId,
+        eventId,
+        eventNumber,
+        submissionDate,
+        approverReplyDate,
+        comments
+    }
+}

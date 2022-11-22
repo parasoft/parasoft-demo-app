@@ -129,7 +129,7 @@ function initRequisitionBarController(app){
         //Get current itemId
         var currentItemId = $location.absUrl().substr($location.absUrl().lastIndexOf("/")+1);
         //Get requisition data from database
-        loadShoppingCartItemQuantity($rootScope,$http,$filter,graphQLService);
+        loadShoppingCartData($rootScope,$http,$filter,graphQLService);
 
         //Get related assets data from database TODO
         var testNums = [0,1,2];
@@ -346,23 +346,42 @@ function initRequisitionBarController(app){
 
         //Update the cartItem data to database
         function updateShoppingCart(requireItemId,requireItemQty){
-            $http({
-                method: 'PUT',
-                url: '/proxy/v1/cartItems/'+requireItemId,
-                data: {"itemQty":requireItemQty}
-            }).then(function(result) {
-                var cartItem = result.data.data;
+            let success = (data) => {
+                let cartItem = data;
                 if(Number(requireItemId) === Number(currentItemId)){
-                    var quantity = cartItem.quantity;
-                    var inventory = cartItem.realInStock;
+                    let quantity = cartItem.quantity;
+                    let inventory = cartItem.realInStock;
                     $rootScope.inRequisition = quantity;
                     $rootScope.itemInventory = inventory;
                     checkInventoryInItemDetail(inventory,quantity);
                 }
+
                 loadShoppingCartData($rootScope,$http,$filter,graphQLService);
-            }).catch(function(result) {
-                console.info(result);
-            });
+            }
+            let error = (data) => {
+                console.error(data);
+                toastrService().error($filter('translate')('FAILED_TO_UPDATE_CART_ITEM'));
+            }
+            if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+                let variables = {
+                    "itemId": requireItemId,
+                    "updateShoppingCartItemDTO": {
+                        "itemQty": requireItemQty
+                    }
+                };
+                let selectionSet = "{id}";
+                graphQLService.updateItemInCart(variables, success, error, selectionSet);
+            } else {
+                $http({
+                    method: 'PUT',
+                    url: '/proxy/v1/cartItems/' + requireItemId,
+                    data: {"itemQty": requireItemQty}
+                }).then(function (result) {
+                    success(result.data.data);
+                }).catch(function (result) {
+                    error(result);
+                });
+            }
         }
 
         function checkInventoryInItemDetail(inventory,quantity){

@@ -64,7 +64,7 @@
                                     <div class="items_empty_content_message empty_error_message"
                                          ng-if="category.regionsLoadError">
                                         <p class="error_message_block">
-                                            <span class="locations_error_message" ng-bind="locationsErrorMessage"></span>
+                                            <span class="locations_error_message" ng-bind="locationsErrorMessage ? locationsErrorMessage : graphQLErrorMessage"></span>
                                         </p>
                                     </div>
                                     <div ng-repeat="region in category.regions" class="regions">

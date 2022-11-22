@@ -24,19 +24,25 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
     // Set time out for avoiding getting the key when using $filter('translate') filter.
     setTimeout(function(){
         //Get regions from database
-        $http({
-            method: 'GET',
-            url: '/proxy/v1/locations/regions',
-        }).then(function(result) {
-            var regions = result.data.data;
-            category.regions = regions;
-        },function error(result){
-            console.info(result);
-            handleRegionError(result,category,$rootScope,$filter,$http);
-        }).catch(function(result) {
-            console.info(result);
-            handleRegionError(result,category,$rootScope,$filter,$http);
-        });
+        let getAllRegionTypesSuccess = (data) => {
+            category.regions = data;
+        };
+        let getAllRegionTypesError = (data, endpointType) => {
+            console.info(data);
+            handleRegionError(data,category,$rootScope,$filter,$http, endpointType);
+        };
+        if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+            graphQLService.getAllRegionTypesOfCurrentIndustry(getAllRegionTypesSuccess, (data) => {getAllRegionTypesError(data, "graphQL")})
+        } else {
+            $http({
+                method: 'GET',
+                url: '/proxy/v1/locations/regions',
+            }).then(function(result) {
+                getAllRegionTypesSuccess(result.data.data);
+            }).catch(function(result) {
+                getAllRegionTypesError(result, "locations");
+            });
+        }
 
         //Obtain the checked options from cookie
         var checkedRegions = $cookies.get("regionFilter");
@@ -112,8 +118,8 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
             });
         }
 
-        function handleRegionError(result,category,$rootScope,$filter,$http){
-            displayLoadError(result,$rootScope,$filter,$http,false,'locations');
+        function handleRegionError(result,category,$rootScope,$filter,$http,endpointType){
+            displayLoadError(result,$rootScope,$filter,$http,false,endpointType);
             category.regionsLoadError = true;
         }
     }, 500);

@@ -19,17 +19,17 @@ var bug_Reverse_orders_value = "REVERSE_ORDER_OF_ORDERS";
 var bug_Reinitialize_datasource_for_each_http_request_value = "REINITIALIZE_DATASOURCE_FOR_EACH_HTTP_REQUEST";
 
 mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $filter, $window, $timeout, graphQLService) {
-	var demo = this;
-	demo.end_point_for_categories = "/proxy/v1/assets/categories/**";
-	demo.end_point_for_items = "/proxy/v1/assets/items/**";
-	demo.end_point_for_cartItems = "/proxy/v1/cartItems/**";
-	demo.end_point_for_orders = "/proxy/v1/orders/**";
-	demo.end_point_for_locations = "/proxy/v1/locations/**";
-	demo.end_point_for_graphql = "/proxy/graphql";
+    var demo = this;
+    demo.end_point_for_categories = "/proxy/v1/assets/categories/**";
+    demo.end_point_for_items = "/proxy/v1/assets/items/**";
+    demo.end_point_for_cartItems = "/proxy/v1/cartItems/**";
+    demo.end_point_for_orders = "/proxy/v1/orders/**";
+    demo.end_point_for_locations = "/proxy/v1/locations/**";
+    demo.end_point_for_graphql = "/proxy/graphql";
 
-	$rootScope.isShowSettingButton = false;
-	$rootScope.isShowRequisitionButton = false;
-	$rootScope.isShowRequisitionRequestButton = false;
+    $rootScope.isShowSettingButton = false;
+    $rootScope.isShowRequisitionButton = false;
+    $rootScope.isShowRequisitionRequestButton = false;
 
     var flag = localStorage.getItem("status");
     var databaseResetFlag = localStorage.getItem("databaseResetStatus");
@@ -60,39 +60,39 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
     getAllRegions();
 
     demo.changeToGeneral = function(){
-    	if(demo.GENERAL !== "active"){
-    		demo.GENERAL = "active";
-    		demo.CATEGORIES = "";
-    		demo.ITEMS = "";
-    		demo.LABELS = "";
-    		demo.isShowImgModal = false;
-    	}
+        if(demo.GENERAL !== "active"){
+            demo.GENERAL = "active";
+            demo.CATEGORIES = "";
+            demo.ITEMS = "";
+            demo.LABELS = "";
+            demo.isShowImgModal = false;
+        }
     }
 
     demo.changeToCategories = function(){
-    	if(demo.CATEGORIES !== "active"){
-    		demo.CATEGORIES = "active";
-    		demo.GENERAL = "";
-    		demo.ITEMS = "";
-    		demo.LABELS = "";
-    		demo.isShowImgModal = false;
+        if(demo.CATEGORIES !== "active"){
+            demo.CATEGORIES = "active";
+            demo.GENERAL = "";
+            demo.ITEMS = "";
+            demo.LABELS = "";
+            demo.isShowImgModal = false;
 
-    		// get all categories
-        	getAllCategories();
-    	}
+            // get all categories
+            getAllCategories();
+        }
     }
 
     demo.changeToItems = function(){
-    	if(demo.ITEMS !== "active"){
-    		demo.ITEMS = "active";
-    		demo.CATEGORIES = "";
-    		demo.GENERAL = "";
-    		demo.LABELS = "";
-    		demo.isShowImgModal = false;
+        if(demo.ITEMS !== "active"){
+            demo.ITEMS = "active";
+            demo.CATEGORIES = "";
+            demo.GENERAL = "";
+            demo.LABELS = "";
+            demo.isShowImgModal = false;
 
-    		//Get all items
-    	    getAllItems();
-    	}
+            //Get all items
+            getAllItems();
+        }
     }
 
     demo.changeToLabels = function(){
@@ -190,28 +190,37 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
     }
 
     function getAllRegions(){
-        $http({
-            method: 'GET',
-            url: '/proxy/v1/locations/regions',
-        }).then(function(result) {
-            var regions = result.data.data;
-            demo.regions = regions;
-        }).catch(function(result) {
+        let getAllRegionsSuccess = (data) => {
+            demo.regions = data;
+        };
+        let getAllRegionsError = (result, endpointType) => {
             console.info(result);
-            displayLoadError(result,$rootScope,$filter,$http,true,'locations');
-        });
+            displayLoadError(result,$rootScope,$filter,$http,true,endpointType);
+        };
+        if(CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+            graphQLService.getAllRegionTypesOfCurrentIndustry(getAllRegionsSuccess, (data) => {getAllRegionsError(data, "graphQL")})
+        } else {
+            $http({
+                method: 'GET',
+                url: '/proxy/v1/locations/regions',
+            }).then(function(result) {
+                getAllRegionsSuccess(result.data.data);
+            }).catch(function(result) {
+                getAllRegionsError(result, "locations");
+            });
+        }
     }
 
     function getOverridedLabels(){
-    	$http({
-    		method: 'GET',
-    		url: '/v1/labels/overrided?language='+$rootScope.lang,
-    	}).then(function(result) {
-    		demo.overridedLabels = result.data.data;
+        $http({
+            method: 'GET',
+            url: '/v1/labels/overrided?language='+$rootScope.lang,
+        }).then(function(result) {
+            demo.overridedLabels = result.data.data;
             demo.useLabelsOverrided = demo.overridedLabels.labelsOverrided;
-    	}).catch(function(result) {
-    		console.info(result);
-    	});
+        }).catch(function(result) {
+            console.info(result);
+        });
     }
 
     function getDefaultLabels(){
@@ -236,45 +245,45 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
     }
 
     demo.validateEndpointUrlWellForm = function(url, type) {
-    	clearMessage(type);
+        clearMessage(type);
 
-    	if(url === null || url === ""){
-    		return;
-    	}
+        if(url === null || url === ""){
+            return;
+        }
 
-    	if(!validateUrlWellForm(url)){
-    		switch(type) {
-	            case "categories":
-	                demo.endpointError_categories = true;
-	                break;
-	            case "items":
-	                demo.endpointError_items = true;
-	                break;
-	            case "cart":
-	                demo.endpointError_cart = true;
-	                break;
-	            case "orders":
-	                demo.endpointError_orders = true;
-	                break;
-	            case "locations":
-	                demo.endpointError_locations = true;
-	                break;
-	            case "graphql":
-	                demo.endpointError_graphql = true;
-	                break;
-	            default:
-    		}
-    	}
+        if(!validateUrlWellForm(url)){
+            switch(type) {
+                case "categories":
+                    demo.endpointError_categories = true;
+                    break;
+                case "items":
+                    demo.endpointError_items = true;
+                    break;
+                case "cart":
+                    demo.endpointError_cart = true;
+                    break;
+                case "orders":
+                    demo.endpointError_orders = true;
+                    break;
+                case "locations":
+                    demo.endpointError_locations = true;
+                    break;
+                case "graphql":
+                    demo.endpointError_graphql = true;
+                    break;
+                default:
+            }
+        }
     };
 
     validateUrlWellForm = function(url) {
-    	if(url === null || url === ""){
-    		return;
-    	}
-    	var regUrl = new RegExp();
-    	regUrl.compile("^(https?)://([a-zA-Z0-9-_]+.?)*[a-zA-Z0-9-_]+(((/[\\S]+))?/?)$");
+        if(url === null || url === ""){
+            return;
+        }
+        var regUrl = new RegExp();
+        regUrl.compile("^(https?)://([a-zA-Z0-9-_]+.?)*[a-zA-Z0-9-_]+(((/[\\S]+))?/?)$");
 
-    	return regUrl.test(url);
+        return regUrl.test(url);
     }
 
     clearMessage = function(type) {
@@ -302,99 +311,99 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
     }
 
     demo.validateVirtualizeServerUrl = function(url){
-    	demo.clearVirtualizeServerUrlTestMessage();
-    	demo.isVirtualizeServerUrlTesting = true;
+        demo.clearVirtualizeServerUrlTestMessage();
+        demo.isVirtualizeServerUrlTesting = true;
 
-    	$http({
+        $http({
             method: 'GET',
             url: '/v1/demoAdmin/parasoftVirtualizeServerUrlValidation',
             params: {url : url},
         }).then(function(result) {
-        	demo.clearVirtualizeServerUrlTestMessage();
-        	demo.validVirtualizeServerUrl = true;
+            demo.clearVirtualizeServerUrlTestMessage();
+            demo.validVirtualizeServerUrl = true;
         }, function error(response) {
-        	console.info(response);
-        	demo.clearVirtualizeServerUrlTestMessage();
-        	demo.cannotConnectToVirtualizeServerUrl = true;
+            console.info(response);
+            demo.clearVirtualizeServerUrlTestMessage();
+            demo.cannotConnectToVirtualizeServerUrl = true;
         }).catch(function(result) {
             console.info(result);
         });
     }
 
     demo.clearVirtualizeServerUrlTestMessage = function() {
-    	demo.isVirtualizeServerUrlTesting = false;
-    	demo.invalidVirtualizeServerUrl = false;
-    	demo.validVirtualizeServerUrl = false;
-    	demo.cannotConnectToVirtualizeServerUrl = false;
+        demo.isVirtualizeServerUrlTesting = false;
+        demo.invalidVirtualizeServerUrl = false;
+        demo.validVirtualizeServerUrl = false;
+        demo.cannotConnectToVirtualizeServerUrl = false;
     }
 
     demo.validateVirtualizeServerUrlWellForm = function(virtualizeServerUrl){
-    	demo.clearVirtualizeServerUrlTestMessage();
-    	if(virtualizeServerUrl === null || virtualizeServerUrl === ""){
+        demo.clearVirtualizeServerUrlTestMessage();
+        if(virtualizeServerUrl === null || virtualizeServerUrl === ""){
             return true;
         }
 
-    	if(!validateUrlWellForm(virtualizeServerUrl)){
-    		demo.invalidVirtualizeServerUrl = true;
-    	}
+        if(!validateUrlWellForm(virtualizeServerUrl)){
+            demo.invalidVirtualizeServerUrl = true;
+        }
     }
 
     validatePathWellForm = function(virtualizeServerPath){
 
-    	if(virtualizeServerPath === null || virtualizeServerPath === ""){
-    		return true;
-    	}
-    	var reg = new RegExp();
-    	reg.compile("^/[a-zA-Z0-9-_]+$");
+        if(virtualizeServerPath === null || virtualizeServerPath === ""){
+            return true;
+        }
+        var reg = new RegExp();
+        reg.compile("^/[a-zA-Z0-9-_]+$");
 
-    	return reg.test(virtualizeServerPath);
+        return reg.test(virtualizeServerPath);
     }
 
     demo.clearVirtualizeServerPathTestMessage = function(){
-    	demo.invalidVirtualizeServerPath = false;
+        demo.invalidVirtualizeServerPath = false;
     }
 
     demo.validateVirtualizeServerPathWellForm = function(virtualizeServerPath){
-    	demo.clearVirtualizeServerPathTestMessage();
+        demo.clearVirtualizeServerPathTestMessage();
 
-    	if(!validatePathWellForm(virtualizeServerPath)){
-    		demo.invalidVirtualizeServerPath = true;
-    	}
+        if(!validatePathWellForm(virtualizeServerPath)){
+            demo.invalidVirtualizeServerPath = true;
+        }
     }
 
     validateGroupIdWellForm = function(virtualizegroupId){
 
-    	if(virtualizegroupId === null || virtualizegroupId === ""){
-    		return true;
-    	}
-    	var reg = new RegExp();
-    	reg.compile("^([a-zA-Z0-9-_]+)$");
+        if(virtualizegroupId === null || virtualizegroupId === ""){
+            return true;
+        }
+        var reg = new RegExp();
+        reg.compile("^([a-zA-Z0-9-_]+)$");
 
-    	return reg.test(virtualizegroupId);
+        return reg.test(virtualizegroupId);
     }
 
     demo.clearVirtualizeGroupIdTestMessage = function(){
-    	demo.invalidVirtualizeGroupId = false;
+        demo.invalidVirtualizeGroupId = false;
     }
 
     demo.validateVirtualizeGroupIdWellForm = function(virtualizegroupId){
-    	demo.clearVirtualizeGroupIdTestMessage();
+        demo.clearVirtualizeGroupIdTestMessage();
 
-    	if(!validateGroupIdWellForm(virtualizegroupId)){
-    		demo.invalidVirtualizeGroupId = true;
-    	}
+        if(!validateGroupIdWellForm(virtualizegroupId)){
+            demo.invalidVirtualizeGroupId = true;
+        }
     }
 
     demo.triggerParasoftJdbcProxy = function(check, virtualizeServerUrl, virtualizeServerpath, virtualizegroupId) {
-    	if(check){
-    		demo.validateVirtualizeServerUrlWellForm(virtualizeServerUrl);
-        	demo.validateVirtualizeServerPathWellForm(virtualizeServerpath);
-        	demo.validateVirtualizeGroupIdWellForm(virtualizegroupId);
-    	}else{
-    		demo.clearVirtualizeServerUrlTestMessage();
-    		demo.clearVirtualizeServerPathTestMessage();
-    		demo.clearVirtualizeGroupIdTestMessage();
-    	}
+        if(check){
+            demo.validateVirtualizeServerUrlWellForm(virtualizeServerUrl);
+            demo.validateVirtualizeServerPathWellForm(virtualizeServerpath);
+            demo.validateVirtualizeGroupIdWellForm(virtualizegroupId);
+        }else{
+            demo.clearVirtualizeServerUrlTestMessage();
+            demo.clearVirtualizeServerPathTestMessage();
+            demo.clearVirtualizeGroupIdTestMessage();
+        }
     }
 
     demo.disableSaveChangesButton = function(options) {
@@ -407,14 +416,14 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
             }
         }
         if (demo.invalidVirtualizeServerUrl || demo.cannotConnectToVirtualizeServerUrl ||
-    		demo.invalidVirtualizeServerPath || demo.invalidVirtualizeGroupId){
-    		return true;
-    	}
+            demo.invalidVirtualizeServerPath || demo.invalidVirtualizeGroupId){
+            return true;
+        }
 
-    	return false;
+        return false;
     }
 
-	demo.saveAll = function() {
+    demo.saveAll = function() {
         let data = angular.element('#options_form').serializeJSON()
         data.mqProxyEnabled = !!data.mqProxyEnabled;
         $http({
@@ -428,9 +437,9 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
             $window.location.reload();
             $('#saving_modal').modal('hide');
         }, function error(response) {
-        	console.info(response);
+            console.info(response);
 
-        	var responseMessage = response.data.message.toLowerCase();
+            var responseMessage = response.data.message.toLowerCase();
             var errorMessage;
             if(responseMessage.indexOf("invalid categories url") > -1) {
                 errorMessage = $filter('translate')('INVALID_CATEGORIES_URL');
@@ -443,11 +452,11 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
             } else if (responseMessage.indexOf("invalid locations url") > -1) {
                 errorMessage = $filter('translate')('INVALID_LOCATIONS_URL');
             } else if (responseMessage.indexOf("can not establish connection with virtualize server") > -1){
-            	errorMessage = $filter('translate')('INVALID_PARASOFT_VIRTUALIZE_SERVER_URL_1');
+                errorMessage = $filter('translate')('INVALID_PARASOFT_VIRTUALIZE_SERVER_URL_1');
             } else if(responseMessage.indexOf('Invalid virtualize server path') > -1){
-            	errorMessage =  $filter('translate')('INVALID_PARASOFT_VIRTUALIZE_SERVER_PATH');
+                errorMessage =  $filter('translate')('INVALID_PARASOFT_VIRTUALIZE_SERVER_PATH');
             } else if(responseMessage.indexOf('Invalid virtualize group id') > -1){
-            	errorMessage =  $filter('translate')('INVALID_PARASOFT_VIRTUALIZE_GROUP_ID');
+                errorMessage =  $filter('translate')('INVALID_PARASOFT_VIRTUALIZE_GROUP_ID');
             }
 
             $('#saving_modal').modal('hide');
@@ -461,16 +470,16 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
     $rootScope.lang = getDefaultLang();
 
     demo.saveOverridedLabels = function() {
-    	$http({
-    		method: 'PUT',
+        $http({
+            method: 'PUT',
             url: '/v1/labels',
             data: angular.element('#labels_form').serializeJSON(),
             headers : { 'Content-Type': 'application/json' }
-    	}).then(function(result) {
-    		localStorage.setItem("status", "true");
-    		localStorage.setItem("save_succeeded", $filter('translate')('SAVING_SUCCEEDS'));
-    		$window.location.reload();
-    	}, function error(response) {
+        }).then(function(result) {
+            localStorage.setItem("status", "true");
+            localStorage.setItem("save_succeeded", $filter('translate')('SAVING_SUCCEEDS'));
+            $window.location.reload();
+        }, function error(response) {
             console.info(response);
             const errorCode = response.status;
             let errMsg;
@@ -485,7 +494,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
                     errMsg = $filter('translate')('UPDATE_LABEL_ERROR');
             }
             toastrService().error(errMsg, $filter('translate')('SAVING_FAILS'));
-    	}).catch(function(result) {
+        }).catch(function(result) {
             console.info(result);
         });
     }
@@ -529,230 +538,230 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
     };
 
     demo.showDatabaseOperationConfirmModal = function(operation){
-    	if(operation === "reset"){
-    		demo.currentDatabaseOperation = "reset";
-    	}else if(operation === "clear"){
-    		demo.currentDatabaseOperation = "clear";
-    	}
+        if(operation === "reset"){
+            demo.currentDatabaseOperation = "reset";
+        }else if(operation === "clear"){
+            demo.currentDatabaseOperation = "clear";
+        }
     }
 
     demo.showImgModal = function(index,imageUrl){
-    	if(demo.isShowImgModal !== true){
-    		demo.isShowImgModal = true;
-        	demo.itemImg = imageUrl;
-    	}else if(Number(demo.index) !== Number(index)){
-    		demo.itemImg = imageUrl;
-    	}else{
-    		demo.isShowImgModal = false;
-    	}
+        if(demo.isShowImgModal !== true){
+            demo.isShowImgModal = true;
+            demo.itemImg = imageUrl;
+        }else if(Number(demo.index) !== Number(index)){
+            demo.itemImg = imageUrl;
+        }else{
+            demo.isShowImgModal = false;
+        }
 
-    	demo.index = index;
-    	demo.modalStyle = {
-        	"top": index * 42 + 327 + "px",
-        	"left": "440px"
+        demo.index = index;
+        demo.modalStyle = {
+            "top": index * 42 + 327 + "px",
+            "left": "440px"
         };
     }
 
     demo.closeImgModal = function(){
-    	demo.isShowImgModal = false;
+        demo.isShowImgModal = false;
     }
 
     demo.showRemoveConfirmModal = function(selected_item){
-    	if(selected_item.categoryId === undefined){
-    		demo.isCategory = true;
-    	}else{
-    		demo.isCategory = false;
-    	}
-    	demo.selected_item = selected_item;
+        if(selected_item.categoryId === undefined){
+            demo.isCategory = true;
+        }else{
+            demo.isCategory = false;
+        }
+        demo.selected_item = selected_item;
     }
 
-	demo.showItemModal = function(item){
+    demo.showItemModal = function(item){
 
-		demo.itemModal = {
-	    	showFormErrorBox : false,
-	    	formError : '',
-	    	showUploadErrorBox : false,
-	    	uploadError : '',
-	    	isAddNewItem : false,
-	    	isEditItem : false,
-			showUploadBox : false,
-			showTmpImage : false,
-			showErrorBox : false,
-			disableSaveButton : true,
-			disableUploadButton : true,
-			tmpImage : '',
-			chosenFile : '',
-			form : {
-				currentValue : {},
-				defaultValue : {}
-			},
-			fieldsOnChange : function(){},
-			fileChosenOnChange : function(element){},
-			removeTmpImage : function(){},
-			saveItem : function(itemId){},
-			uploadImage : function(){}
-	    }
+        demo.itemModal = {
+            showFormErrorBox : false,
+            formError : '',
+            showUploadErrorBox : false,
+            uploadError : '',
+            isAddNewItem : false,
+            isEditItem : false,
+            showUploadBox : false,
+            showTmpImage : false,
+            showErrorBox : false,
+            disableSaveButton : true,
+            disableUploadButton : true,
+            tmpImage : '',
+            chosenFile : '',
+            form : {
+                currentValue : {},
+                defaultValue : {}
+            },
+            fieldsOnChange : function(){},
+            fileChosenOnChange : function(element){},
+            removeTmpImage : function(){},
+            saveItem : function(itemId){},
+            uploadImage : function(){}
+        }
 
-		document.getElementById("item_form").reset();
-		document.getElementById("image_form").reset();
+        document.getElementById("item_form").reset();
+        document.getElementById("image_form").reset();
 
-		if(item === undefined){
-			demo.editItem = false
-			demo.currentRegion = undefined;
-			demo.currentCategory = undefined;
-		}else{
-			demo.editItem = true;
-			demo.currentRegion = item.region.toUpperCase();
-			demo.currentCategoryId = item.categoryId;
-		}
+        if(item === undefined){
+            demo.editItem = false
+            demo.currentRegion = undefined;
+            demo.currentCategory = undefined;
+        }else{
+            demo.editItem = true;
+            demo.currentRegion = item.region.toUpperCase();
+            demo.currentCategoryId = item.categoryId;
+        }
 
-		if(demo.editItem){
-			demo.itemModal.isEditItem = true;
-			demo.itemModal.isAddNewItem = false;
-			demo.itemInModal = item;
-		}else{
-			demo.itemModal.isAddNewItem = true;
-			demo.itemModal.isEditItem = false;
-			demo.itemInModal = {
-				'id' : '',
-				'name' : '',
-				'region' : '',
-				'inStock' : '',
-				'categoryId' : '',
-				'image' : '',
-				'description' : ''
-			};
-		}
+        if(demo.editItem){
+            demo.itemModal.isEditItem = true;
+            demo.itemModal.isAddNewItem = false;
+            demo.itemInModal = item;
+        }else{
+            demo.itemModal.isAddNewItem = true;
+            demo.itemModal.isEditItem = false;
+            demo.itemInModal = {
+                'id' : '',
+                'name' : '',
+                'region' : '',
+                'inStock' : '',
+                'categoryId' : '',
+                'image' : '',
+                'description' : ''
+            };
+        }
 
-		demo.itemModal.form = {
-			currentValue : {
-				'id' : demo.itemInModal.id,
-				'name' : demo.itemInModal.name,
-				'region' : demo.itemInModal.region,
-				'inStock' : demo.itemInModal.inStock,
-				'categoryId' : demo.itemInModal.categoryId + "",
-				'image' : demo.itemInModal.image,
-				'description' : demo.itemInModal.description
-			},
-			defaultValue : {
-				'id' : demo.itemInModal.id,
-				'name' : demo.itemInModal.name,
-				'region' : demo.itemInModal.region,
-				'inStock' : demo.itemInModal.inStock,
-				'categoryId' : demo.itemInModal.categoryId + "",
-				'image' : demo.itemInModal.image,
-				'description' : demo.itemInModal.description
-			}
-		};
+        demo.itemModal.form = {
+            currentValue : {
+                'id' : demo.itemInModal.id,
+                'name' : demo.itemInModal.name,
+                'region' : demo.itemInModal.region,
+                'inStock' : demo.itemInModal.inStock,
+                'categoryId' : demo.itemInModal.categoryId + "",
+                'image' : demo.itemInModal.image,
+                'description' : demo.itemInModal.description
+            },
+            defaultValue : {
+                'id' : demo.itemInModal.id,
+                'name' : demo.itemInModal.name,
+                'region' : demo.itemInModal.region,
+                'inStock' : demo.itemInModal.inStock,
+                'categoryId' : demo.itemInModal.categoryId + "",
+                'image' : demo.itemInModal.image,
+                'description' : demo.itemInModal.description
+            }
+        };
 
-		if(demo.itemModal.isAddNewItem){
-			demo.itemModal.showUploadBox = true;
-			demo.itemModal.showTmpImage = false;
-		}
+        if(demo.itemModal.isAddNewItem){
+            demo.itemModal.showUploadBox = true;
+            demo.itemModal.showTmpImage = false;
+        }
 
-		if(demo.itemModal.isEditItem){
-			var currentImage = demo.itemModal.form.currentValue.image;
-			demo.itemModal.tmpImage = currentImage
-			if(currentImage !== ''){ // image in item
-				demo.itemModal.showUploadBox = false;
-				demo.itemModal.showTmpImage = true;
-			}else{ // no image in item
-				demo.itemModal.showUploadBox = true;
-				demo.itemModal.showTmpImage = false;
-			}
-		}
+        if(demo.itemModal.isEditItem){
+            var currentImage = demo.itemModal.form.currentValue.image;
+            demo.itemModal.tmpImage = currentImage
+            if(currentImage !== ''){ // image in item
+                demo.itemModal.showUploadBox = false;
+                demo.itemModal.showTmpImage = true;
+            }else{ // no image in item
+                demo.itemModal.showUploadBox = true;
+                demo.itemModal.showTmpImage = false;
+            }
+        }
 
-		demo.itemModal.fileChosenOnChange = function(fileElement){
-			demo.itemModal.form.currentValue.image = '';
-			demo.itemModal.disableUploadButton= true;
-			demo.itemModal.showUploadErrorBox = true;
-			demo.itemModal.fieldsOnChange();
+        demo.itemModal.fileChosenOnChange = function(fileElement){
+            demo.itemModal.form.currentValue.image = '';
+            demo.itemModal.disableUploadButton= true;
+            demo.itemModal.showUploadErrorBox = true;
+            demo.itemModal.fieldsOnChange();
 
-			var fileInfo = fileElement.files[0];
-			if(fileInfo === undefined){
-				demo.itemModal.showUploadErrorBox = false;
-				demo.itemModal.fieldsOnChange();
-				$scope.$apply();
-				return;
-			}
+            var fileInfo = fileElement.files[0];
+            if(fileInfo === undefined){
+                demo.itemModal.showUploadErrorBox = false;
+                demo.itemModal.fieldsOnChange();
+                $scope.$apply();
+                return;
+            }
 
-			var isCorrectFileSize = validateFileSize(fileInfo.size);
-			var isSupportedFormat = validateFileFormat(fileInfo.name);
+            var isCorrectFileSize = validateFileSize(fileInfo.size);
+            var isSupportedFormat = validateFileFormat(fileInfo.name);
 
-			if(!isCorrectFileSize){
-				demo.itemModal.uploadError = $filter('translate')("INVALID_FILE_SIZE");
-				$scope.$apply();
-				return;
-			}
+            if(!isCorrectFileSize){
+                demo.itemModal.uploadError = $filter('translate')("INVALID_FILE_SIZE");
+                $scope.$apply();
+                return;
+            }
 
-			if(!isSupportedFormat){
-				demo.itemModal.uploadError = $filter('translate')("UNSUPPORTED_FORMAT");
-				$scope.$apply();
-				return;
-			}
+            if(!isSupportedFormat){
+                demo.itemModal.uploadError = $filter('translate')("UNSUPPORTED_FORMAT");
+                $scope.$apply();
+                return;
+            }
 
-			demo.itemModal.uploadError = '';
-			demo.itemModal.disableUploadButton= false;
-			demo.itemModal.showUploadErrorBox = false;
-			demo.itemModal.fieldsOnChange();
-			$scope.$apply();
-		}
+            demo.itemModal.uploadError = '';
+            demo.itemModal.disableUploadButton= false;
+            demo.itemModal.showUploadErrorBox = false;
+            demo.itemModal.fieldsOnChange();
+            $scope.$apply();
+        }
 
-	    demo.itemModal.removeTmpImage = function(){
-			demo.itemModal.tmpImage = "";
-			demo.itemModal.showTmpImage = false;
-			demo.itemModal.showUploadBox = true;
+        demo.itemModal.removeTmpImage = function(){
+            demo.itemModal.tmpImage = "";
+            demo.itemModal.showTmpImage = false;
+            demo.itemModal.showUploadBox = true;
 
-			demo.itemModal.form.currentValue.image = '';
-			demo.itemModal.fieldsOnChange();
-		}
+            demo.itemModal.form.currentValue.image = '';
+            demo.itemModal.fieldsOnChange();
+        }
 
-	    demo.itemModal.fieldsOnChange = function(){
-	    	var currentValue = demo.itemModal.form.currentValue;
-	    	var defaultValue = demo.itemModal.form.defaultValue;
+        demo.itemModal.fieldsOnChange = function(){
+            var currentValue = demo.itemModal.form.currentValue;
+            var defaultValue = demo.itemModal.form.defaultValue;
 
-	    	var isFormChanged = angular.equals(currentValue, defaultValue);
-	    	if(isFormChanged){
-	    		demo.itemModal.disableSaveButton = true;
-	    	}else{
-	    		if(currentValue.name === '' || currentValue.name === null){
-	    			demo.itemModal.disableSaveButton = true;
-	    			return;
-	    		}
-	    		if(currentValue.region === '' || currentValue.region === null){
-	    			demo.itemModal.disableSaveButton = true;
-	    			return;
-	    		}
-	    		if(currentValue.inStock === '' || currentValue.inStock === null){
-	    			demo.itemModal.disableSaveButton = true;
-	    			return;
-	    		}
-	    		if(currentValue.categoryId === '' || currentValue.categoryId === null){
-	    			demo.itemModal.disableSaveButton = true;
-	    			return;
-	    		}
-	    		if(demo.itemModal.showUploadErrorBox){
-	    			demo.itemModal.disableSaveButton = true;
-	    			return;
-	    		}
-	    		if(currentValue.description === '' || currentValue.description === null){
-	    			demo.itemModal.disableSaveButton = true;
-	    			return;
-	    		}
+            var isFormChanged = angular.equals(currentValue, defaultValue);
+            if(isFormChanged){
+                demo.itemModal.disableSaveButton = true;
+            }else{
+                if(currentValue.name === '' || currentValue.name === null){
+                    demo.itemModal.disableSaveButton = true;
+                    return;
+                }
+                if(currentValue.region === '' || currentValue.region === null){
+                    demo.itemModal.disableSaveButton = true;
+                    return;
+                }
+                if(currentValue.inStock === '' || currentValue.inStock === null){
+                    demo.itemModal.disableSaveButton = true;
+                    return;
+                }
+                if(currentValue.categoryId === '' || currentValue.categoryId === null){
+                    demo.itemModal.disableSaveButton = true;
+                    return;
+                }
+                if(demo.itemModal.showUploadErrorBox){
+                    demo.itemModal.disableSaveButton = true;
+                    return;
+                }
+                if(currentValue.description === '' || currentValue.description === null){
+                    demo.itemModal.disableSaveButton = true;
+                    return;
+                }
 
-	    		demo.itemModal.disableSaveButton = false;
-	    	}
-	    }
+                demo.itemModal.disableSaveButton = false;
+            }
+        }
 
-	    demo.itemModal.saveItem = function(itemId){
-	    	if(document.getElementById("file_choose").files.length > 0){
-				saveItemInfoWithImage(itemId);
-			}else{
-				saveItemInfoWithoutImage(itemId);
-			}
-	    }
+        demo.itemModal.saveItem = function(itemId){
+            if(document.getElementById("file_choose").files.length > 0){
+                saveItemInfoWithImage(itemId);
+            }else{
+                saveItemInfoWithoutImage(itemId);
+            }
+        }
 
-		function addNewItem(){
+        function addNewItem(){
             let params = angular.element('#item_form').serializeJSON();
             let success = (data) => {
                 toastr.success($filter('translate')("ADD_ITEM_SUCCESS"));
@@ -777,77 +786,88 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
                     handleErrorMessageForItemEdit(response);
                 });
             }
-		}
+        }
 
-		function updateItem(itemId){
-			$http({
-	            method: 'PUT',
-	            url: '/proxy/v1/assets/items/' + itemId,
-	            data: angular.element('#item_form').serializeJSON(),
-	            headers : {'Content-Type': 'application/json'}
-	        }).then(function(response) {
-	        	 toastr.success($filter('translate')("UPDATE_ITEM_SUCCESS"));
-	        	 demo.itemModal.showErrorBox = false;
-	        	 getAllItems();
-	        	 $('#item_modal').modal('hide');
-	        }, function error(response) {
-	        	handleErrorMessageForItemEdit(response);
-	        }).catch(function(response) {
-	        	handleErrorMessageForItemEdit(response);
-	        });
-		}
+        function updateItem(itemId){
+            let updateItemSuccess = (data) => {
+                toastr.success($filter('translate')("UPDATE_ITEM_SUCCESS"));
+                demo.itemModal.showErrorBox = false;
+                getAllItems();
+                $('#item_modal').modal('hide');
+            }
+            let updateItemError = (data) => {
+                handleErrorMessageForItemEdit(data);
+            }
 
-		function saveItemInfoWithImage(itemId){
-			var callBackAfterUploadSuccess = function(response) {
-				var imagePath = response.data.data;
-		    	demo.itemModal.form.currentValue.image = imagePath;
+            let updateItemFormData = angular.element('#item_form').serializeJSON();
+            let updateItemParams = {"itemId": itemId, "itemsDTO": updateItemFormData};
+            if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+                graphQLService.updateItemByItemId(updateItemParams, updateItemSuccess, (data) => {updateItemError(data)}, "{id}");
+            } else {
+                $http({
+                    method: 'PUT',
+                    url: '/proxy/v1/assets/items/' + itemId,
+                    data: updateItemFormData,
+                    headers : {'Content-Type': 'application/json'}
+                }).then(function(response) {
+                    updateItemSuccess(response);
+                }).catch(function(response) {
+                    updateItemError(response);
+                });
+            }
+        }
 
-		    	setTimeout(function(){
-		    		if(demo.itemModal.isAddNewItem){
-		    			addNewItem();
-					}else{
-						updateItem(itemId);
-					}
-		    	}, 100);
-			}
+        function saveItemInfoWithImage(itemId){
+            var callBackAfterUploadSuccess = function(response) {
+                var imagePath = response.data.data;
+                demo.itemModal.form.currentValue.image = imagePath;
 
-			var callBackAfterUploadFail = function(response) {
-				demo.itemModal.uploadError = $filter('translate')("IMAGE_UPLOAD_FAILED");
-				demo.itemModal.showUploadErrorBox = true;
-				demo.itemModal.fieldsOnChange();
-				handleErrorMessageForItemEdit(response);
-			}
+                setTimeout(function(){
+                    if(demo.itemModal.isAddNewItem){
+                        addNewItem();
+                    }else{
+                        updateItem(itemId);
+                    }
+                }, 100);
+            }
 
-			var formElement = document.getElementById("image_form");
-			uploadImage($http, formElement, callBackAfterUploadSuccess, callBackAfterUploadFail);
-		}
+            var callBackAfterUploadFail = function(response) {
+                demo.itemModal.uploadError = $filter('translate')("IMAGE_UPLOAD_FAILED");
+                demo.itemModal.showUploadErrorBox = true;
+                demo.itemModal.fieldsOnChange();
+                handleErrorMessageForItemEdit(response);
+            }
 
-		function saveItemInfoWithoutImage(itemId){
-			if(demo.itemModal.isAddNewItem){
-				addNewItem();
-			}else{
-				updateItem(itemId);
-			}
-		}
+            var formElement = document.getElementById("image_form");
+            uploadImage($http, formElement, callBackAfterUploadSuccess, callBackAfterUploadFail);
+        }
 
-		function handleErrorMessageForItemEdit(response){
-			var messageNotFound = false;
-			demo.itemModal.showErrorBox = true;
+        function saveItemInfoWithoutImage(itemId){
+            if(demo.itemModal.isAddNewItem){
+                addNewItem();
+            }else{
+                updateItem(itemId);
+            }
+        }
 
-			if(response.data === null || response.data === undefined){
-				messageNotFound = true;
-			}else{
-				console.log(response);
-				var message = response.data.message.toLowerCase();
-				var status = response.status;
+        function handleErrorMessageForItemEdit(response){
+            var messageNotFound = false;
+            demo.itemModal.showErrorBox = true;
 
-				if(status === 404){
-					if(message.indexOf("category") !== -1){
-						demo.itemModal.formError = "CATEGORY_NOT_FOUND";
-					}else{
-						messageNotFound = true;
-					}
-				}else if(status === 400){
+            if(response.data === null || response.data === undefined){
+                messageNotFound = true;
+            }else{
+                console.log(response);
+                var message = response.data.message.toLowerCase();
+                var status = response.status;
+
+                if(status === 404){
+                    if(message.indexOf("category") !== -1){
+                        demo.itemModal.formError = "CATEGORY_NOT_FOUND";
+                    }else{
+                        messageNotFound = true;
+                    }
+                }else if(status === 400){
                     if(message.indexOf("in stock") !== -1){
                         demo.itemModal.formError = "IN_STOCK_NUMBER_IS_INCORRECT";
                     }else if(message.indexOf("exists") !== -1){
@@ -878,225 +898,238 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
                 } else {
                     messageNotFound = true;
                 }
-			}
+            }
 
-			if(messageNotFound){
-				if(demo.itemModal.isAddNewItem){
-					demo.itemModal.formError = "ADD_ITEM_FAILED";
-				}else if(demo.itemModal.isEditItem){
-					demo.itemModal.formError = "UPDATE_ITEM_FAILED";
-				}
-			}
-		}
-	}
+            if(messageNotFound){
+                if(demo.itemModal.isAddNewItem){
+                    demo.itemModal.formError = "ADD_ITEM_FAILED";
+                }else if(demo.itemModal.isEditItem){
+                    demo.itemModal.formError = "UPDATE_ITEM_FAILED";
+                }
+            }
+        }
+    }
 
-	demo.removeItem = function(item){
-		var items = demo.items;
-		$http({
-			method: 'DELETE',
-			url: '/proxy/v1/assets/items/'+item.id,
-		}).then(function(result) {
-			var arrIndex = getArrIndex(items,item);
-			demo.items.splice(arrIndex,1);
-			toastr.success($filter('translate')('ITEMS_REMOVED_SUCCESSFULLY'));
-		}, function error(response) {
-			console.info(response);
-			toastrService().error($filter('translate')('ITEMS_FAILED_TO_REMOVE'));
-		}).catch(function(result) {
-			console.info(result);
-		});
-		$('#remove_confirm_modal').modal('hide');
-	}
+    demo.removeItem = function(item){
+        var items = demo.items;
+        let success = () => {
+            var arrIndex = getArrIndex(items,item);
+            demo.items.splice(arrIndex,1);
+            toastr.success($filter('translate')('ITEMS_REMOVED_SUCCESSFULLY'));
+        }
+        let errorhandler = (data) => {
+            console.info(data);
+            toastrService().error($filter('translate')('ITEMS_FAILED_TO_REMOVE'));
+        }
+        let params = {"itemId": item.id};
 
-	demo.showCategoryModal = function(category){
+    if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+        graphQLService.deleteItemByItemId(params, success, (data) => {errorhandler(data)});
+    } else {
+        $http({
+            method: 'DELETE',
+            url: '/proxy/v1/assets/items/'+item.id,
+        }).then(function(result) {
+            success(result);
+        }, function error(result) {
+            errorhandler(result);
+        }).catch(function(result) {
+            console.info(result);
+        });
+    }
 
-		demo.categoryModal = {
-		    	showFormErrorBox : false,
-		    	formError : '',
-		    	showUploadErrorBox : false,
-		    	uploadError : '',
-		    	isAddNewCategory : false,
-		    	isEditCategory : false,
-				showUploadBox : true,
-				showTmpImage : false,
-				showErrorBox : false,
-				disableSaveButton : true,
-				disableUploadButton : true,
-				tmpImage : '',
-				chosenFile : '',
-				form : {
-					currentValue : {},
-					defaultValue : {}
-				},
-				fieldsOnChange : function(){},
-				fileChosenOnChange : function(element){},
-				removeTmpImage : function(){},
-				saveCategory : function(categoryId){},
-				uploadImage : function(){}
-		    }
+        $('#remove_confirm_modal').modal('hide');
+    }
 
-		document.getElementById("category_form").reset();
-		document.getElementById("image_form").reset();
+    demo.showCategoryModal = function(category){
 
-		if(category === undefined){
-			demo.editCategory = false;
-		}else{
-			demo.editCategory = true;
-		}
+        demo.categoryModal = {
+                showFormErrorBox : false,
+                formError : '',
+                showUploadErrorBox : false,
+                uploadError : '',
+                isAddNewCategory : false,
+                isEditCategory : false,
+                showUploadBox : true,
+                showTmpImage : false,
+                showErrorBox : false,
+                disableSaveButton : true,
+                disableUploadButton : true,
+                tmpImage : '',
+                chosenFile : '',
+                form : {
+                    currentValue : {},
+                    defaultValue : {}
+                },
+                fieldsOnChange : function(){},
+                fileChosenOnChange : function(element){},
+                removeTmpImage : function(){},
+                saveCategory : function(categoryId){},
+                uploadImage : function(){}
+            }
 
-		if(demo.editCategory){
-			demo.categoryModal.isEditCategory = true;
-			demo.categoryModal.isAddNewCategory = false;
-			demo.categoryInModal = category;
-		}else{
-			demo.categoryModal.isEditCategory = false;
-			demo.categoryModal.isAddNewCategory = true;
-			demo.categoryInModal = {
-				'id' : '',
-				'name' : '',
-				'image' : '',
-				'description' : ''
-			};
-		}
+        document.getElementById("category_form").reset();
+        document.getElementById("image_form").reset();
 
-		demo.categoryModal.form = {
-			currentValue : {
-				'id' : demo.categoryInModal.id,
-				'name' : demo.categoryInModal.name,
-				'image' : demo.categoryInModal.image,
-				'description' : demo.categoryInModal.description
-			},
-			defaultValue : {
-				'id' : demo.categoryInModal.id,
-				'name' : demo.categoryInModal.name,
-				'image' : demo.categoryInModal.image,
-				'description' : demo.categoryInModal.description
-			}
-		};
+        if(category === undefined){
+            demo.editCategory = false;
+        }else{
+            demo.editCategory = true;
+        }
 
-		if(demo.categoryInModal.isAddNewCategory){
-			demo.categoryModal.showUploadBox = true;
-			demo.categoryModal.showTmpImage = false;
-		}
+        if(demo.editCategory){
+            demo.categoryModal.isEditCategory = true;
+            demo.categoryModal.isAddNewCategory = false;
+            demo.categoryInModal = category;
+        }else{
+            demo.categoryModal.isEditCategory = false;
+            demo.categoryModal.isAddNewCategory = true;
+            demo.categoryInModal = {
+                'id' : '',
+                'name' : '',
+                'image' : '',
+                'description' : ''
+            };
+        }
 
-		if(demo.categoryModal.isEditCategory){
-			var currentImage = demo.categoryModal.form.currentValue.image;
-			demo.categoryModal.tmpImage = currentImage
-			if(currentImage !== ''){ // image in category
-				demo.categoryModal.showUploadBox = false;
-				demo.categoryModal.showTmpImage = true;
-			}else{ // no image in category
-				demo.categoryModal.showUploadBox = true;
-				demo.categoryModal.showTmpImage = false;
-			}
-		}
+        demo.categoryModal.form = {
+            currentValue : {
+                'id' : demo.categoryInModal.id,
+                'name' : demo.categoryInModal.name,
+                'image' : demo.categoryInModal.image,
+                'description' : demo.categoryInModal.description
+            },
+            defaultValue : {
+                'id' : demo.categoryInModal.id,
+                'name' : demo.categoryInModal.name,
+                'image' : demo.categoryInModal.image,
+                'description' : demo.categoryInModal.description
+            }
+        };
 
-		demo.categoryModal.fileChosenOnChange = function(fileElement){
-			demo.categoryModal.form.currentValue.image = '';
-			demo.categoryModal.disableUploadButton= true;
-			demo.categoryModal.showUploadErrorBox = true;
-			demo.categoryModal.fieldsOnChange();
+        if(demo.categoryInModal.isAddNewCategory){
+            demo.categoryModal.showUploadBox = true;
+            demo.categoryModal.showTmpImage = false;
+        }
 
-			var fileInfo = fileElement.files[0];
-			if(fileInfo === undefined){
-				demo.categoryModal.showUploadErrorBox = false;
-				demo.categoryModal.fieldsOnChange();
-				$scope.$apply();
-				return;
-			}
+        if(demo.categoryModal.isEditCategory){
+            var currentImage = demo.categoryModal.form.currentValue.image;
+            demo.categoryModal.tmpImage = currentImage
+            if(currentImage !== ''){ // image in category
+                demo.categoryModal.showUploadBox = false;
+                demo.categoryModal.showTmpImage = true;
+            }else{ // no image in category
+                demo.categoryModal.showUploadBox = true;
+                demo.categoryModal.showTmpImage = false;
+            }
+        }
 
-			var isCorrectFileSize = validateFileSize(fileInfo.size);
-			var isSupportedFormat = validateFileFormat(fileInfo.name);
+        demo.categoryModal.fileChosenOnChange = function(fileElement){
+            demo.categoryModal.form.currentValue.image = '';
+            demo.categoryModal.disableUploadButton= true;
+            demo.categoryModal.showUploadErrorBox = true;
+            demo.categoryModal.fieldsOnChange();
 
-			if(!isCorrectFileSize){
-				demo.categoryModal.uploadError = $filter('translate')("INVALID_FILE_SIZE");
-				$scope.$apply();
-				return;
-			}
+            var fileInfo = fileElement.files[0];
+            if(fileInfo === undefined){
+                demo.categoryModal.showUploadErrorBox = false;
+                demo.categoryModal.fieldsOnChange();
+                $scope.$apply();
+                return;
+            }
 
-			if(!isSupportedFormat){
-				demo.categoryModal.uploadError = $filter('translate')("UNSUPPORTED_FORMAT");
-				$scope.$apply();
-				return;
-			}
+            var isCorrectFileSize = validateFileSize(fileInfo.size);
+            var isSupportedFormat = validateFileFormat(fileInfo.name);
 
-			demo.categoryModal.uploadError = '';
-			demo.categoryModal.disableUploadButton= false;
-			demo.categoryModal.showUploadErrorBox = false;
-			demo.categoryModal.fieldsOnChange();
-			$scope.$apply();
-		}
+            if(!isCorrectFileSize){
+                demo.categoryModal.uploadError = $filter('translate')("INVALID_FILE_SIZE");
+                $scope.$apply();
+                return;
+            }
 
-	    demo.categoryModal.removeTmpImage = function(){
-			demo.categoryModal.tmpImage = "";
-			demo.categoryModal.showTmpImage = false;
-			demo.categoryModal.showUploadBox = true;
+            if(!isSupportedFormat){
+                demo.categoryModal.uploadError = $filter('translate')("UNSUPPORTED_FORMAT");
+                $scope.$apply();
+                return;
+            }
 
-			demo.categoryModal.form.currentValue.image = '';
-			demo.categoryModal.fieldsOnChange();
-		}
+            demo.categoryModal.uploadError = '';
+            demo.categoryModal.disableUploadButton= false;
+            demo.categoryModal.showUploadErrorBox = false;
+            demo.categoryModal.fieldsOnChange();
+            $scope.$apply();
+        }
 
-	    demo.categoryModal.fieldsOnChange = function(){
-	    	var currentValue = demo.categoryModal.form.currentValue;
-	    	var defaultValue = demo.categoryModal.form.defaultValue;
-	    	var isFormChanged = angular.equals(currentValue, defaultValue);
+        demo.categoryModal.removeTmpImage = function(){
+            demo.categoryModal.tmpImage = "";
+            demo.categoryModal.showTmpImage = false;
+            demo.categoryModal.showUploadBox = true;
 
-	    	if(isFormChanged){
-	    		demo.categoryModal.disableSaveButton = true;
-	    	}else{
-	    		if(currentValue.name === '' || currentValue.name === null){
-	    			demo.categoryModal.disableSaveButton = true;
-	    			return;
-	    		}
-	    		if(demo.categoryModal.showUploadErrorBox){
-	    			demo.categoryModal.disableSaveButton = true;
-	    			return;
-	    		}
-	    		if(currentValue.description === '' || currentValue.description === null){
-	    			demo.categoryModal.disableSaveButton = true;
-	    			return;
-	    		}
+            demo.categoryModal.form.currentValue.image = '';
+            demo.categoryModal.fieldsOnChange();
+        }
 
-	    		demo.categoryModal.disableSaveButton = false;
-	    	}
-	    }
+        demo.categoryModal.fieldsOnChange = function(){
+            var currentValue = demo.categoryModal.form.currentValue;
+            var defaultValue = demo.categoryModal.form.defaultValue;
+            var isFormChanged = angular.equals(currentValue, defaultValue);
 
-		demo.categoryModal.saveCategory = function(categoryId){
-			if(document.getElementById("file_choose").files.length > 0){
-				saveCategoryInfoWithImage(categoryId);
-			}else{
-				saveCategoryInfoWithoutImage(categoryId);
-			}
-	    }
+            if(isFormChanged){
+                demo.categoryModal.disableSaveButton = true;
+            }else{
+                if(currentValue.name === '' || currentValue.name === null){
+                    demo.categoryModal.disableSaveButton = true;
+                    return;
+                }
+                if(demo.categoryModal.showUploadErrorBox){
+                    demo.categoryModal.disableSaveButton = true;
+                    return;
+                }
+                if(currentValue.description === '' || currentValue.description === null){
+                    demo.categoryModal.disableSaveButton = true;
+                    return;
+                }
 
-		function addNewCategory(){
-			let success = (data) => {
-				toastr.success($filter('translate')("ADD_CATEGORY_SUCCESS"));
-	        	demo.categoryModal.showErrorBox = false;
-	        	getAllCategories(); // refresh all categories
-	        	$('#category_modal').modal('hide');
-			}
-			let error = (data) => {
-				handleErrorMessageForCategoryEdit(data);
-			}
-			let formData = angular.element('#category_form').serializeJSON();
-			if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
-				graphQLService.addCategory(formData, success, (data) => {error(data)}, '{id}');
-			} else {
-				$http({
-					method: 'POST',
-					url: '/proxy/v1/assets/categories/',
-					data: formData,
-					headers : {'Content-Type': 'application/json'}
-				}).then(function(response) {
-					success(response.data.data);
-				}, function(response) {
-					error(response);
-				}).catch(function(response) {
-					error(response);
-				});
-			}
-		}
+                demo.categoryModal.disableSaveButton = false;
+            }
+        }
+
+        demo.categoryModal.saveCategory = function(categoryId){
+            if(document.getElementById("file_choose").files.length > 0){
+                saveCategoryInfoWithImage(categoryId);
+            }else{
+                saveCategoryInfoWithoutImage(categoryId);
+            }
+        }
+
+        function addNewCategory(){
+            let success = (data) => {
+                toastr.success($filter('translate')("ADD_CATEGORY_SUCCESS"));
+                demo.categoryModal.showErrorBox = false;
+                getAllCategories(); // refresh all categories
+                $('#category_modal').modal('hide');
+            }
+            let error = (data) => {
+                handleErrorMessageForCategoryEdit(data);
+            }
+            let formData = angular.element('#category_form').serializeJSON();
+            if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+                graphQLService.addCategory(formData, success, (data) => {error(data)}, '{id}');
+            } else {
+                $http({
+                    method: 'POST',
+                    url: '/proxy/v1/assets/categories/',
+                    data: formData,
+                    headers : {'Content-Type': 'application/json'}
+                }).then(function(response) {
+                    success(response.data.data);
+                }, function(response) {
+                    error(response);
+                }).catch(function(response) {
+                    error(response);
+                });
+            }
+        }
 
         function updateCategory(categoryId){
             let updateCategorySuccess = (data) => {
@@ -1129,93 +1162,93 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
             }
         }
 
-		function saveCategoryInfoWithImage(categoryId){
-			var callBackAfterUploadSuccess = function(response) {
-				var imagePath = response.data.data;
-		    	demo.categoryModal.form.currentValue.image = imagePath;
+        function saveCategoryInfoWithImage(categoryId){
+            var callBackAfterUploadSuccess = function(response) {
+                var imagePath = response.data.data;
+                demo.categoryModal.form.currentValue.image = imagePath;
 
-		    	setTimeout(function(){
-		    		if(demo.categoryModal.isAddNewCategory){
-		    			addNewCategory();
-					}else{
-						updateCategory(categoryId);
-					}
-		    	}, 100);
-			}
+                setTimeout(function(){
+                    if(demo.categoryModal.isAddNewCategory){
+                        addNewCategory();
+                    }else{
+                        updateCategory(categoryId);
+                    }
+                }, 100);
+            }
 
-			var callBackAfterUploadFail = function(response) {
-				demo.categoryModal.fieldsOnChange();
-				handleErrorMessageForCategoryEdit(response);
-			}
+            var callBackAfterUploadFail = function(response) {
+                demo.categoryModal.fieldsOnChange();
+                handleErrorMessageForCategoryEdit(response);
+            }
 
-			var formElement = document.getElementById("image_form");
-			uploadImage($http, formElement, callBackAfterUploadSuccess, callBackAfterUploadFail);
-		}
+            var formElement = document.getElementById("image_form");
+            uploadImage($http, formElement, callBackAfterUploadSuccess, callBackAfterUploadFail);
+        }
 
-		function saveCategoryInfoWithoutImage(categoryId){
-			if(demo.categoryModal.isAddNewCategory){
-    			addNewCategory();
-			}else{
-				updateCategory(categoryId);
-			}
-		}
+        function saveCategoryInfoWithoutImage(categoryId){
+            if(demo.categoryModal.isAddNewCategory){
+                addNewCategory();
+            }else{
+                updateCategory(categoryId);
+            }
+        }
 
-		function handleErrorMessageForCategoryEdit(response){
-			demo.imgBoxStyle = {
-				"top" : "89px"
-			}
-			demo.imgUploadBoxStyle = {
-				"top" : "161px"
-			}
-			demo.categoryModal.showErrorBox = true;
-			var messageNotFound = false;
+        function handleErrorMessageForCategoryEdit(response){
+            demo.imgBoxStyle = {
+                "top" : "89px"
+            }
+            demo.imgUploadBoxStyle = {
+                "top" : "161px"
+            }
+            demo.categoryModal.showErrorBox = true;
+            var messageNotFound = false;
 
-			if(response.data === null || response.data === undefined){
-				messageNotFound = true;
-			}else{
-				console.log(response);
-				var message = response.data.message.toLowerCase();
-				var status = response.status;
-				if(status === 404){
-					if(message.indexOf("Category") !== -1){
-						demo.categoryModal.formError = "CATEGORY_NOT_FOUND";
-					}else{
-						messageNotFound = true;
-					}
-				}else if(status === 400){
-					if(message.indexOf("exists") !== -1){
-						demo.categoryModal.formError = "CATEGORY_NAME_ALREADY_EXISTS";
-					}else if(message.indexOf("category name") !== -1 && message.indexOf("empty") !== -1){
-						demo.categoryModal.formError = "CATEGORY_NAME_CAN_NOT_BE_EMPTY";
-					}else if(message.indexOf("description") !== -1){
-						demo.categoryModal.formError = "DESCRIPTION_VALUE_IS_INCORRECT";
-					}else if(message.indexOf("image file") !== -1 && message.indexOf("empty") !== -1){
-						demo.categoryModal.formError = "IMAGE_PATH_CAN_NOT_BE_EMPTY";
-					}else if(message.indexOf("image") !== -1 && message.indexOf("supported") !== -1){
-						demo.categoryModal.formError = "UNSUPPORTED_FORMAT";
-					}else{
-						messageNotFound = true;
-					}
-				}else if(status === 500){
-					if(message.indexOf("maximum upload size exceeded") !== -1){
-						demo.categoryModal.formError = "INVALID_FILE_SIZE";
-					}else{
-						messageNotFound = true;
-					}
-				}
-			}
+            if(response.data === null || response.data === undefined){
+                messageNotFound = true;
+            }else{
+                console.log(response);
+                var message = response.data.message.toLowerCase();
+                var status = response.status;
+                if(status === 404){
+                    if(message.indexOf("Category") !== -1){
+                        demo.categoryModal.formError = "CATEGORY_NOT_FOUND";
+                    }else{
+                        messageNotFound = true;
+                    }
+                }else if(status === 400){
+                    if(message.indexOf("exists") !== -1){
+                        demo.categoryModal.formError = "CATEGORY_NAME_ALREADY_EXISTS";
+                    }else if(message.indexOf("category name") !== -1 && message.indexOf("empty") !== -1){
+                        demo.categoryModal.formError = "CATEGORY_NAME_CAN_NOT_BE_EMPTY";
+                    }else if(message.indexOf("description") !== -1){
+                        demo.categoryModal.formError = "DESCRIPTION_VALUE_IS_INCORRECT";
+                    }else if(message.indexOf("image file") !== -1 && message.indexOf("empty") !== -1){
+                        demo.categoryModal.formError = "IMAGE_PATH_CAN_NOT_BE_EMPTY";
+                    }else if(message.indexOf("image") !== -1 && message.indexOf("supported") !== -1){
+                        demo.categoryModal.formError = "UNSUPPORTED_FORMAT";
+                    }else{
+                        messageNotFound = true;
+                    }
+                }else if(status === 500){
+                    if(message.indexOf("maximum upload size exceeded") !== -1){
+                        demo.categoryModal.formError = "INVALID_FILE_SIZE";
+                    }else{
+                        messageNotFound = true;
+                    }
+                }
+            }
 
-			if(messageNotFound){
-				if(demo.categoryModal.isAddNewCategory){
-					demo.categoryModal.formError = "ADD_CATEGORY_FAILED";
-				}else if(demo.categoryModal.isEditCategory){
-					demo.categoryModal.formError = "UPDATE_CATEGORY_FAILED";
-				}
-			}
-		}
-	}
+            if(messageNotFound){
+                if(demo.categoryModal.isAddNewCategory){
+                    demo.categoryModal.formError = "ADD_CATEGORY_FAILED";
+                }else if(demo.categoryModal.isEditCategory){
+                    demo.categoryModal.formError = "UPDATE_CATEGORY_FAILED";
+                }
+            }
+        }
+    }
 
-	demo.removeCategory = function(category) {
+    demo.removeCategory = function(category) {
         var categories = demo.categories;
         let success = (data) => {
             var arrIndex = getArrIndex(categories,category);
@@ -1252,19 +1285,19 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
         $('#remove_confirm_modal').modal('hide');
     }
 
-	//To avoid displaying page without styles due to the slow loading of CSS files
-	setTimeout(function(){ angular.element("body").css("visibility","visible") }, 500);
+    //To avoid displaying page without styles due to the slow loading of CSS files
+    setTimeout(function(){ angular.element("body").css("visibility","visible") }, 500);
 });
 
 /* with CSRF
 mod.config(['$httpProvider', function($httpProvider) {
-	$httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
+    $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 }]);*/
 
 mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
-	var options = this;
+    var options = this;
 
-	$http({
+    $http({
         method: 'GET',
         url: '/v1/demoAdmin/currentPreferences',
     }).then(function(result) {
@@ -1314,87 +1347,87 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
         })
     }
 
-	options.resetEndpoint = function(endpoint){
+    options.resetEndpoint = function(endpoint){
 
-		resetValuesTemplate(function(defaultOptions){
-			var restDefaultEndpoints = defaultOptions.restEndPoints;
+        resetValuesTemplate(function(defaultOptions){
+            var restDefaultEndpoints = defaultOptions.restEndPoints;
 
-	       for(i = 0; i < restDefaultEndpoints.length; i++){
-		       if(restDefaultEndpoints[i].routeId === endpoint){
-		    	   switch(endpoint) {
-		                case "categories":
-		                   options.restEndpoints.categoriesRestEndpointUrl = restDefaultEndpoints[i].url;
-		                   clearMessage("categories");
-		                   break;
-		                case "items":
-		                	options.restEndpoints.itemsRestEndpointUrl = restDefaultEndpoints[i].url;
-		                	clearMessage("items");
-		                   break;
-		               case "cart":
-		            	   options.restEndpoints.cartItemsRestEndpointUrl = restDefaultEndpoints[i].url;
-		            	   clearMessage("cart");
-		                   break;
-		               case "orders":
-		            	   options.restEndpoints.ordersRestEndpointUrl = restDefaultEndpoints[i].url;
-		            	   clearMessage("orders");
-		                   break;
-		               case "locations":
-		            	   options.restEndpoints.locationsRestEndpointUrl = restDefaultEndpoints[i].url;
-		            	   clearMessage("locations");
-		                   break;
-		               default:
-		           }
-		    	   return false;
-		       }
-	       }
-		});
-	}
+           for(i = 0; i < restDefaultEndpoints.length; i++){
+               if(restDefaultEndpoints[i].routeId === endpoint){
+                   switch(endpoint) {
+                        case "categories":
+                           options.restEndpoints.categoriesRestEndpointUrl = restDefaultEndpoints[i].url;
+                           clearMessage("categories");
+                           break;
+                        case "items":
+                            options.restEndpoints.itemsRestEndpointUrl = restDefaultEndpoints[i].url;
+                            clearMessage("items");
+                           break;
+                       case "cart":
+                           options.restEndpoints.cartItemsRestEndpointUrl = restDefaultEndpoints[i].url;
+                           clearMessage("cart");
+                           break;
+                       case "orders":
+                           options.restEndpoints.ordersRestEndpointUrl = restDefaultEndpoints[i].url;
+                           clearMessage("orders");
+                           break;
+                       case "locations":
+                           options.restEndpoints.locationsRestEndpointUrl = restDefaultEndpoints[i].url;
+                           clearMessage("locations");
+                           break;
+                       default:
+                   }
+                   return false;
+               }
+           }
+        });
+    }
 
-	options.resetVirtualizeServerUrl = function(){
-		resetValuesTemplate(function(defaultOptions){
-			options.parasoftVirtualizeServerUrl = defaultOptions.parasoftVirtualizeServerUrl;
-		});
-	}
+    options.resetVirtualizeServerUrl = function(){
+        resetValuesTemplate(function(defaultOptions){
+            options.parasoftVirtualizeServerUrl = defaultOptions.parasoftVirtualizeServerUrl;
+        });
+    }
 
-	options.resetVirtualizeServerPath = function(){
-		resetValuesTemplate(function(defaultOptions){
-			options.parasoftVirtualizeServerPath = defaultOptions.parasoftVirtualizeServerPath;
-		});
-	}
+    options.resetVirtualizeServerPath = function(){
+        resetValuesTemplate(function(defaultOptions){
+            options.parasoftVirtualizeServerPath = defaultOptions.parasoftVirtualizeServerPath;
+        });
+    }
 
-	options.resetVirtualizeGroupId = function(){
-		resetValuesTemplate(function(defaultOptions){
-			options.parasoftVirtualizeGroupId = defaultOptions.parasoftVirtualizeGroupId;
-		});
-	}
+    options.resetVirtualizeGroupId = function(){
+        resetValuesTemplate(function(defaultOptions){
+            options.parasoftVirtualizeGroupId = defaultOptions.parasoftVirtualizeGroupId;
+        });
+    }
 
-	function resetValuesTemplate(doResetFunction){
-		if(options.defaultOptions === undefined){
-			$http({
-		        method: 'GET',
-		        url: '/v1/demoAdmin/defaultPreferences',
-		    }).then(function(result) {
-		    	options.defaultOptions = result.data.data;
-		    	doResetFunction(options.defaultOptions);
-		    }).catch(function(result) {
-		        console.log(result);
-		    });
-		}else{
-			doResetFunction(options.defaultOptions);
-		}
-	}
+    function resetValuesTemplate(doResetFunction){
+        if(options.defaultOptions === undefined){
+            $http({
+                method: 'GET',
+                url: '/v1/demoAdmin/defaultPreferences',
+            }).then(function(result) {
+                options.defaultOptions = result.data.data;
+                doResetFunction(options.defaultOptions);
+            }).catch(function(result) {
+                console.log(result);
+            });
+        }else{
+            doResetFunction(options.defaultOptions);
+        }
+    }
 
-	options.fullfilPath = function(){
-		var path = options.parasoftVirtualizeServerPath;
+    options.fullfilPath = function(){
+        var path = options.parasoftVirtualizeServerPath;
 
-		if(path === null || path === ""){
-			return
-		}
+        if(path === null || path === ""){
+            return
+        }
 
-		if(path.substring(0, 1) !== '/'){
-			options.parasoftVirtualizeServerPath = '/' + options.parasoftVirtualizeServerPath;
-		}
-	}
+        if(path.substring(0, 1) !== '/'){
+            options.parasoftVirtualizeServerPath = '/' + options.parasoftVirtualizeServerPath;
+        }
+    }
 });
 
 function handleRestEndpointsFromServer(restEndpoints){
@@ -1403,19 +1436,19 @@ function handleRestEndpointsFromServer(restEndpoints){
     for(i = 0; i < restEndpoints.length; i++){
         switch(restEndpoints[i].routeId) {
              case "categories":
-            	 checkedEndpoints.categoriesRestEndpointUrl = restEndpoints[i].url;
+                 checkedEndpoints.categoriesRestEndpointUrl = restEndpoints[i].url;
                 break;
              case "items":
-            	 checkedEndpoints.itemsRestEndpointUrl = restEndpoints[i].url;
+                 checkedEndpoints.itemsRestEndpointUrl = restEndpoints[i].url;
                 break;
             case "cart":
-            	checkedEndpoints.cartItemsRestEndpointUrl = restEndpoints[i].url;
+                checkedEndpoints.cartItemsRestEndpointUrl = restEndpoints[i].url;
                 break;
             case "orders":
-            	checkedEndpoints.ordersRestEndpointUrl = restEndpoints[i].url;
+                checkedEndpoints.ordersRestEndpointUrl = restEndpoints[i].url;
                 break;
             case "locations":
-            	checkedEndpoints.locationsRestEndpointUrl = restEndpoints[i].url;
+                checkedEndpoints.locationsRestEndpointUrl = restEndpoints[i].url;
                 break;
             default:
         }
@@ -1443,17 +1476,17 @@ function handleDemoBugsFromServer(demoBugs){
                     checkedBugs.missingProvider = true;
                     break;
                 case bug_Incorrect_location_value:
-                	checkedBugs.incorrect_location = true;
-                	break;
+                    checkedBugs.incorrect_location = true;
+                    break;
                 case bug_Incorrect_number_value:
                     checkedBugs.incorrect_number = true;
                     break;
                 case bug_Reverse_orders_value:
-                	checkedBugs.reverse_order_of_orders = true;
-                	break;
-				case bug_Reinitialize_datasource_for_each_http_request_value:
-					checkedBugs.reinitialize_datasource_for_each_http_request = true;
-					break;
+                    checkedBugs.reverse_order_of_orders = true;
+                    break;
+                case bug_Reinitialize_datasource_for_each_http_request_value:
+                    checkedBugs.reinitialize_datasource_for_each_http_request = true;
+                    break;
                 default:
                     checkedBugs.unkonwn = true;
             }
