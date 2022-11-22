@@ -351,7 +351,7 @@ public class OrderGraphQLDataFetcherTest {
     }
 
     @Test
-    public void test_updateOrderByOrderNumber_notAuthorized() throws Throwable {
+    public void test_updateOrderByOrderNumber_noAuthentication() throws Throwable {
         OrderStatusDTO orderStatusDTO = new OrderStatusDTO(OrderStatus.APPROVED, "new comment", true, true);
         ObjectNode variables = objectMapper.createObjectNode();
         variables.put("orderNumber", "orderNumber");
@@ -364,7 +364,7 @@ public class OrderGraphQLDataFetcherTest {
     }
 
     @Test
-    public void test_updateOrderByOrderNumber_incorrectAuthorized() throws Throwable {
+    public void test_updateOrderByOrderNumber_incorrectAuthentication() throws Throwable {
         OrderStatusDTO orderStatusDTO = new OrderStatusDTO(OrderStatus.APPROVED, "new comment", true, true);
         ObjectNode variables = objectMapper.createObjectNode();
         variables.put("orderNumber", "orderNumber");
