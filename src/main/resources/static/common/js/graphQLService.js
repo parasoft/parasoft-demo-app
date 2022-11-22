@@ -186,6 +186,14 @@ angular
                     success(response.data.data.getItemByItemId);
                 }, error);
             }
+            instance.updateItemByItemId = function (variables, success, error, selectionSet) {
+                let requestBody = {
+                    "query": "mutation UpdateItemByItemId($itemId:Long!, $itemsDTO:ItemsDTO!){updateItemByItemId(itemId:$itemId, itemsDTO:$itemsDTO)" + selectionSet + "}",
+                    "variables": variables};
+                makeCall(requestBody, function (response) {
+                    success(response.data.data.updateItemByItemId);
+                }, error);
+            }
             // customized call
             instance.makeGraphQLCall = makeCall;
             return instance;
