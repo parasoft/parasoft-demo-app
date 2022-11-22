@@ -48,6 +48,7 @@ public class CartItemGraphQLDataFetcher {
             }
         };
     }
+
     public DataFetcher<CartItemEntity> addItemInCart() {
         return dataFetchingEnvironment -> {
             try {
@@ -106,6 +107,25 @@ public class CartItemGraphQLDataFetcher {
                                 HttpMethod.DELETE,
                                 new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpServletRequest)),
                                 new ParameterizedTypeReference<ResponseResult<Boolean>>() {});
+                return Objects.requireNonNull(entity.getBody()).getData();
+            } catch (Exception e) {
+                throw RestTemplateUtil.convertException(e);
+            }
+        };
+    }
+
+    public DataFetcher<CartItemEntity> updateItemInCart() {
+        return dataFetchingEnvironment -> {
+            try {
+                Map<String, Long> uriVariables = new HashMap<>();
+                uriVariables.put("itemId", dataFetchingEnvironment.getArgument("itemId"));
+                ResponseEntity<ResponseResult<CartItemEntity>> entity =
+                        restTemplate.exchange(cartItemBaseUrl + "/{itemId}",
+                                HttpMethod.PUT,
+                                new HttpEntity<>(dataFetchingEnvironment.getArgument("updateShoppingCartItemDTO"),
+                                        RestTemplateUtil.createHeaders(httpServletRequest)),
+                                new ParameterizedTypeReference<ResponseResult<CartItemEntity>>() {},
+                                uriVariables);
                 return Objects.requireNonNull(entity.getBody()).getData();
             } catch (Exception e) {
                 throw RestTemplateUtil.convertException(e);
