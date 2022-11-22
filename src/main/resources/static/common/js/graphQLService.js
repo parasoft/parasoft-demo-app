@@ -127,6 +127,26 @@ angular
                     success(response.data.data.getOrderByOrderNumber);
                 }, error)
             }
+            instance.getOrders = function(success, error, selectionSet) {
+                if (!selectionSet) {
+                    selectionSet = "{" +
+                        "totalElements,totalPages,size,sort," +
+                        "content" +
+                        "{" +
+                            "id,orderNumber,requestedBy,status,reviewedByAPV,reviewedByPRCH,respondedBy," +
+                            "orderItems" +
+                            "{" +
+                                "id,name,description,image,itemId,quantity" +
+                            "}" +
+                            "region,location,orderImage,receiverId,eventId,eventNumber,submissionDate,approverReplyDate,comments" +
+                        "}" +
+                    "}";
+                }
+                let requestBody = {"query": "query GetOrders($page: Int, $size: Int, $sort: [String]){getOrders(page: $page, size: $size, sort: $sort)" + selectionSet + "}"};
+                makeCall(requestBody, function(response) {
+                    success(response.data.data.getOrders);
+                }, error);
+            }
             // items
             instance.getItems = function (variables, success, error, selectionSet) {
                 if (!selectionSet) {
