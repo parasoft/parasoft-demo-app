@@ -132,6 +132,12 @@ angular
                     success(response.data.data.getItems);
                 }, error);
             }
+            instance.deleteItemByItemId = function(variables, success, error) {
+                let requestBody = {"query": "mutation DeleteItemByItemId($itemId:Long!){deleteItemByItemId(itemId:$itemId)}", "variables": variables}
+                makeCall(requestBody, function(response) {
+                    success(response.data.data.deleteItemByItemId);
+                }, error);
+            }
             instance.addNewItem = function (variables, success, error, selectionSet) {
                 if (!selectionSet) {
                     selectionSet = "{id,name,description,inStock,image,region,lastAccessedDate,categoryId}";
@@ -184,6 +190,16 @@ angular
                 }
                 makeCall(requestBody, function(response) {
                     success(response.data.data.getItemByItemId);
+                }, error);
+            }
+            instance.updateItemInCart = function(variables, success, error, selectionSet) {
+                if (!selectionSet) {
+                    selectionSet = "{id, userId, itemId, name, description, image, realInStock, quantity}"
+                }
+                let requestBody = {"query": "mutation UpdateItemInCart($itemId: Long!, $updateShoppingCartItemDTO: UpdateShoppingCartItemDTO!)" +
+                        "{updateItemInCart(itemId: $itemId, updateShoppingCartItemDTO: $updateShoppingCartItemDTO)" + selectionSet + "}", "variables": variables}
+                makeCall(requestBody, function(response) {
+                    success(response.data.data.updateItemInCart);
                 }, error);
             }
             instance.updateItemByItemId = function (variables, success, error, selectionSet) {

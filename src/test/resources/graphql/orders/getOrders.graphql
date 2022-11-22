@@ -1,0 +1,34 @@
+query GetOrders($page: Int, $size: Int, $sort: [String]){
+    getOrders(page: $page, size: $size, sort: $sort){
+        totalElements
+        totalPages
+        size
+        sort
+        content{
+            id
+            orderNumber
+            requestedBy
+            status
+            reviewedByAPV
+            reviewedByPRCH
+            respondedBy
+            orderItems{
+                id
+                name
+                description
+                image
+                itemId
+                quantity
+            }
+            region
+            location
+            orderImage
+            receiverId
+            eventId
+            eventNumber
+            submissionDate
+            approverReplyDate
+            comments
+        }
+    }
+}

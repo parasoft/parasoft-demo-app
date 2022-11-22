@@ -785,8 +785,7 @@ public class ShoppingCartServiceTest {
 		}
 
 		// Then
-		assertEquals(MessageFormat.format(
-				AssetMessages.INCLUDES_SHOPPING_CART_IN_STOCK_OF_CART_ITEM_IS_INSUFFICIENT, itemId), message);
+		assertEquals(AssetMessages.IN_STOCK_OF_CART_ITEM_IS_INSUFFICIENT, message);
 	}
 
 	/**
