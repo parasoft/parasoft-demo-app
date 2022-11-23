@@ -2,7 +2,6 @@ package com.parasoft.demoapp.service;
 
 import com.parasoft.demoapp.config.ImplementedIndustries;
 import com.parasoft.demoapp.config.activemq.ActiveMQConfig;
-import com.parasoft.demoapp.config.activemq.InventoryRequestQueueListener;
 import com.parasoft.demoapp.config.activemq.InventoryResponseQueueListener;
 import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
 import com.parasoft.demoapp.defaultdata.ClearEntrance;
