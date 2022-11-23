@@ -1,0 +1,6 @@
+query GetUnreviewedOrderNumber{
+    getUnreviewedOrderNumber {
+        unreviewedByApprover
+        unreviewedByPurchaser
+    }
+}

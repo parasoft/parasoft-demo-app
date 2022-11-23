@@ -3,6 +3,7 @@ package com.parasoft.demoapp.graphql;
 import com.parasoft.demoapp.config.WebConfig;
 import com.parasoft.demoapp.controller.PageInfo;
 import com.parasoft.demoapp.controller.ResponseResult;
+import com.parasoft.demoapp.dto.UnreviewedOrderNumberResponseDTO;
 import com.parasoft.demoapp.model.industry.OrderEntity;
 import graphql.schema.DataFetcher;
 import org.springframework.core.ParameterizedTypeReference;
@@ -121,4 +122,18 @@ public class OrderGraphQLDataFetcher {
         };
     }
 
+    public DataFetcher<UnreviewedOrderNumberResponseDTO> getUnreviewedOrderNumber() {
+        return dataFetchingEnvironment -> {
+            try {
+                ResponseEntity<ResponseResult<UnreviewedOrderNumberResponseDTO>> entity =
+                        restTemplate.exchange(orderBaseUrl + "/unreviewedNumber",
+                                HttpMethod.GET,
+                                new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
+                                new ParameterizedTypeReference<ResponseResult<UnreviewedOrderNumberResponseDTO>>() {});
+                return Objects.requireNonNull(entity.getBody()).getData();
+            } catch (Exception e) {
+                throw RestTemplateUtil.convertException(e);
+            }
+        };
+    }
 }

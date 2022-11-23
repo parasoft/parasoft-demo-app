@@ -12,6 +12,7 @@ type Query {
     # order
     getOrderByOrderNumber(orderNumber: String!): Order
     getOrders(page: Int, size: Int, sort: [String]): OrderPageInfo
+    getUnreviewedOrderNumber: UnreviewedOrderNumberResponseDTO
     #item
     getItems(categoryId: Long, regions: [RegionType], searchString: String, page: Int, size: Int, sort: [String]): ItemPageInfo
     getItemByItemId(itemId: Long!): Item
@@ -150,6 +151,10 @@ enum OrderStatus {
     CANCELED
     APPROVED
     DECLINED
+}
+type UnreviewedOrderNumberResponseDTO {
+    unreviewedByApprover: Int
+    unreviewedByPurchaser: Int
 }
 #item
 type Item {

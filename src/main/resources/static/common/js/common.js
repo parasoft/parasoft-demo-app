@@ -685,26 +685,35 @@ function clearInputDisabled(index){
     angular.element(".input"+row).attr("readonly",false);
 }
 
-function getUnreviewedAmount($http,$rootScope,$filter){
+function getUnreviewedAmount($http,$rootScope,$filter,graphQLService){
     // Set time out for avoiding to get the key when using $filter('translate') fliter.
     $rootScope.unreviewedNumByPRCH = 0;
     setTimeout(function(){
-        $http({
-            method: 'GET',
-            url: '/proxy/v1/orders/unreviewedNumber'
-        }).then(function(result) {
-            const numbers = result.data.data;
-            $rootScope.unreviewedNumByPRCH = numbers.unreviewedByPurchaser;
-            $rootScope.unreviewedNumByAPV = numbers.unreviewedByApprover;
-        }).catch(function(result) {
-            console.log(result);
+        let getUnreviewedAmountSuccess = (data) => {
+            $rootScope.unreviewedNumByPRCH = data.unreviewedByPurchaser;
+        };
+        let getUnreviewedAmountError = (data, endpointType) => {
+            console.log(data);
             $rootScope.unreviewedNumByPRCH = 0;
-            displayLoadError(result,$rootScope,$filter,$http,true,'orders');
-        });
+            displayLoadError(data,$rootScope,$filter,$http,true,endpointType);
+        };
+        if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+            graphQLService.getUnreviewedOrderNumber(getUnreviewedAmountSuccess, (data) => {getUnreviewedAmountError(data, "graphQL")},
+                "{unreviewedByPurchaser}")
+        } else {
+            $http({
+                method: 'GET',
+                url: '/proxy/v1/orders/unreviewedNumber'
+            }).then(function(result) {
+                getUnreviewedAmountSuccess(result.data.data)
+            }).catch(function(result) {
+                getUnreviewedAmountError(result, 'orders');
+            });
+        }
     }, 500);
 }
 
-function connectAndSubscribeMQ(role, $http, $rootScope, $filter, mqConsumeCallback, mqProduceCallback){
+function connectAndSubscribeMQ(role, $http, $rootScope, $filter, mqConsumeCallback, mqProduceCallback, graphQLService){
     $http({
         method: 'GET',
         url: '/v1/MQConnectorUrl',
@@ -765,7 +774,7 @@ function connectAndSubscribeMQ(role, $http, $rootScope, $filter, mqConsumeCallba
                          toastr.info(orderProcessMsg, '', {timeOut: 0});
                          if(mqConsumeCallback){mqConsumeCallback();}
                          // update the number on the icon
-                         getUnreviewedAmount($http,$rootScope,$filter);
+                         getUnreviewedAmount($http,$rootScope,$filter,graphQLService);
                      }
                  }
             });

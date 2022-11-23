@@ -11,8 +11,8 @@ app.controller('itemDetailController', function($rootScope, $http, $location, $f
 	var itemId = $location.absUrl().substr($location.absUrl().lastIndexOf("/")+1);
 
 	$rootScope.itemNum = 1;
-	getUnreviewedAmount($http,$rootScope,$filter);
-	connectAndSubscribeMQ(CURRENT_ROLE,$http,$rootScope, $filter);
+	getUnreviewedAmount($http,$rootScope,$filter,graphQLService);
+	connectAndSubscribeMQ(CURRENT_ROLE,$http,$rootScope, $filter,null,null,graphQLService);
 
 	//Load 'loading' animation
 	itemDetail.loadingAnimation = true;
