@@ -95,29 +95,6 @@ app.controller('itemDetailController', function($rootScope, $http, $location, $f
         if(status === 500) {
             console.log(data.message);
         }
-
-        let success = (data) => {
-            $rootScope.itemInventory = data.inStock;
-            checkInventory(data.inStock, 0, 1);
-        };
-        let error = (data) => {
-            console.info(data);
-        }
-        let param = {"itemId": itemId};
-
-        if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
-            let selectionSet = "{inStock}"
-            graphQLService.getItemByItemId(param, success, (data) => {error(data, "graphQL")}, selectionSet);
-        } else {
-            $http({
-                method: 'GET',
-                url: '/proxy/v1/assets/items/' + itemId,
-            }).then(function(result) {
-                success(result.data.data);
-            }).catch(function(result) {
-                error(result, 'items')
-            });
-        }
         $interval(function() {itemDetail.loadingAnimation = false;itemDetail.showQuantity = true;}, 500, 1);
     }
 
