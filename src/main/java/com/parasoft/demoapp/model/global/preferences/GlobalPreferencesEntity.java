@@ -97,14 +97,6 @@ public class GlobalPreferencesEntity {
     @Column(name = "order_service_reply_to_queue")
     private String orderServiceReplyToQueue;
 
-    @Setter
-    @Column(name = "inventory_service_destination_queue")
-    private String inventoryServiceDestinationQueue;
-
-    @Setter
-    @Column(name = "inventory_service_reply_to_queue")
-    private String inventoryServiceReplyToQueue;
-
     public GlobalPreferencesEntity(DataAccessMode dataAccessMode, String soapEndpoint,
                                    Set<RestEndpointEntity> restEndpoints,
                                    IndustryType industryType, WebServiceMode webServiceMode,
@@ -115,9 +107,7 @@ public class GlobalPreferencesEntity {
                                    Boolean mqProxyEnabled,
                                    MqType mqType,
                                    String orderServiceDestinationQueue,
-                                   String orderServiceReplyToQueue,
-                                   String inventoryServiceDestinationQueue,
-                                   String inventoryServiceReplyToQueue) {
+                                   String orderServiceReplyToQueue) {
         this.dataAccessMode = dataAccessMode;
         this.soapEndPoint = soapEndpoint;
         this.restEndPoints = restEndpoints;
@@ -134,7 +124,5 @@ public class GlobalPreferencesEntity {
         this.mqType = mqType;
         this.orderServiceDestinationQueue = orderServiceDestinationQueue;
         this.orderServiceReplyToQueue = orderServiceReplyToQueue;
-        this.inventoryServiceDestinationQueue = inventoryServiceDestinationQueue;
-        this.inventoryServiceReplyToQueue = inventoryServiceReplyToQueue;
     }
 }
