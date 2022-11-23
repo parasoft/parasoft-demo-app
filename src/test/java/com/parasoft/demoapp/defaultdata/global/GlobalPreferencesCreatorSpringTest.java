@@ -14,7 +14,6 @@ import com.parasoft.demoapp.model.global.preferences.GlobalPreferencesEntity;
 import com.parasoft.demoapp.model.global.preferences.IndustryType;
 import com.parasoft.demoapp.service.GlobalPreferencesService;
 
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.PROXY_SUFFIX;
 import static org.junit.Assert.*;
 
 /**
@@ -51,10 +50,8 @@ public class GlobalPreferencesCreatorSpringTest {
         assertTrue(currentGlobalPreferences.getAdvertisingEnabled());
         assertFalse(currentGlobalPreferences.getMqProxyEnabled());
         assertEquals(MqType.ACTIVE_MQ, currentGlobalPreferences.getMqType());
-        assertEquals(PROXY_SUFFIX + ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST, currentGlobalPreferences.getOrderServiceDestinationQueue());
-        assertEquals(PROXY_SUFFIX + ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE, currentGlobalPreferences.getOrderServiceReplyToQueue());
-        assertEquals(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST, currentGlobalPreferences.getInventoryServiceDestinationQueue());
-        assertEquals(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE, currentGlobalPreferences.getInventoryServiceReplyToQueue());
+        assertEquals(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST, currentGlobalPreferences.getOrderServiceDestinationQueue());
+        assertEquals(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE, currentGlobalPreferences.getOrderServiceReplyToQueue());
     }
 
 }

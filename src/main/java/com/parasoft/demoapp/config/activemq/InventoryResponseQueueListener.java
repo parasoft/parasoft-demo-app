@@ -57,7 +57,7 @@ public class InventoryResponseQueueListener extends RefreshableMessageListener {
             Destination replyToDestination = message.getJMSReplyTo();
             if(replyToDestination == null) {
                 useDefaultJmsReplyToDestination = true;
-                replyToDestination = ActiveMQConfig.getInventoryRequestActiveMqQueue();
+                replyToDestination = ActiveMQConfig.getOrderServiceSendToQueue();
             }
             orderMQService.send(replyToDestination, messageToReply);
 

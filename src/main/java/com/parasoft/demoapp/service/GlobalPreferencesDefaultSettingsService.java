@@ -43,8 +43,6 @@ public class GlobalPreferencesDefaultSettingsService {
     public static final String LOCATIONS_ENDPOINT_PATH = "/proxy/v1/locations/**";
     public static final String LOCATIONS_ENDPOINT_REAL_PATH = "/v1/locations";
 
-    public static final String PROXY_SUFFIX = "proxy.";
-
     @Autowired
     private WebConfig webConfig;
 
@@ -68,8 +66,6 @@ public class GlobalPreferencesDefaultSettingsService {
         MqType mqType = defaultMqType();
         String orderServiceDestinationQueue = defaultOrderServiceDestinationQueue();
         String orderServiceReplyToQueue = defaultOrderServiceReplyToQueue();
-        String inventoryServiceDestinationQueue = defaultInventoryServiceDestinationQueue();
-        String ietInventoryServiceReplyToQueue = defaultInventoryServiceReplyToQueue();
 
 
         defaultPreferences.setDataAccessMode(dataAccessMode);
@@ -89,8 +85,6 @@ public class GlobalPreferencesDefaultSettingsService {
         defaultPreferences.setMqType(mqType);
         defaultPreferences.setOrderServiceDestinationQueue(orderServiceDestinationQueue);
         defaultPreferences.setOrderServiceReplyToQueue(orderServiceReplyToQueue);
-        defaultPreferences.setInventoryServiceDestinationQueue(inventoryServiceDestinationQueue);
-        defaultPreferences.setInventoryServiceReplyToQueue(ietInventoryServiceReplyToQueue);
 
         return defaultPreferences;
     }
@@ -289,18 +283,10 @@ public class GlobalPreferencesDefaultSettingsService {
     }
 
     public String defaultOrderServiceDestinationQueue() {
-        return PROXY_SUFFIX + ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST;
-    }
-
-    public String defaultOrderServiceReplyToQueue() {
-        return PROXY_SUFFIX + ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE;
-    }
-
-    public String defaultInventoryServiceDestinationQueue() {
         return ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST;
     }
 
-    public String defaultInventoryServiceReplyToQueue() {
+    public String defaultOrderServiceReplyToQueue() {
         return ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE;
     }
 }
