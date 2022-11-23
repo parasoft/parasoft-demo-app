@@ -119,9 +119,4 @@ public class ActiveMQConfig {
     public static synchronized void setInventoryResponseActiveMqQueue(ActiveMQQueue inventoryResponseActiveMqQueue) {
         ActiveMQConfig.inventoryResponseActiveMqQueue = inventoryResponseActiveMqQueue;
     }
-
-    public static synchronized void resetInventoryActiveMqQueues() {
-        inventoryRequestActiveMqQueue = new ActiveMQQueue(DEFAULT_QUEUE_INVENTORY_REQUEST);
-        inventoryResponseActiveMqQueue = new ActiveMQQueue(DEFAULT_QUEUE_INVENTORY_RESPONSE);
-    }
 }

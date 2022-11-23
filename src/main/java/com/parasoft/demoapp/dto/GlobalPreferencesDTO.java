@@ -54,8 +54,6 @@ public class GlobalPreferencesDTO {
                           "Only the following characters can be used for the group id: 0-9, a-z, A-Z, - and _ .")
     private String parasoftVirtualizeGroupId;
 
-    private Boolean mqProxyEnabled;
-
     private MqType mqType;
 
     private String orderServiceDestinationQueue;

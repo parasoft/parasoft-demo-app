@@ -56,7 +56,6 @@ public class GlobalPreferencesCreator extends AbstractDataCreator {
                             defaultPreferences.getParasoftVirtualizeServerUrl(),
                             defaultPreferences.getParasoftVirtualizeServerPath(),
                             defaultPreferences.getParasoftVirtualizeGroupId(),
-                            defaultPreferences.getMqProxyEnabled(),
                             defaultPreferences.getMqType(),
                             defaultPreferences.getOrderServiceDestinationQueue(),
                             defaultPreferences.getOrderServiceReplyToQueue(),

@@ -64,7 +64,6 @@ public class GlobalPreferencesDefaultSettingsService {
         String parasoftVirtualizeServerUrl = defaultParasoftVirtualizeServerUrl();
         String parasoftVirtualizeServerPath = defaultParasoftVirtualizeServerPath();
         String parasoftVirtualizeGroupId = defaultParasoftVirtualizeGroupId();
-        Boolean mqProxyEnabled = defaultMqProxyEnabled();
         MqType mqType = defaultMqType();
         String orderServiceDestinationQueue = defaultOrderServiceDestinationQueue();
         String orderServiceReplyToQueue = defaultOrderServiceReplyToQueue();
@@ -85,7 +84,6 @@ public class GlobalPreferencesDefaultSettingsService {
         defaultPreferences.setParasoftVirtualizeServerPath(parasoftVirtualizeServerPath);
         defaultPreferences.setParasoftVirtualizeGroupId(parasoftVirtualizeGroupId);
 
-        defaultPreferences.setMqProxyEnabled(mqProxyEnabled);
         defaultPreferences.setMqType(mqType);
         defaultPreferences.setOrderServiceDestinationQueue(orderServiceDestinationQueue);
         defaultPreferences.setOrderServiceReplyToQueue(orderServiceReplyToQueue);
@@ -278,10 +276,6 @@ public class GlobalPreferencesDefaultSettingsService {
         names.add("ORDER_REQUESTS");
 
         return names;
-    }
-
-    public boolean defaultMqProxyEnabled(){
-        return false;
     }
 
     public MqType defaultMqType() {

@@ -49,7 +49,6 @@ public class GlobalPreferencesCreatorSpringTest {
         assertEquals(IndustryType.OUTDOOR, currentGlobalPreferences.getIndustryType());
         assertEquals(2, currentGlobalPreferences.getDemoBugs().size());
         assertTrue(currentGlobalPreferences.getAdvertisingEnabled());
-        assertFalse(currentGlobalPreferences.getMqProxyEnabled());
         assertEquals(MqType.ACTIVE_MQ, currentGlobalPreferences.getMqType());
         assertEquals(PROXY_SUFFIX + ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST, currentGlobalPreferences.getOrderServiceDestinationQueue());
         assertEquals(PROXY_SUFFIX + ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE, currentGlobalPreferences.getOrderServiceReplyToQueue());
