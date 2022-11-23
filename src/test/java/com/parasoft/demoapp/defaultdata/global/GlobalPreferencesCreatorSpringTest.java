@@ -53,8 +53,6 @@ public class GlobalPreferencesCreatorSpringTest {
         assertEquals(MqType.ACTIVE_MQ, currentGlobalPreferences.getMqType());
         assertEquals(PROXY_SUFFIX + ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST, currentGlobalPreferences.getOrderServiceDestinationQueue());
         assertEquals(PROXY_SUFFIX + ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE, currentGlobalPreferences.getOrderServiceReplyToQueue());
-        assertEquals(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST, currentGlobalPreferences.getInventoryServiceDestinationQueue());
-        assertEquals(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE, currentGlobalPreferences.getInventoryServiceReplyToQueue());
     }
 
 }

@@ -1,5 +1,6 @@
 package com.parasoft.demoapp.defaultdata.global;
 
+import com.parasoft.demoapp.config.activemq.ActiveMQConfig;
 import com.parasoft.demoapp.defaultdata.AbstractDataCreator;
 import com.parasoft.demoapp.messages.DatabaseOperationMessages;
 import com.parasoft.demoapp.model.global.preferences.GlobalPreferencesEntity;
@@ -60,8 +61,8 @@ public class GlobalPreferencesCreator extends AbstractDataCreator {
                             defaultPreferences.getMqType(),
                             defaultPreferences.getOrderServiceDestinationQueue(),
                             defaultPreferences.getOrderServiceReplyToQueue(),
-                            defaultPreferences.getInventoryServiceDestinationQueue(),
-                            defaultPreferences.getInventoryServiceReplyToQueue());
+                            ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST,
+                            ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE);
 
             for(RestEndpointEntity restEndpointEntity : restEndpointService.getAllEndpoints()){
                 restEndpointEntity.setGlobalPreferences(defaultPreferences);
