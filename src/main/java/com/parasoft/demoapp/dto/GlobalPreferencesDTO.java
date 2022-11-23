@@ -60,8 +60,4 @@ public class GlobalPreferencesDTO {
 
     private String orderServiceReplyToQueue;
 
-    private String inventoryServiceDestinationQueue;
-
-    private String inventoryServiceReplyToQueue;
-
 }
