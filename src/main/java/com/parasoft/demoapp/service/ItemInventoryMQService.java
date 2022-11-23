@@ -18,8 +18,8 @@ public class ItemInventoryMQService {
     private JmsMessagingTemplate jmsMessagingTemplate;
 
     public void sendToInventoryResponseQueue(InventoryOperationResultMessageDTO message) {
-        ActiveMQQueue destination = ActiveMQConfig.getInventoryResponseActiveMqQueue();
-        jmsMessagingTemplate.convertAndSend(ActiveMQConfig.getInventoryResponseActiveMqQueue(), message);
+        ActiveMQQueue destination = ActiveMQConfig.getInventoryServiceSendToQueue();
+        jmsMessagingTemplate.convertAndSend(destination, message);
 
         log.info("Inventory service sent a message to {} \n Message content: {}", destination, message);
     }

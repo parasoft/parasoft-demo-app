@@ -81,10 +81,6 @@ public class GlobalPreferencesEntity {
     private boolean labelsOverrided = false;
 
     @Setter
-    @Column(name = "mq_proxy_enabled")
-    private Boolean mqProxyEnabled;
-
-    @Setter
     @Enumerated(EnumType.STRING)
     @Column(name = "mq_type")
     private MqType mqType;
@@ -97,14 +93,6 @@ public class GlobalPreferencesEntity {
     @Column(name = "order_service_reply_to_queue")
     private String orderServiceReplyToQueue;
 
-    @Setter
-    @Column(name = "inventory_service_destination_queue")
-    private String inventoryServiceDestinationQueue;
-
-    @Setter
-    @Column(name = "inventory_service_reply_to_queue")
-    private String inventoryServiceReplyToQueue;
-
     public GlobalPreferencesEntity(DataAccessMode dataAccessMode, String soapEndpoint,
                                    Set<RestEndpointEntity> restEndpoints,
                                    IndustryType industryType, WebServiceMode webServiceMode,
@@ -112,12 +100,9 @@ public class GlobalPreferencesEntity {
                                    Boolean advertisingEnabled, Boolean useParasoftJDBCProxy,
                                    String parasoftVirtualizeServerUrl, String parasoftVirtualizeServerPath,
                                    String parasoftVirtualizeGroupId,
-                                   Boolean mqProxyEnabled,
                                    MqType mqType,
                                    String orderServiceDestinationQueue,
-                                   String orderServiceReplyToQueue,
-                                   String inventoryServiceDestinationQueue,
-                                   String inventoryServiceReplyToQueue) {
+                                   String orderServiceReplyToQueue) {
         this.dataAccessMode = dataAccessMode;
         this.soapEndPoint = soapEndpoint;
         this.restEndPoints = restEndpoints;
@@ -130,11 +115,8 @@ public class GlobalPreferencesEntity {
         this.parasoftVirtualizeServerUrl = parasoftVirtualizeServerUrl;
         this.parasoftVirtualizeServerPath = parasoftVirtualizeServerPath;
         this.parasoftVirtualizeGroupId = parasoftVirtualizeGroupId;
-        this.mqProxyEnabled = mqProxyEnabled;
         this.mqType = mqType;
         this.orderServiceDestinationQueue = orderServiceDestinationQueue;
         this.orderServiceReplyToQueue = orderServiceReplyToQueue;
-        this.inventoryServiceDestinationQueue = inventoryServiceDestinationQueue;
-        this.inventoryServiceReplyToQueue = inventoryServiceReplyToQueue;
     }
 }

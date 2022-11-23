@@ -425,7 +425,6 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 
     demo.saveAll = function() {
         let data = angular.element('#options_form').serializeJSON()
-        data.mqProxyEnabled = !!data.mqProxyEnabled;
         $http({
             method: 'PUT',
             url: '/v1/demoAdmin/preferences',
@@ -1324,13 +1323,9 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
         options.parasoftVirtualizeServerPath = data.parasoftVirtualizeServerPath;
         options.parasoftVirtualizeGroupId = data.parasoftVirtualizeGroupId;
 
-
-        options.mqProxyEnabled = data.mqProxyEnabled;
         options.mqType = data.mqType;
         options.orderServiceDestinationQueue = data.orderServiceDestinationQueue;
         options.orderServiceReplyToQueue = data.orderServiceReplyToQueue;
-        options.inventoryServiceDestinationQueue = data.inventoryServiceDestinationQueue;
-        options.inventoryServiceReplyToQueue = data.inventoryServiceReplyToQueue;
 
         options.webServiceMode = data.webServiceMode;
         options.graphQLEndpoint = data.graphQLEndpoint;
