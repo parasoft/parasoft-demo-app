@@ -68,8 +68,6 @@ public class GlobalPreferencesDefaultSettingsService {
         MqType mqType = defaultMqType();
         String orderServiceDestinationQueue = defaultOrderServiceDestinationQueue();
         String orderServiceReplyToQueue = defaultOrderServiceReplyToQueue();
-        String inventoryServiceDestinationQueue = defaultInventoryServiceDestinationQueue();
-        String ietInventoryServiceReplyToQueue = defaultInventoryServiceReplyToQueue();
 
 
         defaultPreferences.setDataAccessMode(dataAccessMode);
@@ -89,8 +87,6 @@ public class GlobalPreferencesDefaultSettingsService {
         defaultPreferences.setMqType(mqType);
         defaultPreferences.setOrderServiceDestinationQueue(orderServiceDestinationQueue);
         defaultPreferences.setOrderServiceReplyToQueue(orderServiceReplyToQueue);
-        defaultPreferences.setInventoryServiceDestinationQueue(inventoryServiceDestinationQueue);
-        defaultPreferences.setInventoryServiceReplyToQueue(ietInventoryServiceReplyToQueue);
 
         return defaultPreferences;
     }
