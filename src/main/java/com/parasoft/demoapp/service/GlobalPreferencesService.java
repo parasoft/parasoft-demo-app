@@ -56,9 +56,6 @@ public class GlobalPreferencesService {
     private ParasoftJDBCProxyService parasoftJDBCProxyService;
 
     @Autowired
-    private InventoryRequestQueueListener inventoryRequestQueueListener;
-
-    @Autowired
     private InventoryResponseQueueListener inventoryResponseQueueListener;
 
     @Autowired

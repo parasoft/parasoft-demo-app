@@ -173,7 +173,7 @@ public class GlobalPreferencesServiceTest {
 
 	/**
 	 * test for addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, Set, Boolean, Boolean, String, String, String,
-	 * MqType, String, String, String, String)
+	 * MqType, String, String)
 	 *
 	 * @see GlobalPreferencesService#addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, WebServiceMode, String, Set, Boolean, Boolean, String, String, String,
 	 * MqType, String, String)
