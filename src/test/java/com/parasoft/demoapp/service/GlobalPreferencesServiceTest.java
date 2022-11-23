@@ -12,6 +12,7 @@ import com.parasoft.demoapp.model.global.preferences.*;
 import com.parasoft.demoapp.repository.global.GlobalPreferencesRepository;
 import com.parasoft.demoapp.util.BugsTypeSortOfDemoBugs;
 import com.parasoft.demoapp.util.RouteIdSortOfRestEndpoint;
+import org.apache.activemq.command.ActiveMQQueue;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -70,9 +71,8 @@ public class GlobalPreferencesServiceTest {
 
 	@After
 	public void tearDown() {
-		ActiveMQConfig.setInventoryServiceListenToQueue(DEFAULT_QUEUE_INVENTORY_REQUEST);
 		ActiveMQConfig.setOrderServiceListenToQueue(DEFAULT_QUEUE_INVENTORY_RESPONSE);
-		ActiveMQConfig.resetInventoryActiveMqQueues();
+		ActiveMQConfig.setOrderServiceSendToQueue(new ActiveMQQueue(DEFAULT_QUEUE_INVENTORY_REQUEST));
 	}
 
 	/**

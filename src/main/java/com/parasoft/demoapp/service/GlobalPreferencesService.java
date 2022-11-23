@@ -241,17 +241,13 @@ public class GlobalPreferencesService {
         String orderServiceReplyToQueue = currentPreferences.getOrderServiceReplyToQueue();
 
         if(!mqProxyEnabled) {
-            ActiveMQConfig.resetInventoryActiveMqQueues();
             inventoryRequestQueueListener.refreshDestination(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
             inventoryResponseQueueListener.refreshDestination(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE);
             return;
         }
 
-        ActiveMQConfig.setInventoryRequestActiveMqQueue(new ActiveMQQueue(orderServiceDestinationQueue));
+        ActiveMQConfig.setOrderServiceSendToQueue(new ActiveMQQueue(orderServiceDestinationQueue));
         inventoryResponseQueueListener.refreshDestination(orderServiceReplyToQueue);
-
-        ActiveMQConfig.setInventoryResponseActiveMqQueue(new ActiveMQQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE));
-        inventoryRequestQueueListener.refreshDestination(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
     }
 
     /**
@@ -268,12 +264,9 @@ public class GlobalPreferencesService {
 
         validateProxyConfig(globalPreferencesDto);
 
-        ActiveMQConfig.setOrderServiceSendToActiveMqQueue(new ActiveMQQueue(
+        ActiveMQConfig.setOrderServiceSendToQueue(new ActiveMQQueue(
                 globalPreferences.getOrderServiceDestinationQueue()));
         ActiveMQConfig.setOrderServiceListenToQueue(globalPreferences.getOrderServiceReplyToQueue());
-        ActiveMQConfig.setInventoryServiceSendToActiveMqQueue(new ActiveMQQueue(
-                ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE));
-        ActiveMQConfig.setInventoryServiceListenToQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
     }
 
     private void handleParasoftJDBCProxy(GlobalPreferencesEntity currentPreferences,
