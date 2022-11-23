@@ -58,22 +58,41 @@ app.controller('orderHistoryController', function($rootScope, $http, $filter, gr
             history.order = data;
 
             if(!history.order.reviewedByPRCH){
-                $http({
-                    method: 'PUT',
-                    url: '/proxy/v1/orders/'+history.order.orderNumber,
-                    data: {
-                        "status": history.order.status,
-                        "reviewedByPRCH": true,
-                        "reviewedByAPV": history.order.reviewedByAPV
-                    },
-                    headers: { 'Content-Type': 'application/json' }
-                }).then(function(result) {
+                let success = (data) => {
                     angular.element(".new_label" + index).css("visibility", "hidden");
                     //Update icon
                     getUnreviewedAmount($http,$rootScope,$filter);
-                }).catch(function(result) {
-                    console.log(result);
-                });
+                }
+
+                let error = (data) => {
+                    console.log(data);
+                }
+
+                let orderStatusData = {
+                    "status": history.order.status,
+                    "reviewedByPRCH": true,
+                    "reviewedByAPV": history.order.reviewedByAPV
+                }
+                let variables = {
+                    "orderNumber": history.order.orderNumber,
+                    "orderStatusDTO": orderStatusData
+                };
+
+                if (CURRENT_WEB_SERVICE_MODE === "GraphQL"){
+                    let selectionSet = "{orderNumber}";
+                    graphQLService.updateOrderByOrderNumber(variables, success, (data) => {error(data)}, selectionSet);
+                } else {
+                    $http({
+                        method: 'PUT',
+                        url: '/proxy/v1/orders/'+history.order.orderNumber,
+                        data: orderStatusData,
+                        headers: { 'Content-Type': 'application/json' }
+                    }).then(function(result) {
+                        success(result.data.data);
+                    }).catch(function(result) {
+                        error(result);
+                    });
+                }
             }
 
             var introduceIncorrectNumberBug = false;
@@ -169,13 +188,9 @@ app.controller('orderHistoryController', function($rootScope, $http, $filter, gr
             return ;
         }
 
-        $http({
-            method: 'GET',
-            url: '/proxy/v1/orders',
-            params: {'sort':'orderNumber,desc'}
-        }).then(function(result) {
-            var orders = result.data.data.content;
-            var totalOrders = result.data.data.totalElements;
+        let success = (data) => {
+            var orders = data.content;
+            var totalOrders = data.totalElements;
             orders = $filter('orderBy')(orders,"orderNumber",true);
 
             if(totalOrders < 1){
@@ -207,13 +222,30 @@ app.controller('orderHistoryController', function($rootScope, $http, $filter, gr
 
             // Update the new data on web
             history.orders = ordersList;
-        }).catch(function(result) {
-            console.log(result);
+        }
+
+        let error = (data, endpointType) => {
+            console.log(data);
             history.totalPages = 0;
             history.currentPage = 0;
-            displayLoadError(result,$rootScope,$filter,$http,false,"orders");
+            displayLoadError(data,$rootScope,$filter,$http,false,endpointType);
             history.ordersLoadError = true;
-        });
+        }
+
+        if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+            let selectionSet = "{totalElements,content{orderNumber,requestedBy,status,reviewedByAPV,reviewedByPRCH,submissionDate,respondedBy,approverReplyDate,orderItems{name,quantity}}}";
+            graphQLService.getOrders(success, (data) => {error(data, "graphQL")}, selectionSet);
+        } else {
+            $http({
+                method: 'GET',
+                url: '/proxy/v1/orders',
+                params: {'sort':'orderNumber,desc'}
+            }).then(function(result) {
+                success(result.data.data);
+            }).catch(function(result) {
+                error(result, 'orders');
+            });
+        }
     }
 
     // Set time out for avoiding to get the key when using $filter('translate') filter.
