@@ -4,12 +4,15 @@
 package com.parasoft.demoapp.service;
 
 import com.parasoft.demoapp.config.WebConfig;
+import com.parasoft.demoapp.config.activemq.ActiveMQConfig;
 import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
 import com.parasoft.demoapp.dto.GlobalPreferencesDTO;
 import com.parasoft.demoapp.messages.GlobalPreferencesMessages;
 import com.parasoft.demoapp.model.global.preferences.*;
 import com.parasoft.demoapp.repository.industry.*;
 import com.parasoft.demoapp.util.UrlUtil;
+import org.apache.activemq.command.ActiveMQQueue;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
@@ -33,6 +36,8 @@ import java.util.List;
 import java.util.Map;
 
 import static com.parasoft.demoapp.config.ParasoftJDBCProxyConfig.PARASOFT_JDBC_PROXY_VIRTUALIZE_SERVER_URL_DEFAULT_VALUE;
+import static com.parasoft.demoapp.config.activemq.ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST;
+import static com.parasoft.demoapp.config.activemq.ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE;
 import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.*;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -92,7 +97,9 @@ public class GlobalPreferencesServiceSpringTest {
 		GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
 		IndustryType industry = IndustryType.AEROSPACE;
 		globalPreferencesDto.setIndustryType(industry);
-		globalPreferencesDto.setMqProxyEnabled(false);
+		globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
+		globalPreferencesDto.setOrderServiceDestinationQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
+		globalPreferencesDto.setOrderServiceReplyToQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE);
 		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 
 		// When
@@ -144,7 +151,9 @@ public class GlobalPreferencesServiceSpringTest {
 		globalPreferencesDto.setOrdersRestEndpoint(ordersRestEndpointUrl);
 		globalPreferencesDto.setLocationsRestEndpoint(locationsRestEndpointUrl);
 		globalPreferencesDto.setAdvertisingEnabled(false);
-		globalPreferencesDto.setMqProxyEnabled(false);
+		globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
+		globalPreferencesDto.setOrderServiceDestinationQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
+		globalPreferencesDto.setOrderServiceReplyToQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE);
 		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 
 		// When
@@ -268,7 +277,9 @@ public class GlobalPreferencesServiceSpringTest {
 		globalPreferencesDto.setOrdersRestEndpoint(ordersRestEndpointUrl);
 		globalPreferencesDto.setLocationsRestEndpoint(locationsRestEndpointUrl);
 		globalPreferencesDto.setAdvertisingEnabled(false);
-		globalPreferencesDto.setMqProxyEnabled(false);
+		globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
+		globalPreferencesDto.setOrderServiceDestinationQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
+		globalPreferencesDto.setOrderServiceReplyToQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE);
 		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 
 		// When
@@ -353,7 +364,9 @@ public class GlobalPreferencesServiceSpringTest {
 		globalPreferencesDto.setIndustryType(IndustryType.AEROSPACE);
 		DemoBugsType[] demoBugsTypes = { DemoBugsType.INCORRECT_LOCATION_FOR_APPROVED_ORDERS };
 		globalPreferencesDto.setDemoBugs(demoBugsTypes);
-		globalPreferencesDto.setMqProxyEnabled(false);
+		globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
+		globalPreferencesDto.setOrderServiceDestinationQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
+		globalPreferencesDto.setOrderServiceReplyToQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE);
 		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 
 		// When
@@ -400,7 +413,9 @@ public class GlobalPreferencesServiceSpringTest {
 		globalPreferencesDto.setIndustryType(IndustryType.DEFENSE);
 		globalPreferencesDto.setUseParasoftJDBCProxy(useParasoftJDBCProxy);
 		globalPreferencesDto.setParasoftVirtualizeServerUrl(parasoftVirtualizeServerUrl);
-		globalPreferencesDto.setMqProxyEnabled(false);
+		globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
+		globalPreferencesDto.setOrderServiceDestinationQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
+		globalPreferencesDto.setOrderServiceReplyToQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE);
 		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 
 		// When
@@ -439,7 +454,9 @@ public class GlobalPreferencesServiceSpringTest {
 		globalPreferencesDto.setIndustryType(IndustryType.DEFENSE);
 		globalPreferencesDto.setUseParasoftJDBCProxy(useParasoftJDBCProxy);
 		globalPreferencesDto.setParasoftVirtualizeServerUrl(parasoftVirtualizeServerUrl);
-		globalPreferencesDto.setMqProxyEnabled(false);
+		globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
+		globalPreferencesDto.setOrderServiceDestinationQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
+		globalPreferencesDto.setOrderServiceReplyToQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE);
 		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 
 		// When
