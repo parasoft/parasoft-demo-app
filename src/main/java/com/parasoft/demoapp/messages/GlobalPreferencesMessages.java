@@ -29,7 +29,6 @@ public class GlobalPreferencesMessages extends Messages {
     public static final String ORDER_SERVICE_DESTINATION_QUEUE_CANNOT_BE_NULL = "orderServiceDestinationQueue cannot be null or empty.";
     public static final String ORDER_SERVICE_REPLY_TO_QUEUE_CANNOT_BE_NULL = "orderServiceReplyToQueue cannot be null or empty.";
     public static final String MQTYPE_MUST_NOT_BE_NULL = "MqType must not be null.";
-    public static final String MQENABLED_MUST_NOT_BE_NULL = "MqEnabled must not be null.";
     public static final String WEBSERVICEMODE_MUST_NOT_BE_NULL = "WebServiceMode must not be null.";
     public static final String LABEL_CANNOT_BE_FOUND = "Label key {0} cannot be found.";
 

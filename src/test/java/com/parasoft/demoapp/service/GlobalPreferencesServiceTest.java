@@ -77,10 +77,10 @@ public class GlobalPreferencesServiceTest {
 
 	/**
 	 * test for addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, Set, Boolean, Boolean, String, String, String,
-	 * Boolean, MqType, String, String, String, String)
+	 * MqType, String, String)
 	 *
 	 * @see GlobalPreferencesService#addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, WebServiceMode, String, Set, Boolean, Boolean, String, String, String,
-	 * Boolean, MqType, String, String)
+	 * MqType, String, String)
 	 */
 	@Test
 	public void testAddNewGlobalPreferences_normal() throws Throwable {
@@ -99,21 +99,20 @@ public class GlobalPreferencesServiceTest {
 		String parasoftVirtualizeServerUrl = "http://localhost:9080";
 		String parasoftVirtualizeServerPath = "/myVirtualDB";
 		String parasoftVirtualizeGroupId = "pda-group";
-		Boolean proxyMqEnabled = false;
 		MqType mqType = MqType.ACTIVE_MQ;
 		String orderServiceDestinationQueue = "queue.inventory.request";
 		String orderServiceReplyToQueue = "queue.inventory.response";
 
 		GlobalPreferencesEntity saveResult = new GlobalPreferencesEntity(dataAccessMode, soapEndPoint, restEndPoints,
 				industryType, webServiceMode, graphQLEndpoint, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
-				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, proxyMqEnabled, mqType, orderServiceDestinationQueue,
+				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, mqType, orderServiceDestinationQueue,
 				orderServiceReplyToQueue);
 		doReturn(saveResult).when(globalPreferencesRepository).save((GlobalPreferencesEntity) any());
 
 		// When
 		GlobalPreferencesEntity result = underTest.addNewGlobalPreferences(dataAccessMode, soapEndPoint, restEndPoints,
 				industryType, webServiceMode, graphQLEndpoint, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
-				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, proxyMqEnabled, mqType, orderServiceDestinationQueue,
+				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, mqType, orderServiceDestinationQueue,
 				orderServiceReplyToQueue);
 
 		// Then
@@ -124,7 +123,6 @@ public class GlobalPreferencesServiceTest {
 		assertNotNull(result.getRestEndPoints());
 		assertEquals(IndustryType.DEFENSE.getValue(), result.getIndustryType().getValue());
 		assertEquals(false, result.getAdvertisingEnabled());
-		assertEquals(false, result.getMqProxyEnabled());
 		assertEquals(mqType, result.getMqType());
 		assertEquals(orderServiceDestinationQueue, result.getOrderServiceDestinationQueue());
 		assertEquals(orderServiceReplyToQueue, result.getOrderServiceReplyToQueue());
@@ -132,10 +130,10 @@ public class GlobalPreferencesServiceTest {
 
 	/**
 	 * test for addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, Set, Boolean, Boolean, String, String, String,
-	 * Boolean, MqType, String, String, String, String)
+	 * MqType, String, String)
 	 *
 	 * @see GlobalPreferencesService#addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, WebServiceMode, String, Set, Boolean, Boolean, String, String, String,
-	 * Boolean, MqType, String, String)
+	 * MqType, String, String)
 	 */
 	@Test
 	public void testAddNewGlobalPreferences_nullDemoBugs() throws Throwable {
@@ -152,21 +150,20 @@ public class GlobalPreferencesServiceTest {
 		String parasoftVirtualizeServerUrl = "http://localhost:9080";
 		String parasoftVirtualizeServerPath = "/myVirtualDB";
 		String parasoftVirtualizeGroupId = "pda-group";
-		Boolean proxyMqEnabled = false;
 		MqType mqType = MqType.ACTIVE_MQ;
 		String orderServiceDestinationQueue = "queue.inventory.request";
 		String orderServiceReplyToQueue = "queue.inventory.response";
 
 		GlobalPreferencesEntity saveResult = new GlobalPreferencesEntity(dataAccessMode, soapEndPoint, restEndPoints,
 				industryType, webServiceMode, graphQLEndpoint, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
-				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, proxyMqEnabled, mqType, orderServiceDestinationQueue,
+				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, mqType, orderServiceDestinationQueue,
 				orderServiceReplyToQueue);
 		doReturn(saveResult).when(globalPreferencesRepository).save((GlobalPreferencesEntity) any());
 
 		// When
 		GlobalPreferencesEntity result = underTest.addNewGlobalPreferences(dataAccessMode, soapEndPoint, restEndPoints,
 				industryType, webServiceMode, graphQLEndpoint, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
-				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, proxyMqEnabled, mqType, orderServiceDestinationQueue,
+				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, mqType, orderServiceDestinationQueue,
 				orderServiceReplyToQueue);
 
 		// Then
@@ -176,10 +173,10 @@ public class GlobalPreferencesServiceTest {
 
 	/**
 	 * test for addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, Set, Boolean, Boolean, String, String, String,
-	 * Boolean, MqType, String, String, String, String)
+	 * MqType, String, String)
 	 *
 	 * @see GlobalPreferencesService#addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, WebServiceMode, String, Set, Boolean, Boolean, String, String, String,
-	 * Boolean, MqType, String, String)
+	 * MqType, String, String)
 	 */
 	@Test
 	public void testAddNewGlobalPreferences_nullRestEndPoints() throws Throwable {
@@ -196,21 +193,20 @@ public class GlobalPreferencesServiceTest {
 		String parasoftVirtualizeServerUrl = "http://localhost:9080";
 		String parasoftVirtualizeServerPath = "/myVirtualDB";
 		String parasoftVirtualizeGroupId = "pda-group";
-		Boolean proxyMqEnabled = false;
 		MqType mqType = MqType.ACTIVE_MQ;
 		String orderServiceDestinationQueue = "queue.inventory.request";
 		String orderServiceReplyToQueue = "queue.inventory.response";
 
 		GlobalPreferencesEntity saveResult = new GlobalPreferencesEntity(dataAccessMode, soapEndPoint, restEndPoints,
 				industryType, webServiceMode, graphQLEndpoint, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
-				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, proxyMqEnabled, mqType, orderServiceDestinationQueue,
+				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, mqType, orderServiceDestinationQueue,
 				orderServiceReplyToQueue);
 		doReturn(saveResult).when(globalPreferencesRepository).save((GlobalPreferencesEntity) any());
 
 		// When
 		GlobalPreferencesEntity result = underTest.addNewGlobalPreferences(dataAccessMode, soapEndPoint, restEndPoints,
 				industryType, webServiceMode, graphQLEndpoint, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
-				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, proxyMqEnabled, mqType, orderServiceDestinationQueue,
+				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, mqType, orderServiceDestinationQueue,
 				orderServiceReplyToQueue);
 
 		// Then
@@ -220,10 +216,10 @@ public class GlobalPreferencesServiceTest {
 
 	/**
 	 * test for addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, Set, Boolean, Boolean, String, String, String,
-	 * Boolean, MqType, String, String, String, String)
+	 * MqType, String, String)
 	 *
 	 * @see GlobalPreferencesService#addNewGlobalPreferences(DataAccessMode, String, Set, IndustryType, WebServiceMode, String, Set, Boolean, Boolean, String, String, String,
-	 * Boolean, MqType, String, String)
+	 * MqType, String, String)
 	 */
 	@Test
 	public void testAddNewGlobalPreferences_nullAdvertisingEnabled() throws Throwable {
@@ -240,14 +236,13 @@ public class GlobalPreferencesServiceTest {
 		String parasoftVirtualizeServerUrl = "http://localhost:9080";
 		String parasoftVirtualizeServerPath = "/myVirtualDB";
 		String parasoftVirtualizeGroupId = "pda-group";
-		Boolean proxyMqEnabled = false;
 		MqType mqType = MqType.ACTIVE_MQ;
 		String orderServiceDestinationQueue = "queue.inventory.request";
 		String orderServiceReplyToQueue = "queue.inventory.response";
 
 		GlobalPreferencesEntity saveResult = new GlobalPreferencesEntity(dataAccessMode, soapEndPoint, restEndPoints,
 				industryType, webServiceMode, graphQLEndpoint, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
-				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, proxyMqEnabled, mqType, orderServiceDestinationQueue,
+				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, mqType, orderServiceDestinationQueue,
 				orderServiceReplyToQueue);
 		doReturn(saveResult).when(globalPreferencesRepository).save((GlobalPreferencesEntity) any());
 
@@ -256,7 +251,7 @@ public class GlobalPreferencesServiceTest {
 		try {
 			underTest.addNewGlobalPreferences(dataAccessMode, soapEndPoint, restEndPoints, industryType, webServiceMode, graphQLEndpoint,
 					demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
-					parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, proxyMqEnabled, mqType, orderServiceDestinationQueue,
+					parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, mqType, orderServiceDestinationQueue,
 					orderServiceReplyToQueue);
 		} catch (Exception e) {
 			message = e.getMessage();
@@ -286,14 +281,13 @@ public class GlobalPreferencesServiceTest {
 		String parasoftVirtualizeServerUrl = "http://localhost:9080";
 		String parasoftVirtualizeServerPath = "/myVirtualDB";
 		String parasoftVirtualizeGroupId = "pda-group";
-		Boolean proxyMqEnabled = false;
 		MqType mqType = MqType.ACTIVE_MQ;
 		String orderServiceDestinationQueue = "queue.inventory.request";
 		String orderServiceReplyToQueue = "queue.inventory.response";
 
 		GlobalPreferencesEntity globalPreferencesEntity = new GlobalPreferencesEntity(dataAccessMode, soapEndPoint, restEndPoints,
 				industryType, webServiceMode, graphQLEndpoint, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
-				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, proxyMqEnabled, mqType, orderServiceDestinationQueue,
+				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, mqType, orderServiceDestinationQueue,
 				orderServiceReplyToQueue);
 
 		when(globalPreferencesRepository.findAll()).thenReturn(Arrays.asList(globalPreferencesEntity));
@@ -386,7 +380,6 @@ public class GlobalPreferencesServiceTest {
 		globalPreferencesDto.setOrdersRestEndpoint(ordersRestEndpointUrl);
 		globalPreferencesDto.setLocationsRestEndpoint(locationsRestEndpointUrl);
 		globalPreferencesDto.setAdvertisingEnabled(false);
-		globalPreferencesDto.setMqProxyEnabled(true);
 		globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
 		globalPreferencesDto.setOrderServiceDestinationQueue("proxy.queue.inventory.request");
 		globalPreferencesDto.setOrderServiceReplyToQueue("proxy.queue.inventory.response");
@@ -429,7 +422,6 @@ public class GlobalPreferencesServiceTest {
 		assertEquals(GlobalPreferencesDefaultSettingsService.LOCATIONS_ENDPOINT_ID, locationsRestEndpoint.getRouteId());
 		assertEquals(GlobalPreferencesDefaultSettingsService.LOCATIONS_ENDPOINT_PATH, locationsRestEndpoint.getPath());
 
-		assertEquals(true, result.getMqProxyEnabled());
 		assertEquals(MqType.ACTIVE_MQ, result.getMqType());
 		assertEquals("proxy.queue.inventory.request", result.getOrderServiceDestinationQueue());
 		assertEquals("proxy.queue.inventory.response", result.getOrderServiceReplyToQueue());
@@ -468,7 +460,6 @@ public class GlobalPreferencesServiceTest {
 		globalPreferencesDto.setOrdersRestEndpoint(ordersRestEndpointUrl);
 		globalPreferencesDto.setLocationsRestEndpoint(locationsRestEndpointUrl);
 		globalPreferencesDto.setAdvertisingEnabled(false);
-		globalPreferencesDto.setMqProxyEnabled(true);
 		globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
 		globalPreferencesDto.setOrderServiceDestinationQueue("proxy.queue.inventory.request");
 		globalPreferencesDto.setOrderServiceReplyToQueue("proxy.queue.inventory.response");
@@ -513,7 +504,6 @@ public class GlobalPreferencesServiceTest {
 		globalPreferencesDto.setOrdersRestEndpoint(ordersRestEndpointUrl);
 		globalPreferencesDto.setLocationsRestEndpoint(locationsRestEndpointUrl);
 		globalPreferencesDto.setAdvertisingEnabled(false);
-		globalPreferencesDto.setMqProxyEnabled(true);
 		globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
 		globalPreferencesDto.setOrderServiceDestinationQueue("proxy.queue.inventory.request");
 		globalPreferencesDto.setOrderServiceReplyToQueue("proxy.queue.inventory.response");
@@ -559,7 +549,6 @@ public class GlobalPreferencesServiceTest {
 		globalPreferencesDto.setOrdersRestEndpoint(ordersRestEndpointUrl);
 		globalPreferencesDto.setLocationsRestEndpoint(locationsRestEndpointUrl);
 		globalPreferencesDto.setAdvertisingEnabled(false);
-		globalPreferencesDto.setMqProxyEnabled(true);
 		globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
 		globalPreferencesDto.setOrderServiceDestinationQueue("proxy.queue.inventory.request");
 		globalPreferencesDto.setOrderServiceReplyToQueue("proxy.queue.inventory.response");
@@ -601,54 +590,6 @@ public class GlobalPreferencesServiceTest {
 	 * @see com.parasoft.demoapp.service.GlobalPreferencesService#updateGlobalPreferences(GlobalPreferencesDTO)
 	 */
 	@Test
-	public void testUpdateGlobalPreferences_exception_nullMqEnabled() {
-		// Given
-		List<GlobalPreferencesEntity> findAllResult = new ArrayList<>();
-		GlobalPreferencesEntity globalPreferences = new GlobalPreferencesEntity();
-		findAllResult.add(globalPreferences);
-		when(globalPreferencesRepository.findAll()).thenReturn(findAllResult);
-		doNothing().when(inventoryResponseQueueListener).refreshDestination(any());
-		doNothing().when(inventoryRequestQueueListener).refreshDestination(any());
-
-		doNothing().when(restEndpointService).removeAllEndpoints();
-		when(globalPreferencesRepository.save(any(GlobalPreferencesEntity.class))).thenReturn(globalPreferences);
-
-		// When
-		String categoriesRestEndpointUrl = "http://localhost:8080/v1/assets/categories/";
-		String itemsRestEndpointUrl = "http://localhost:8080/v1/assets/items/";
-		String cartItemsRestEndpointUrl = "http://localhost:8080/v1/cartItems/";
-		String ordersRestEndpointUrl = "http://localhost:8080/v1/orders/";
-		String locationsRestEndpointUrl = "http://localhost:8080/v1/locations/";
-		GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
-		globalPreferencesDto.setIndustryType(IndustryType.AEROSPACE);
-		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
-		globalPreferencesDto.setCategoriesRestEndpoint(categoriesRestEndpointUrl);
-		globalPreferencesDto.setItemsRestEndpoint(itemsRestEndpointUrl);
-		globalPreferencesDto.setCartItemsRestEndpoint(cartItemsRestEndpointUrl);
-		globalPreferencesDto.setOrdersRestEndpoint(ordersRestEndpointUrl);
-		globalPreferencesDto.setLocationsRestEndpoint(locationsRestEndpointUrl);
-		globalPreferencesDto.setAdvertisingEnabled(false);
-		globalPreferencesDto.setMqProxyEnabled(null);
-		globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
-		globalPreferencesDto.setOrderServiceDestinationQueue("proxy.queue.inventory.request");
-		globalPreferencesDto.setOrderServiceReplyToQueue("proxy.queue.inventory.response");
-		String message = "";
-		try {
-			underTest.updateGlobalPreferences(globalPreferencesDto);
-		} catch (Exception e) {
-		    message = e.getMessage();
-		}
-
-		// Then
-		assertEquals(GlobalPreferencesMessages.MQENABLED_MUST_NOT_BE_NULL, message);
-	}
-
-	/**
-	 * Test for updateGlobalPreferences(GlobalPreferencesDTO)
-	 *
-	 * @see com.parasoft.demoapp.service.GlobalPreferencesService#updateGlobalPreferences(GlobalPreferencesDTO)
-	 */
-	@Test
 	public void testUpdateGlobalPreferences_exception_nullMqType() {
 		// Given
 		List<GlobalPreferencesEntity> findAllResult = new ArrayList<>();
@@ -676,7 +617,6 @@ public class GlobalPreferencesServiceTest {
 		globalPreferencesDto.setOrdersRestEndpoint(ordersRestEndpointUrl);
 		globalPreferencesDto.setLocationsRestEndpoint(locationsRestEndpointUrl);
 		globalPreferencesDto.setAdvertisingEnabled(false);
-		globalPreferencesDto.setMqProxyEnabled(true);
 		globalPreferencesDto.setMqType(null);
 		globalPreferencesDto.setOrderServiceDestinationQueue("proxy.queue.inventory.request");
 		globalPreferencesDto.setOrderServiceReplyToQueue("proxy.queue.inventory.response");
@@ -724,7 +664,6 @@ public class GlobalPreferencesServiceTest {
 		globalPreferencesDto.setOrdersRestEndpoint(ordersRestEndpointUrl);
 		globalPreferencesDto.setLocationsRestEndpoint(locationsRestEndpointUrl);
 		globalPreferencesDto.setAdvertisingEnabled(false);
-		globalPreferencesDto.setMqProxyEnabled(true);
 		globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
 		globalPreferencesDto.setOrderServiceDestinationQueue(null);
 		globalPreferencesDto.setOrderServiceReplyToQueue("proxy.queue.inventory.response");
@@ -772,7 +711,6 @@ public class GlobalPreferencesServiceTest {
 		globalPreferencesDto.setOrdersRestEndpoint(ordersRestEndpointUrl);
 		globalPreferencesDto.setLocationsRestEndpoint(locationsRestEndpointUrl);
 		globalPreferencesDto.setAdvertisingEnabled(false);
-		globalPreferencesDto.setMqProxyEnabled(true);
 		globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
 		globalPreferencesDto.setOrderServiceDestinationQueue("proxy.queue.inventory.request");
 		globalPreferencesDto.setOrderServiceReplyToQueue(null);

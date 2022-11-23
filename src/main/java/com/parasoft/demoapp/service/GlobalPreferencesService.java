@@ -56,9 +56,6 @@ public class GlobalPreferencesService {
     private ParasoftJDBCProxyService parasoftJDBCProxyService;
 
     @Autowired
-    private InventoryRequestQueueListener inventoryRequestQueueListener;
-
-    @Autowired
     private InventoryResponseQueueListener inventoryResponseQueueListener;
 
     @Autowired
@@ -81,7 +78,6 @@ public class GlobalPreferencesService {
                                                            Boolean advertisingEnabled, Boolean useParasoftJDBCProxy,
                                                            String parasoftVirtualizeServerUrl, String parasoftVirtualizeServerPath,
                                                            String parasoftVirtualizeGroupId,
-                                                           Boolean mqProxyEnabled,
                                                            MqType mqType,
                                                            String orderServiceDestinationQueue,
                                                            String orderServiceReplyToQueue) throws ParameterException {
@@ -106,7 +102,6 @@ public class GlobalPreferencesService {
                                                             parasoftVirtualizeServerUrl,
                                                             parasoftVirtualizeServerPath,
                                                             parasoftVirtualizeGroupId,
-                                                            mqProxyEnabled,
                                                             mqType,
                                                             orderServiceDestinationQueue,
                                                             orderServiceReplyToQueue);
@@ -236,18 +231,16 @@ public class GlobalPreferencesService {
     }
 
     private void refreshInventoryQueueDestinations(GlobalPreferencesEntity currentPreferences){
-        Boolean mqProxyEnabled = currentPreferences.getMqProxyEnabled();
         String orderServiceDestinationQueue = currentPreferences.getOrderServiceDestinationQueue();
         String orderServiceReplyToQueue = currentPreferences.getOrderServiceReplyToQueue();
 
-        if(!mqProxyEnabled) {
-            inventoryRequestQueueListener.refreshDestination(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
-            inventoryResponseQueueListener.refreshDestination(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE);
-            return;
+        if(MqType.ACTIVE_MQ == currentPreferences.getMqType()) {
+            ActiveMQConfig.setOrderServiceSendToQueue(new ActiveMQQueue(orderServiceDestinationQueue));
+            inventoryResponseQueueListener.refreshDestination(orderServiceReplyToQueue);
+        } else {
+            throw new UnsupportedOperationException("Unsupported MQ type: " + currentPreferences.getMqType());
         }
 
-        ActiveMQConfig.setOrderServiceSendToQueue(new ActiveMQQueue(orderServiceDestinationQueue));
-        inventoryResponseQueueListener.refreshDestination(orderServiceReplyToQueue);
     }
 
     /**
@@ -377,36 +370,18 @@ public class GlobalPreferencesService {
 
     private void handleMqProxy(GlobalPreferencesEntity currentPreferences,
                                GlobalPreferencesDTO globalPreferencesDto) throws ParameterException {
-        Boolean mqProxyEnabled = globalPreferencesDto.getMqProxyEnabled();
-        ParameterValidator.requireNonNull(mqProxyEnabled, GlobalPreferencesMessages.MQENABLED_MUST_NOT_BE_NULL);
-
-         boolean mqProxyStatusChangedResult = checkMqProxyStatusHasChanged(currentPreferences, globalPreferencesDto);
-
-        if (mqProxyEnabled) {
-            MqType mqType = globalPreferencesDto.getMqType();
-            validateProxyConfig(globalPreferencesDto);
-            currentPreferences.setMqType(mqType);
-            currentPreferences.setOrderServiceDestinationQueue(globalPreferencesDto.getOrderServiceDestinationQueue());
-            currentPreferences.setOrderServiceReplyToQueue(globalPreferencesDto.getOrderServiceReplyToQueue());
-        }
-        currentPreferences.setMqProxyEnabled(mqProxyEnabled);
-
-        mqProxyStatusChanged = mqProxyStatusChangedResult;
+        validateProxyConfig(globalPreferencesDto);
+        mqProxyStatusChanged = checkMqProxyStatusHasChanged(currentPreferences, globalPreferencesDto);
+        currentPreferences.setMqType(globalPreferencesDto.getMqType());
+        currentPreferences.setOrderServiceDestinationQueue(globalPreferencesDto.getOrderServiceDestinationQueue());
+        currentPreferences.setOrderServiceReplyToQueue(globalPreferencesDto.getOrderServiceReplyToQueue());
     }
 
     public boolean checkMqProxyStatusHasChanged(GlobalPreferencesEntity currentPreferences,
                                                 GlobalPreferencesDTO globalPreferencesDto) {
-        Boolean mqProxyEnabled = globalPreferencesDto.getMqProxyEnabled();
-        if(!mqProxyEnabled.equals(currentPreferences.getMqProxyEnabled())) {
-            return true;
-        }
-
-        if(mqProxyEnabled) {
-            return !(globalPreferencesDto.getMqType() == currentPreferences.getMqType()) ||
-                    !(globalPreferencesDto.getOrderServiceDestinationQueue().equals(currentPreferences.getOrderServiceDestinationQueue())) ||
-                    !(globalPreferencesDto.getOrderServiceReplyToQueue().equals(currentPreferences.getOrderServiceReplyToQueue()));
-        }
-        return false;
+        return !(globalPreferencesDto.getMqType() == currentPreferences.getMqType()) ||
+                !(globalPreferencesDto.getOrderServiceDestinationQueue().equals(currentPreferences.getOrderServiceDestinationQueue())) ||
+                !(globalPreferencesDto.getOrderServiceReplyToQueue().equals(currentPreferences.getOrderServiceReplyToQueue()));
     }
 
     private void switchIndustry(GlobalPreferencesEntity currentPreferences) {

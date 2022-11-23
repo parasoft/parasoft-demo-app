@@ -81,10 +81,6 @@ public class GlobalPreferencesEntity {
     private boolean labelsOverrided = false;
 
     @Setter
-    @Column(name = "mq_proxy_enabled")
-    private Boolean mqProxyEnabled;
-
-    @Setter
     @Enumerated(EnumType.STRING)
     @Column(name = "mq_type")
     private MqType mqType;
@@ -104,7 +100,6 @@ public class GlobalPreferencesEntity {
                                    Boolean advertisingEnabled, Boolean useParasoftJDBCProxy,
                                    String parasoftVirtualizeServerUrl, String parasoftVirtualizeServerPath,
                                    String parasoftVirtualizeGroupId,
-                                   Boolean mqProxyEnabled,
                                    MqType mqType,
                                    String orderServiceDestinationQueue,
                                    String orderServiceReplyToQueue) {
@@ -120,7 +115,6 @@ public class GlobalPreferencesEntity {
         this.parasoftVirtualizeServerUrl = parasoftVirtualizeServerUrl;
         this.parasoftVirtualizeServerPath = parasoftVirtualizeServerPath;
         this.parasoftVirtualizeGroupId = parasoftVirtualizeGroupId;
-        this.mqProxyEnabled = mqProxyEnabled;
         this.mqType = mqType;
         this.orderServiceDestinationQueue = orderServiceDestinationQueue;
         this.orderServiceReplyToQueue = orderServiceReplyToQueue;
