@@ -1329,8 +1329,6 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
         options.mqType = data.mqType;
         options.orderServiceDestinationQueue = data.orderServiceDestinationQueue;
         options.orderServiceReplyToQueue = data.orderServiceReplyToQueue;
-        options.inventoryServiceDestinationQueue = data.inventoryServiceDestinationQueue;
-        options.inventoryServiceReplyToQueue = data.inventoryServiceReplyToQueue;
 
         options.webServiceMode = data.webServiceMode;
         options.graphQLEndpoint = data.graphQLEndpoint;

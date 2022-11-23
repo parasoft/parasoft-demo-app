@@ -273,25 +273,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <label for="server_connection" class="connection-label" translate="SERVER_CONNECTION"></label>
-                                <div id="server_connection">
-                                    <div class="form-group">
-                                        <label for="inventory_service_destination_queue" class="form_label" translate="DESTINATION_QUEUE"></label>
-					                    <div class="invalid_message" ng-show="optionsForm.inventoryServiceDestinationQueue.$invalid" translate={{'QUEUE_NAME_SHOULD_NOT_BE_EMPTY'|translate}}></div>
-                                        <div class="input-wrapper">
-                                            <input type="text" name="inventoryServiceDestinationQueue" id="inventory_service_destination_queue" class="form-control" ng-model="options.inventoryServiceDestinationQueue" ng-trim="false"
-                                                   ng-disabled="!options.mqProxyEnabled" ng-required="options.mqProxyEnabled">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-					                    <label for="inventory_service_to_queue" class="form_label" translate="REPLY_TO_QUEUE"></label>
-                                        <div class="invalid_message" ng-show="optionsForm.inventoryServiceReplyToQueue.$invalid" translate={{'QUEUE_NAME_SHOULD_NOT_BE_EMPTY'|translate}}></div>
-                                        <div class="input-wrapper">
-                                            <input type="text" name="inventoryServiceReplyToQueue" id="inventory_service_to_queue" class="form-control" ng-model="options.inventoryServiceReplyToQueue" ng-trim="false"
-                                                ng-disabled="!options.mqProxyEnabled" ng-required="options.mqProxyEnabled">
-                                        </div>
-                                </div>
-                                </div>
                             </div>
                         </div>
 
