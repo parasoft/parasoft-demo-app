@@ -25,7 +25,7 @@ import java.io.InputStream;
 public class GraphQLProvider {
     private GraphQL graphQL;
 
-    @Value("classpath:static/schema.graphql")
+    @Value("classpath:static/schema.graphqls")
     protected Resource graphqlSchemaResource;
 
     private final CategoryGraphQLDataFetcher categoryDataFetcher;
