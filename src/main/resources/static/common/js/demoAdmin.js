@@ -1378,6 +1378,18 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
         });
     }
 
+    options.resetOrderServiceDestinationQueue = function(){
+        resetValuesTemplate(function(defaultOptions){
+            options.orderServiceDestinationQueue = defaultOptions.orderServiceDestinationQueue;
+        });
+    }
+
+    options.resetOrderServiceReplyToQueue = function(){
+        resetValuesTemplate(function(defaultOptions){
+            options.orderServiceReplyToQueue = defaultOptions.orderServiceReplyToQueue;
+        });
+    }
+
     options.resetVirtualizeServerUrl = function(){
         resetValuesTemplate(function(defaultOptions){
             options.parasoftVirtualizeServerUrl = defaultOptions.parasoftVirtualizeServerUrl;

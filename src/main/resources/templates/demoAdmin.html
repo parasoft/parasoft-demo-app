@@ -211,7 +211,7 @@
 
                         <div class="section_container">
                             <div class="section_title">
-                                <span class="align-to-icon" translate="PARASOFT_JMS_MQ_PROXY"></span>
+                                <span class="align-to-icon" translate="PARASOFT_QUEUE_CONFIGURATION"></span>
                             </div>
 
                             <div class="section_body">
@@ -255,6 +255,10 @@
 					                    <div class="invalid_message" ng-show="optionsForm.orderServiceDestinationQueue.$invalid" translate={{'QUEUE_NAME_SHOULD_NOT_BE_EMPTY'|translate}}></div>
                                         <div class="input-wrapper">
                                             <input type="text" name="orderServiceDestinationQueue" id="order_service_destination_queue" class="form-control" ng-model="options.orderServiceDestinationQueue" ng-trim="false">
+                                            <button class="btn btn-default industry_button labels_reset_btn"
+                                                    ng-click="options.resetOrderServiceDestinationQueue()"
+                                                    translate="RESET_DESTINATION_QUEUE">
+                                            </button>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -262,6 +266,10 @@
 					                    <div class="invalid_message" ng-show="optionsForm.orderServiceReplyToQueue.$invalid" translate={{'QUEUE_NAME_SHOULD_NOT_BE_EMPTY'|translate}}></div>
                                         <div class="input-wrapper">
                                             <input type="text" name="orderServiceReplyToQueue" id="order_service_reply_to_queue" class="form-control" ng-model="options.orderServiceReplyToQueue" ng-trim="false">
+                                            <button class="btn btn-default industry_button labels_reset_btn"
+                                                    ng-click="options.resetOrderServiceReplyToQueue()"
+                                                    translate="RESET_REPLY_TO_QUEUE">
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
