@@ -435,11 +435,11 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
             localStorage.setItem("save_succeeded", $filter('translate')('SAVING_SUCCEEDS'));
             $window.location.reload();
             $('#saving_modal').modal('hide');
-        }, function error(response) {
+        }).catch(function(response) {
             console.info(response);
 
-            var responseMessage = response.data.message.toLowerCase();
-            var errorMessage;
+            let responseMessage = response.data.message.toLowerCase();
+            let errorMessage;
             if(responseMessage.indexOf("invalid categories url") > -1) {
                 errorMessage = $filter('translate')('INVALID_CATEGORIES_URL');
             } else if (responseMessage.indexOf("invalid items url") > -1) {
@@ -456,13 +456,13 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
                 errorMessage =  $filter('translate')('INVALID_PARASOFT_VIRTUALIZE_SERVER_PATH');
             } else if(responseMessage.indexOf('Invalid virtualize group id') > -1){
                 errorMessage =  $filter('translate')('INVALID_PARASOFT_VIRTUALIZE_GROUP_ID');
+            } else {
+                errorMessage = responseMessage;
             }
 
             $('#saving_modal').modal('hide');
             localStorage.setItem("status", "false");
             toastrService().error($filter('translate')('SAVING_FAILS') + '<br/>' + errorMessage);
-        }).catch(function(result) {
-            console.info(result);
         });
     };
 
