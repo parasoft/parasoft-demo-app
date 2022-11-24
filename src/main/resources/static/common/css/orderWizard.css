@@ -1,8 +1,8 @@
 #order_title {
-	height: 55px;
-	font-size: 36px;
-	font-weight: 700;
-	padding: 17px 0 0 41px;
+    height: 55px;
+    font-size: 36px;
+    font-weight: 700;
+    padding: 17px 0 0 41px;
 }
 
 #order_title .retract_format {
@@ -20,8 +20,8 @@
 }
 
 .wizard_title {
-	margin-top: 30px;
-	font-size: 20px;
+    margin-top: 30px;
+    font-size: 20px;
 }
 
 .wizard_title .retract_format {
@@ -34,8 +34,8 @@
 
 .deploy_inf {
     margin: 25px 0 0 20px;
-	height: 20px;
-	font-size: 14px;
+    height: 20px;
+    font-size: 14px;
 }
 
 .deploy_inf .retract_format {
@@ -44,11 +44,11 @@
 
 .deploy_input {
     margin-left: 20px;
-	width: 300px;
-	height: 37px;
-	color: #333333;
-	border: 1px solid #333;
-	font-size: 14px;
+    width: 300px;
+    height: 37px;
+    color: #333333;
+    border: 1px solid #333;
+    font-size: 14px;
 }
 
 #location {
@@ -58,8 +58,8 @@
 
 #get_location {
     margin: 22px 0 0 20px;
-	top: 341px;
-	min-height: 40px;
+    top: 341px;
+    min-height: 40px;
 }
 
 #position_info {
@@ -75,24 +75,24 @@
 
 #map {
     margin: 35px 0 0 25px;
-	width: 446px;
-	height: 326px;
+    width: 446px;
+    height: 326px;
 }
 
 #go_to_review, #go_to_review>button {
-	width:160px;
+    width:160px;
 }
 
 #assign_to_campaign, #assign_to_campaign>button, #submit_for_approval, #submit_for_approval>button {
-	width: 236px;
+    width: 236px;
     text-align: center;
 }
 
 .item_img {
     top: 0;
     position: relative;
-	width: 115px;
-	height: 69px;
+    width: 115px;
+    height: 69px;
 }
 
 .item_img>img {
@@ -105,18 +105,18 @@
 
 .item_title {
     font-size: 16px;
-	width: 234px;
+    width: 234px;
 }
 
 .item_title>div>span {
-	width: 234px;
+    width: 234px;
 }
 
 .item_quantity {
-	width: 60px;
-	height: 22px;
-	font-size: 16px;
-	text-align: center;
+    width: 60px;
+    height: 22px;
+    font-size: 16px;
+    text-align: center;
 }
 
 .wizard_item_description {
@@ -134,7 +134,7 @@
 }
 
 .order_content {
-	-webkit-line-clamp: 3;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     word-break: break-word;
     overflow: hidden;
@@ -152,11 +152,11 @@
 }
 
 #summary_content {
-	width: 400px;
+    width: 400px;
 }
 
 #region_summary {
-	font-size: 20px;
+    font-size: 20px;
     position: relative;
 }
 
@@ -173,8 +173,8 @@
 }
 
 .summary_title1, .summary_title2, .summary_title3 {
-	font-size: 15px;
-	width: 200px;
+    font-size: 15px;
+    width: 200px;
 }
 
 .order_info_content_format1, .order_info_content_format {
@@ -183,7 +183,7 @@
 
 #assigned_campaign_summary {
     padding-top: 54px;
-	font-size: 20px;
+    font-size: 20px;
 }
 
 .review_info {
@@ -192,8 +192,8 @@
 }
 
 #summary_map {
-	width: 442px;
-	height: 326px;
+    width: 442px;
+    height: 326px;
 }
 
 #summary_map>img{
@@ -203,7 +203,7 @@
 }
 
 #submit_status{
-	font-size: 20px;
+    font-size: 20px;
 }
 
 #submit_status .retract_format {
@@ -215,13 +215,13 @@
 }
 
 .font_bold{
-	font-weight: bold;
+    font-weight: bold;
 }
 
 #map>img {
-	width: 100%;
-	height: 100%;
-	border: 4px solid #47481e;
+    width: 100%;
+    height: 100%;
+    border: 4px solid #47481e;
 }
 
 #items {
@@ -231,9 +231,9 @@
 }
 
 .breadcrumb {
-	background-color: #f5f5f500;
-	font-size: 20px;
-	padding-left: 0;
+    background-color: #f5f5f500;
+    font-size: 20px;
+    padding-left: 0;
 }
 
 .breadcrumb .retract_format {
@@ -241,27 +241,27 @@
 }
 
 .breadcrumb>.active {
-	color: #333;
+    color: #333;
 }
 
 .breadcrumb>.non-active {
-	color: #7772726b;
+    color: #7772726b;
 }
 
 .breadcrumb>li+li:before {
-	content: "\003E";
-	color: #7772726b;
+    content: "\003E";
+    color: #7772726b;
 }
 
 .wizard_btn_position {
-	left: 0;
-	top: 67px;
-	width: 160px;
+    left: 0;
+    top: 67px;
+    width: 160px;
     min-height: 40px;
 }
 
 .clickable {
-	cursor: pointer;
+    cursor: pointer;
 }
 
 .wizard_btn {
@@ -272,19 +272,19 @@
     box-shadow: 1px 1px 1px rgba(0, 0, 0, 1);
     font-weight: 700;
     color: #20200A;
-	font-size: 13px;
+    font-size: 13px;
 }
 
 .summary_title2, .summary_title3 {
-	top: 0;
+    top: 0;
 }
 
 .wizard_item_description>div>span {
-	word-break: break-word;
+    word-break: break-word;
 }
 
 #footer {
-	top: 874px;
+    top: 874px;
 }
 
 /*Define the scroll-bar style*/

@@ -3,15 +3,15 @@
 }
 
 #order_title {
-	font-weight: 800;
+    font-weight: 800;
 }
 
 .breadcrumb>.non-active, .breadcrumb>li+li:before {
-	color: #c2eafb7a;
+    color: #c2eafb7a;
 }
 
 #region {
-	left: 32px;
+    left: 32px;
 }
 
 .deploy_input, #platoon_id_input, #service_number_input{
@@ -33,8 +33,8 @@
 }
 
 #get_location>button {
-	background-color: rgba(122, 141, 149, 1);
-	color: #B6DDEE;
+    background-color: rgba(122, 141, 149, 1);
+    color: #B6DDEE;
 }
 
 #assign_to_campaign, #assign_to_campaign>button, #submit_for_approval, #submit_for_approval>button, .orderInfoContentFormat1 {
@@ -42,7 +42,7 @@
 }
 
 .summary_content1, .summary_content2, .summary_content3 {
-	font-size: 16px;
+    font-size: 16px;
     font-weight: 700;
 }
 
@@ -52,7 +52,7 @@
 }
 
 .item_title, .item_title>div>span {
-	width: 255px;
+    width: 255px;
 }
 .font_color1 {
     color: #E7FFA1;

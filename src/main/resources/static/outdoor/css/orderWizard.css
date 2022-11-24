@@ -3,17 +3,17 @@
 }
 
 .wizard_btn {
-	background-color: rgba(255, 153, 0, 1);
-	border: 1px solid;
-	box-sizing: border-box;
-	border-width: 1px;
-	border-style: solid;
-	border-color: rgba(121, 73, 0, 1);
-	border-radius: 1px;
-	font-weight: 400;
-	font-style: normal;
-	color: #4F3000;
-	border-radius: 6px;
+    background-color: rgba(255, 153, 0, 1);
+    border: 1px solid;
+    box-sizing: border-box;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(121, 73, 0, 1);
+    border-radius: 1px;
+    font-weight: 400;
+    font-style: normal;
+    color: #4F3000;
+    border-radius: 6px;
 }
 
 .wizard_btn:hover {
@@ -21,7 +21,7 @@
 }
 
 #get_location>button, #get_location>button[disabled]:hover{
-	background-color: rgba(251, 243, 227, 1);
+    background-color: rgba(251, 243, 227, 1);
 }
 
 #assign_to_campaign, #assign_to_campaign>button, #submit_for_approval, #submit_for_approval>button {
