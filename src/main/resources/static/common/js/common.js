@@ -720,7 +720,7 @@ function connectAndSubscribeMQ(role, $http, $rootScope, $filter, mqConsumeCallba
     }).then(function(result) {
         let connectorUrl = result.data.data;
         // When PDA is not deployed on localhost we need to use real IP.
-        connectorUrl = connectorUrl.replace("localhost", document.domain);
+        connectorUrl = connectorUrl.replace("0.0.0.0", location.hostname);
         let ws = new WebSocket(connectorUrl, 'stomp');
         mqClient = Stomp.over(ws);
         mqClient.debug = null;
