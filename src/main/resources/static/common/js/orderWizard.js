@@ -8,8 +8,8 @@ initToastr();
 
 app.controller('orderWizardController', function($scope, $rootScope, $http, $filter, graphQLService) {
 	$rootScope.isShowRequisitionRequestButton = false;
-	connectAndSubscribeMQ(CURRENT_ROLE,$http,$rootScope,$filter);
-	getUnreviewedAmount($http,$rootScope,$filter);
+	connectAndSubscribeMQ(CURRENT_ROLE,$http,$rootScope,$filter,null,null,graphQLService);
+	getUnreviewedAmount($http,$rootScope,$filter,graphQLService);
 
 	//Initialize wizard
 	$scope.isDevelopmentLocation = true;
