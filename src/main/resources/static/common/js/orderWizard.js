@@ -8,8 +8,8 @@ initToastr();
 
 app.controller('orderWizardController', function($scope, $rootScope, $http, $filter, graphQLService) {
 	$rootScope.isShowRequisitionRequestButton = false;
-	connectAndSubscribeMQ(CURRENT_ROLE,$http,$rootScope,$filter);
-	getUnreviewedAmount($http,$rootScope,$filter);
+	connectAndSubscribeMQ(CURRENT_ROLE,$http,$rootScope,$filter,null,null,graphQLService);
+	getUnreviewedAmount($http,$rootScope,$filter,graphQLService);
 
 	//Initialize wizard
 	$scope.isDevelopmentLocation = true;
@@ -21,16 +21,25 @@ app.controller('orderWizardController', function($scope, $rootScope, $http, $fil
 	// Set time out for avoiding to get the key when using $filter('translate') filter.
 	setTimeout(function(){
 		//Get regions
-		$http({
-	        method: 'GET',
-	        url: '/proxy/v1/locations/regions',
-	    }).then(function(result) {
-	    	var regions = result.data.data;
-	    	$scope.regions = regions;
-	    }).catch(function(result) {
-	        console.info(result);
-	        displayLoadError(result,$rootScope,$filter,$http,true,"locations");
-	    });
+        let getAllRegionTypesSuccess = (data) => {
+            $scope.regions = data;
+        };
+        let getAllRegionTypesError = (data, endpointType) => {
+            console.info(data);
+            displayLoadError(data,$rootScope,$filter,$http,true,endpointType);
+        };
+        if(CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+            graphQLService.getAllRegionTypesOfCurrentIndustry(getAllRegionTypesSuccess, (data) => {getAllRegionTypesError(data, "graphQL")})
+        } else {
+            $http({
+                method: 'GET',
+                url: '/proxy/v1/locations/regions',
+            }).then(function(result) {
+                getAllRegionTypesSuccess(result.data.data);
+            }).catch(function(result) {
+                getAllRegionTypesError(result, "locations");
+            });
+        }
 	}, 500);
 
 	//Whether the related link shows in the breadcrumb bar

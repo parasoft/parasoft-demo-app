@@ -8,14 +8,18 @@ type Query {
     getCategories(searchString: String, page: Int, size: Int, sort: [String]): CategoryPageInfo
     # location
     getLocation(region: RegionType!): Location
+    getAllRegionTypesOfCurrentIndustry: [RegionType]
     # order
     getOrderByOrderNumber(orderNumber: String!): Order
+    getOrders(page: Int, size: Int, sort: [String]): OrderPageInfo
+    getUnreviewedNumber: UnreviewedNumberResponse
     #item
     getItems(categoryId: Long, regions: [RegionType], searchString: String, page: Int, size: Int, sort: [String]): ItemPageInfo
     getItemByItemId(itemId: Long!): Item
     getItemByName(itemName: String!): Item
     # cartItem
     getCartItems: [CartItem]
+    getCartItemByItemId(itemId: Long!): CartItem
 }
 type Mutation {
     # category
@@ -24,15 +28,18 @@ type Mutation {
     updateCategory(categoryId: Long!, categoryDto: CategoryDTO!): Category
     # order
     createOrder(orderDTO: OrderDTO!): Order
+    updateOrderByOrderNumber(orderNumber: String!, orderStatusDTO: OrderStatusDTO!): Order
     #item
     updateItemInStockByItemId(itemId: Long!, newInStock: Int!): Item
     deleteItemByName(itemName: String!): String
     addNewItem(itemsDTO: ItemsDTO!): Item
     deleteItemByItemId(itemId: Long!): Long
+    updateItemByItemId(itemId: Long!, itemsDTO: ItemsDTO!): Item
     # cartItem
     addItemInCart(shoppingCartDTO: ShoppingCartDTO!): CartItem
     removeCartItem(itemId: Long!): Long
     removeAllCartItems: Boolean
+    updateItemInCart(itemId: Long!, updateShoppingCartItemDTO: UpdateShoppingCartItemDTO!): CartItem
 }
 
 # category
@@ -123,6 +130,32 @@ input OrderDTO {
     eventId: String!
     eventNumber: String!
 }
+type OrderPageInfo {
+    totalElements: Long
+    totalPages: Int
+    size: Int
+    number: Int
+    numberOfElements: Int
+    sort: String
+    content: [Order]
+}
+input OrderStatusDTO {
+    status: OrderStatus
+    comments: String
+    reviewedByPRCH: Boolean
+    reviewedByAPV: Boolean
+}
+enum OrderStatus {
+    SUBMITTED
+    PROCESSED
+    CANCELED
+    APPROVED
+    DECLINED
+}
+type UnreviewedNumberResponse{
+    unreviewedByApprover: Int
+    unreviewedByPurchaser: Int
+}
 #item
 type Item {
     id: Long
@@ -162,8 +195,10 @@ type CartItem {
     realInStock: Int
     quantity: Int
 }
-#shoppingCartDTO
 input ShoppingCartDTO {
     itemId: Long!
+    itemQty: Int!
+}
+input UpdateShoppingCartItemDTO {
     itemQty: Int!
 }

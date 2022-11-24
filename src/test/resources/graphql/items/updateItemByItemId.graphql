@@ -1,0 +1,12 @@
+mutation updateItemByItemId($itemId: Long!, $itemsDTO: ItemsDTO!) {
+    updateItemByItemId(itemId: $itemId, itemsDTO: $itemsDTO) {
+        id
+        name
+        description
+        inStock
+        image
+        region
+        lastAccessedDate
+        categoryId
+    }
+}

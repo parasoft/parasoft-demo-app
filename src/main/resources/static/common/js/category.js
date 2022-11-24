@@ -12,8 +12,8 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
     category.categoryId = categoryId;
     category.sort="name";
     let getItemsSelectionSet = "{content{id,name,description,image}}"
-    getUnreviewedAmount($http,$rootScope,$filter);
-    connectAndSubscribeMQ(CURRENT_ROLE,$http,$rootScope, $filter);
+    getUnreviewedAmount($http,$rootScope,$filter,graphQLService);
+    connectAndSubscribeMQ(CURRENT_ROLE,$http,$rootScope, $filter,null,null,graphQLService);
 
     //When the industry is changed, remove the old region filter cookie
     if(localStorage.getItem("removeRegionFilterInCookie")){
@@ -24,19 +24,25 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
     // Set time out for avoiding getting the key when using $filter('translate') filter.
     setTimeout(function(){
         //Get regions from database
-        $http({
-            method: 'GET',
-            url: '/proxy/v1/locations/regions',
-        }).then(function(result) {
-            var regions = result.data.data;
-            category.regions = regions;
-        },function error(result){
-            console.info(result);
-            handleRegionError(result,category,$rootScope,$filter,$http);
-        }).catch(function(result) {
-            console.info(result);
-            handleRegionError(result,category,$rootScope,$filter,$http);
-        });
+        let getAllRegionTypesSuccess = (data) => {
+            category.regions = data;
+        };
+        let getAllRegionTypesError = (data, endpointType) => {
+            console.info(data);
+            handleRegionError(data,category,$rootScope,$filter,$http, endpointType);
+        };
+        if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+            graphQLService.getAllRegionTypesOfCurrentIndustry(getAllRegionTypesSuccess, (data) => {getAllRegionTypesError(data, "graphQL")})
+        } else {
+            $http({
+                method: 'GET',
+                url: '/proxy/v1/locations/regions',
+            }).then(function(result) {
+                getAllRegionTypesSuccess(result.data.data);
+            }).catch(function(result) {
+                getAllRegionTypesError(result, "locations");
+            });
+        }
 
         //Obtain the checked options from cookie
         var checkedRegions = $cookies.get("regionFilter");
@@ -112,8 +118,8 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
             });
         }
 
-        function handleRegionError(result,category,$rootScope,$filter,$http){
-            displayLoadError(result,$rootScope,$filter,$http,false,'locations');
+        function handleRegionError(result,category,$rootScope,$filter,$http,endpointType){
+            displayLoadError(result,$rootScope,$filter,$http,false,endpointType);
             category.regionsLoadError = true;
         }
     }, 500);
@@ -132,31 +138,32 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
         category.showCategoryRequisitionDetail = true;
 
         //Get cartItem by item id
-        $http({
-            method: 'GET',
-            url: '/proxy/v1/cartItems/' + itemId
-        }).then(function(result) {
-            var cartItem = result.data.data;
+        let getCartItemByIdSuccess = (cartItem) => {
             category.currentItem.inStock = cartItem.realInStock;
             category.currentItem.inRequisition = cartItem.quantity;
-            checkInventory(cartItem.realInStock,itemId,cartItem.quantity);
-            $interval(function(){category.loadingAnimation = false;category.showQuantity = true;},500,1);
-        }).catch(function(result) {
-            category.inRequisition = 0;
-            console.info(result);
+            checkInventory(cartItem.realInStock, itemId, cartItem.quantity);
+            $interval(function() {category.loadingAnimation = false;category.showQuantity = true;}, 500, 1);
+        }
+        let getCartItemByIdError = (data) => {
+            category.currentItem.inRequisition = 0;
+            console.info(data);
+            $interval(function() {category.loadingAnimation = false;category.showQuantity = true;}, 500, 1);
+        }
+
+        let getCartItemByIdParams = {"itemId": itemId}
+        if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+            graphQLService.getCartItemByItemId(getCartItemByIdParams, getCartItemByIdSuccess,
+                (data) => {getCartItemByIdError(data)}, "{realInStock, quantity}");
+        } else {
             $http({
                 method: 'GET',
-                url: '/proxy/v1/assets/items/' + itemId,
+                url: '/proxy/v1/cartItems/' + itemId
             }).then(function(result) {
-                var item = result.data.data;
-                category.inStock = item.inStock;
-                checkInventory(item.inStock,itemId,0);
+                getCartItemByIdSuccess(result.data.data);
             }).catch(function(result) {
-                console.info(result);
+                getCartItemByIdError(result);
             });
-
-            $interval(function(){category.loadingAnimation = false;category.showQuantity = true;},500,1);
-        });
+        }
     }
 
     category.closeRequisitionDetail = function(index){
@@ -171,12 +178,8 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
             return;
         }
 
-        $http({
-            method: 'POST',
-            url: '/proxy/v1/cartItems',
-            data: {itemId:id,itemQty:itemNum},
-            headers: {'Content-Type': 'application/json'}
-        }).then(function(result) {
+        let params = {itemId:id,itemQty:itemNum};
+        let success = (data) => {
             closeRequisitionDetail(id);
             //Update shopping cart items
             loadShoppingCartItemQuantity($rootScope,$http,$filter,graphQLService);
@@ -184,10 +187,26 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
             //This is to avoid some format errors
             angular.element("#requisition_cross").click();
             toastr.success($filter('translate')('ADD_TO_CART_SUCCESS'));
-        }).catch(function(result) {
-            console.info(result);
-            displayLoadError(result,$rootScope,$filter,$http,true,'cart');
-        });
+        }
+        let error = (data, endpointType) => {
+            console.info(data);
+            displayLoadError(data,$rootScope,$filter,$http,true,endpointType);
+        }
+
+        if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+            graphQLService.addItemInCart({"shoppingCartDTO": params}, success, (data) => {error(data, "graphQL")}, "{quantity}");
+        } else {
+            $http({
+                method: 'POST',
+                url: '/proxy/v1/cartItems',
+                data: params,
+                headers: {'Content-Type': 'application/json'}
+            }).then(function(result) {
+                success(result.data.data);
+            }).catch(function(result) {
+                error(result, "cart");
+            });
+        }
     }
 
     category.itemNumMinus = function(itemNum){

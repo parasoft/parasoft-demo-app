@@ -106,19 +106,37 @@ app.controller('approverHomePageController', function($rootScope, $http, $filter
         var orderNumber = orderDetail.orderNumber;
         var orderStatus = orderDetail.status;
         var reviewedByAPV = true;
-        
-        $http({
-            method: 'PUT',
-            url: '/proxy/v1/orders/'+orderNumber,
-            data: {"status":orderStatus,"reviewedByAPV":reviewedByAPV},
-            headers: { 'Content-Type': 'application/json' }
-        }).then(function(result) {
+
+        let success = (data) => {
             //Update icon
             approver.showNewLabel[orderNumber] = false;
-            getUnreviewedAmount($http,$rootScope);
-        }).catch(function(result) {
-            console.log(result);
-        });
+        }
+
+        let error = (data) => {
+            console.log(data);
+        }
+
+        let orderStatusData = {"status":orderStatus,"reviewedByAPV":reviewedByAPV};
+        let variables = {
+            "orderNumber": orderNumber,
+            "orderStatusDTO": orderStatusData
+        };
+
+        if (CURRENT_WEB_SERVICE_MODE === "GraphQL"){
+            let selectionSet = "{orderNumber}"
+            graphQLService.updateOrderByOrderNumber(variables, success, (data) => {error(data)}, selectionSet);
+        } else {
+            $http({
+                method: 'PUT',
+                url: '/proxy/v1/orders/'+orderNumber,
+                data: orderStatusData,
+                headers: { 'Content-Type': 'application/json' }
+            }).then(function(result) {
+                success(result.data.data);
+            }).catch(function(result) {
+                error(result);
+            });
+        }
     }
     
     approver.loadStyles = function(index){
@@ -139,17 +157,14 @@ app.controller('approverHomePageController', function($rootScope, $http, $filter
     }
     
     approver.sendResponse = function(orderNumber){
-        $http({
-            method: 'PUT',
-            url: '/proxy/v1/orders/'+orderNumber,
-            data: angular.element('#order_response_form').serializeJSON(),
-            headers: { 'Content-Type': 'application/json' }
-        }).then(function(result) {
-            handleOrderDetail(result.data.data);
+        let success = (data) => {
+            handleOrderDetail(data);
             approver.selectPage(approver.currentPage);
             approver.showOrderDetail['show'] = false;
-        }).catch(function(result) {
-            var errCode = result.status;
+        };
+
+        let error = (data) => {
+            var errCode = data.status;
             var errMsg;
             switch (errCode) {
                 case 400:
@@ -168,7 +183,29 @@ app.controller('approverHomePageController', function($rootScope, $http, $filter
                     errMsg = $filter('translate')('UPDATING_ERROR');
             }
             toastrService().error(errMsg);
-        });
+        };
+
+        let orderStatusData = angular.element('#order_response_form').serializeJSON();
+        let variables = {
+            "orderNumber": orderNumber,
+            "orderStatusDTO": orderStatusData
+        };
+
+        if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+            let selectionSet = "{status,reviewedByAPV,orderNumber}"
+            graphQLService.updateOrderByOrderNumber(variables, success, (data) => {error(data)}, selectionSet);
+        } else {
+            $http({
+                method: 'PUT',
+                url: '/proxy/v1/orders/'+orderNumber,
+                data: orderStatusData,
+                headers: { 'Content-Type': 'application/json' }
+            }).then(function(result) {
+                success(result.data.data);
+            }).catch(function(result) {
+                error(result);
+            });
+        }
     }
     
     /**For pagination**/
@@ -193,13 +230,9 @@ app.controller('approverHomePageController', function($rootScope, $http, $filter
             return ;
         }
         
-        $http({
-            method: 'GET',
-            url: '/proxy/v1/orders',
-            params: {'sort':'orderNumber,desc'}
-        }).then(function(result) {
-            var orders = result.data.data.content;
-            var totalOrders = result.data.data.totalElements;
+        let success = (data) => {
+            var orders = data.content;
+            var totalOrders = data.totalElements;
             orders = $filter('orderBy')(orders,"orderNumber",true);
             
             if(totalOrders < 1){
@@ -246,13 +279,30 @@ app.controller('approverHomePageController', function($rootScope, $http, $filter
             
             // Update the new data on web
             approver.orders = ordersList;
-        }).catch(function(result) {
-            console.log(result);
+        }
+
+        let error = (data, endpointType) => {
+            console.log(data);
             approver.totalPages = 0;
             approver.currentPage = 0;
-            displayLoadError(result,$rootScope,$filter,$http,false,'orders');
+            displayLoadError(data,$rootScope,$filter,$http,false,endpointType);
             approver.ordersLoadError = true;
-        });
+        }
+
+        if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+            let selectionSet = "{totalElements,content{orderNumber,requestedBy,status,reviewedByAPV,submissionDate}}";
+            graphQLService.getOrders(success, (data) => {error(data, "graphQL")}, selectionSet);
+        } else {
+            $http({
+                method: 'GET',
+                url: '/proxy/v1/orders',
+                params: {'sort':'orderNumber,desc'}
+            }).then(function(result) {
+                success(result.data.data);
+            }).catch(function(result) {
+                error(result, 'orders');
+            });
+        }
     }
 
     approver.parseOrderStatus = function(status) {

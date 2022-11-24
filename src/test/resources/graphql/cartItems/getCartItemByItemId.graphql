@@ -1,0 +1,12 @@
+query GetCartItemByItemId($itemId: Long!){
+    getCartItemByItemId(itemId: $itemId){
+        id
+        userId
+        itemId
+        name
+        description
+        image
+        realInStock
+        quantity
+    }
+}

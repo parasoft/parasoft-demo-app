@@ -129,7 +129,7 @@ function initRequisitionBarController(app){
         //Get current itemId
         var currentItemId = $location.absUrl().substr($location.absUrl().lastIndexOf("/")+1);
         //Get requisition data from database
-        loadShoppingCartItemQuantity($rootScope,$http,$filter,graphQLService);
+        loadShoppingCartData($rootScope,$http,$filter,graphQLService);
 
         //Get related assets data from database TODO
         var testNums = [0,1,2];
@@ -232,32 +232,52 @@ function initRequisitionBarController(app){
         }
 
         req.removeCartItem = function(itemId){
-            $http({
-                method: 'DELETE',
-                url: '/proxy/v1/cartItems/'+itemId,
-            }).then(function(result) {
+            let success = (data) => {
                 loadShoppingCartData($rootScope,$http,$filter,graphQLService);
                 $rootScope.inRequisition = 0;
                 toastr.success($filter('translate')('REMOVE_ITEM_SUCCESS'));
-            }).catch(function(result) {
-                console.info(result);
-            });
+            }
+            let error = (data) => {
+                console.info(data);
+            }
+            if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+				graphQLService.removeCartItem(itemId, success, (data) => {error(data)});
+			} else {
+                $http({
+                    method: 'DELETE',
+                    url: '/proxy/v1/cartItems/'+itemId,
+                }).then(function(result) {
+                    success(result);
+                }).catch(function(result) {
+                    error(result);
+                });
+            }
 
             //Update the data in item detail page
             if(Number(itemId) === Number(currentItemId)){
                 //Get the number of item in stock
-                $http({
-                    method: 'GET',
-                    url: '/proxy/v1/assets/items/' + itemId,
-                }).then(function(result) {
-                    var item = result.data.data;
-                    var quantity = 0;
-                    var inventory = item.inStock;
-                    $rootScope.itemInventory = inventory;
-                    checkInventoryInItemDetail(inventory,quantity);
-                }).catch(function(result) {
-                    console.info(result);
-                });
+                let success = (data) => {
+                    $rootScope.itemInventory = data.inStock;
+                    checkInventoryInItemDetail(data.inStock,0);
+                };
+                let error = (data) => {
+                    console.info(data);
+                }
+                let params = {"itemId": itemId};
+
+                if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+                    let selectionSet = "{inStock}"
+                    graphQLService.getItemByItemId(params, success, (data) => {error(data)}, selectionSet);
+                } else {
+                    $http({
+                        method: 'GET',
+                        url: '/proxy/v1/assets/items/' + itemId,
+                    }).then(function(result) {
+                        success(result.data.data);
+                    }).catch(function(result) {
+                        error(result)
+                    });
+                }
             }
         }
 
@@ -326,23 +346,42 @@ function initRequisitionBarController(app){
 
         //Update the cartItem data to database
         function updateShoppingCart(requireItemId,requireItemQty){
-            $http({
-                method: 'PUT',
-                url: '/proxy/v1/cartItems/'+requireItemId,
-                data: {"itemQty":requireItemQty}
-            }).then(function(result) {
-                var cartItem = result.data.data;
+            let success = (data) => {
+                let cartItem = data;
                 if(Number(requireItemId) === Number(currentItemId)){
-                    var quantity = cartItem.quantity;
-                    var inventory = cartItem.realInStock;
+                    let quantity = cartItem.quantity;
+                    let inventory = cartItem.realInStock;
                     $rootScope.inRequisition = quantity;
                     $rootScope.itemInventory = inventory;
                     checkInventoryInItemDetail(inventory,quantity);
                 }
+
                 loadShoppingCartData($rootScope,$http,$filter,graphQLService);
-            }).catch(function(result) {
-                console.info(result);
-            });
+            }
+            let error = (data) => {
+                console.error(data);
+                toastrService().error($filter('translate')('FAILED_TO_UPDATE_CART_ITEM'));
+            }
+            if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+                let variables = {
+                    "itemId": requireItemId,
+                    "updateShoppingCartItemDTO": {
+                        "itemQty": requireItemQty
+                    }
+                };
+                let selectionSet = "{id}";
+                graphQLService.updateItemInCart(variables, success, error, selectionSet);
+            } else {
+                $http({
+                    method: 'PUT',
+                    url: '/proxy/v1/cartItems/' + requireItemId,
+                    data: {"itemQty": requireItemQty}
+                }).then(function (result) {
+                    success(result.data.data);
+                }).catch(function (result) {
+                    error(result);
+                });
+            }
         }
 
         function checkInventoryInItemDetail(inventory,quantity){
@@ -646,26 +685,35 @@ function clearInputDisabled(index){
     angular.element(".input"+row).attr("readonly",false);
 }
 
-function getUnreviewedAmount($http,$rootScope,$filter){
+function getUnreviewedAmount($http,$rootScope,$filter,graphQLService){
     // Set time out for avoiding to get the key when using $filter('translate') fliter.
     $rootScope.unreviewedNumByPRCH = 0;
     setTimeout(function(){
-        $http({
-            method: 'GET',
-            url: '/proxy/v1/orders/unreviewedNumber'
-        }).then(function(result) {
-            const numbers = result.data.data;
-            $rootScope.unreviewedNumByPRCH = numbers.unreviewedByPurchaser;
-            $rootScope.unreviewedNumByAPV = numbers.unreviewedByApprover;
-        }).catch(function(result) {
-            console.log(result);
+        let getUnreviewedAmountSuccess = (data) => {
+            $rootScope.unreviewedNumByPRCH = data.unreviewedByPurchaser;
+        };
+        let getUnreviewedAmountError = (data, endpointType) => {
+            console.log(data);
             $rootScope.unreviewedNumByPRCH = 0;
-            displayLoadError(result,$rootScope,$filter,$http,true,'orders');
-        });
+            displayLoadError(data,$rootScope,$filter,$http,true,endpointType);
+        };
+        if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
+            graphQLService.getUnreviewedNumber(getUnreviewedAmountSuccess, (data) => {getUnreviewedAmountError(data, "graphQL")},
+                "{unreviewedByPurchaser}")
+        } else {
+            $http({
+                method: 'GET',
+                url: '/proxy/v1/orders/unreviewedNumber'
+            }).then(function(result) {
+                getUnreviewedAmountSuccess(result.data.data)
+            }).catch(function(result) {
+                getUnreviewedAmountError(result, 'orders');
+            });
+        }
     }, 500);
 }
 
-function connectAndSubscribeMQ(role, $http, $rootScope, $filter, mqConsumeCallback, mqProduceCallback){
+function connectAndSubscribeMQ(role, $http, $rootScope, $filter, mqConsumeCallback, mqProduceCallback, graphQLService){
     $http({
         method: 'GET',
         url: '/v1/MQConnectorUrl',
@@ -726,7 +774,7 @@ function connectAndSubscribeMQ(role, $http, $rootScope, $filter, mqConsumeCallba
                          toastr.info(orderProcessMsg, '', {timeOut: 0});
                          if(mqConsumeCallback){mqConsumeCallback();}
                          // update the number on the icon
-                         getUnreviewedAmount($http,$rootScope,$filter);
+                         getUnreviewedAmount($http,$rootScope,$filter,graphQLService);
                      }
                  }
             });

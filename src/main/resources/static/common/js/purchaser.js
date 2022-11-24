@@ -9,8 +9,8 @@ initToastr();
 app.controller('homepageController', function($rootScope, $http, $filter, graphQLService) {
 	var home = this;
 	var categories;
-	getUnreviewedAmount($http,$rootScope,$filter);
-	connectAndSubscribeMQ(CURRENT_ROLE,$http,$rootScope, $filter);
+	getUnreviewedAmount($http,$rootScope,$filter,graphQLService);
+	connectAndSubscribeMQ(CURRENT_ROLE,$http,$rootScope, $filter,null,null,graphQLService);
 
 	// Set time out for avoiding to get the key when using $filter('translate') filter.
 	setTimeout(function(){
