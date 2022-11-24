@@ -33,7 +33,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 
     var flag = localStorage.getItem("status");
     var databaseResetFlag = localStorage.getItem("databaseResetStatus");
-    connectAndSubscribeMQ(CURRENT_ROLE, $http, $rootScope, $filter);
+    connectAndSubscribeMQ(CURRENT_ROLE, $http, $rootScope, $filter, null, null, graphQLService);
 
     demo.GENERAL = "active";
 
