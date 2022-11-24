@@ -77,12 +77,18 @@ Parasoft Demo Application exposes port 9001 for the user to connect to the HSQLD
 | Password | `pass`                                              |
 
 ## Using Parasoft JMS/MQ Proxy
-There are two main services for order management in PDA, **order service** and **inventory service**. After an order is submitted, order service sends 
+There are two main services for order management in PDA, **order service** and **inventory service**. After an order is submitted, order service sends
 a request through messaging queue to check and decrease the inventory. After the operation is done, inventory service sends a response through messaging queue which includes the information of the operation result.
 
-To use a Parasoft JMS/MQ proxy, you should enable the feature on the PDA Demo Administration page and configure the connection queues with your message proxy in Virtualize.
+<img src="src/main/resources/static/common/images/default_two_queues_diagram.png" alt="default_two_queues_diagram">
 
-<img src="src/main/resources/static/common/images/services_diagram.png" width="1050" alt="services_diagram">
+To use a Parasoft JMS/MQ proxy, you should change the value of input box **Destination queue** to **your customized destination queue name** and the value of input box **Reply to queue** to **your customized reply to queue name** on the PDA Demo Administration page, configure the connection queues with your message proxy in Virtualize.
+
+<img src="src/main/resources/static/common/images/proxy_diagram.png" alt="services_diagram">
+
+For virtual asset mode, you only need to change the value of input box **Destination queue** to **your customized destination queue name** on the PDA Demo Administration page.
+
+<img src="src/main/resources/static/common/images/virtual_asset_diagram.png" alt="virtual_asset_diagram">
 
 Configuration details for embedded ActiveMQ server
 
