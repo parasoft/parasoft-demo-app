@@ -100,7 +100,7 @@ input:checked::after {
 }
 
 .requisition_dark_overlay {
-	background-image: url(/aerospace/images/requisition_dark_overlay.svg);
+    background-image: url(/aerospace/images/requisition_dark_overlay.svg);
 }
 
 .assets_category_title a span {

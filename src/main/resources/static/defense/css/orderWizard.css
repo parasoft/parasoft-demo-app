@@ -1,18 +1,18 @@
 #order_title {
-	font-weight: 800;
+    font-weight: 800;
 }
 
 .wizard_btn {
-	background-color: rgba(255, 153, 0, 1);
-	border: 1px solid;
-	box-sizing: border-box;
-	border-width: 1px;
-	border-style: solid;
-	border-color: rgba(121, 73, 0, 1);
-	border-radius: 1px;
-	font-weight: 800;
-	font-style: normal;
-	color: #4F3000;
+    background-color: rgba(255, 153, 0, 1);
+    border: 1px solid;
+    box-sizing: border-box;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(121, 73, 0, 1);
+    border-radius: 1px;
+    font-weight: 800;
+    font-style: normal;
+    color: #4F3000;
 }
 
 .wizard_btn:hover {
@@ -20,11 +20,11 @@
 }
 
 #get_location>button {
-	background-color: rgba(251, 232, 202, 1);
+    background-color: rgba(251, 232, 202, 1);
 }
 
 .wizard_item_description {
-	left: 125px;
+    left: 125px;
     width: 260px;
     font-size: 12px;
 }

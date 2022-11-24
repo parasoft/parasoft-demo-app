@@ -1,100 +1,100 @@
 <!DOCTYPE html>
 <html xmlns:ng="http://angularjs.org" xmlns:th="http://www.thymeleaf.org" ng-app="pdaApp">
 <head>
-	<meta charset="UTF-8">
-	<title translate="PROJECT_NAME"></title>
-	<link rel="icon" href="/common/images/favicon.ico" type="image/x-icon">
-	<link rel="stylesheet" type="text/css" href="/lib/bootstrap/css/bootstrap.min.css">
-	<link rel="stylesheet" type="text/css" href="/lib/fontawesome/font-awesome.min.css">
-	<link rel="stylesheet" type="text/css" href="/common/css/common.css">
-	<link rel="stylesheet" type="text/css" href="/common/css/login.css">
-	<link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/common.css'">
-	<link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/login.css'">
+    <meta charset="UTF-8">
+    <title translate="PROJECT_NAME"></title>
+    <link rel="icon" href="/common/images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="/lib/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/lib/fontawesome/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/common/css/common.css">
+    <link rel="stylesheet" type="text/css" href="/common/css/login.css">
+    <link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/common.css'">
+    <link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/login.css'">
 </head>
 <body>
-	<input type="hidden" id="current_web_service_mode" th:value="${currentWebServiceMode}">
-	<div class="page-container">
-		<div class="header-section" ng-include="'/common/pages/header.html'" ng-controller="headerController"></div>
-		<div class="page-content-section" ng-controller="loginController as login">
-			<div class="login-content">
-				<div class="login-form-container industry_font ">
-					<div class="form-title">
-						<div>
-							<span class="industry_color_2" translate="SIGN_IN"></span>
-						</div>
-					</div>
-					<div class="error-message industry_font">
-						<span ng-if="login.isError">
-							<b translate="LOGIN_ERROR_TEXT"></b>
-						</span>
-					</div>
-					<div class="login-form">
-						<form class="industry_font" novalidate="novalidate">
-							<div class="input-label industry_color_2">
-								<span translate="USER_NAME"></span>:
-							</div>
-							<div class="input-field">
-								<input type="text" class="username-field input-text self-format" ng-model="login.credentials.username" name="username">
-							</div>
-							<div class="input-label industry_color_2">
-								<span translate="USER_PASSWORD"></span>:
-							</div>
-							<div class="input-field">
-								<input type="password" class="password-field input-text self-format" ng-model="login.credentials.password" name="password">
-							</div>
-							<div class="btn-field">
-								<div class="submit-button industry_font">
-									<button class="btn industry_font" type="submit" translate="SIGN_IN" ng-click="login.onSubmit()"></button>
-								</div>
-								<div class="forgot-password industry_font industry_color_1">
-									<a translate="FORGOT_PASSWORD" data-toggle="modal" href="#forgot-password-modal" ng-click="login.forgotPassword()"></a>
-								</div>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-			<div class="modal industry_font" id="forgot-password-modal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
-				<div class="modal-dialog">
-					<div class="modal-content industry_color_2">
-						<div class="modal-header">
-							<button type="button" class="close industry_color_1 close-btn" data-dismiss="modal">×</button>
-							<h4 class="modal-title"><span translate="USER_INFORMATION"></span></h4>
-						</div>
-						<div class="modal-body">
-							<div class="load-spinner" ng-if="!login.primaryUsersInformation">
-								<i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>
-							</div>
-							<table class="password-table" ng-if="login.primaryUsersInformation">
-								<tr class="table-header">
-									<td><span translate="ROLE_NAME"></span></td>
-									<td><span translate="USER_NAME"></span></td>
-									<td><span translate="USER_PASSWORD"></span></td>
-								</tr>
-								<tr ng-repeat="userInfo in ::login.primaryUsersInformation">
-									<td >{{ userInfo.roleName === 'ROLE_PURCHASER' ? 'PURCHASER_TITLE' : 'APPROVER_TITLE' | translate }}</td>
-									<td ng-if="::userInfo.hasPrimaryUser">{{ ::userInfo.primaryUserInfo.userName }}</td>
-									<td ng-if="::userInfo.hasPrimaryUser">{{ ::userInfo.primaryUserInfo.password }}</td>
-									<td colspan="2" ng-if="::!userInfo.hasPrimaryUser" translate="NO_USER_WITH_THIS_ROLE"></td>
-								</tr>
-							</table>
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-default dismiss-btn" data-dismiss="modal" translate="CLOSE"></button>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<footer ng-include="'/common/pages/footer.html'"></footer>
-	</div>
-	<script type="text/javascript" src="/lib/jquery/jquery-3.3.1.min.js"></script>
-	<script type="text/javascript" src="/lib/bootstrap/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="/lib/angularjs/angular.min.js"></script>
-	<script type="text/javascript" src="/lib/angularjs/angular-translate.min.js"></script>
-	<script type="text/javascript" src="/lib/angularjs/angular-translate-loader-url.min.js"></script>
-	<script type="text/javascript" src="/lib/toastr/toastr.min.js"></script>
-	<script type="text/javascript" src="/common/js/common.js"></script>
-	<script type="text/javascript" src="/common/js/login.js"></script>
+    <input type="hidden" id="current_web_service_mode" th:value="${currentWebServiceMode}">
+    <div class="page-container">
+        <div class="header-section" ng-include="'/common/pages/header.html'" ng-controller="headerController"></div>
+        <div class="page-content-section" ng-controller="loginController as login">
+            <div class="login-content">
+                <div class="login-form-container industry_font ">
+                    <div class="form-title">
+                        <div>
+                            <span class="industry_color_2" translate="SIGN_IN"></span>
+                        </div>
+                    </div>
+                    <div class="error-message industry_font">
+                        <span ng-if="login.isError">
+                            <b translate="LOGIN_ERROR_TEXT"></b>
+                        </span>
+                    </div>
+                    <div class="login-form">
+                        <form class="industry_font" novalidate="novalidate">
+                            <div class="input-label industry_color_2">
+                                <span translate="USER_NAME"></span>:
+                            </div>
+                            <div class="input-field">
+                                <input type="text" class="username-field input-text self-format" ng-model="login.credentials.username" name="username">
+                            </div>
+                            <div class="input-label industry_color_2">
+                                <span translate="USER_PASSWORD"></span>:
+                            </div>
+                            <div class="input-field">
+                                <input type="password" class="password-field input-text self-format" ng-model="login.credentials.password" name="password">
+                            </div>
+                            <div class="btn-field">
+                                <div class="submit-button industry_font">
+                                    <button class="btn industry_font" type="submit" translate="SIGN_IN" ng-click="login.onSubmit()"></button>
+                                </div>
+                                <div class="forgot-password industry_font industry_color_1">
+                                    <a translate="FORGOT_PASSWORD" data-toggle="modal" href="#forgot-password-modal" ng-click="login.forgotPassword()"></a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal industry_font" id="forgot-password-modal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+                <div class="modal-dialog">
+                    <div class="modal-content industry_color_2">
+                        <div class="modal-header">
+                            <button type="button" class="close industry_color_1 close-btn" data-dismiss="modal">×</button>
+                            <h4 class="modal-title"><span translate="USER_INFORMATION"></span></h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="load-spinner" ng-if="!login.primaryUsersInformation">
+                                <i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i>
+                            </div>
+                            <table class="password-table" ng-if="login.primaryUsersInformation">
+                                <tr class="table-header">
+                                    <td><span translate="ROLE_NAME"></span></td>
+                                    <td><span translate="USER_NAME"></span></td>
+                                    <td><span translate="USER_PASSWORD"></span></td>
+                                </tr>
+                                <tr ng-repeat="userInfo in ::login.primaryUsersInformation">
+                                    <td >{{ userInfo.roleName === 'ROLE_PURCHASER' ? 'PURCHASER_TITLE' : 'APPROVER_TITLE' | translate }}</td>
+                                    <td ng-if="::userInfo.hasPrimaryUser">{{ ::userInfo.primaryUserInfo.userName }}</td>
+                                    <td ng-if="::userInfo.hasPrimaryUser">{{ ::userInfo.primaryUserInfo.password }}</td>
+                                    <td colspan="2" ng-if="::!userInfo.hasPrimaryUser" translate="NO_USER_WITH_THIS_ROLE"></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default dismiss-btn" data-dismiss="modal" translate="CLOSE"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer ng-include="'/common/pages/footer.html'"></footer>
+    </div>
+    <script type="text/javascript" src="/lib/jquery/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/lib/angularjs/angular.min.js"></script>
+    <script type="text/javascript" src="/lib/angularjs/angular-translate.min.js"></script>
+    <script type="text/javascript" src="/lib/angularjs/angular-translate-loader-url.min.js"></script>
+    <script type="text/javascript" src="/lib/toastr/toastr.min.js"></script>
+    <script type="text/javascript" src="/common/js/common.js"></script>
+    <script type="text/javascript" src="/common/js/login.js"></script>
 </body>
 </html>

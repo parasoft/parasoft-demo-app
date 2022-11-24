@@ -241,8 +241,8 @@ function initRequisitionBarController(app){
                 console.info(data);
             }
             if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
-				graphQLService.removeCartItem(itemId, success, (data) => {error(data)});
-			} else {
+                graphQLService.removeCartItem(itemId, success, (data) => {error(data)});
+            } else {
                 $http({
                     method: 'DELETE',
                     url: '/proxy/v1/cartItems/'+itemId,
