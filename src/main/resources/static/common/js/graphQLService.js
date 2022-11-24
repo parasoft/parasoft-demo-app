@@ -163,13 +163,13 @@ angular
                     success(response.data.data.getOrders);
                 }, error);
             }
-            instance.getUnreviewedOrderNumber = function(success, error, selectionSet) {
+            instance.getUnreviewedNumber = function(success, error, selectionSet) {
                 if (!selectionSet) {
                     selectionSet = "{unreviewedByApprover,unreviewedByPurchaser}"
                 }
-                let requestBody = {"query": "query GetUnreviewedOrderNumber{getUnreviewedOrderNumber" + selectionSet +"}"};
+                let requestBody = {"query": "query GetUnreviewedNumber{getUnreviewedNumber" + selectionSet +"}"};
                 makeCall(requestBody, function(response) {
-                    success(response.data.data.getUnreviewedOrderNumber);
+                    success(response.data.data.getUnreviewedNumber);
                 }, error);
             }
             // items

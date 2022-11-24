@@ -50,8 +50,8 @@ public class OrderGraphQLDataFetcherTest {
     private static final String GET_ORDERS_DATA_JSON_PATH = DATA_PATH + ".getOrders";
     private static final String UPDATE_ORDER_BY_ORDER_NUMBER_GRAPHQL_RESOURCE = "graphql/orders/updateOrderByOrderNumber.graphql";
     private static final String UPDATE_ORDER_BY_ORDER_NUMBER_DATA_JSON_PATH = DATA_PATH + ".updateOrderByOrderNumber";
-    private static final String GET_UNREVIEWED_ORDER_NUMBER_GRAPHQL_RESOURCE = "graphql/orders/getUnreviewedOrderNumber.graphql";
-    private static final String GET_UNREVIEWED_ORDER_NUMBER_DATA_JSON_PATH = DATA_PATH + ".getUnreviewedOrderNumber";
+    private static final String GET_UNREVIEWED_NUMBER_GRAPHQL_RESOURCE = "graphql/orders/getUnreviewedNumber.graphql";
+    private static final String GET_UNREVIEWED_NUMBER_DATA_JSON_PATH = DATA_PATH + ".getUnreviewedNumber";
 
     @Autowired
     private GraphQLTestTemplate graphQLTestTemplate;
@@ -84,7 +84,7 @@ public class OrderGraphQLDataFetcherTest {
 
     @Before
     public void conditionalBefore() {
-        Set<String> testNames = new HashSet<>(Arrays.asList("test_getOrderByOrderNumber_normal", "test_createOrder_normal", "test_updateOrderByOrderNumber_normal_purchaser", "test_updateOrderByOrderNumber_normal_approver", "test_updateOrderByOrderNumber_noPermission", "test_updateOrderByOrderNumber_changeToUnreviewed", "test_updateOrderByOrderNumber_updateSubmittedOrder", "test_updateOrderByOrderNumber_updateCanceledOrder", "test_updateOrderByOrderNumber_revertOrderStatus", "test_getUnreviewedOrderNumber_normal"));
+        Set<String> testNames = new HashSet<>(Arrays.asList("test_getOrderByOrderNumber_normal", "test_createOrder_normal", "test_updateOrderByOrderNumber_normal_purchaser", "test_updateOrderByOrderNumber_normal_approver", "test_updateOrderByOrderNumber_noPermission", "test_updateOrderByOrderNumber_changeToUnreviewed", "test_updateOrderByOrderNumber_updateSubmittedOrder", "test_updateOrderByOrderNumber_updateCanceledOrder", "test_updateOrderByOrderNumber_revertOrderStatus", "test_getUnreviewedNumber_normal"));
         if (testNames.contains(testName.getMethodName())) {
             GraphQLTestUtil.resetDatabase(globalPreferencesService);
         }
@@ -92,7 +92,7 @@ public class OrderGraphQLDataFetcherTest {
 
     @After
     public void conditionalAfter() {
-        Set<String> testNames = new HashSet<>(Arrays.asList("test_getOrderByOrderNumber_normal", "test_createOrder_normal", "test_updateOrderByOrderNumber_normal_purchaser", "test_updateOrderByOrderNumber_normal_approver", "test_updateOrderByOrderNumber_noPermission", "test_updateOrderByOrderNumber_changeToUnreviewed", "test_updateOrderByOrderNumber_updateSubmittedOrder", "test_updateOrderByOrderNumber_updateCanceledOrder", "test_updateOrderByOrderNumber_revertOrderStatus", "test_getUnreviewedOrderNumber_normal"));
+        Set<String> testNames = new HashSet<>(Arrays.asList("test_getOrderByOrderNumber_normal", "test_createOrder_normal", "test_updateOrderByOrderNumber_normal_purchaser", "test_updateOrderByOrderNumber_normal_approver", "test_updateOrderByOrderNumber_noPermission", "test_updateOrderByOrderNumber_changeToUnreviewed", "test_updateOrderByOrderNumber_updateSubmittedOrder", "test_updateOrderByOrderNumber_updateCanceledOrder", "test_updateOrderByOrderNumber_revertOrderStatus", "test_getUnreviewedNumber_normal"));
         if (testNames.contains(testName.getMethodName())) {
             GraphQLTestUtil.resetDatabase(globalPreferencesService);
         }
@@ -539,40 +539,40 @@ public class OrderGraphQLDataFetcherTest {
     }
 
     @Test
-    public void test_getUnreviewedOrderNumber_normal() throws Throwable {
+    public void test_getUnreviewedNumber_normal() throws Throwable {
         createOrderForTest();
         ObjectNode variables = objectMapper.createObjectNode();
         GraphQLResponse response = graphQLTestTemplate
                 .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
-                .perform(GET_UNREVIEWED_ORDER_NUMBER_GRAPHQL_RESOURCE, variables);
+                .perform(GET_UNREVIEWED_NUMBER_GRAPHQL_RESOURCE, variables);
         assertThat(response).isNotNull();
         assertThat(response.isOk()).isTrue();
         response.assertThatNoErrorsArePresent()
                 .assertThatDataField().isNotNull()
                 .and()
-                .assertThatField(GET_UNREVIEWED_ORDER_NUMBER_DATA_JSON_PATH)
+                .assertThatField(GET_UNREVIEWED_NUMBER_DATA_JSON_PATH)
                 .as(UnreviewedOrderNumberResponseDTO.class)
                 .matches((result) ->
                         result.getUnreviewedByApprover() == 1 && result.getUnreviewedByPurchaser() == 0
                 );
     }
     @Test
-    public void test_getUnreviewedOrderNumber_noAuthentication() throws IOException {
+    public void test_getUnreviewedNumber_noAuthentication() throws IOException {
         ObjectNode variables = objectMapper.createObjectNode();
         GraphQLResponse response = graphQLTestTemplate
-                .perform(GET_UNREVIEWED_ORDER_NUMBER_GRAPHQL_RESOURCE, variables);
+                .perform(GET_UNREVIEWED_NUMBER_GRAPHQL_RESOURCE, variables);
 
-        assertError_getUnreviewedOrderNumber(response, HttpStatus.UNAUTHORIZED, ConfigMessages.USER_IS_NOT_AUTHORIZED);
+        assertError_getUnreviewedNumber(response, HttpStatus.UNAUTHORIZED, ConfigMessages.USER_IS_NOT_AUTHORIZED);
     }
 
     @Test
-    public void test_getUnreviewedOrderNumber_incorrectAuthentication() throws IOException {
+    public void test_getUnreviewedNumber_incorrectAuthentication() throws IOException {
         ObjectNode variables = objectMapper.createObjectNode();
         GraphQLResponse response = graphQLTestTemplate
                 .withBasicAuth(purchaser.getUsername(), "incorrectPassword")
-                .perform(GET_UNREVIEWED_ORDER_NUMBER_GRAPHQL_RESOURCE, variables);
+                .perform(GET_UNREVIEWED_NUMBER_GRAPHQL_RESOURCE, variables);
 
-        assertError_getUnreviewedOrderNumber(response, HttpStatus.UNAUTHORIZED, ConfigMessages.USER_IS_NOT_AUTHORIZED);
+        assertError_getUnreviewedNumber(response, HttpStatus.UNAUTHORIZED, ConfigMessages.USER_IS_NOT_AUTHORIZED);
     }
 
 
@@ -619,7 +619,7 @@ public class OrderGraphQLDataFetcherTest {
         GraphQLTestUtil.assertErrorResponse(response, expectedHttpStatus, expectedErrorMessage, UPDATE_ORDER_BY_ORDER_NUMBER_DATA_JSON_PATH);
     }
 
-    private void assertError_getUnreviewedOrderNumber(GraphQLResponse response, HttpStatus expectedHttpStatus, String expectedErrorMessage) {
-        GraphQLTestUtil.assertErrorResponse(response, expectedHttpStatus, expectedErrorMessage, GET_UNREVIEWED_ORDER_NUMBER_DATA_JSON_PATH);
+    private void assertError_getUnreviewedNumber(GraphQLResponse response, HttpStatus expectedHttpStatus, String expectedErrorMessage) {
+        GraphQLTestUtil.assertErrorResponse(response, expectedHttpStatus, expectedErrorMessage, GET_UNREVIEWED_NUMBER_DATA_JSON_PATH);
     }
 }

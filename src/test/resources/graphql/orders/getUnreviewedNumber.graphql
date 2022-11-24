@@ -1,5 +1,5 @@
-query GetUnreviewedOrderNumber{
-    getUnreviewedOrderNumber {
+query GetUnreviewedNumber{
+    getUnreviewedNumber {
         unreviewedByApprover
         unreviewedByPurchaser
     }

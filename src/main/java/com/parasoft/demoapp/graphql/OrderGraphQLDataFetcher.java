@@ -122,7 +122,7 @@ public class OrderGraphQLDataFetcher {
         };
     }
 
-    public DataFetcher<UnreviewedOrderNumberResponseDTO> getUnreviewedOrderNumber() {
+    public DataFetcher<UnreviewedOrderNumberResponseDTO> getUnreviewedNumber() {
         return dataFetchingEnvironment -> {
             try {
                 ResponseEntity<ResponseResult<UnreviewedOrderNumberResponseDTO>> entity =

@@ -698,7 +698,7 @@ function getUnreviewedAmount($http,$rootScope,$filter,graphQLService){
             displayLoadError(data,$rootScope,$filter,$http,true,endpointType);
         };
         if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
-            graphQLService.getUnreviewedOrderNumber(getUnreviewedAmountSuccess, (data) => {getUnreviewedAmountError(data, "graphQL")},
+            graphQLService.getUnreviewedNumber(getUnreviewedAmountSuccess, (data) => {getUnreviewedAmountError(data, "graphQL")},
                 "{unreviewedByPurchaser}")
         } else {
             $http({
