@@ -25,7 +25,7 @@ import java.io.InputStream;
 public class GraphQLProvider {
     private GraphQL graphQL;
 
-    @Value("classpath:static/schema.graphql")
+    @Value("classpath:static/schema.graphqls")
     protected Resource graphqlSchemaResource;
 
     private final CategoryGraphQLDataFetcher categoryDataFetcher;
@@ -90,6 +90,7 @@ public class GraphQLProvider {
         builder.type("Mutation", typeWriting -> typeWriting.dataFetcher("createOrder", orderGraphQLDataFetcher.createOrder()));
         builder.type("Query", typeWriting-> typeWriting.dataFetcher("getOrders", orderGraphQLDataFetcher.getOrders()));
         builder.type("Mutation", typeWriting -> typeWriting.dataFetcher("updateOrderByOrderNumber", orderGraphQLDataFetcher.updateOrderByOrderNumber()));
+        builder.type("Query", typeWriting-> typeWriting.dataFetcher("getUnreviewedNumber", orderGraphQLDataFetcher.getUnreviewedNumber()));
     }
 
     private void itemTypeWiring(RuntimeWiring.Builder builder) {

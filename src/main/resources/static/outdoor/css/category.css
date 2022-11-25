@@ -3,11 +3,11 @@
 }
 
 #asset_type, #availability_region_title {
-	color: #33424D;
+    color: #33424D;
 }
 
 #availability_region {
-	background-color: rgba(214, 223, 230, 1);
+    background-color: rgba(214, 223, 230, 1);
 }
 
 #add_to_requisition_btn, .requisition_detail_stock_button > button {

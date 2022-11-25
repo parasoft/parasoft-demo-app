@@ -8,8 +8,8 @@ initToastr();
 
 app.controller('orderHistoryController', function($rootScope, $http, $filter, graphQLService) {
     var history = this;
-    connectAndSubscribeMQ(CURRENT_ROLE,$http,$rootScope,$filter);
-    getUnreviewedAmount($http,$rootScope,$filter);
+    connectAndSubscribeMQ(CURRENT_ROLE,$http,$rootScope,$filter,null,null,graphQLService);
+    getUnreviewedAmount($http,$rootScope,$filter,graphQLService);
 
     history.showOrderItems = function(items){
         var processedItems = "";
@@ -61,7 +61,7 @@ app.controller('orderHistoryController', function($rootScope, $http, $filter, gr
                 let success = (data) => {
                     angular.element(".new_label" + index).css("visibility", "hidden");
                     //Update icon
-                    getUnreviewedAmount($http,$rootScope,$filter);
+                    getUnreviewedAmount($http,$rootScope,$filter,graphQLService);
                 }
 
                 let error = (data) => {

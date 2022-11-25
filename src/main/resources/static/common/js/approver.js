@@ -110,7 +110,6 @@ app.controller('approverHomePageController', function($rootScope, $http, $filter
         let success = (data) => {
             //Update icon
             approver.showNewLabel[orderNumber] = false;
-            getUnreviewedAmount($http,$rootScope);
         }
 
         let error = (data) => {

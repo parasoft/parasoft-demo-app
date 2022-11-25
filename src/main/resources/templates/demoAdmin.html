@@ -211,7 +211,7 @@
 
                         <div class="section_container">
                             <div class="section_title">
-                                <span class="align-to-icon" translate="PARASOFT_JMS_MQ_PROXY"></span>
+                                <span class="align-to-icon" translate="PARASOFT_QUEUE_CONFIGURATION"></span>
                             </div>
 
                             <div class="section_body">
@@ -243,54 +243,51 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <label>
-                                        <input type="checkbox" name="mqProxyEnabled" ng-model="options.mqProxyEnabled" value="true"/>
-                                        <span class="input-label" translate="ENABLE"></span>
-                                    </label>
-                                </div>
-			    	            <div id="message_queue_type">
+                                <div id="message_queue_type">
                                     <div class="form-group">
                                         <input type="hidden" name="mqType" ng-value="options.mqType">
                                     </div>
-				                </div>
+                                </div>
                                 <label for="client_connection" class="connection-label" translate="CLIENT_CONNECTION"></label>
                                 <div id="client_connection">
                                     <div class="form-group">
                                         <label for="order_service_destination_queue" class="form_label" translate="DESTINATION_QUEUE"></label>
-					                    <div class="invalid_message" ng-show="optionsForm.orderServiceDestinationQueue.$invalid" translate={{'QUEUE_NAME_SHOULD_NOT_BE_EMPTY'|translate}}></div>
+                                        <div class="invalid_message"
+                                             ng-show="optionsForm.orderServiceDestinationQueue.$invalid"
+                                             translate="QUEUE_NAME_SHOULD_NOT_BE_EMPTY"></div>
                                         <div class="input-wrapper">
-                                            <input type="text" name="orderServiceDestinationQueue" id="order_service_destination_queue" class="form-control" ng-model="options.orderServiceDestinationQueue" ng-trim="false"
-                                                   ng-disabled="!options.mqProxyEnabled" ng-required="options.mqProxyEnabled">
+                                            <input type="text"
+                                                   name="orderServiceDestinationQueue"
+                                                   id="order_service_destination_queue"
+                                                   class="form-control"
+                                                   ng-model="options.orderServiceDestinationQueue"
+                                                   ng-required="true"
+                                                   ng-trim="true">
+                                            <button class="btn btn-default industry_button labels_reset_btn"
+                                                    ng-click="options.resetOrderServiceDestinationQueue()"
+                                                    translate="RESET_QUEUE">
+                                            </button>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="order_service_reply_to_queue" class="form_label" translate="REPLY_TO_QUEUE"></label>
-					                    <div class="invalid_message" ng-show="optionsForm.orderServiceReplyToQueue.$invalid" translate={{'QUEUE_NAME_SHOULD_NOT_BE_EMPTY'|translate}}></div>
+                                        <div class="invalid_message"
+                                             ng-show="optionsForm.orderServiceReplyToQueue.$invalid"
+                                             translate="QUEUE_NAME_SHOULD_NOT_BE_EMPTY"></div>
                                         <div class="input-wrapper">
-                                            <input type="text" name="orderServiceReplyToQueue" id="order_service_reply_to_queue" class="form-control" ng-model="options.orderServiceReplyToQueue" ng-trim="false"
-                                                   ng-disabled="!options.mqProxyEnabled" ng-required="options.mqProxyEnabled">
+                                            <input type="text"
+                                                   name="orderServiceReplyToQueue"
+                                                   id="order_service_reply_to_queue"
+                                                   class="form-control"
+                                                   ng-model="options.orderServiceReplyToQueue"
+                                                   ng-required="true"
+                                                   ng-trim="true">
+                                            <button class="btn btn-default industry_button labels_reset_btn"
+                                                    ng-click="options.resetOrderServiceReplyToQueue()"
+                                                    translate="RESET_QUEUE">
+                                            </button>
                                         </div>
                                     </div>
-                                </div>
-                                <label for="server_connection" class="connection-label" translate="SERVER_CONNECTION"></label>
-                                <div id="server_connection">
-                                    <div class="form-group">
-                                        <label for="inventory_service_destination_queue" class="form_label" translate="DESTINATION_QUEUE"></label>
-					                    <div class="invalid_message" ng-show="optionsForm.inventoryServiceDestinationQueue.$invalid" translate={{'QUEUE_NAME_SHOULD_NOT_BE_EMPTY'|translate}}></div>
-                                        <div class="input-wrapper">
-                                            <input type="text" name="inventoryServiceDestinationQueue" id="inventory_service_destination_queue" class="form-control" ng-model="options.inventoryServiceDestinationQueue" ng-trim="false"
-                                                   ng-disabled="!options.mqProxyEnabled" ng-required="options.mqProxyEnabled">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-					                    <label for="inventory_service_to_queue" class="form_label" translate="REPLY_TO_QUEUE"></label>
-                                        <div class="invalid_message" ng-show="optionsForm.inventoryServiceReplyToQueue.$invalid" translate={{'QUEUE_NAME_SHOULD_NOT_BE_EMPTY'|translate}}></div>
-                                        <div class="input-wrapper">
-                                            <input type="text" name="inventoryServiceReplyToQueue" id="inventory_service_to_queue" class="form-control" ng-model="options.inventoryServiceReplyToQueue" ng-trim="false"
-                                                ng-disabled="!options.mqProxyEnabled" ng-required="options.mqProxyEnabled">
-                                        </div>
-                                </div>
                                 </div>
                             </div>
                         </div>
@@ -706,7 +703,7 @@
                         <a href="/swagger-ui/index.html?type=gateway" class="support_link industry_color_1" target="_blank" translate="SWAGGER_PROXY"></a>
                     </div>
                     <div class="support_link_wrapper">
-                        <a href="/schema.graphql" class="support_link industry_color_1" target="_blank" translate="GRAPHQL_SCHEMA"></a>
+                        <a href="/schema.graphqls" class="support_link industry_color_1" target="_blank" translate="GRAPHQL_SCHEMA"></a>
                     </div>
                 </div>
             </div>
