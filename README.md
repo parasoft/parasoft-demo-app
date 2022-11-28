@@ -76,7 +76,7 @@ Parasoft Demo Application exposes port 9001 for the user to connect to the HSQLD
 | Username | `SA`                                                |
 | Password | `pass`                                              |
 
-## Using Parasoft JMS/MQ
+## Using Parasoft JMS/MQ Proxy and Virtual Asset
 There are two main services for order management in PDA, **order service** and **inventory service**. After an order is submitted, order service sends
 a request through messaging queue to check and decrease the inventory. After the operation is done, inventory service sends a response through messaging queue which includes the information of the operation result.
 
@@ -93,24 +93,21 @@ a request through messaging queue to check and decrease the inventory. After the
 | Default reply to queue    | `queue.inventory.response`                               |
 
 
-There are three modes we can use in PDA.
-
-### Default mode
-PDA uses two default queues to support **order service** and **inventory service**.
-Just keep the default settings on the PDA Demo Administration page if you don't want to change anything about JMS/MQ in PDA.
+PDA uses two default queues to support messaging between **order service** and **inventory service**.
+The configuration for queues can be changed or reset to default on PDA Demo Administration page.
 
 <img src="src/main/resources/static/common/images/mq_default_mode_diagram.png" alt="mq default mode diagram">
 
-### Proxy mode
-To use a Parasoft JMS/MQ proxy, you need to change **Destination queue** to **your customized destination queue name** and **Reply to queue** to **your customized reply to queue name** on the PDA Demo Administration page,
-and use them to configure the queues in Client Connection settings for your message proxy in Virtualize.
+### Use with JMS/MQ Proxy
+To use the queueing system with JMS/MQ proxy, you can change **Destination queue** and **Reply to queue** to customized queue names.
+The **Client Connection** in message proxy should be configured with the two customized queues.
+The **Server Connection** in message proxy should be configured with the two default queues.
 
 <img src="src/main/resources/static/common/images/mq_proxy_mode_diagram.png" alt="mq proxy mode diagram">
 
-### Virtual asset mode
-To use virtual asset mode, you need to change **Destination queue** to **your customized destination queue name** on the PDA Demo Administration page.
-**Your customized destination queue name** should be listened by virtual asset.
-The virtual asset needs to reply the response to the default response queue.
+### Use with virtual asset
+To use the queueing system with virtual asset, you can change **Destination queue** to a customized destination queue name.
+The virtual asset deployment should be configured to listen to the customized destination queue and reply to the default response queue.
 
 <img src="src/main/resources/static/common/images/mq_virtual_asset_mode_diagram.png" alt="mq virtual asset mode diagram">
 
@@ -119,7 +116,7 @@ The virtual asset needs to reply the response to the default response queue.
 2. Copy it to **{root directory of parasoft-demo-app}/lib**. (Create the folder if it does not already exist.)
 3. Open **SOAtest & Virtualize** desktop, add the **ParasoftJDBCDriver.jar** to **Parasoft > Preferences > JDBC Drivers**.
 4. Start Virtualize server in **Virtualize Server** view.
-5. Enable the **PARASOFT JDBC PROXY** in PDA **Demo Admin** page, modify started server's **URL**, **Parasoft Virtualize Server path**, and **Parasoft Virtualize group ID** if necessary.
+5. Enable the **PARASOFT JDBC PROXY** in PDA **Demo Administration** page, modify started server's **URL**, **Parasoft Virtualize Server path**, and **Parasoft Virtualize group ID** if necessary.
 6. Go to **SOAtest & Virtualize** desktop and refresh the Server. If the **Parasoft JDBC Proxy** is enabled successfully, there will be a controller which has the same name as group ID under **JDBC Controllers**.
 7. Change the settings of the controller.
 
