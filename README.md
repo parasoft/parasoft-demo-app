@@ -90,7 +90,7 @@ a request through messaging queue to check and decrease the inventory. After the
 | Username                  | `admin`                                                  |
 | Password                  | `admin`                                                  |
 | Default destination queue | `queue.inventory.request`                                |
-| Default Reply to queue    | `queue.inventory.response`                               |
+| Default reply to queue    | `queue.inventory.response`                               |
 
 
 There are three modes we can use in PDA.
