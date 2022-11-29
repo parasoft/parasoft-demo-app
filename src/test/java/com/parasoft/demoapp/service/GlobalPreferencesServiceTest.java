@@ -61,6 +61,9 @@ public class GlobalPreferencesServiceTest {
 	@Mock
 	InventoryRequestQueueListener inventoryRequestQueueListener;
 
+    @Mock
+    GlobalPreferencesDefaultSettingsService globalPreferencesDefaultSettingsService;
+
 	@Mock
 	WebConfig webConfig;
 
@@ -724,4 +727,90 @@ public class GlobalPreferencesServiceTest {
 		// Then
 		assertEquals("orderServiceReplyToQueue cannot be null or empty.", message);
 	}
+
+    /**
+     * Test for updateGlobalPreferences(GlobalPreferencesDTO)
+     *
+     * @see com.parasoft.demoapp.service.GlobalPreferencesService#updateGlobalPreferences(GlobalPreferencesDTO)
+     */
+    @Test
+    public void testUpdateGlobalPreferences_emptyGraphQLEndPoint() throws Throwable {
+        // Given
+        List<GlobalPreferencesEntity> findAllResult = new ArrayList<>();
+        GlobalPreferencesEntity globalPreferences = new GlobalPreferencesEntity();
+        String defaultGraphQLEndpoint = "http://localhost:8080/graphql";
+        findAllResult.add(globalPreferences);
+        when(globalPreferencesRepository.findAll()).thenReturn(findAllResult);
+        doNothing().when(inventoryResponseQueueListener).refreshDestination(any());
+        doNothing().when(inventoryRequestQueueListener).refreshDestination(any());
+
+        doNothing().when(restEndpointService).removeAllEndpoints();
+        when(globalPreferencesRepository.save(any(GlobalPreferencesEntity.class))).thenReturn(globalPreferences);
+        doReturn(defaultGraphQLEndpoint).when(globalPreferencesDefaultSettingsService).defaultGraphQLEndpoint();
+
+        // When
+        String graphQLEndPointUrl = "";
+        GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
+        globalPreferencesDto.setIndustryType(IndustryType.AEROSPACE);
+        globalPreferencesDto.setWebServiceMode(WebServiceMode.GRAPHQL);
+        globalPreferencesDto.setGraphQLEndpoint(graphQLEndPointUrl);
+        globalPreferencesDto.setAdvertisingEnabled(false);
+        globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
+        globalPreferencesDto.setOrderServiceDestinationQueue("test.queue.inventory.request");
+        globalPreferencesDto.setOrderServiceReplyToQueue("test.queue.inventory.response");
+
+        GlobalPreferencesEntity result = underTest.updateGlobalPreferences(globalPreferencesDto);
+
+        // Then
+        assertNotNull(result);
+        assertEquals(IndustryType.AEROSPACE, IndustryRoutingDataSource.currentIndustry);
+        assertEquals(IndustryType.AEROSPACE, globalPreferences.getIndustryType());
+        assertEquals(MqType.ACTIVE_MQ, result.getMqType());
+        assertEquals("test.queue.inventory.request", result.getOrderServiceDestinationQueue());
+        assertEquals("test.queue.inventory.response", result.getOrderServiceReplyToQueue());
+        assertEquals(defaultGraphQLEndpoint, result.getGraphQLEndpoint());
+    }
+
+    /**
+     * Test for updateGlobalPreferences(GlobalPreferencesDTO)
+     *
+     * @see com.parasoft.demoapp.service.GlobalPreferencesService#updateGlobalPreferences(GlobalPreferencesDTO)
+     */
+    @Test
+    public void testUpdateGlobalPreferences_normalGraphQLEndPoint() throws Throwable {
+        // Given
+        List<GlobalPreferencesEntity> findAllResult = new ArrayList<>();
+        GlobalPreferencesEntity globalPreferences = new GlobalPreferencesEntity();
+        String defaultGraphQLEndpoint = "http://localhost:8080/graphql";
+        findAllResult.add(globalPreferences);
+        when(globalPreferencesRepository.findAll()).thenReturn(findAllResult);
+        doNothing().when(inventoryResponseQueueListener).refreshDestination(any());
+        doNothing().when(inventoryRequestQueueListener).refreshDestination(any());
+
+        doNothing().when(restEndpointService).removeAllEndpoints();
+        when(globalPreferencesRepository.save(any(GlobalPreferencesEntity.class))).thenReturn(globalPreferences);
+        doReturn(defaultGraphQLEndpoint).when(globalPreferencesDefaultSettingsService).defaultGraphQLEndpoint();
+
+        // When
+        String graphQLEndPointUrl = "http://localhost:8080/other";
+        GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
+        globalPreferencesDto.setIndustryType(IndustryType.AEROSPACE);
+        globalPreferencesDto.setWebServiceMode(WebServiceMode.GRAPHQL);
+        globalPreferencesDto.setGraphQLEndpoint(graphQLEndPointUrl);
+        globalPreferencesDto.setAdvertisingEnabled(false);
+        globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
+        globalPreferencesDto.setOrderServiceDestinationQueue("test.queue.inventory.request");
+        globalPreferencesDto.setOrderServiceReplyToQueue("test.queue.inventory.response");
+
+        GlobalPreferencesEntity result = underTest.updateGlobalPreferences(globalPreferencesDto);
+
+        // Then
+        assertNotNull(result);
+        assertEquals(IndustryType.AEROSPACE, IndustryRoutingDataSource.currentIndustry);
+        assertEquals(IndustryType.AEROSPACE, globalPreferences.getIndustryType());
+        assertEquals(MqType.ACTIVE_MQ, result.getMqType());
+        assertEquals("test.queue.inventory.request", result.getOrderServiceDestinationQueue());
+        assertEquals("test.queue.inventory.response", result.getOrderServiceReplyToQueue());
+        assertEquals(graphQLEndPointUrl, result.getGraphQLEndpoint());
+    }
 }
