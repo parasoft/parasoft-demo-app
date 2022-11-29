@@ -76,30 +76,47 @@ Parasoft Demo Application exposes port 9001 for the user to connect to the HSQLD
 | Username | `SA`                                                |
 | Password | `pass`                                              |
 
-## Using Parasoft JMS/MQ Proxy
-There are two main services for order management in PDA, **order service** and **inventory service**. After an order is submitted, order service sends 
+## Using Parasoft JMS/MQ Proxy and Virtual Asset
+There are two main services for order management in PDA, **order service** and **inventory service**. After an order is submitted, order service sends
 a request through messaging queue to check and decrease the inventory. After the operation is done, inventory service sends a response through messaging queue which includes the information of the operation result.
 
-To use a Parasoft JMS/MQ proxy, you should enable the feature on the PDA Demo Administration page and configure the connection queues with your message proxy in Virtualize.
+**Configuration details for embedded ActiveMQ server**
 
-<img src="src/main/resources/static/common/images/services_diagram.png" width="1050" alt="services_diagram">
+| Option                    | Value                                                    |
+|---------------------------|----------------------------------------------------------|
+| Provider URL              | `tcp://localhost:61626`                                  |
+| Initial context class     | `org.apache.activemq.jndi.ActiveMQInitialContextFactory` |
+| Connection factory        | `ConnectionFactory`                                      |
+| Username                  | `admin`                                                  |
+| Password                  | `admin`                                                  |
+| Default destination queue | `queue.inventory.request`                                |
+| Default reply to queue    | `queue.inventory.response`                               |
 
-Configuration details for embedded ActiveMQ server
 
-| Option                | Value                                                    |
-|-----------------------|----------------------------------------------------------|
-| Provider URL          | `tcp://localhost:61626`                                  |
-| Initial context class | `org.apache.activemq.jndi.ActiveMQInitialContextFactory` |
-| Connection factory    | `ConnectionFactory`                                      |
-| Username              | `admin`                                                  |
-| Password              | `admin`                                                  |
+PDA uses two default queues to support messaging between **order service** and **inventory service**.
+The configuration for queues can be changed or reset to default on PDA Demo Administration page.
+
+<img src="src/main/resources/static/common/images/mq_default_mode_diagram.png" alt="mq default mode diagram">
+
+### Use with JMS/MQ Proxy
+To use the queueing system with JMS/MQ proxy, you can change **Destination queue** and **Reply to queue** to customized queue names.
+The **Client Connection** in message proxy should be configured with the two customized queues.
+The **Server Connection** in message proxy should be configured with the two default queues.
+
+<img src="src/main/resources/static/common/images/mq_proxy_mode_diagram.png" alt="mq proxy mode diagram">
+
+### Use with virtual asset
+To use the queueing system with virtual asset, you can change **Destination queue** to a customized destination queue name.
+The virtual asset deployment should be configured to listen to the customized destination queue and reply to the default response queue.
+
+<img src="src/main/resources/static/common/images/mq_virtual_asset_mode_diagram.png" alt="mq virtual asset mode diagram">
 
 ## Using Parasoft JDBC Proxy
 1. Find the **ParasoftJDBCDriver.jar** in **{SOAtest & Virtualize installation directory}/{version}/proxies**.
 2. Copy it to **{root directory of parasoft-demo-app}/lib**. (Create the folder if it does not already exist.)
 3. Open **SOAtest & Virtualize** desktop, add the **ParasoftJDBCDriver.jar** to **Parasoft > Preferences > JDBC Drivers**.
 4. Start Virtualize server in **Virtualize Server** view.
-5. Enable the **PARASOFT JDBC PROXY** in PDA **Demo Admin** page, modify started server's **URL**, **Parasoft Virtualize Server path**, and **Parasoft Virtualize group ID** if necessary.
+5. Enable the **PARASOFT JDBC PROXY** in PDA **Demo Administration** page, modify started server's **URL**, **Parasoft Virtualize Server path**, and **Parasoft Virtualize group ID** if necessary.
 6. Go to **SOAtest & Virtualize** desktop and refresh the Server. If the **Parasoft JDBC Proxy** is enabled successfully, there will be a controller which has the same name as group ID under **JDBC Controllers**.
 7. Change the settings of the controller.
 
