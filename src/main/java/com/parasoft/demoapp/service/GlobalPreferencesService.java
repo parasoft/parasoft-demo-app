@@ -320,8 +320,10 @@ public class GlobalPreferencesService {
 
         currentPreferences.setWebServiceMode(webServiceMode);
         if (WebServiceMode.GRAPHQL.equals(webServiceMode)){
-            String graphQLEndpoint = StringUtils.isBlank(globalPreferencesDto.getGraphQLEndpoint()) ? defaultGlobalPreferencesSettingsService.defaultGraphQLEndpoint() : globalPreferencesDto.getGraphQLEndpoint();
-            endpointService.validateUrl(graphQLEndpoint, GlobalPreferencesMessages.INVALID_GRAPHQL_URL);
+            String graphQLEndpoint = globalPreferencesDto.getGraphQLEndpoint();
+            if (!StringUtils.isBlank(graphQLEndpoint)) {
+                endpointService.validateUrl(graphQLEndpoint, GlobalPreferencesMessages.INVALID_GRAPHQL_URL);
+            }
             currentPreferences.setGraphQLEndpoint(graphQLEndpoint);
             return;
         }

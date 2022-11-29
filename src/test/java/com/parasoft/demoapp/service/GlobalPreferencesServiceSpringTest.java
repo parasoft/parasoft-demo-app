@@ -531,11 +531,14 @@ public class GlobalPreferencesServiceSpringTest {
     @Test
     @Transactional(value = "globalTransactionManager")
     public void testUpdateGlobalPreferences_updateGraphQLEndpoint() throws Throwable {
+        PowerMockito.mockStatic(UrlUtil.class);
+        PowerMockito.doReturn(true).when(UrlUtil.class, "isGoodHttpForm", anyString());
+
         // Give
-        String graphQLEndPoint = "http://localhost:8081/other";
+        String graphQLEndPointUrl = "http://localhost:8080/graphql";
         GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
         globalPreferencesDto.setIndustryType(IndustryType.DEFENSE);
-        globalPreferencesDto.setGraphQLEndpoint(graphQLEndPoint);
+        globalPreferencesDto.setGraphQLEndpoint(graphQLEndPointUrl);
         globalPreferencesDto.setAdvertisingEnabled(false);
         globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
         globalPreferencesDto.setOrderServiceDestinationQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
@@ -549,7 +552,26 @@ public class GlobalPreferencesServiceSpringTest {
         assertNotNull(result);
         assertEquals(IndustryType.DEFENSE, IndustryRoutingDataSource.currentIndustry);
         assertEquals(IndustryType.DEFENSE, result.getIndustryType());
-        assertEquals(graphQLEndPoint, result.getGraphQLEndpoint());
+
+        String endpointUrl = result.getGraphQLEndpoint();
+
+        List<Route> routes = routeLocator.getRoutes();
+        assertNotNull(routes);
+
+        Map<String, Route> routeMap = new HashMap<>();
+        for (Route route : routes) {
+            routeMap.put(route.getId(), route);
+        }
+
+        Route graphQLRoute = routeMap.get(GRAPHQL_ENDPOINT_ID);
+        assertNotNull(graphQLRoute);
+        assertEquals(GRAPHQL_ENDPOINT_PATH, graphQLRoute.getFullPath());
+        assertEquals(endpointUrl, graphQLEndPointUrl);
+        assertEquals(endpointUrl, graphQLRoute.getLocation());
+        assertEquals(0, graphQLRoute.getSensitiveHeaders().size());
+        assertFalse(graphQLRoute.getRetryable());
+        assertTrue(graphQLRoute.isCustomSensitiveHeaders());
+        assertTrue(graphQLRoute.isPrefixStripped());
     }
 
     /**
@@ -560,11 +582,14 @@ public class GlobalPreferencesServiceSpringTest {
     @Test
     public void UpdateGlobalPreferences_updateGraphQLEndpoint_emptyEndpoint()
             throws Throwable {
+        PowerMockito.mockStatic(UrlUtil.class);
+        PowerMockito.doReturn(true).when(UrlUtil.class, "isGoodHttpForm", anyString());
+
         // Give
-        String graphQLEndPoint = "";
+        String graphQLEndPointUrl = "";
         GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
         globalPreferencesDto.setIndustryType(IndustryType.DEFENSE);
-        globalPreferencesDto.setGraphQLEndpoint(graphQLEndPoint);
+        globalPreferencesDto.setGraphQLEndpoint(graphQLEndPointUrl);
         globalPreferencesDto.setAdvertisingEnabled(false);
         globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
         globalPreferencesDto.setOrderServiceDestinationQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
@@ -578,6 +603,27 @@ public class GlobalPreferencesServiceSpringTest {
         assertNotNull(result);
         assertEquals(IndustryType.DEFENSE, IndustryRoutingDataSource.currentIndustry);
         assertEquals(IndustryType.DEFENSE, result.getIndustryType());
-        assertEquals(defaultSettingsService.defaultGraphQLEndpoint(), result.getGraphQLEndpoint());
+
+        String endpointUrl = result.getGraphQLEndpoint();
+
+        List<Route> routes = routeLocator.getRoutes();
+        assertNotNull(routes);
+
+        Map<String, Route> routeMap = new HashMap<>();
+        for (Route route : routes) {
+            routeMap.put(route.getId(), route);
+        }
+
+        String host = HOST + webConfig.getServerPort();
+
+        Route graphQLRoute = routeMap.get(GRAPHQL_ENDPOINT_ID);
+        assertNotNull(graphQLRoute);
+        assertEquals(GRAPHQL_ENDPOINT_PATH, graphQLRoute.getFullPath());
+        assertEquals(endpointUrl, graphQLEndPointUrl);
+        assertEquals(host + GRAPHQL_ENDPOINT_REAL_PATH, graphQLRoute.getLocation());
+        assertEquals(0, graphQLRoute.getSensitiveHeaders().size());
+        assertFalse(graphQLRoute.getRetryable());
+        assertTrue(graphQLRoute.isCustomSensitiveHeaders());
+        assertTrue(graphQLRoute.isPrefixStripped());
     }
 }
