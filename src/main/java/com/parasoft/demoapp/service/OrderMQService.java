@@ -36,8 +36,8 @@ public class OrderMQService {
     }
 
     public void sendToInventoryRequestQueue(InventoryOperationRequestMessageDTO message) {
-        ActiveMQQueue destination = ActiveMQConfig.getInventoryRequestActiveMqQueue();
-        jmsMessagingTemplate.convertAndSend(ActiveMQConfig.getInventoryRequestActiveMqQueue(), message);
+        ActiveMQQueue destination = ActiveMQConfig.getOrderServiceSendToQueue();
+        jmsMessagingTemplate.convertAndSend(destination, message);
 
         log.info("Order service sent a message to {} \n Message content: {}", destination, message);
     }

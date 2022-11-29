@@ -12,8 +12,8 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
     category.categoryId = categoryId;
     category.sort="name";
     let getItemsSelectionSet = "{content{id,name,description,image}}"
-    getUnreviewedAmount($http,$rootScope,$filter);
-    connectAndSubscribeMQ(CURRENT_ROLE,$http,$rootScope, $filter);
+    getUnreviewedAmount($http,$rootScope,$filter,graphQLService);
+    connectAndSubscribeMQ(CURRENT_ROLE,$http,$rootScope, $filter,null,null,graphQLService);
 
     //When the industry is changed, remove the old region filter cookie
     if(localStorage.getItem("removeRegionFilterInCookie")){

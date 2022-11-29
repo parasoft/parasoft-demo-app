@@ -33,7 +33,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 
     var flag = localStorage.getItem("status");
     var databaseResetFlag = localStorage.getItem("databaseResetStatus");
-    connectAndSubscribeMQ(CURRENT_ROLE, $http, $rootScope, $filter);
+    connectAndSubscribeMQ(CURRENT_ROLE, $http, $rootScope, $filter, null, null, graphQLService);
 
     demo.GENERAL = "active";
 
@@ -425,7 +425,6 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 
     demo.saveAll = function() {
         let data = angular.element('#options_form').serializeJSON()
-        data.mqProxyEnabled = !!data.mqProxyEnabled;
         $http({
             method: 'PUT',
             url: '/v1/demoAdmin/preferences',
@@ -436,11 +435,11 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
             localStorage.setItem("save_succeeded", $filter('translate')('SAVING_SUCCEEDS'));
             $window.location.reload();
             $('#saving_modal').modal('hide');
-        }, function error(response) {
+        }).catch(function(response) {
             console.info(response);
 
-            var responseMessage = response.data.message.toLowerCase();
-            var errorMessage;
+            let responseMessage = response.data.message.toLowerCase();
+            let errorMessage;
             if(responseMessage.indexOf("invalid categories url") > -1) {
                 errorMessage = $filter('translate')('INVALID_CATEGORIES_URL');
             } else if (responseMessage.indexOf("invalid items url") > -1) {
@@ -457,13 +456,13 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
                 errorMessage =  $filter('translate')('INVALID_PARASOFT_VIRTUALIZE_SERVER_PATH');
             } else if(responseMessage.indexOf('Invalid virtualize group id') > -1){
                 errorMessage =  $filter('translate')('INVALID_PARASOFT_VIRTUALIZE_GROUP_ID');
+            } else {
+                errorMessage = responseMessage;
             }
 
             $('#saving_modal').modal('hide');
             localStorage.setItem("status", "false");
             toastrService().error($filter('translate')('SAVING_FAILS') + '<br/>' + errorMessage);
-        }).catch(function(result) {
-            console.info(result);
         });
     };
 
@@ -1324,13 +1323,9 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
         options.parasoftVirtualizeServerPath = data.parasoftVirtualizeServerPath;
         options.parasoftVirtualizeGroupId = data.parasoftVirtualizeGroupId;
 
-
-        options.mqProxyEnabled = data.mqProxyEnabled;
         options.mqType = data.mqType;
         options.orderServiceDestinationQueue = data.orderServiceDestinationQueue;
         options.orderServiceReplyToQueue = data.orderServiceReplyToQueue;
-        options.inventoryServiceDestinationQueue = data.inventoryServiceDestinationQueue;
-        options.inventoryServiceReplyToQueue = data.inventoryServiceReplyToQueue;
 
         options.webServiceMode = data.webServiceMode;
         options.graphQLEndpoint = data.graphQLEndpoint;
@@ -1380,6 +1375,18 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
                    return false;
                }
            }
+        });
+    }
+
+    options.resetOrderServiceDestinationQueue = function(){
+        resetValuesTemplate(function(defaultOptions){
+            options.orderServiceDestinationQueue = defaultOptions.orderServiceDestinationQueue;
+        });
+    }
+
+    options.resetOrderServiceReplyToQueue = function(){
+        resetValuesTemplate(function(defaultOptions){
+            options.orderServiceReplyToQueue = defaultOptions.orderServiceReplyToQueue;
         });
     }
 

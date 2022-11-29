@@ -118,15 +118,15 @@ public class InitializationEntrance {
 
         parasoftJDBCProxyService.refreshParasoftJDBCProxyDataSource();
 
-        if (BooleanUtils.isTrue(globalPreferences.getMqProxyEnabled())) {
-            MqType mqType = globalPreferences.getMqType();
-            if (mqType == MqType.ACTIVE_MQ) {
-                try {
-                    globalPreferencesService.initializeActiveMqJmsProxyOnStartup(globalPreferences);
-                } catch (ParameterException pe) {
-                    log.error("Failed to initialize ActiveMQ JMS proxy: {}", pe.getMessage());
-                }
+        MqType mqType = globalPreferences.getMqType();
+        if (mqType == MqType.ACTIVE_MQ) {
+            try {
+                globalPreferencesService.initializeActiveMqJmsProxyOnStartup(globalPreferences);
+            } catch (ParameterException pe) {
+                log.error("Failed to initialize ActiveMQ JMS proxy: {}", pe.getMessage());
             }
+        } else {
+            throw new UnsupportedOperationException("Unsupported MQ type: " + mqType);
         }
 
         log.info(MessageFormat.format(databaseOperationMessages.getString(DatabaseOperationMessages.CURRENT_INDUSTRY),

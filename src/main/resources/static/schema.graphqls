@@ -12,6 +12,7 @@ type Query {
     # order
     getOrderByOrderNumber(orderNumber: String!): Order
     getOrders(page: Int, size: Int, sort: [String]): OrderPageInfo
+    getUnreviewedNumber: UnreviewedNumberResponse
     #item
     getItems(categoryId: Long, regions: [RegionType], searchString: String, page: Int, size: Int, sort: [String]): ItemPageInfo
     getItemByItemId(itemId: Long!): Item
@@ -107,6 +108,7 @@ type Order {
     region: String
     location: String
     orderImage: String
+    shippingType: String
     receiverId: String
     eventId: String
     eventNumber: String
@@ -125,10 +127,16 @@ type OrderItem {
 input OrderDTO {
     region: RegionType!
     location: String!
-    receiverId: String!
+    shipping: Shipping!
     eventId: String!
     eventNumber: String!
 }
+
+input Shipping {
+    shippingType: String!
+    receiverId: String!
+}
+
 type OrderPageInfo {
     totalElements: Long
     totalPages: Int
@@ -150,6 +158,10 @@ enum OrderStatus {
     CANCELED
     APPROVED
     DECLINED
+}
+type UnreviewedNumberResponse{
+    unreviewedByApprover: Int
+    unreviewedByPurchaser: Int
 }
 #item
 type Item {

@@ -75,7 +75,7 @@
                         <td><a ng-bind="order.orderNumber" ng-click="approver.openOrderDetail(order.orderNumber)"></a></td>
                         <td ng-bind="order.submissionDate.substring(0,order.submissionDate.indexOf('T'))"></td>
                         <td ng-bind="order.submissionDate.substring(order.submissionDate.indexOf('T')+1,
-									order.submissionDate.lastIndexOf('.'))"></td>
+                                    order.submissionDate.lastIndexOf('.'))"></td>
                         <td>
                             <span title="{{order.requestedBy}}" class="requested_by_content" ng-bind="order.requestedBy"></span>
                         </td>

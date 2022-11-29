@@ -13,207 +13,207 @@
     <link rel="stylesheet" type="text/css" th:href="'/' + ${industry} + '/css/orders.css'">
 </head>
 <body>
-	<input type="hidden" id="current_username" th:value="${#authentication.principal.username}">
-	<input type="hidden" id="current_rolename" th:value="${#authentication.principal.role.name}">
-	<input type="hidden" id="current_web_service_mode" th:value="${currentWebServiceMode}">
-	<div class="page-container">
-		<div class="header-section" ng-include="'/common/pages/header.html'" ng-controller="headerController"></div>
-		<div class="page-content-section" ng-controller="orderHistoryController as history">
-			<div ng-include="'/common/pages/requisitionBar.html'" ng-controller="requisitionBarController as requisition"></div>
-			<div class="order-container">
-				<div class="home-button-container industry_font">
-					<a href="/"><span class="industry_color_1 home-link" translate="RETURN_TO_HOME"></span></a>
-				</div>
-				<div class="table-container">
-					<div class="table-title industry_font">
-						<span translate="ORDER_PAGE_TITLE" class="retract_format"></span>
-					</div>
-					<div class="table-body">
-						<table class="table table-bordered">
-							<tbody>
-								<tr class="order_title">
-									<th class="status" translate="STATUS"></th>
-									<th class="requisition_number" translate="ORDER_NUMBER"></th>
-									<th class="submission_date" translate="SUBMISSION_DATE"></th>
-									<th class="approver_reply_date" translate="APPROVER_REPLY_DATE"></th>
-									<th class="approver" translate="APPROVER"></th>
-									<th class="assets" translate="ASSETS"></th>
-								</tr>
-								<tr class="order_content" ng-repeat="order in history.orders">
-									<td>
-										<div class="label_container">
-											<span class="new_label new_label{{$index+1}}" translate="NEW" ng-if="isPurchaser" ng-show="!order.reviewedByPRCH"></span>
-										</div>
-										<!-- <span class="new_label" translate="NEW" ng-if="isApprover" ng-show="!order.reviewedByAPV"></span> -->
-										<span ng-class="!order.reviewedByPRCH ? 'order_status' : ''" ng-bind="history.parseOrderStatus(order.status)"></span>
-									</td>
-									<th>
-										<a class="industry_color_1"
-											 ng-bind="order.orderNumber"
-											 ng-click="history.openOrderDetail($index+1, order.orderNumber)">
-										</a>
-									</th>
-									<td ng-bind="order.submissionDate.substring(0,order.submissionDate.indexOf('T'))"></td>
-									<td ng-bind="order.approverReplyDate === null ? '-' : order.approverReplyDate.substring(0,order.approverReplyDate.indexOf('T'))"></td>
-									<td>
-										<span title="{{order.respondedBy}}" class="approver_content" ng-bind="order.respondedBy === null ? '-' : order.respondedBy"></span>
-									</td>
-									<td style="text-align:left;">
-										<span class="assets_content"
-													title="{{history.showOrderItems(order.orderItems)}}"
-													ng-bind="history.orderItems(order.orderItems)">
-										</span>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-						<div class="order_error_message" ng-include="'/common/pages/emptyContentMessage.html'" ng-if="history.emptyContentsMessage || history.ordersLoadError"></div>
-					</div>
-				</div>
-				<div class="pager">
-					<a role="button" class="pre_btn btn" ng-disabled="history.currentPage <= 1 ? true : false">
-						<img ng-src="/{{industry}}/images/purchaser_order_left.svg" ng-click="history.prev(history.currentPage)">
-					</a>
-					<span>{{ history.currentPage }} of {{ history.totalPages }}</span>
-					<a role="button" class="next_btn btn" ng-disabled="history.currentPage === history.totalPages ? true : false">
-						<img ng-src="/{{industry}}/images/purchaser_order_right.svg" ng-click="history.next(history.currentPage)">
-					</a>
-				</div>
-			</div>
-			<div class="order_modal" ng-if="history.showOrderDetail['show']">
-				<div class="order_detail_container">
-					<div class="order_detail_title_container">
-						<div class="cross_btn industry_font" ng-click="history.closeOrderDetail()">
-							<span class="industry_color_1" ng-bind="'X'"></span>
-						</div>
-						<div class="order_detail_title industry_font">
-							<div>
-								<span ng-bind="'ORDER'|translate|uppercase" class="retract_format"></span>
-									<span ng-bind="'#'+history.order.orderNumber"></span>
-									<span ng-if="history.order.status !== 'SUBMITTED' && history.order.status !== 'PROCESSED'">
-										<span ng-bind="history.parseOrderStatus(history.order.status)|uppercase"></span>
-										<span ng-bind="'!'"></span>
-									</span>
-							</div>
-						</div>
-					</div>
-					<div class="order_detail_body_container">
-						<div class="info_container">
-							<div class="requested_assets industry_font">
-								<span translate="REQUESTED_ASSETS"></span><span>: </span>
-								<span ng-bind="history.totalItemQuantity"></span>
-							</div>
-							<div class="order_items_container">
-								<div class="order_item"  ng-repeat="orderItem in history.order.orderItems track by $index">
-									<div class="item_img">
-										<img ng-src="{{orderItem.image}}">
-									</div>
-									<div class="order_item_info_container">
-										<div class="order_item_title  industry_font" title="{{orderItem.name}}">
-											<span class="retract_format order_item_title" ng-bind="orderItem.name"></span>
-										</div>
-										<div class="order_item_description  industry_font" title="{{orderItem.description}}">
-											<span class="order-content" ng-bind="orderItem.description"></span>
-										</div>
-									</div>
-									<div class="order_item_quantity industry_font">
-										<span>x</span>&nbsp;<span ng-bind="orderItem.quantity"></span>
-									</div>
-								</div>
-							</div>
-							<div class="order_detail_assigned_campaign industry_font" ng-if="!isAerospace">
-								<span translate="ASSIGNMENT_STEP_IN_WIZARD" class="retract_format"></span><span>:</span>
-							</div>
-							<div class="order_detail_assigned_campaign_summary industry_font">
-								<div class="order_detail_summary_title_and_content industry_font">
-									<span class="order_detail_summary_title retract_format" translate="INVOICE_NUMBER"></span>
-									<span>: </span>
-									<span class="order_detail_summary_content" ng-bind="history.order.eventId" title="{{history.order.eventId}}"></span>
-								</div>
-								<div class="order_detail_summary_title_and_content industry_font">
-									<span class="order_detail_summary_title retract_format" translate="UNIQUE_NUMBER"></span>
-									<span>: </span>
-									<span class="order_detail_summary_content" ng-bind="history.order.eventNumber" title="{{history.order.eventNumber}}"></span>
-								</div>
-							</div>
-							<div class="order_detail_region_summary industry_font" ng-if="isAerospace">
-								<div class="order_detail_summary_title_and_content industry_font">
-									<span class="order_detail_summary_title retract_format" translate="LOCATION_OPTIONS"></span><span>: </span>
-									<span class="order_detail_summary_content" translate="{{history.order.region}}" title="{{ history.order.region|translate}}"></span>
-								</div>
-								<div class="order_detail_summary_title_and_content industry_font">
-									<span class="order_detail_summary_title retract_format" translate="RECEIVER_NAME"></span><span>: </span>
-									<span class="order_detail_summary_content" ng-bind="history.order.receiverId" title="{{history.order.receiverId}}"></span>
-								</div>
-								<div class="order_detail_summary_title_and_content industry_font">
-									<span class="order_detail_summary_title retract_format" translate="GPS_COORDINATES"></span><span>: </span>
-									<span class="order_detail_summary_content" ng-bind="history.order.location" title="{{history.order.location}}"></span>
-								</div>
-							</div>
-							<div class="order_rejected_reason industry_font" ng-if="!isAerospace"
-								 ng-show="history.order.status === 'APPROVED' || history.order.status === 'DECLINED' || history.order.status === 'CANCELED'">
-								<div>
-									<span translate="COMMENTS"></span><span>: </span>
-								</div>
-								<div class="order_rejected_reason_content industry_font">
-									<div ng-bind="history.order.comments === '' ? '-' : history.order.comments"></div>
-								</div>
-							</div>
-						</div>
-						<div class="location_container">
-							<div class="order_detail_map">
-								<img ng-src="{{history.order.orderImage}}">
-							</div>
-							<div ng-if="!isAerospace">
-								<div class="order_detail_region industry_font" >
-									<span translate="DEPLOY_ASSETS_TO" class="retract_format"></span>
-									<span>: </span>
-								</div>
-								<div class="order_detail_region_summary industry_font">
-									<div class="order_detail_summary_title_and_content industry_font">
-										<span class="order_detail_summary_title retract_format" translate="LOCATION_OPTIONS"></span><span>: </span>
-										<span class="order_detail_summary_content" translate="{{history.order.region}}" title="{{ history.order.region|translate}}"></span>
-									</div>
-									<div class="industry_font order_detail_summary_title_and_content">
-										<span class="order_detail_summary_title retract_format" translate="RECEIVER_NAME"></span><span>: </span>
-										<span class="order_detail_summary_content" ng-bind="history.order.receiverId" title="{{history.order.receiverId}}"></span>
-									</div>
-									<div class="industry_font order_detail_summary_title_and_content">
-										<span class="order_detail_summary_title retract_format" translate="GPS_COORDINATES"></span><span>: </span>
-										<span class="order_detail_summary_content" ng-bind="history.order.location" title="{{history.order.location}}"></span>
-									</div>
-								</div>
-							</div>
-							<div class="order_rejected_reason industry_font" ng-if="isAerospace"
-								 ng-show="history.order.status === 'APPROVED' || history.order.status === 'DECLINED' || history.order.status === 'CANCELED'">
-								<div>
-									<span translate="COMMENTS"></span><span>: </span>
-								</div>
-								<div class="order_rejected_reason_content industry_font">
-									<div ng-bind="history.order.comments === '' ? '-' : history.order.comments"></div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="close_btn_field industry_font">
-						<button class="btn" ng-click="history.closeOrderDetail()" translate="CLOSE"></button>
-					</div>
-				</div>
-				<div class="order-detail-shadow" ng-click="history.closeOrderDetail()"></div>
-			</div>
-		</div>
-		<footer ng-include="'/common/pages/footer.html'"></footer>
-	</div>
-	<script type="text/javascript" src="/lib/jquery/jquery-3.3.1.min.js"></script>
-	<script type="text/javascript" src="/lib/swiper/swiper.min.js"></script>
-	<script type="text/javascript" src="/lib/bootstrap/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="/lib/angularjs/angular.min.js"></script>
-	<script type="text/javascript" src="/lib/angularjs/angular-translate.min.js"></script>
-	<script type="text/javascript" src="/lib/angularjs/angular-translate-loader-url.min.js"></script>
-	<script type="text/javascript" src="/lib/toastr/toastr.min.js"></script>
-	<script type="text/javascript" src="/lib/stomp/stomp.min.js"></script>
-	<script type="text/javascript" src="/common/js/common.js"></script>
-	<script type="text/javascript" src="/common/js/orders.js"></script>
-	<script type="text/javascript" src="/common/js/graphQLService.js"></script>
+    <input type="hidden" id="current_username" th:value="${#authentication.principal.username}">
+    <input type="hidden" id="current_rolename" th:value="${#authentication.principal.role.name}">
+    <input type="hidden" id="current_web_service_mode" th:value="${currentWebServiceMode}">
+    <div class="page-container">
+        <div class="header-section" ng-include="'/common/pages/header.html'" ng-controller="headerController"></div>
+        <div class="page-content-section" ng-controller="orderHistoryController as history">
+            <div ng-include="'/common/pages/requisitionBar.html'" ng-controller="requisitionBarController as requisition"></div>
+            <div class="order-container">
+                <div class="home-button-container industry_font">
+                    <a href="/"><span class="industry_color_1 home-link" translate="RETURN_TO_HOME"></span></a>
+                </div>
+                <div class="table-container">
+                    <div class="table-title industry_font">
+                        <span translate="ORDER_PAGE_TITLE" class="retract_format"></span>
+                    </div>
+                    <div class="table-body">
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr class="order_title">
+                                    <th class="status" translate="STATUS"></th>
+                                    <th class="requisition_number" translate="ORDER_NUMBER"></th>
+                                    <th class="submission_date" translate="SUBMISSION_DATE"></th>
+                                    <th class="approver_reply_date" translate="APPROVER_REPLY_DATE"></th>
+                                    <th class="approver" translate="APPROVER"></th>
+                                    <th class="assets" translate="ASSETS"></th>
+                                </tr>
+                                <tr class="order_content" ng-repeat="order in history.orders">
+                                    <td>
+                                        <div class="label_container">
+                                            <span class="new_label new_label{{$index+1}}" translate="NEW" ng-if="isPurchaser" ng-show="!order.reviewedByPRCH"></span>
+                                        </div>
+                                        <!-- <span class="new_label" translate="NEW" ng-if="isApprover" ng-show="!order.reviewedByAPV"></span> -->
+                                        <span ng-class="!order.reviewedByPRCH ? 'order_status' : ''" ng-bind="history.parseOrderStatus(order.status)"></span>
+                                    </td>
+                                    <th>
+                                        <a class="industry_color_1"
+                                             ng-bind="order.orderNumber"
+                                             ng-click="history.openOrderDetail($index+1, order.orderNumber)">
+                                        </a>
+                                    </th>
+                                    <td ng-bind="order.submissionDate.substring(0,order.submissionDate.indexOf('T'))"></td>
+                                    <td ng-bind="order.approverReplyDate === null ? '-' : order.approverReplyDate.substring(0,order.approverReplyDate.indexOf('T'))"></td>
+                                    <td>
+                                        <span title="{{order.respondedBy}}" class="approver_content" ng-bind="order.respondedBy === null ? '-' : order.respondedBy"></span>
+                                    </td>
+                                    <td style="text-align:left;">
+                                        <span class="assets_content"
+                                                    title="{{history.showOrderItems(order.orderItems)}}"
+                                                    ng-bind="history.orderItems(order.orderItems)">
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="order_error_message" ng-include="'/common/pages/emptyContentMessage.html'" ng-if="history.emptyContentsMessage || history.ordersLoadError"></div>
+                    </div>
+                </div>
+                <div class="pager">
+                    <a role="button" class="pre_btn btn" ng-disabled="history.currentPage <= 1 ? true : false">
+                        <img ng-src="/{{industry}}/images/purchaser_order_left.svg" ng-click="history.prev(history.currentPage)">
+                    </a>
+                    <span>{{ history.currentPage }} of {{ history.totalPages }}</span>
+                    <a role="button" class="next_btn btn" ng-disabled="history.currentPage === history.totalPages ? true : false">
+                        <img ng-src="/{{industry}}/images/purchaser_order_right.svg" ng-click="history.next(history.currentPage)">
+                    </a>
+                </div>
+            </div>
+            <div class="order_modal" ng-if="history.showOrderDetail['show']">
+                <div class="order_detail_container">
+                    <div class="order_detail_title_container">
+                        <div class="cross_btn industry_font" ng-click="history.closeOrderDetail()">
+                            <span class="industry_color_1" ng-bind="'X'"></span>
+                        </div>
+                        <div class="order_detail_title industry_font">
+                            <div>
+                                <span ng-bind="'ORDER'|translate|uppercase" class="retract_format"></span>
+                                    <span ng-bind="'#'+history.order.orderNumber"></span>
+                                    <span ng-if="history.order.status !== 'SUBMITTED' && history.order.status !== 'PROCESSED'">
+                                        <span ng-bind="history.parseOrderStatus(history.order.status)|uppercase"></span>
+                                        <span ng-bind="'!'"></span>
+                                    </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="order_detail_body_container">
+                        <div class="info_container">
+                            <div class="requested_assets industry_font">
+                                <span translate="REQUESTED_ASSETS"></span><span>: </span>
+                                <span ng-bind="history.totalItemQuantity"></span>
+                            </div>
+                            <div class="order_items_container">
+                                <div class="order_item"  ng-repeat="orderItem in history.order.orderItems track by $index">
+                                    <div class="item_img">
+                                        <img ng-src="{{orderItem.image}}">
+                                    </div>
+                                    <div class="order_item_info_container">
+                                        <div class="order_item_title  industry_font" title="{{orderItem.name}}">
+                                            <span class="retract_format order_item_title" ng-bind="orderItem.name"></span>
+                                        </div>
+                                        <div class="order_item_description  industry_font" title="{{orderItem.description}}">
+                                            <span class="order-content" ng-bind="orderItem.description"></span>
+                                        </div>
+                                    </div>
+                                    <div class="order_item_quantity industry_font">
+                                        <span>x</span>&nbsp;<span ng-bind="orderItem.quantity"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="order_detail_assigned_campaign industry_font" ng-if="!isAerospace">
+                                <span translate="ASSIGNMENT_STEP_IN_WIZARD" class="retract_format"></span><span>:</span>
+                            </div>
+                            <div class="order_detail_assigned_campaign_summary industry_font">
+                                <div class="order_detail_summary_title_and_content industry_font">
+                                    <span class="order_detail_summary_title retract_format" translate="INVOICE_NUMBER"></span>
+                                    <span>: </span>
+                                    <span class="order_detail_summary_content" ng-bind="history.order.eventId" title="{{history.order.eventId}}"></span>
+                                </div>
+                                <div class="order_detail_summary_title_and_content industry_font">
+                                    <span class="order_detail_summary_title retract_format" translate="UNIQUE_NUMBER"></span>
+                                    <span>: </span>
+                                    <span class="order_detail_summary_content" ng-bind="history.order.eventNumber" title="{{history.order.eventNumber}}"></span>
+                                </div>
+                            </div>
+                            <div class="order_detail_region_summary industry_font" ng-if="isAerospace">
+                                <div class="order_detail_summary_title_and_content industry_font">
+                                    <span class="order_detail_summary_title retract_format" translate="LOCATION_OPTIONS"></span><span>: </span>
+                                    <span class="order_detail_summary_content" translate="{{history.order.region}}" title="{{ history.order.region|translate}}"></span>
+                                </div>
+                                <div class="order_detail_summary_title_and_content industry_font">
+                                    <span class="order_detail_summary_title retract_format" translate="RECEIVER_NAME"></span><span>: </span>
+                                    <span class="order_detail_summary_content" ng-bind="history.order.receiverId" title="{{history.order.receiverId}}"></span>
+                                </div>
+                                <div class="order_detail_summary_title_and_content industry_font">
+                                    <span class="order_detail_summary_title retract_format" translate="GPS_COORDINATES"></span><span>: </span>
+                                    <span class="order_detail_summary_content" ng-bind="history.order.location" title="{{history.order.location}}"></span>
+                                </div>
+                            </div>
+                            <div class="order_rejected_reason industry_font" ng-if="!isAerospace"
+                                 ng-show="history.order.status === 'APPROVED' || history.order.status === 'DECLINED' || history.order.status === 'CANCELED'">
+                                <div>
+                                    <span translate="COMMENTS"></span><span>: </span>
+                                </div>
+                                <div class="order_rejected_reason_content industry_font">
+                                    <div ng-bind="history.order.comments === '' ? '-' : history.order.comments"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="location_container">
+                            <div class="order_detail_map">
+                                <img ng-src="{{history.order.orderImage}}">
+                            </div>
+                            <div ng-if="!isAerospace">
+                                <div class="order_detail_region industry_font" >
+                                    <span translate="DEPLOY_ASSETS_TO" class="retract_format"></span>
+                                    <span>: </span>
+                                </div>
+                                <div class="order_detail_region_summary industry_font">
+                                    <div class="order_detail_summary_title_and_content industry_font">
+                                        <span class="order_detail_summary_title retract_format" translate="LOCATION_OPTIONS"></span><span>: </span>
+                                        <span class="order_detail_summary_content" translate="{{history.order.region}}" title="{{ history.order.region|translate}}"></span>
+                                    </div>
+                                    <div class="industry_font order_detail_summary_title_and_content">
+                                        <span class="order_detail_summary_title retract_format" translate="RECEIVER_NAME"></span><span>: </span>
+                                        <span class="order_detail_summary_content" ng-bind="history.order.receiverId" title="{{history.order.receiverId}}"></span>
+                                    </div>
+                                    <div class="industry_font order_detail_summary_title_and_content">
+                                        <span class="order_detail_summary_title retract_format" translate="GPS_COORDINATES"></span><span>: </span>
+                                        <span class="order_detail_summary_content" ng-bind="history.order.location" title="{{history.order.location}}"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="order_rejected_reason industry_font" ng-if="isAerospace"
+                                 ng-show="history.order.status === 'APPROVED' || history.order.status === 'DECLINED' || history.order.status === 'CANCELED'">
+                                <div>
+                                    <span translate="COMMENTS"></span><span>: </span>
+                                </div>
+                                <div class="order_rejected_reason_content industry_font">
+                                    <div ng-bind="history.order.comments === '' ? '-' : history.order.comments"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="close_btn_field industry_font">
+                        <button class="btn" ng-click="history.closeOrderDetail()" translate="CLOSE"></button>
+                    </div>
+                </div>
+                <div class="order-detail-shadow" ng-click="history.closeOrderDetail()"></div>
+            </div>
+        </div>
+        <footer ng-include="'/common/pages/footer.html'"></footer>
+    </div>
+    <script type="text/javascript" src="/lib/jquery/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="/lib/swiper/swiper.min.js"></script>
+    <script type="text/javascript" src="/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/lib/angularjs/angular.min.js"></script>
+    <script type="text/javascript" src="/lib/angularjs/angular-translate.min.js"></script>
+    <script type="text/javascript" src="/lib/angularjs/angular-translate-loader-url.min.js"></script>
+    <script type="text/javascript" src="/lib/toastr/toastr.min.js"></script>
+    <script type="text/javascript" src="/lib/stomp/stomp.min.js"></script>
+    <script type="text/javascript" src="/common/js/common.js"></script>
+    <script type="text/javascript" src="/common/js/orders.js"></script>
+    <script type="text/javascript" src="/common/js/graphQLService.js"></script>
 </body>
 </html>
