@@ -98,14 +98,14 @@ The configuration for queues can be changed or reset to default on PDA Demo Admi
 
 <img src="src/main/resources/static/common/images/mq_default_mode_diagram.png" alt="mq default mode diagram">
 
-### Use with JMS/MQ Proxy
+### Using JMS/MQ Proxy
 To use the queueing system with JMS/MQ proxy, you can change **Destination queue** and **Reply to queue** to customized queue names.
 The **Client Connection** in message proxy should be configured with the two customized queues.
 The **Server Connection** in message proxy should be configured with the two default queues.
 
 <img src="src/main/resources/static/common/images/mq_proxy_mode_diagram.png" alt="mq proxy mode diagram">
 
-### Use with virtual asset
+### Using virtual asset
 To use the queueing system with virtual asset, you can change **Destination queue** to a customized destination queue name.
 The virtual asset deployment should be configured to listen to the customized destination queue and reply to the default response queue.
 
