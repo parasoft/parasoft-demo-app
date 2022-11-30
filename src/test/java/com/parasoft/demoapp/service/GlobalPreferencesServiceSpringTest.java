@@ -79,9 +79,6 @@ public class GlobalPreferencesServiceSpringTest {
 	@Autowired
 	RouteLocator routeLocator;
 
-    @Autowired
-    GlobalPreferencesDefaultSettingsService defaultSettingsService;
-
 	@MockBean
 	ParasoftJDBCProxyService parasoftJDBCProxyService;
 

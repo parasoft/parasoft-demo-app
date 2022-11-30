@@ -61,9 +61,6 @@ public class GlobalPreferencesServiceTest {
 	@Mock
 	InventoryRequestQueueListener inventoryRequestQueueListener;
 
-    @Mock
-    GlobalPreferencesDefaultSettingsService globalPreferencesDefaultSettingsService;
-
 	@Mock
 	WebConfig webConfig;
 
