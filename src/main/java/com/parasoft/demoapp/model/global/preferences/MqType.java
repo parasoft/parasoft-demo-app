@@ -1,5 +1,5 @@
 package com.parasoft.demoapp.model.global.preferences;
 
 public enum MqType {
-    ACTIVE_MQ
+    ACTIVE_MQ, KAFKA
 }

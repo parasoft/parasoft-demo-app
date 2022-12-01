@@ -1,5 +1,7 @@
 package com.parasoft.demoapp.config.activemq;
 
+import com.parasoft.demoapp.config.MQConfig;
+import com.parasoft.demoapp.model.global.preferences.MqType;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.config.JmsListenerEndpointRegistry;
 import org.springframework.jms.config.SimpleJmsListenerEndpoint;
@@ -14,7 +16,7 @@ import java.util.Map;
 
 public abstract class RefreshableMessageListener implements MessageListener {
 
-    private static final String ID_PREFIX = "ID_PREFIX";
+    private static final String ID_PREFIX = "id.";
 
     protected final CachingConnectionFactory cachingConnectionFactory;
 
@@ -33,7 +35,9 @@ public abstract class RefreshableMessageListener implements MessageListener {
         this.jmsQueueListenerContainerFactory = jmsQueueListenerContainerFactory;
         this.cachingConnectionFactory = cachingConnectionFactory;
 
-        registerListener(destinationName);
+        if(MQConfig.CURRENT_MQ_TYPE == MqType.ACTIVE_MQ) {
+            registerListener(destinationName);
+        }
     }
 
     private void registerListener(String destinationName) {
@@ -43,13 +47,11 @@ public abstract class RefreshableMessageListener implements MessageListener {
         jmsListenerEndpoint.setId(ID_PREFIX + destinationName);
         jmsListenerEndpointRegistry.
                 registerListenerContainer(jmsListenerEndpoint, jmsQueueListenerContainerFactory, true);
-        listenedListenerContainers.put(destinationName, jmsListenerEndpointRegistry.getListenerContainer("ID_PREFIX" + destinationName));
+        listenedListenerContainers.put(destinationName, jmsListenerEndpointRegistry.getListenerContainer(ID_PREFIX + destinationName));
     }
 
     public void refreshDestination(String destinationName) {
-        for(MessageListenerContainer container : listenedListenerContainers.values()) {
-            container.stop();
-        }
+        stopAllListenedListenerContainers();
 
         MessageListenerContainer targetMessageListenerContainer = listenedListenerContainers.get(destinationName);
         if(targetMessageListenerContainer == null) {
@@ -62,4 +64,11 @@ public abstract class RefreshableMessageListener implements MessageListener {
     }
 
     public abstract void onMessage(Message message);
+
+    public void stopAllListenedListenerContainers() {
+        for(MessageListenerContainer container : listenedListenerContainers.values()) {
+            System.out.println(container);
+            container.stop();
+        }
+    }
 }
