@@ -2,7 +2,6 @@ package com.parasoft.demoapp.service;
 
 import com.parasoft.demoapp.config.ImplementedIndustries;
 import com.parasoft.demoapp.config.activemq.ActiveMQConfig;
-import com.parasoft.demoapp.config.activemq.InventoryRequestQueueListener;
 import com.parasoft.demoapp.config.activemq.InventoryResponseQueueListener;
 import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
 import com.parasoft.demoapp.defaultdata.ClearEntrance;
@@ -57,9 +56,6 @@ public class GlobalPreferencesService {
 
     @Autowired
     private InventoryResponseQueueListener inventoryResponseQueueListener;
-
-    @Autowired
-    private InventoryRequestQueueListener inventoryRequestQueueListener;
 
     @Autowired
     private GlobalPreferencesDefaultSettingsService defaultGlobalPreferencesSettingsService;
@@ -238,13 +234,8 @@ public class GlobalPreferencesService {
         String orderServiceReplyToQueue = currentPreferences.getOrderServiceReplyToQueue();
 
         if(MqType.ACTIVE_MQ == currentPreferences.getMqType()) {
-            stopMQListenersExcept(MqType.ACTIVE_MQ);
             ActiveMQConfig.setOrderServiceSendToQueue(new ActiveMQQueue(orderServiceDestinationQueue));
             inventoryResponseQueueListener.refreshDestination(orderServiceReplyToQueue);
-            inventoryRequestQueueListener.refreshDestination(ActiveMQConfig.getInventoryServiceListenToQueue());
-        } else if(MqType.KAFKA == currentPreferences.getMqType()) {
-            stopMQListenersExcept(MqType.KAFKA);
-            // TODO: refresh listener on Kafka
         } else {
             throw new UnsupportedOperationException("Unsupported MQ type: " + currentPreferences.getMqType());
         }
@@ -256,7 +247,7 @@ public class GlobalPreferencesService {
      *
      * @throws ParameterException
      */
-    public void initializeActiveMqJmsQueuesOnStartup(GlobalPreferencesEntity globalPreferences)
+    public void initializeActiveMqJmsProxyOnStartup(GlobalPreferencesEntity globalPreferences)
             throws ParameterException {
         GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
         globalPreferencesDto.setMqType(globalPreferences.getMqType());
@@ -456,16 +447,6 @@ public class GlobalPreferencesService {
 
     public void shutdownJMSService() {
         // TODO shutdown JMS service
-    }
-
-    private void stopMQListenersExcept(MqType mqType) {
-        if(MqType.ACTIVE_MQ == mqType) {
-            // TODO: stop listeners of Kafka
-        } else if(MqType.KAFKA == mqType) {
-            // Stop listeners on ActiveMQ
-            inventoryResponseQueueListener.stopAllListenedListenerContainers();
-            inventoryRequestQueueListener.stopAllListenedListenerContainers();
-        }
     }
 
 }
