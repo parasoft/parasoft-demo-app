@@ -236,7 +236,10 @@ public class GlobalPreferencesService {
         if(MqType.ACTIVE_MQ == currentPreferences.getMqType()) {
             ActiveMQConfig.setOrderServiceSendToQueue(new ActiveMQQueue(orderServiceDestinationQueue));
             inventoryResponseQueueListener.refreshDestination(orderServiceReplyToQueue);
-        } else {
+        } else if(MqType.KAFKA == currentPreferences.getMqType()) {
+            // TODO: Refresh destination when MQ was changed to Kafka.
+        }
+        else {
             throw new UnsupportedOperationException("Unsupported MQ type: " + currentPreferences.getMqType());
         }
 
