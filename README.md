@@ -82,15 +82,15 @@ a request through messaging queue to check and decrease the inventory. After the
 
 **Configuration details for embedded ActiveMQ server**
 
-| Option                    | Value                                                    |
-|---------------------------|----------------------------------------------------------|
-| Provider URL              | `tcp://localhost:61626`                                  |
-| Initial context class     | `org.apache.activemq.jndi.ActiveMQInitialContextFactory` |
-| Connection factory        | `ConnectionFactory`                                      |
-| Username                  | `admin`                                                  |
-| Password                  | `admin`                                                  |
-| Default destination queue | `queue.inventory.request`                                |
-| Default reply to queue    | `queue.inventory.response`                               |
+| Option                            | Value                                                    |
+|-----------------------------------|----------------------------------------------------------|
+| Provider URL                      | `tcp://localhost:61626`                                  |
+| Initial context class             | `org.apache.activemq.jndi.ActiveMQInitialContextFactory` |
+| Connection factory                | `ConnectionFactory`                                      |
+| Username                          | `admin`                                                  |
+| Password                          | `admin`                                                  |
+| Inventory service request queue   | `inventory.request`                                      |
+| Inventory service response queue  | `inventory.response`                                     |
 
 
 PDA uses two default queues to support messaging between **order service** and **inventory service**.
