@@ -50,6 +50,21 @@ public class ActiveMQConfig {
     @Value("${spring.activemq.stomp-transport-connector-url}")
     private String stompUrl;
 
+    @Value("${spring.activemq.broker-url}")
+    private String brokerUrl;
+
+    @Value("${spring.activemq.user}")
+    private String username;
+
+    @Value("${spring.activemq.password}")
+    private String password;
+
+    @Value("org.apache.activemq.jndi.ActiveMQInitialContextFactory")
+    private String initialContextClass;
+
+    @Value("ConnectionFactory")
+    private String connectionFactory;
+
     @Bean
     public MessageConverter jacksonJmsMessageConverter() {
         MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
