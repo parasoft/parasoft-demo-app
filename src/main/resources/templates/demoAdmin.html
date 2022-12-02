@@ -244,9 +244,18 @@
                                 </div>
 
                                 <div id="message_queue_type">
-                                    <div class="form-group">
-                                        <input type="hidden" name="mqType" ng-value="options.mqType">
-                                    </div>
+				    <div class="mq_type">
+					<label>
+					    <input type="radio" name="mqType" ng-model="options.mqType" value="ACTIVE_MQ">
+					    <span class="input-label" translate="JMS"></span>
+				    	</label>
+				    </div>
+				    <div class="mq_type">
+					<label>
+					    <input type="radio" name="mqType" ng-model="options.mqType" value="KAFKA">
+					    <span class="input-label" translate="KAFKA"></span>
+					</label>
+				    </div>
                                 </div>
                                 <label for="client_connection" class="connection-label" translate="CLIENT_CONNECTION"></label>
                                 <div id="client_connection">

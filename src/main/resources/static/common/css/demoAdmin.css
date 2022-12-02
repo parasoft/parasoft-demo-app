@@ -476,4 +476,9 @@ textarea {
     margin-left: 40px;
 }
 
+.mq_type {
+    padding-right: 40px;
+    display: inline-block;
+}
+
 /* LABELS tab */
