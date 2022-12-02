@@ -76,7 +76,7 @@ Parasoft Demo Application exposes port 9001 for the user to connect to the HSQLD
 | Username | `SA`                                                |
 | Password | `pass`                                              |
 
-## Using Parasoft JMS/MQ Proxy and Virtual Asset
+## Using Parasoft JMS Proxy and Virtual Asset
 There are two main services for order management in PDA, **order service** and **inventory service**. After an order is submitted, order service sends
 a request through messaging queue to check and decrease the inventory. After the operation is done, inventory service sends a response through messaging queue which includes the information of the operation result.
 
@@ -98,8 +98,8 @@ The configuration for queues can be changed or reset to default on PDA Demo Admi
 
 <img src="src/main/resources/static/common/images/mq_default_mode_diagram.png" alt="mq default mode diagram">
 
-### Using JMS/MQ Proxy
-To use the queueing system with JMS/MQ proxy, you can change **Destination queue** and **Reply to queue** to customized queue names.
+### Using JMS Proxy
+To use the queueing system with JMS proxy, you can change **Destination queue** and **Reply to queue** to customized queue names.
 The **Client Connection** in message proxy should be configured with the two customized queues.
 The **Server Connection** in message proxy should be configured with the two default queues.
 
