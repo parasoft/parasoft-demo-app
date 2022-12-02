@@ -1,9 +1,9 @@
-package com.parasoft.demoapp.model.global.preferences;
+package com.parasoft.demoapp.dto;
 
 import lombok.Data;
 
 @Data
-public class KafkaConfigEntity {
+public class MqConfigDTO {
     private String orderServiceSendTo;
     private String orderServiceListenOn;
 }

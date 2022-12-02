@@ -80,8 +80,8 @@ public class GlobalPreferencesService {
                                                            MqType mqType,
                                                            String orderServiceDestinationQueue,
                                                            String orderServiceReplyToQueue,
-                                                           String orderServiceRequest,
-                                                           String orderServiceResponse) throws ParameterException {
+                                                           String orderServiceRequestTopic,
+                                                           String orderServiceResponseTopic) throws ParameterException {
 
         validateIndustry(industryType);
         ParameterValidator.requireNonNull(advertisingEnabled, GlobalPreferencesMessages.ADVERTISING_ENABLED_CANNOT_BE_NULL);
@@ -106,8 +106,8 @@ public class GlobalPreferencesService {
                                                             mqType,
                                                             orderServiceDestinationQueue,
                                                             orderServiceReplyToQueue,
-                                                            orderServiceRequest,
-                                                            orderServiceResponse);
+                                                            orderServiceRequestTopic,
+                                                            orderServiceResponseTopic);
 
         for(DemoBugEntity demoBug : demoBugs){
             demoBug.setGlobalPreferences(newGlobalPreferences);

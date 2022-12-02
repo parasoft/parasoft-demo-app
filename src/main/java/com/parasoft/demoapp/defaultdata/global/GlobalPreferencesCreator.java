@@ -59,8 +59,8 @@ public class GlobalPreferencesCreator extends AbstractDataCreator {
                             defaultPreferences.getMqType(),
                             defaultPreferences.getOrderServiceDestinationQueue(),
                             defaultPreferences.getOrderServiceReplyToQueue(),
-                            defaultPreferences.getOrderServiceRequest(),
-                            defaultPreferences.getOrderServiceResponse());
+                            defaultPreferences.getOrderServiceRequestTopic(),
+                            defaultPreferences.getOrderServiceResponseTopic());
 
             for(RestEndpointEntity restEndpointEntity : restEndpointService.getAllEndpoints()){
                 restEndpointEntity.setGlobalPreferences(defaultPreferences);

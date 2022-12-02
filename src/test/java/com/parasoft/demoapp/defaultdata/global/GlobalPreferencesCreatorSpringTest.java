@@ -52,8 +52,8 @@ public class GlobalPreferencesCreatorSpringTest {
         assertEquals(MqType.ACTIVE_MQ, currentGlobalPreferences.getMqType());
         assertEquals(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST, currentGlobalPreferences.getOrderServiceDestinationQueue());
         assertEquals(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE, currentGlobalPreferences.getOrderServiceReplyToQueue());
-        assertEquals(KafkaConfig.ORDER_SERVICE_REQUEST, currentGlobalPreferences.getOrderServiceRequest());
-        assertEquals(KafkaConfig.ORDER_SERVICE_RESPONSE, currentGlobalPreferences.getOrderServiceReplyToQueue());
+        assertEquals(KafkaConfig.DEFAULT_ORDER_SERVICE_REQUEST_TOPIC, currentGlobalPreferences.getOrderServiceRequestTopic());
+        assertEquals(KafkaConfig.DEFAULT_ORDER_SERVICE_RESPONSE_TOPIC, currentGlobalPreferences.getOrderServiceReplyToQueue());
     }
 
 }

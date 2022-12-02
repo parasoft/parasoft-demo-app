@@ -100,22 +100,22 @@ public class GlobalPreferencesServiceTest {
 		String parasoftVirtualizeServerPath = "/myVirtualDB";
 		String parasoftVirtualizeGroupId = "pda-group";
 		MqType mqType = MqType.ACTIVE_MQ;
-		String orderServiceDestinationQueue = "queue.inventory.request";
-		String orderServiceReplyToQueue = "queue.inventory.response";
-		String orderServiceRequest = "topic.inventory.request";
-		String orderServiceResponse = "topic.inventory.response";
+		String orderServiceDestinationQueue = "inventory.request";
+		String orderServiceReplyToQueue = "inventory.response";
+		String orderServiceRequestTopic = "inventory.request";
+		String orderServiceResponseTopic = "inventory.response";
 
 		GlobalPreferencesEntity saveResult = new GlobalPreferencesEntity(dataAccessMode, soapEndPoint, restEndPoints,
 				industryType, webServiceMode, graphQLEndpoint, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
 				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, mqType, orderServiceDestinationQueue,
-				orderServiceReplyToQueue, orderServiceRequest, orderServiceResponse);
+				orderServiceReplyToQueue, orderServiceRequestTopic, orderServiceResponseTopic);
 		doReturn(saveResult).when(globalPreferencesRepository).save((GlobalPreferencesEntity) any());
 
 		// When
 		GlobalPreferencesEntity result = underTest.addNewGlobalPreferences(dataAccessMode, soapEndPoint, restEndPoints,
 				industryType, webServiceMode, graphQLEndpoint, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
 				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, mqType, orderServiceDestinationQueue,
-				orderServiceReplyToQueue, orderServiceRequest, orderServiceResponse);
+				orderServiceReplyToQueue, orderServiceRequestTopic, orderServiceResponseTopic);
 
 		// Then
 		assertNotNull(result);
@@ -153,22 +153,22 @@ public class GlobalPreferencesServiceTest {
 		String parasoftVirtualizeServerPath = "/myVirtualDB";
 		String parasoftVirtualizeGroupId = "pda-group";
 		MqType mqType = MqType.ACTIVE_MQ;
-		String orderServiceDestinationQueue = "queue.inventory.request";
-		String orderServiceReplyToQueue = "queue.inventory.response";
-		String orderServiceRequest = "topic.inventory.request";
-		String orderServiceResponse = "topic.inventory.response";
+		String orderServiceDestinationQueue = "inventory.request";
+		String orderServiceReplyToQueue = "inventory.response";
+		String orderServiceRequestTopic = "inventory.request";
+		String orderServiceResponseTopic = "inventory.response";
 
 		GlobalPreferencesEntity saveResult = new GlobalPreferencesEntity(dataAccessMode, soapEndPoint, restEndPoints,
 				industryType, webServiceMode, graphQLEndpoint, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
 				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, mqType, orderServiceDestinationQueue,
-				orderServiceReplyToQueue, orderServiceRequest, orderServiceResponse);
+				orderServiceReplyToQueue, orderServiceRequestTopic, orderServiceResponseTopic);
 		doReturn(saveResult).when(globalPreferencesRepository).save((GlobalPreferencesEntity) any());
 
 		// When
 		GlobalPreferencesEntity result = underTest.addNewGlobalPreferences(dataAccessMode, soapEndPoint, restEndPoints,
 				industryType, webServiceMode, graphQLEndpoint, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
 				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, mqType, orderServiceDestinationQueue,
-				orderServiceReplyToQueue, orderServiceRequest, orderServiceResponse);
+				orderServiceReplyToQueue, orderServiceRequestTopic, orderServiceResponseTopic);
 
 		// Then
 		assertNotNull(result);
@@ -198,22 +198,22 @@ public class GlobalPreferencesServiceTest {
 		String parasoftVirtualizeServerPath = "/myVirtualDB";
 		String parasoftVirtualizeGroupId = "pda-group";
 		MqType mqType = MqType.ACTIVE_MQ;
-		String orderServiceDestinationQueue = "queue.inventory.request";
-		String orderServiceReplyToQueue = "queue.inventory.response";
-		String orderServiceRequest = "topic.inventory.request";
-		String orderServiceResponse = "topic.inventory.response";
+		String orderServiceDestinationQueue = "inventory.request";
+		String orderServiceReplyToQueue = "inventory.response";
+		String orderServiceRequestTopic = "inventory.request";
+		String orderServiceResponseTopic = "inventory.response";
 
 		GlobalPreferencesEntity saveResult = new GlobalPreferencesEntity(dataAccessMode, soapEndPoint, restEndPoints,
 				industryType, webServiceMode, graphQLEndpoint, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
 				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, mqType, orderServiceDestinationQueue,
-				orderServiceReplyToQueue, orderServiceRequest, orderServiceResponse);
+				orderServiceReplyToQueue, orderServiceRequestTopic, orderServiceResponseTopic);
 		doReturn(saveResult).when(globalPreferencesRepository).save((GlobalPreferencesEntity) any());
 
 		// When
 		GlobalPreferencesEntity result = underTest.addNewGlobalPreferences(dataAccessMode, soapEndPoint, restEndPoints,
 				industryType, webServiceMode, graphQLEndpoint, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
 				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, mqType, orderServiceDestinationQueue,
-				orderServiceReplyToQueue, orderServiceRequest, orderServiceResponse);
+				orderServiceReplyToQueue, orderServiceRequestTopic, orderServiceResponseTopic);
 
 		// Then
 		assertNotNull(result);
@@ -243,15 +243,15 @@ public class GlobalPreferencesServiceTest {
 		String parasoftVirtualizeServerPath = "/myVirtualDB";
 		String parasoftVirtualizeGroupId = "pda-group";
 		MqType mqType = MqType.ACTIVE_MQ;
-		String orderServiceDestinationQueue = "queue.inventory.request";
-		String orderServiceReplyToQueue = "queue.inventory.response";
-		String orderServiceRequest = "topic.inventory.request";
-		String orderServiceResponse = "topic.inventory.response";
+		String orderServiceDestinationQueue = "inventory.request";
+		String orderServiceReplyToQueue = "inventory.response";
+		String orderServiceRequestTopic = "inventory.request";
+		String orderServiceResponseTopic = "inventory.response";
 
 		GlobalPreferencesEntity saveResult = new GlobalPreferencesEntity(dataAccessMode, soapEndPoint, restEndPoints,
 				industryType, webServiceMode, graphQLEndpoint, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
 				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, mqType, orderServiceDestinationQueue,
-				orderServiceReplyToQueue, orderServiceRequest, orderServiceResponse);
+				orderServiceReplyToQueue, orderServiceRequestTopic, orderServiceResponseTopic);
 		doReturn(saveResult).when(globalPreferencesRepository).save((GlobalPreferencesEntity) any());
 
 		// When
@@ -260,7 +260,7 @@ public class GlobalPreferencesServiceTest {
 			underTest.addNewGlobalPreferences(dataAccessMode, soapEndPoint, restEndPoints, industryType, webServiceMode, graphQLEndpoint,
 					demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
 					parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, mqType, orderServiceDestinationQueue,
-					orderServiceReplyToQueue, orderServiceRequest, orderServiceResponse);
+					orderServiceReplyToQueue, orderServiceRequestTopic, orderServiceResponseTopic);
 		} catch (Exception e) {
 			message = e.getMessage();
 		}
@@ -290,15 +290,15 @@ public class GlobalPreferencesServiceTest {
 		String parasoftVirtualizeServerPath = "/myVirtualDB";
 		String parasoftVirtualizeGroupId = "pda-group";
 		MqType mqType = MqType.ACTIVE_MQ;
-		String orderServiceDestinationQueue = "queue.inventory.request";
-		String orderServiceReplyToQueue = "queue.inventory.response";
-		String orderServiceRequest = "topic.inventory.request";
-		String orderServiceResponse = "topic.inventory.response";
+		String orderServiceDestinationQueue = "inventory.request";
+		String orderServiceReplyToQueue = "inventory.response";
+		String orderServiceRequestTopic = "inventory.request";
+		String orderServiceResponseTopic = "inventory.response";
 
 		GlobalPreferencesEntity globalPreferencesEntity = new GlobalPreferencesEntity(dataAccessMode, soapEndPoint, restEndPoints,
 				industryType, webServiceMode, graphQLEndpoint, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
 				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, mqType, orderServiceDestinationQueue,
-				orderServiceReplyToQueue, orderServiceRequest, orderServiceResponse);
+				orderServiceReplyToQueue, orderServiceRequestTopic, orderServiceResponseTopic);
 
 		when(globalPreferencesRepository.findAll()).thenReturn(Arrays.asList(globalPreferencesEntity));
 

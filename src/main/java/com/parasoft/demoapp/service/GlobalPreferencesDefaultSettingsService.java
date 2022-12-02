@@ -66,8 +66,8 @@ public class GlobalPreferencesDefaultSettingsService {
         MqType mqType = defaultMqType();
         String orderServiceDestinationQueue = defaultOrderServiceDestinationQueue();
         String orderServiceReplyToQueue = defaultOrderServiceReplyToQueue();
-        String orderServiceRequest = defaultOrderServiceRequest();
-        String orderServiceResponse = defaultOrderServiceResponse();
+        String orderServiceRequestTopic = defaultOrderServiceRequestTopic();
+        String orderServiceResponseTopic = defaultOrderServiceResponseTopic();
 
 
         defaultPreferences.setDataAccessMode(dataAccessMode);
@@ -86,8 +86,8 @@ public class GlobalPreferencesDefaultSettingsService {
         defaultPreferences.setMqType(mqType);
         defaultPreferences.setOrderServiceDestinationQueue(orderServiceDestinationQueue);
         defaultPreferences.setOrderServiceReplyToQueue(orderServiceReplyToQueue);
-        defaultPreferences.setOrderServiceRequest(orderServiceRequest);
-        defaultPreferences.setOrderServiceResponse(orderServiceResponse);
+        defaultPreferences.setOrderServiceRequestTopic(orderServiceRequestTopic);
+        defaultPreferences.setOrderServiceResponseTopic(orderServiceResponseTopic);
 
         return defaultPreferences;
     }
@@ -289,11 +289,11 @@ public class GlobalPreferencesDefaultSettingsService {
         return ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE;
     }
 
-    public String defaultOrderServiceRequest() {
-        return KafkaConfig.ORDER_SERVICE_REQUEST;
+    public String defaultOrderServiceRequestTopic() {
+        return KafkaConfig.DEFAULT_ORDER_SERVICE_REQUEST_TOPIC;
     }
 
-    public String defaultOrderServiceResponse() {
-        return KafkaConfig.ORDER_SERVICE_RESPONSE;
+    public String defaultOrderServiceResponseTopic() {
+        return KafkaConfig.DEFAULT_ORDER_SERVICE_RESPONSE_TOPIC;
     }
 }
