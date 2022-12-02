@@ -1,6 +1,7 @@
 package com.parasoft.demoapp.defaultdata.global;
 
 import com.parasoft.demoapp.config.activemq.ActiveMQConfig;
+import com.parasoft.demoapp.config.kafka.KafkaConfig;
 import com.parasoft.demoapp.model.global.preferences.MqType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,6 +52,8 @@ public class GlobalPreferencesCreatorSpringTest {
         assertEquals(MqType.ACTIVE_MQ, currentGlobalPreferences.getMqType());
         assertEquals(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST, currentGlobalPreferences.getOrderServiceDestinationQueue());
         assertEquals(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE, currentGlobalPreferences.getOrderServiceReplyToQueue());
+        assertEquals(KafkaConfig.ORDER_SERVICE_REQUEST, currentGlobalPreferences.getOrderServiceRequest());
+        assertEquals(KafkaConfig.ORDER_SERVICE_RESPONSE, currentGlobalPreferences.getOrderServiceReplyToQueue());
     }
 
 }

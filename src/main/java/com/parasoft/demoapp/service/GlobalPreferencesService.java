@@ -79,7 +79,9 @@ public class GlobalPreferencesService {
                                                            String parasoftVirtualizeGroupId,
                                                            MqType mqType,
                                                            String orderServiceDestinationQueue,
-                                                           String orderServiceReplyToQueue) throws ParameterException {
+                                                           String orderServiceReplyToQueue,
+                                                           String orderServiceRequest,
+                                                           String orderServiceResponse) throws ParameterException {
 
         validateIndustry(industryType);
         ParameterValidator.requireNonNull(advertisingEnabled, GlobalPreferencesMessages.ADVERTISING_ENABLED_CANNOT_BE_NULL);
@@ -103,7 +105,9 @@ public class GlobalPreferencesService {
                                                             parasoftVirtualizeGroupId,
                                                             mqType,
                                                             orderServiceDestinationQueue,
-                                                            orderServiceReplyToQueue);
+                                                            orderServiceReplyToQueue,
+                                                            orderServiceRequest,
+                                                            orderServiceResponse);
 
         for(DemoBugEntity demoBug : demoBugs){
             demoBug.setGlobalPreferences(newGlobalPreferences);

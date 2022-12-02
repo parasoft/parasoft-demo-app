@@ -30,8 +30,8 @@ public class ActiveMQConfig {
     public static final String TOPIC_ORDER_APPROVER = "order.approver";
     public static final String TOPIC_ORDER_PURCHASER = "order.purchaser";
     public static final String TOPIC_INDUSTRY_CHANGE = "globalPreferences.industryChange";
-    public static final String DEFAULT_QUEUE_INVENTORY_REQUEST = "queue.inventory.request";
-    public static final String DEFAULT_QUEUE_INVENTORY_RESPONSE = "queue.inventory.response";
+    public static final String DEFAULT_QUEUE_INVENTORY_REQUEST = "inventory.request";
+    public static final String DEFAULT_QUEUE_INVENTORY_RESPONSE = "inventory.response";
 
     @Getter private static final String inventoryServiceListenToQueue = DEFAULT_QUEUE_INVENTORY_REQUEST;
     @Getter private static ActiveMQQueue inventoryServiceSendToQueue = new ActiveMQQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE);

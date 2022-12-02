@@ -3,6 +3,7 @@ package com.parasoft.demoapp.service;
 import com.parasoft.demoapp.config.WebConfig;
 import com.parasoft.demoapp.config.activemq.ActiveMQConfig;
 import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
+import com.parasoft.demoapp.config.kafka.KafkaConfig;
 import com.parasoft.demoapp.model.global.preferences.*;
 import com.parasoft.demoapp.model.industry.RegionType;
 import com.parasoft.demoapp.util.BugsTypeSortOfDemoBugs;
@@ -65,6 +66,8 @@ public class GlobalPreferencesDefaultSettingsService {
         MqType mqType = defaultMqType();
         String orderServiceDestinationQueue = defaultOrderServiceDestinationQueue();
         String orderServiceReplyToQueue = defaultOrderServiceReplyToQueue();
+        String orderServiceRequest = defaultOrderServiceRequest();
+        String orderServiceResponse = defaultOrderServiceResponse();
 
 
         defaultPreferences.setDataAccessMode(dataAccessMode);
@@ -83,6 +86,8 @@ public class GlobalPreferencesDefaultSettingsService {
         defaultPreferences.setMqType(mqType);
         defaultPreferences.setOrderServiceDestinationQueue(orderServiceDestinationQueue);
         defaultPreferences.setOrderServiceReplyToQueue(orderServiceReplyToQueue);
+        defaultPreferences.setOrderServiceRequest(orderServiceRequest);
+        defaultPreferences.setOrderServiceResponse(orderServiceResponse);
 
         return defaultPreferences;
     }
@@ -282,5 +287,13 @@ public class GlobalPreferencesDefaultSettingsService {
 
     public String defaultOrderServiceReplyToQueue() {
         return ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE;
+    }
+
+    public String defaultOrderServiceRequest() {
+        return KafkaConfig.ORDER_SERVICE_REQUEST;
+    }
+
+    public String defaultOrderServiceResponse() {
+        return KafkaConfig.ORDER_SERVICE_RESPONSE;
     }
 }
