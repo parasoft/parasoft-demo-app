@@ -7,7 +7,6 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
@@ -52,13 +51,11 @@ public class KafkaConfig {
     }
 
     @Bean
-    @ConditionalOnProperty(name = "spring.kafka.enabled", havingValue = "true")
     public ProducerFactory<String, InventoryOperationRequestMessageDTO> operationRequestProducerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
 
     @Bean
-    @ConditionalOnProperty(name = "spring.kafka.enabled", havingValue = "true")
     public ConsumerFactory<String, InventoryOperationRequestMessageDTO> operationRequestConsumerFactory() {
         return new DefaultKafkaConsumerFactory<>(consumerConfigs(),
                 new StringDeserializer(),
@@ -66,22 +63,18 @@ public class KafkaConfig {
     }
 
     @Bean
-    @ConditionalOnProperty(name = "spring.kafka.enabled", havingValue = "true")
     public ProducerFactory<String, InventoryOperationResultMessageDTO> operationResultProducerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
 
     @Bean
-    @ConditionalOnProperty(name = "spring.kafka.enabled", havingValue = "true")
     public ConsumerFactory<String, InventoryOperationResultMessageDTO> operationResultConsumerFactory() {
         return new DefaultKafkaConsumerFactory<>(consumerConfigs(),
                 new StringDeserializer(),
                 new JsonDeserializer<>(InventoryOperationResultMessageDTO.class));
     }
 
-    // this container factory is for deserializing consumed object data - InventoryOperationRequestMessageDTO
     @Bean
-    @ConditionalOnProperty(name = "spring.kafka.enabled", havingValue = "true")
     public ConcurrentKafkaListenerContainerFactory<String, InventoryOperationRequestMessageDTO> operationRequestContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, InventoryOperationRequestMessageDTO> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
@@ -89,9 +82,7 @@ public class KafkaConfig {
         return factory;
     }
 
-    // this container factory is for deserializing consumed object data - InventoryOperationResultMessageDTO
     @Bean
-    @ConditionalOnProperty(name = "spring.kafka.enabled", havingValue = "true")
     public ConcurrentKafkaListenerContainerFactory<String, InventoryOperationResultMessageDTO> operationResultContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, InventoryOperationResultMessageDTO> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
@@ -99,16 +90,12 @@ public class KafkaConfig {
         return factory;
     }
 
-    // this kafka template is for serializing produced object data - InventoryOperationRequestMessageDTO
     @Bean
-    @ConditionalOnProperty(name = "spring.kafka.enabled", havingValue = "true")
     public KafkaTemplate<String, InventoryOperationRequestMessageDTO> operationRequestKafkaTemplate() {
         return new KafkaTemplate<>(operationRequestProducerFactory());
     }
 
-    // this kafka template is for serializing produced object data - InventoryOperationResultMessageDTO
     @Bean
-    @ConditionalOnProperty(name = "spring.kafka.enabled", havingValue = "true")
     public KafkaTemplate<String, InventoryOperationResultMessageDTO> operationResultKafkaTemplate() {
         return new KafkaTemplate<>(operationResultProducerFactory());
     }
