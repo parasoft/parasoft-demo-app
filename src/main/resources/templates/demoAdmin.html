@@ -244,14 +244,22 @@
                                 </div>
 
                                 <div id="message_queue_type">
-                                    <div class="form-group">
-                                        <input type="hidden" name="mqType" ng-value="options.mqType">
-                                    </div>
+				    <div class="mq_type">
+					<label>
+					    <input type="radio" name="mqType" ng-model="options.mqType" value="ACTIVE_MQ">
+					    <span class="input-label" translate="JMS"></span>
+				    	</label>
+				    </div>
+				    <div class="mq_type">
+					<label>
+					    <input type="radio" name="mqType" ng-model="options.mqType" value="KAFKA">
+					    <span class="input-label" translate="KAFKA"></span>
+					</label>
+				    </div>
                                 </div>
-                                <label for="client_connection" class="connection-label" translate="CLIENT_CONNECTION"></label>
                                 <div id="client_connection">
                                     <div class="form-group">
-                                        <label for="order_service_destination_queue" class="form_label" translate="DESTINATION_QUEUE"></label>
+                                        <label for="order_service_destination_queue" class="form_label" translate="INVENTORY_SERVICE_REQUEST_QUEUE"></label>
                                         <div class="invalid_message"
                                              ng-show="optionsForm.orderServiceDestinationQueue.$invalid"
                                              translate="QUEUE_NAME_SHOULD_NOT_BE_EMPTY"></div>
@@ -270,7 +278,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label for="order_service_reply_to_queue" class="form_label" translate="REPLY_TO_QUEUE"></label>
+                                        <label for="order_service_reply_to_queue" class="form_label" translate="INVENTORY_SERVICE_RESPONSE_QUEUE"></label>
                                         <div class="invalid_message"
                                              ng-show="optionsForm.orderServiceReplyToQueue.$invalid"
                                              translate="QUEUE_NAME_SHOULD_NOT_BE_EMPTY"></div>
