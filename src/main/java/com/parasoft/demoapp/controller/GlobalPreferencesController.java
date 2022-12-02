@@ -3,6 +3,7 @@ package com.parasoft.demoapp.controller;
 import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
 import com.parasoft.demoapp.dto.GlobalPreferencesDTO;
 import com.parasoft.demoapp.dto.IndustryChangeMQMessageDTO;
+import com.parasoft.demoapp.dto.MQPropertiesResponseDTO;
 import com.parasoft.demoapp.exception.*;
 import com.parasoft.demoapp.model.global.preferences.GlobalPreferencesEntity;
 import com.parasoft.demoapp.model.global.preferences.IndustryType;
@@ -160,6 +161,16 @@ public class GlobalPreferencesController {
 
 		parasoftJDBCProxyService.validateVirtualizeServerUrl(url);
 
+		return response;
+	}
+
+	@GetMapping("/v1/demoAdmin/mqProperties")
+	@ResponseBody
+	public ResponseResult<MQPropertiesResponseDTO> getMQProperties() {
+
+		ResponseResult<MQPropertiesResponseDTO> response =
+				ResponseResult.getInstance(ResponseResult.STATUS_OK, ResponseResult.MESSAGE_OK);
+		response.setData(globalPreferencesService.getMQProperties());
 		return response;
 	}
 }

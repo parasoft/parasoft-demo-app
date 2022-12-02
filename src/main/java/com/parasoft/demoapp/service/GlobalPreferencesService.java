@@ -4,9 +4,11 @@ import com.parasoft.demoapp.config.ImplementedIndustries;
 import com.parasoft.demoapp.config.activemq.ActiveMQConfig;
 import com.parasoft.demoapp.config.activemq.InventoryResponseQueueListener;
 import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
+import com.parasoft.demoapp.config.kafka.KafkaConfig;
 import com.parasoft.demoapp.defaultdata.ClearEntrance;
 import com.parasoft.demoapp.defaultdata.ResetEntrance;
 import com.parasoft.demoapp.dto.GlobalPreferencesDTO;
+import com.parasoft.demoapp.dto.MQPropertiesResponseDTO;
 import com.parasoft.demoapp.exception.*;
 import com.parasoft.demoapp.messages.GlobalPreferencesMessages;
 import com.parasoft.demoapp.model.global.preferences.*;
@@ -59,6 +61,12 @@ public class GlobalPreferencesService {
 
     @Autowired
     private GlobalPreferencesDefaultSettingsService defaultGlobalPreferencesSettingsService;
+
+    @Autowired
+    private ActiveMQConfig activeMQConfig;
+
+    @Autowired
+    private KafkaConfig kafkaConfig;
 
     /**
      * A flag indicating whether the destinations of the mq proxy need to be updated when the global preference is updated.
@@ -449,4 +457,21 @@ public class GlobalPreferencesService {
         // TODO shutdown JMS service
     }
 
+    public MQPropertiesResponseDTO getMQProperties() {
+        MQPropertiesResponseDTO.ActiveMQConfigResponse activeMQConfigResponse =
+                new MQPropertiesResponseDTO.ActiveMQConfigResponse(
+                        activeMQConfig.getBrokerUrl(),
+                        activeMQConfig.getUsername(),
+                        activeMQConfig.getPassword(),
+                        activeMQConfig.getInitialContextClass(),
+                        activeMQConfig.getConnectionFactory()
+                );
+        MQPropertiesResponseDTO.KafkaConfigResponse kafkaConfigResponse =
+                new MQPropertiesResponseDTO.KafkaConfigResponse(
+                        kafkaConfig.getBootstrapServers(),
+                        kafkaConfig.getGroupId()
+                );
+
+        return new MQPropertiesResponseDTO(activeMQConfigResponse, kafkaConfigResponse);
+    }
 }
