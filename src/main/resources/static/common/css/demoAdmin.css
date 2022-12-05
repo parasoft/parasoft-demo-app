@@ -481,4 +481,8 @@ textarea {
     display: inline-block;
 }
 
+.message_queue_type {
+    margin-bottom: 10px;
+}
+
 /* LABELS tab */
