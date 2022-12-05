@@ -191,7 +191,7 @@ label {
 }
 
 .form_label {
-    width: 35%
+    width: 36%
 }
 
 .invalid_message {
@@ -474,6 +474,11 @@ textarea {
 
 .graphql_web_service {
     margin-left: 40px;
+}
+
+.mq_type {
+    padding-right: 40px;
+    display: inline-block;
 }
 
 /* LABELS tab */

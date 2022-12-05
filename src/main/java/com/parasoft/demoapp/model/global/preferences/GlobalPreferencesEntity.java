@@ -93,6 +93,14 @@ public class GlobalPreferencesEntity {
     @Column(name = "order_service_reply_to_queue")
     private String orderServiceReplyToQueue;
 
+    @Setter
+    @Column(name = "order_service_request_topic")
+    private String orderServiceRequestTopic;
+
+    @Setter
+    @Column(name = "order_service_response_topic")
+    private String orderServiceResponseTopic;
+
     public GlobalPreferencesEntity(DataAccessMode dataAccessMode, String soapEndpoint,
                                    Set<RestEndpointEntity> restEndpoints,
                                    IndustryType industryType, WebServiceMode webServiceMode,
@@ -102,7 +110,9 @@ public class GlobalPreferencesEntity {
                                    String parasoftVirtualizeGroupId,
                                    MqType mqType,
                                    String orderServiceDestinationQueue,
-                                   String orderServiceReplyToQueue) {
+                                   String orderServiceReplyToQueue,
+                                   String orderServiceRequestTopic,
+                                   String orderServiceResponseTopic) {
         this.dataAccessMode = dataAccessMode;
         this.soapEndPoint = soapEndpoint;
         this.restEndPoints = restEndpoints;
@@ -118,5 +128,7 @@ public class GlobalPreferencesEntity {
         this.mqType = mqType;
         this.orderServiceDestinationQueue = orderServiceDestinationQueue;
         this.orderServiceReplyToQueue = orderServiceReplyToQueue;
+        this.orderServiceRequestTopic = orderServiceRequestTopic;
+        this.orderServiceResponseTopic = orderServiceResponseTopic;
     }
 }

@@ -21,6 +21,8 @@ import java.util.Map;
 @Configuration
 @Getter
 public class KafkaConfig {
+    public static final String DEFAULT_ORDER_SERVICE_REQUEST_TOPIC = "inventory.request";
+    public static final String DEFAULT_ORDER_SERVICE_RESPONSE_TOPIC = "inventory.response";
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
     @Value("${spring.kafka.consumer.group-id}")

@@ -2,6 +2,7 @@ package com.parasoft.demoapp.controller;
 
 import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
 import com.parasoft.demoapp.dto.GlobalPreferencesDTO;
+import com.parasoft.demoapp.dto.GlobalPreferencesResponseDTO;
 import com.parasoft.demoapp.dto.IndustryChangeMQMessageDTO;
 import com.parasoft.demoapp.dto.MQPropertiesResponseDTO;
 import com.parasoft.demoapp.exception.*;
@@ -92,13 +93,14 @@ public class GlobalPreferencesController {
 				content = {@Content(schema = @Schema(hidden = true))})
 	@GetMapping("/v1/demoAdmin/currentPreferences")
 	@ResponseBody
-	public ResponseResult<GlobalPreferencesEntity> getCurrentPreferences()
+	public ResponseResult<GlobalPreferencesResponseDTO> getCurrentPreferences()
 			throws GlobalPreferencesNotFoundException, GlobalPreferencesMoreThanOneException {
 
-		ResponseResult<GlobalPreferencesEntity> response =
+		ResponseResult<GlobalPreferencesResponseDTO> response =
 				ResponseResult.getInstance(ResponseResult.STATUS_OK, ResponseResult.MESSAGE_OK);
-
-		response.setData(globalPreferencesService.getCurrentGlobalPreferences());
+		GlobalPreferencesEntity globalPreferencesEntity = globalPreferencesService.getCurrentGlobalPreferences();
+		GlobalPreferencesResponseDTO globalPreferencesResponseDTO = new GlobalPreferencesResponseDTO(globalPreferencesEntity);
+		response.setData(globalPreferencesResponseDTO);
 
 		return response;
 	}
@@ -107,12 +109,13 @@ public class GlobalPreferencesController {
 	@ApiResponse(responseCode = "200", description = "Default preferences was returned.")
 	@GetMapping("/v1/demoAdmin/defaultPreferences")
 	@ResponseBody
-	public ResponseResult<GlobalPreferencesEntity> getDefaultPreferences() {
+	public ResponseResult<GlobalPreferencesResponseDTO> getDefaultPreferences() {
 
-		ResponseResult<GlobalPreferencesEntity> response =
+		ResponseResult<GlobalPreferencesResponseDTO> response =
 				ResponseResult.getInstance(ResponseResult.STATUS_OK, ResponseResult.MESSAGE_OK);
-
-		response.setData(globalPreferencesDefaultSettingsService.defaultPreferences());
+		GlobalPreferencesEntity globalPreferencesEntity = globalPreferencesDefaultSettingsService.defaultPreferences();
+		GlobalPreferencesResponseDTO globalPreferencesResponseDTO = new GlobalPreferencesResponseDTO(globalPreferencesEntity);
+		response.setData(globalPreferencesResponseDTO);
 
 		return response;
 	}
