@@ -483,10 +483,7 @@ public class GlobalPreferencesService {
                 new MQPropertiesResponseDTO.ActiveMQConfigResponse(
                         activeMQConfig.getBrokerUrl(),
                         activeMQConfig.getUsername(),
-                        activeMQConfig.getPassword(),
-                        activeMQConfig.getInitialContextClass(),
-                        activeMQConfig.getConnectionFactory()
-                );
+                        activeMQConfig.getPassword());
         MQPropertiesResponseDTO.KafkaConfigResponse kafkaConfigResponse =
                 new MQPropertiesResponseDTO.KafkaConfigResponse(
                         kafkaConfig.getBootstrapServers(),

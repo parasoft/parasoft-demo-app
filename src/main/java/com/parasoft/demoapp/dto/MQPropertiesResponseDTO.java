@@ -21,14 +21,12 @@ public class MQPropertiesResponseDTO {
         private String initialContextClass;
         private String connectionFactory;
 
-        public ActiveMQConfigResponse(String brokerUrl, String username,
-                                      String password, String initialContextClass,
-                                      String connectionFactory) {
+        public ActiveMQConfigResponse(String brokerUrl, String username, String password) {
             this.brokerUrl = brokerUrl;
             this.username = username;
             this.password = password;
-            this.initialContextClass = initialContextClass;
-            this.connectionFactory = connectionFactory;
+            this.initialContextClass = "org.apache.activemq.jndi.ActiveMQInitialContextFactory";
+            this.connectionFactory = "ConnectionFactory";
         }
     }
 
