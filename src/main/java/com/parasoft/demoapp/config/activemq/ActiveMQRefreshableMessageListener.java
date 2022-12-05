@@ -1,6 +1,7 @@
 package com.parasoft.demoapp.config.activemq;
 
 import com.parasoft.demoapp.config.MQConfig;
+import com.parasoft.demoapp.config.RefreshableMessageListener;
 import com.parasoft.demoapp.model.global.preferences.MqType;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.config.JmsListenerEndpointRegistry;
@@ -11,10 +12,8 @@ import org.springframework.jms.support.converter.MessageConverter;
 
 import javax.jms.Message;
 import javax.jms.MessageListener;
-import java.util.HashMap;
-import java.util.Map;
 
-public abstract class RefreshableMessageListener implements MessageListener {
+public abstract class ActiveMQRefreshableMessageListener extends RefreshableMessageListener<MessageListenerContainer> implements MessageListener {
 
     private static final String ID_PREFIX = "id.";
 
@@ -24,12 +23,10 @@ public abstract class RefreshableMessageListener implements MessageListener {
     private final JmsListenerEndpointRegistry jmsListenerEndpointRegistry;
     private final DefaultJmsListenerContainerFactory jmsQueueListenerContainerFactory;
 
-    private final Map<String, MessageListenerContainer> listenedListenerContainers = new HashMap<>();
-
-    public RefreshableMessageListener(MessageConverter jmsMessageConverter,
-                                      JmsListenerEndpointRegistry jmsListenerEndpointRegistry,
-                                      DefaultJmsListenerContainerFactory jmsQueueListenerContainerFactory,
-                                      String destinationName, CachingConnectionFactory cachingConnectionFactory) {
+    public ActiveMQRefreshableMessageListener(MessageConverter jmsMessageConverter,
+                                              JmsListenerEndpointRegistry jmsListenerEndpointRegistry,
+                                              DefaultJmsListenerContainerFactory jmsQueueListenerContainerFactory,
+                                              String destinationName, CachingConnectionFactory cachingConnectionFactory) {
         this.jmsMessageConverter = jmsMessageConverter;
         this.jmsListenerEndpointRegistry = jmsListenerEndpointRegistry;
         this.jmsQueueListenerContainerFactory = jmsQueueListenerContainerFactory;
