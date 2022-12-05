@@ -127,11 +127,7 @@ public class InitializationEntrance {
                 log.error("Failed to initialize ActiveMQ JMS proxy: {}", pe.getMessage());
             }
         } else if (mqType == MqType.KAFKA) {
-            try {
-                globalPreferencesService.initializeKafkaTopicOnStartup(globalPreferences);
-            } catch (ParameterException pe) {
-                log.error("Failed to initialize Kafka topic: {}", pe.getMessage());
-            }
+            // TODO: initialize Kafka topics on startup
         } else {
             throw new UnsupportedOperationException("Unsupported MQ type: " + mqType);
         }

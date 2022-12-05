@@ -251,8 +251,7 @@ public class GlobalPreferencesService {
             inventoryRequestQueueListener.refreshDestination(ActiveMQConfig.getInventoryServiceListenToQueue());
         } else if(MqType.KAFKA == currentPreferences.getMqType()) {
             MQConfig.currentMQType = MqType.KAFKA;
-            KafkaConfig.setOrderServiceRequestTopic(currentPreferences.getOrderServiceRequestTopic());
-            KafkaConfig.setOrderServiceResponseTopic(currentPreferences.getOrderServiceResponseTopic());
+            // TODO: refresh listener on Kafka
         } else {
             throw new UnsupportedOperationException("Unsupported MQ type: " + currentPreferences.getMqType());
         }
@@ -275,24 +274,6 @@ public class GlobalPreferencesService {
         ActiveMQConfig.setOrderServiceSendToQueue(new ActiveMQQueue(
                 globalPreferences.getOrderServiceDestinationQueue()));
         ActiveMQConfig.setOrderServiceListenToQueue(globalPreferences.getOrderServiceReplyToQueue());
-    }
-
-    /**
-     * This method should only be used on startup.
-     *
-     * @throws ParameterException
-     */
-    public void initializeKafkaTopicOnStartup(GlobalPreferencesEntity globalPreferences)
-            throws ParameterException {
-        GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
-        globalPreferencesDto.setMqType(globalPreferences.getMqType());
-        globalPreferencesDto.setOrderServiceDestinationQueue(globalPreferences.getOrderServiceRequestTopic());
-        globalPreferencesDto.setOrderServiceReplyToQueue(globalPreferences.getOrderServiceResponseTopic());
-
-        validateProxyConfig(globalPreferencesDto);
-
-        KafkaConfig.setOrderServiceRequestTopic(globalPreferences.getOrderServiceRequestTopic());
-        KafkaConfig.setOrderServiceResponseTopic(globalPreferences.getOrderServiceResponseTopic());
     }
 
     private void handleParasoftJDBCProxy(GlobalPreferencesEntity currentPreferences,
