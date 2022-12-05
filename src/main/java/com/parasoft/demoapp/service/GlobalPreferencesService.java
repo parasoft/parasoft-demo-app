@@ -387,6 +387,8 @@ public class GlobalPreferencesService {
         currentPreferences.setMqType(globalPreferencesDto.getMqType());
         currentPreferences.setOrderServiceDestinationQueue(globalPreferencesDto.getOrderServiceDestinationQueue());
         currentPreferences.setOrderServiceReplyToQueue(globalPreferencesDto.getOrderServiceReplyToQueue());
+        currentPreferences.setOrderServiceRequestTopic(globalPreferencesDto.getInventoryServiceRequestTopic());
+        currentPreferences.setOrderServiceResponseTopic(globalPreferencesDto.getInventoryServiceResponseTopic());
     }
 
     public boolean checkMqProxyStatusHasChanged(GlobalPreferencesEntity currentPreferences,
