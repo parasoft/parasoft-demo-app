@@ -10,6 +10,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.parasoft.demoapp.dto.GlobalPreferencesResponseDTO;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -238,13 +239,15 @@ public class GlobalPreferencesControllerTest {
 		GlobalPreferencesEntity getCurrentGlobalPreferencesResult = new GlobalPreferencesEntity();
 		getCurrentGlobalPreferencesResult.setIndustryType(IndustryType.DEFENSE);
 		when(globalPreferencesService.getCurrentGlobalPreferences()).thenReturn(getCurrentGlobalPreferencesResult);
+		GlobalPreferencesResponseDTO getDefaultPreferencesResponseDTO = new GlobalPreferencesResponseDTO(getCurrentGlobalPreferencesResult);
 
 		// When
-		ResponseResult<GlobalPreferencesEntity> result = underTest.getCurrentPreferences();
+		ResponseResult<GlobalPreferencesResponseDTO> result = underTest.getCurrentPreferences();
 
 		// Then
 		assertNotNull(result);
 		assertNotNull(result.getData());
+		assertEquals(getDefaultPreferencesResponseDTO, result.getData());
 		assertEquals(ResponseResult.STATUS_OK, result.getStatus());
 		assertEquals(ResponseResult.MESSAGE_OK, result.getMessage());
 		assertEquals(IndustryType.DEFENSE, result.getData().getIndustryType());
@@ -366,14 +369,15 @@ public class GlobalPreferencesControllerTest {
 		// Given
 		GlobalPreferencesEntity globalPreferencesEntity = mock(GlobalPreferencesEntity.class);
 		when(globalPreferencesDefaultSettingsService.defaultPreferences()).thenReturn(globalPreferencesEntity);
+		GlobalPreferencesResponseDTO getDefaultPreferencesResponseDTO = new GlobalPreferencesResponseDTO(globalPreferencesEntity);
 
 		// When
-		ResponseResult<GlobalPreferencesEntity> result = underTest.getDefaultPreferences();
+		ResponseResult<GlobalPreferencesResponseDTO> result = underTest.getDefaultPreferences();
 
 		// Then
 		assertNotNull(result);
 		assertNotNull(result.getData());
-		assertEquals(globalPreferencesEntity, result.getData());
+		assertEquals(getDefaultPreferencesResponseDTO, result.getData());
 		assertEquals(ResponseResult.STATUS_OK, result.getStatus());
 		assertEquals(ResponseResult.MESSAGE_OK, result.getMessage());
 	}

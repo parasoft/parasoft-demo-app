@@ -2,6 +2,7 @@ package com.parasoft.demoapp.service;
 
 import com.parasoft.demoapp.config.ImplementedIndustries;
 import com.parasoft.demoapp.config.activemq.ActiveMQConfig;
+import com.parasoft.demoapp.config.activemq.InventoryRequestQueueListener;
 import com.parasoft.demoapp.config.activemq.InventoryResponseQueueListener;
 import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
 import com.parasoft.demoapp.defaultdata.ClearEntrance;
@@ -58,6 +59,9 @@ public class GlobalPreferencesService {
     private InventoryResponseQueueListener inventoryResponseQueueListener;
 
     @Autowired
+    private InventoryRequestQueueListener inventoryRequestQueueListener;
+
+    @Autowired
     private GlobalPreferencesDefaultSettingsService defaultGlobalPreferencesSettingsService;
 
     /**
@@ -79,7 +83,9 @@ public class GlobalPreferencesService {
                                                            String parasoftVirtualizeGroupId,
                                                            MqType mqType,
                                                            String orderServiceDestinationQueue,
-                                                           String orderServiceReplyToQueue) throws ParameterException {
+                                                           String orderServiceReplyToQueue,
+                                                           String orderServiceRequestTopic,
+                                                           String orderServiceResponseTopic) throws ParameterException {
 
         validateIndustry(industryType);
         ParameterValidator.requireNonNull(advertisingEnabled, GlobalPreferencesMessages.ADVERTISING_ENABLED_CANNOT_BE_NULL);
@@ -103,7 +109,9 @@ public class GlobalPreferencesService {
                                                             parasoftVirtualizeGroupId,
                                                             mqType,
                                                             orderServiceDestinationQueue,
-                                                            orderServiceReplyToQueue);
+                                                            orderServiceReplyToQueue,
+                                                            orderServiceRequestTopic,
+                                                            orderServiceResponseTopic);
 
         for(DemoBugEntity demoBug : demoBugs){
             demoBug.setGlobalPreferences(newGlobalPreferences);
@@ -233,16 +241,16 @@ public class GlobalPreferencesService {
         String orderServiceDestinationQueue = currentPreferences.getOrderServiceDestinationQueue();
         String orderServiceReplyToQueue = currentPreferences.getOrderServiceReplyToQueue();
 
+        stopMQListenersExcept(currentPreferences.getMqType());
         if(MqType.ACTIVE_MQ == currentPreferences.getMqType()) {
             ActiveMQConfig.setOrderServiceSendToQueue(new ActiveMQQueue(orderServiceDestinationQueue));
             inventoryResponseQueueListener.refreshDestination(orderServiceReplyToQueue);
+            inventoryRequestQueueListener.refreshDestination(ActiveMQConfig.getInventoryServiceListenToQueue());
         } else if(MqType.KAFKA == currentPreferences.getMqType()) {
-            // TODO: Refresh destination when MQ was changed to Kafka.
-        }
-        else {
+            // TODO: refresh listener on Kafka
+        } else {
             throw new UnsupportedOperationException("Unsupported MQ type: " + currentPreferences.getMqType());
         }
-
     }
 
     /**
@@ -250,7 +258,7 @@ public class GlobalPreferencesService {
      *
      * @throws ParameterException
      */
-    public void initializeActiveMqJmsProxyOnStartup(GlobalPreferencesEntity globalPreferences)
+    public void initializeActiveMqJmsQueuesOnStartup(GlobalPreferencesEntity globalPreferences)
             throws ParameterException {
         GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
         globalPreferencesDto.setMqType(globalPreferences.getMqType());
@@ -450,6 +458,16 @@ public class GlobalPreferencesService {
 
     public void shutdownJMSService() {
         // TODO shutdown JMS service
+    }
+
+    private void stopMQListenersExcept(MqType mqType) {
+        if(MqType.ACTIVE_MQ == mqType) {
+            // TODO: stop listeners of Kafka
+        } else if(MqType.KAFKA == mqType) {
+            // Stop listeners on ActiveMQ
+            inventoryResponseQueueListener.stopAllListenedListenerContainers();
+            inventoryRequestQueueListener.stopAllListenedListenerContainers();
+        }
     }
 
 }
