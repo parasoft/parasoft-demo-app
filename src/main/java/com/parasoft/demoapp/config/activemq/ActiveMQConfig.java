@@ -34,7 +34,7 @@ public class ActiveMQConfig {
     public static final String DEFAULT_QUEUE_INVENTORY_RESPONSE = "inventory.response";
 
     @Getter private static final String inventoryServiceListenToQueue = DEFAULT_QUEUE_INVENTORY_REQUEST;
-    @Getter private static ActiveMQQueue inventoryServiceSendToQueue = new ActiveMQQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE);
+    @Getter private static final ActiveMQQueue inventoryServiceSendToQueue = new ActiveMQQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE);
     @Getter @Setter private static String orderServiceListenToQueue = DEFAULT_QUEUE_INVENTORY_RESPONSE;
     @Getter @Setter private static ActiveMQQueue orderServiceSendToQueue = new ActiveMQQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
 
