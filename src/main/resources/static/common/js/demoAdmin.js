@@ -1324,8 +1324,8 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
         options.parasoftVirtualizeGroupId = data.parasoftVirtualizeGroupId;
 
         options.mqType = data.mqType;
-        options.orderServiceDestinationQueue = data.orderServiceDestinationQueue;
-        options.orderServiceReplyToQueue = data.orderServiceReplyToQueue;
+        options.orderServiceDestinationQueue = data.activeMqConfig.orderServiceSendTo;
+        options.orderServiceReplyToQueue = data.activeMqConfig.orderServiceListenOn;
 
         options.webServiceMode = data.webServiceMode;
         options.graphQLEndpoint = data.graphQLEndpoint;
@@ -1380,13 +1380,13 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
 
     options.resetOrderServiceDestinationQueue = function(){
         resetValuesTemplate(function(defaultOptions){
-            options.orderServiceDestinationQueue = defaultOptions.orderServiceDestinationQueue;
+            options.orderServiceDestinationQueue = defaultOptions.activeMqConfig.orderServiceSendTo;
         });
     }
 
     options.resetOrderServiceReplyToQueue = function(){
         resetValuesTemplate(function(defaultOptions){
-            options.orderServiceReplyToQueue = defaultOptions.orderServiceReplyToQueue;
+            options.orderServiceReplyToQueue = defaultOptions.activeMqConfig.orderServiceListenOn;
         });
     }
 
