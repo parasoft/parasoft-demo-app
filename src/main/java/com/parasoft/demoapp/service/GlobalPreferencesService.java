@@ -1,10 +1,12 @@
 package com.parasoft.demoapp.service;
 
 import com.parasoft.demoapp.config.ImplementedIndustries;
+import com.parasoft.demoapp.config.MQConfig;
 import com.parasoft.demoapp.config.activemq.ActiveMQConfig;
 import com.parasoft.demoapp.config.activemq.InventoryRequestQueueListener;
 import com.parasoft.demoapp.config.activemq.InventoryResponseQueueListener;
 import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
+import com.parasoft.demoapp.config.kafka.KafkaConfig;
 import com.parasoft.demoapp.defaultdata.ClearEntrance;
 import com.parasoft.demoapp.defaultdata.ResetEntrance;
 import com.parasoft.demoapp.dto.GlobalPreferencesDTO;
@@ -243,11 +245,14 @@ public class GlobalPreferencesService {
 
         stopMQListenersExcept(currentPreferences.getMqType());
         if(MqType.ACTIVE_MQ == currentPreferences.getMqType()) {
+            MQConfig.currentMQType = MqType.ACTIVE_MQ;
             ActiveMQConfig.setOrderServiceSendToQueue(new ActiveMQQueue(orderServiceDestinationQueue));
             inventoryResponseQueueListener.refreshDestination(orderServiceReplyToQueue);
             inventoryRequestQueueListener.refreshDestination(ActiveMQConfig.getInventoryServiceListenToQueue());
         } else if(MqType.KAFKA == currentPreferences.getMqType()) {
-            // TODO: refresh listener on Kafka
+            MQConfig.currentMQType = MqType.KAFKA;
+            KafkaConfig.setOrderServiceRequestTopic(currentPreferences.getOrderServiceRequestTopic());
+            KafkaConfig.setOrderServiceResponseTopic(currentPreferences.getOrderServiceResponseTopic());
         } else {
             throw new UnsupportedOperationException("Unsupported MQ type: " + currentPreferences.getMqType());
         }
@@ -270,6 +275,24 @@ public class GlobalPreferencesService {
         ActiveMQConfig.setOrderServiceSendToQueue(new ActiveMQQueue(
                 globalPreferences.getOrderServiceDestinationQueue()));
         ActiveMQConfig.setOrderServiceListenToQueue(globalPreferences.getOrderServiceReplyToQueue());
+    }
+
+    /**
+     * This method should only be used on startup.
+     *
+     * @throws ParameterException
+     */
+    public void initializeKafkaTopicOnStartup(GlobalPreferencesEntity globalPreferences)
+            throws ParameterException {
+        GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
+        globalPreferencesDto.setMqType(globalPreferences.getMqType());
+        globalPreferencesDto.setOrderServiceDestinationQueue(globalPreferences.getOrderServiceRequestTopic());
+        globalPreferencesDto.setOrderServiceReplyToQueue(globalPreferences.getOrderServiceResponseTopic());
+
+        validateProxyConfig(globalPreferencesDto);
+
+        KafkaConfig.setOrderServiceRequestTopic(globalPreferences.getOrderServiceRequestTopic());
+        KafkaConfig.setOrderServiceResponseTopic(globalPreferences.getOrderServiceResponseTopic());
     }
 
     private void handleParasoftJDBCProxy(GlobalPreferencesEntity currentPreferences,

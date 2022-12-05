@@ -119,7 +119,7 @@ public class InitializationEntrance {
         parasoftJDBCProxyService.refreshParasoftJDBCProxyDataSource();
 
         MqType mqType = globalPreferences.getMqType();
-        MQConfig.CURRENT_MQ_TYPE = mqType;
+        MQConfig.currentMQType = mqType;
         if (mqType == MqType.ACTIVE_MQ) {
             try {
                 globalPreferencesService.initializeActiveMqJmsQueuesOnStartup(globalPreferences);
@@ -127,7 +127,11 @@ public class InitializationEntrance {
                 log.error("Failed to initialize ActiveMQ JMS proxy: {}", pe.getMessage());
             }
         } else if (mqType == MqType.KAFKA) {
-            // TODO: initialize Kafka topics on startup
+            try {
+                globalPreferencesService.initializeKafkaTopicOnStartup(globalPreferences);
+            } catch (ParameterException pe) {
+                log.error("Failed to initialize Kafka topic: {}", pe.getMessage());
+            }
         } else {
             throw new UnsupportedOperationException("Unsupported MQ type: " + mqType);
         }
