@@ -1392,6 +1392,18 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
         });
     }
 
+    options.restInventoryServiceRequestTopic = function(){
+        resetValuesTemplate(function(defaultOptions){
+            options.inventoryServiceRequestTopic = defaultOptions.kafkaConfig.orderServiceSendTo;
+        });
+    }
+
+    options.restInventoryServiceResponseTopic = function() {
+        resetValuesTemplate(function(defaultOptions){
+            options.inventoryServiceResponseTopic = defaultOptions.kafkaConfig.orderServiceListenOn;
+        });
+    }
+
     options.resetVirtualizeServerUrl = function(){
         resetValuesTemplate(function(defaultOptions){
             options.parasoftVirtualizeServerUrl = defaultOptions.parasoftVirtualizeServerUrl;
