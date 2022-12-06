@@ -120,6 +120,6 @@ button.close, button.close:hover {
     color: #F7F7D9;
 }
 
-.jms_configuration_details a:hover {
+.queue_configuration_details a:hover {
     color: #117563;
 }
