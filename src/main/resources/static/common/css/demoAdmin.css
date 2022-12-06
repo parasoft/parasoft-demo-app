@@ -346,7 +346,7 @@ label {
     font-size: 13px;
 }
 
-#database_reset_confirm_modal .modal-dialog, #remove_confirm_modal .modal-dialog, #jms_configuration_details_modal .modal-dialog {
+#database_reset_confirm_modal .modal-dialog, #remove_confirm_modal .modal-dialog, #queue_configuration_details_modal .modal-dialog {
     top: 25%;
 }
 
@@ -437,30 +437,30 @@ textarea {
     margin: 10px 0;
 }
 
-.jms_configuration_details {
+.queue_configuration_details {
     margin-bottom: 10px;
 }
 
-.jms_configuration_details a {
+.queue_configuration_details a {
     cursor: pointer;
 }
 
-.jms_configuration_details_modal_content {
+.queue_configuration_details_modal_content {
     width: 560px;
 }
 
-.jms_configuration_details_table {
+.queue_configuration_details_table {
     margin: 0 auto;
 }
 
-.jms_configuration_details_table th{
+.queue_configuration_details_table th{
     text-align: start;
     font-size: 15px;
     font-weight: normal;
     padding-bottom: 7px;
 }
 
-.jms_configuration_details_value {
+.queue_configuration_details_value {
     padding-left: 10px;
 }
 

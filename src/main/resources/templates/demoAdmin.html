@@ -215,26 +215,32 @@
                             </div>
 
                             <div class="section_body">
-                                <div class="jms_configuration_details">
-                                    <a class="industry_font industry_color_1" translate="CONFIGURATION_DETAILS" data-toggle="modal" data-target="#jms_configuration_details_modal"></a>
+                                <div class="queue_configuration_details">
+                                    <a class="industry_font industry_color_1"
+                                       translate="CONFIGURATION_DETAILS"
+                                       data-toggle="modal"
+                                       data-target="#queue_configuration_details_modal"
+                                       ng-click="options.openConfigurationDetailsModal()">
+                                    </a>
                                 </div>
 
-                                <div id="jms_configuration_details_modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+                                <div id="queue_configuration_details_modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
                                     <div class="modal-dialog">
-                                        <div class="modal-content industry_font jms_configuration_details_modal_content">
+                                        <div class="modal-content industry_font queue_configuration_details_modal_content">
                                             <div class="modal-header">
                                                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                                                 <div class="modal-title">
-                                                    <span>ActiveMQ JMS</span>
+                                                    <span ng-if="options.mqType === 'ACTIVE_MQ'">ActiveMQ JMS</span>
+                                                    <span ng-if="options.mqType === 'KAFKA'">Kafka</span>
                                                 </div>
                                             </div>
 
                                             <div class="modal-body">
-                                                <table class="jms_configuration_details_table">
+                                                <table class="queue_configuration_details_table">
                                                     <tbody>
-                                                    <tr ng-repeat="configuration in demo.configurationDetails">
+                                                    <tr ng-repeat="configuration in options.configurationDetails">
                                                         <th translate="{{ configuration.label }}"></th>
-                                                        <th class="jms_configuration_details_value" ng-bind="configuration.value"></th>
+                                                        <th class="queue_configuration_details_value" ng-bind="configuration.value"></th>
                                                     </tr>
                                                     </tbody>
                                                 </table>
@@ -244,18 +250,18 @@
                                 </div>
 
                                 <div id="message_queue_type" class="message_queue_type">
-				    <div class="mq_type">
-					<label>
-					    <input type="radio" name="mqType" ng-model="options.mqType" value="ACTIVE_MQ">
-					    <span class="input-label" translate="JMS"></span>
-				    	</label>
-				    </div>
-				    <div class="mq_type">
-					<label>
-					    <input type="radio" name="mqType" ng-model="options.mqType" value="KAFKA">
-					    <span class="input-label" translate="KAFKA"></span>
-					</label>
-				    </div>
+                                    <div class="mq_type">
+                                        <label>
+                                            <input type="radio" name="mqType" ng-model="options.mqType" value="ACTIVE_MQ">
+                                            <span class="input-label" translate="JMS"></span>
+                                        </label>
+                                    </div>
+                                    <div class="mq_type">
+                                        <label>
+                                            <input type="radio" name="mqType" ng-model="options.mqType" value="KAFKA">
+                                            <span class="input-label" translate="KAFKA"></span>
+                                        </label>
+                                    </div>
                                 </div>
                                 <div id="client_connection">
                                     <div ng-show="options.mqType === 'ACTIVE_MQ'">

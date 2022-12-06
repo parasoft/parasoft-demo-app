@@ -36,26 +36,6 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
     connectAndSubscribeMQ(CURRENT_ROLE, $http, $rootScope, $filter, null, null, graphQLService);
 
     demo.GENERAL = "active";
-
-    demo.configurationDetails = [
-        {
-            label: $filter('translate')('PROVIDER_URL_LABEL'),
-            value: "tcp://localhost:61626"
-        }, {
-            label: $filter('translate')('INITIAL_CONTEXT_CLASS_LABEL'),
-            value: "org.apache.activemq.jndi.ActiveMQInitialContextFactory"
-        }, {
-            label: $filter('translate')('CONNECTION_FACTORY_LABEL'),
-            value: "ConnectionFactory"
-        }, {
-            label: $filter('translate')('USER_NAME_LABEL'),
-            value: "admin"
-        }, {
-            label: $filter('translate')('PASSWORD_LABEL'),
-            value: "admin"
-        }
-    ];
-
     //Get regions
     getAllRegions();
 
@@ -1436,6 +1416,47 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
         if(path.substring(0, 1) !== '/'){
             options.parasoftVirtualizeServerPath = '/' + options.parasoftVirtualizeServerPath;
         }
+    }
+
+    options.openConfigurationDetailsModal = function() {
+        $http({
+            method: 'GET',
+            url: '/v1/demoAdmin/mqProperties',
+        }).then(function(result) {
+            const data = result.data.data
+            if(options.mqType === "ACTIVE_MQ") {
+                options.configurationDetails = [
+                    {
+                        label: $filter('translate')('PROVIDER_URL_LABEL'),
+                        value: data.activeMqConfig.brokerUrl
+                    }, {
+                        label: $filter('translate')('INITIAL_CONTEXT_CLASS_LABEL'),
+                        value: data.activeMqConfig.initialContextClass
+                    }, {
+                        label: $filter('translate')('CONNECTION_FACTORY_LABEL'),
+                        value: data.activeMqConfig.connectionFactory
+                    }, {
+                        label: $filter('translate')('USER_NAME_LABEL'),
+                        value: data.activeMqConfig.username
+                    }, {
+                        label: $filter('translate')('PASSWORD_LABEL'),
+                        value: data.activeMqConfig.password
+                    }
+                ];
+            } else if(options.mqType === "KAFKA") {
+                options.configurationDetails = [
+                    {
+                        label: $filter('translate')('BROKER_URL'),
+                        value: data.kafkaConfig.bootstrapServers
+                    }, {
+                        label: $filter('translate')('GROUP_ID'),
+                        value: data.kafkaConfig.groupId
+                    }
+                ];
+            }
+        }).catch(function(result) {
+            console.log(result);
+        });
     }
 });
 
