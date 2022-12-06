@@ -9,5 +9,5 @@ public abstract class RefreshableMessageListener<T> {
 
     public abstract void refreshDestination(String destinationName);
 
-    public abstract void stopAllListenedListenerContainers();
+    public abstract void stopAllListenedDestinations();
 }

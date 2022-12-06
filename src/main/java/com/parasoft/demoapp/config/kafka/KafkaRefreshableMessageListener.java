@@ -29,7 +29,7 @@ public abstract class KafkaRefreshableMessageListener<T> extends RefreshableMess
     }
 
     public void refreshDestination(String topic) {
-        stopAllListenedListenerContainers();
+        stopAllListenedDestinations();
 
         MessageListenerContainer targetMessageListenerContainer = listenedListenerContainers.get(topic);
         if(targetMessageListenerContainer == null) {
@@ -39,7 +39,7 @@ public abstract class KafkaRefreshableMessageListener<T> extends RefreshableMess
         }
     }
 
-    public void stopAllListenedListenerContainers() {
+    public void stopAllListenedDestinations() {
         for(MessageListenerContainer container : listenedListenerContainers.values()) {
             container.stop();
         }

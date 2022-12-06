@@ -478,8 +478,8 @@ public class GlobalPreferencesService {
             // TODO: stop listeners of Kafka
         } else if(MqType.KAFKA == mqType) {
             // Stop listeners on ActiveMQ
-            inventoryResponseQueueListener.stopAllListenedListenerContainers();
-            inventoryRequestQueueListener.stopAllListenedListenerContainers();
+            inventoryResponseQueueListener.stopAllListenedDestinations();
+            inventoryRequestQueueListener.stopAllListenedDestinations();
         }
     }
 

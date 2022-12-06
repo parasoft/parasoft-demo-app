@@ -48,7 +48,7 @@ public abstract class ActiveMQRefreshableMessageListener extends RefreshableMess
     }
 
     public void refreshDestination(String destinationName) {
-        stopAllListenedListenerContainers();
+        stopAllListenedDestinations();
 
         MessageListenerContainer targetMessageListenerContainer = listenedListenerContainers.get(destinationName);
         if(targetMessageListenerContainer == null) {
@@ -62,7 +62,7 @@ public abstract class ActiveMQRefreshableMessageListener extends RefreshableMess
 
     public abstract void onMessage(Message message);
 
-    public void stopAllListenedListenerContainers() {
+    public void stopAllListenedDestinations() {
         for(MessageListenerContainer container : listenedListenerContainers.values()) {
             container.stop();
         }
