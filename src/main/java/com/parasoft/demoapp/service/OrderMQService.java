@@ -24,7 +24,7 @@ public class OrderMQService {
     private JmsMessagingTemplate jmsMessagingTemplate;
 
     @Autowired
-    private KafkaTemplate operationRequestKafkaTemplate;
+    private KafkaTemplate<String, InventoryOperationRequestMessageDTO> operationRequestKafkaTemplate;
 
     public void sendToApprover(OrderMQMessageDTO messageDto) {
         jmsMessagingTemplate.convertAndSend(ActiveMQConfig.TOPIC_ORDER_APPROVER, messageDto);

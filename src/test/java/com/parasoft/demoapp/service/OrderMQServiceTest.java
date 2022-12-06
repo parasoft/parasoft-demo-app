@@ -43,7 +43,7 @@ public class OrderMQServiceTest {
 	JmsMessagingTemplate jmsMessagingTemplate;
 
 	@Mock
-	KafkaTemplate operationRequestKafkaTemplate;
+	KafkaTemplate<String, InventoryOperationRequestMessageDTO> operationRequestKafkaTemplate;
 
 	@Before
 	public void setupMocks() {
