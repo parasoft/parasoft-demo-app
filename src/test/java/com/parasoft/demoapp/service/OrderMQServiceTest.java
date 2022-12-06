@@ -125,7 +125,7 @@ public class OrderMQServiceTest {
         List<OrderItemEntity> orderItems = new ArrayList<>();
         orderItems.add(orderItem);
         MQConfig.currentMQType = MqType.KAFKA;
-        KafkaConfig.setOrderServiceRequestTopic("test.topic");
+        KafkaConfig.setOrderServiceSendToTopic("test.topic");
 
         // When
         underTest.sendToInventoryRequestDestination(InventoryOperation.DECREASE, orderNumber, orderItems);
@@ -171,7 +171,7 @@ public class OrderMQServiceTest {
         List<OrderItemEntity> orderItems = new ArrayList<>();
         orderItems.add(orderItem);
         MQConfig.currentMQType = MqType.KAFKA;
-        KafkaConfig.setOrderServiceRequestTopic("test.topic");
+        KafkaConfig.setOrderServiceSendToTopic("test.topic");
 
         // When
         underTest.sendToInventoryRequestDestination(InventoryOperation.DECREASE, orderNumber, orderItems, "test");
