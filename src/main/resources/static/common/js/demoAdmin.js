@@ -1326,6 +1326,8 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
         options.mqType = data.mqType;
         options.orderServiceDestinationQueue = data.activeMqConfig.orderServiceSendTo;
         options.orderServiceReplyToQueue = data.activeMqConfig.orderServiceListenOn;
+        options.inventoryServiceRequestTopic = data.kafkaConfig.orderServiceSendTo;
+        options.inventoryServiceResponseTopic = data.kafkaConfig.orderServiceListenOn;
 
         options.webServiceMode = data.webServiceMode;
         options.graphQLEndpoint = data.graphQLEndpoint;

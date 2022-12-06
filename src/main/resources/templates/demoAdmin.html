@@ -243,7 +243,7 @@
                                     </div>
                                 </div>
 
-                                <div id="message_queue_type">
+                                <div id="message_queue_type" class="message_queue_type">
 				    <div class="mq_type">
 					<label>
 					    <input type="radio" name="mqType" ng-model="options.mqType" value="ACTIVE_MQ">
@@ -258,42 +258,76 @@
 				    </div>
                                 </div>
                                 <div id="client_connection">
-                                    <div class="form-group">
-                                        <label for="order_service_destination_queue" class="form_label" translate="INVENTORY_SERVICE_REQUEST_QUEUE"></label>
-                                        <div class="invalid_message"
-                                             ng-show="optionsForm.orderServiceDestinationQueue.$invalid"
-                                             translate="QUEUE_NAME_SHOULD_NOT_BE_EMPTY"></div>
-                                        <div class="input-wrapper">
-                                            <input type="text"
-                                                   name="orderServiceDestinationQueue"
-                                                   id="order_service_destination_queue"
-                                                   class="form-control"
-                                                   ng-model="options.orderServiceDestinationQueue"
-                                                   ng-required="true"
-                                                   ng-trim="true">
-                                            <button class="btn btn-default industry_button labels_reset_btn"
-                                                    ng-click="options.resetOrderServiceDestinationQueue()"
-                                                    translate="RESET_QUEUE">
-                                            </button>
+                                    <div ng-show="options.mqType === 'ACTIVE_MQ'">
+                                        <div class="form-group">
+                                            <label for="order_service_destination_queue" class="form_label" translate="INVENTORY_SERVICE_REQUEST_QUEUE"></label>
+                                            <div class="invalid_message"
+                                                 ng-show="optionsForm.orderServiceDestinationQueue.$invalid"
+                                                 translate="QUEUE_NAME_SHOULD_NOT_BE_EMPTY"></div>
+                                            <div class="input-wrapper">
+                                                <input type="text"
+                                                       name="orderServiceDestinationQueue"
+                                                       id="order_service_destination_queue"
+                                                       class="form-control"
+                                                       ng-model="options.orderServiceDestinationQueue"
+                                                       ng-required="true"
+                                                       ng-trim="true">
+                                                <button class="btn btn-default industry_button labels_reset_btn"
+                                                        ng-click="options.resetOrderServiceDestinationQueue()"
+                                                        translate="RESET_QUEUE">
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="order_service_reply_to_queue" class="form_label" translate="INVENTORY_SERVICE_RESPONSE_QUEUE"></label>
+                                            <div class="invalid_message"
+                                                 ng-show="optionsForm.orderServiceReplyToQueue.$invalid"
+                                                 translate="QUEUE_NAME_SHOULD_NOT_BE_EMPTY"></div>
+                                            <div class="input-wrapper">
+                                                <input type="text"
+                                                       name="orderServiceReplyToQueue"
+                                                       id="order_service_reply_to_queue"
+                                                       class="form-control"
+                                                       ng-model="options.orderServiceReplyToQueue"
+                                                       ng-required="true"
+                                                       ng-trim="true">
+                                                <button class="btn btn-default industry_button labels_reset_btn"
+                                                        ng-click="options.resetOrderServiceReplyToQueue()"
+                                                        translate="RESET_QUEUE">
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="order_service_reply_to_queue" class="form_label" translate="INVENTORY_SERVICE_RESPONSE_QUEUE"></label>
-                                        <div class="invalid_message"
-                                             ng-show="optionsForm.orderServiceReplyToQueue.$invalid"
-                                             translate="QUEUE_NAME_SHOULD_NOT_BE_EMPTY"></div>
-                                        <div class="input-wrapper">
-                                            <input type="text"
-                                                   name="orderServiceReplyToQueue"
-                                                   id="order_service_reply_to_queue"
-                                                   class="form-control"
-                                                   ng-model="options.orderServiceReplyToQueue"
-                                                   ng-required="true"
-                                                   ng-trim="true">
-                                            <button class="btn btn-default industry_button labels_reset_btn"
-                                                    ng-click="options.resetOrderServiceReplyToQueue()"
-                                                    translate="RESET_QUEUE">
-                                            </button>
+                                    <div ng-show="options.mqType === 'KAFKA'">
+                                        <div class="form-group">
+                                            <label for="inventory_service_request_topic" class="form_label" translate="INVENTORY_SERVICE_REQUEST_TOPIC"></label>
+                                            <div class="invalid_message"
+                                                 ng-show="optionsForm.inventoryServiceRequestTopic.$invalid"
+                                                 translate="TOPIC_NAME_SHOULD_NOT_BE_EMPTY"></div>
+                                            <div class="input-wrapper">
+                                                <input type="text"
+                                                       name="inventoryServiceRequestTopic"
+                                                       id="inventory_service_request_topic"
+                                                       class="form-control"
+                                                       ng-model="options.inventoryServiceRequestTopic"
+                                                       ng-required="true"
+                                                       ng-trim="true">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inventory_service_response_topic" class="form_label" translate="INVENTORY_SERVICE_RESPONSE_TOPIC"></label>
+                                            <div class="invalid_message"
+                                                 ng-show="optionsForm.inventoryServiceResponseTopic.$invalid"
+                                                 translate="TOPIC_NAME_SHOULD_NOT_BE_EMPTY"></div>
+                                            <div class="input-wrapper">
+                                                <input type="text"
+                                                       name="inventoryServiceResponseTopic"
+                                                       id="inventory_service_response_topic"
+                                                       class="form-control"
+                                                       ng-model="options.inventoryServiceResponseTopic"
+                                                       ng-required="true"
+                                                       ng-trim="true">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

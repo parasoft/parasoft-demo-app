@@ -1,9 +1,12 @@
 package com.parasoft.demoapp.service;
 
+import com.parasoft.demoapp.config.MQConfig;
+import com.parasoft.demoapp.config.kafka.KafkaConfig;
 import com.parasoft.demoapp.dto.InventoryInfoDTO;
 import com.parasoft.demoapp.dto.InventoryOperation;
 import com.parasoft.demoapp.dto.InventoryOperationRequestMessageDTO;
 import com.parasoft.demoapp.dto.OrderMQMessageDTO;
+import com.parasoft.demoapp.model.global.preferences.MqType;
 import com.parasoft.demoapp.model.industry.OrderEntity;
 import com.parasoft.demoapp.model.industry.OrderItemEntity;
 import com.parasoft.demoapp.model.industry.OrderStatus;
@@ -15,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.jms.core.JmsMessagingTemplate;
+import org.springframework.kafka.core.KafkaTemplate;
 
 import javax.jms.Destination;
 import java.util.ArrayList;
@@ -22,8 +26,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.nullable;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.*;
 
 /**
  * Test class for OrderMQService
@@ -38,6 +41,9 @@ public class OrderMQServiceTest {
 
 	@Mock
 	JmsMessagingTemplate jmsMessagingTemplate;
+
+	@Mock
+	KafkaTemplate<String, InventoryOperationRequestMessageDTO> operationRequestKafkaTemplate;
 
 	@Before
 	public void setupMocks() {
@@ -83,21 +89,22 @@ public class OrderMQServiceTest {
 	}
 
     /**
-     * Test for sendToInventoryRequestQueue(InventoryOperation, String, List<OrderItemEntity>)
+     * Test for sendToInventoryRequestDestination(InventoryOperation, String, List<OrderItemEntity>)
      *
-     * @see com.parasoft.demoapp.service.OrderMQService#sendToInventoryRequestQueue(InventoryOperation, String, List<OrderItemEntity>)
+     * @see com.parasoft.demoapp.service.OrderMQService#sendToInventoryRequestDestination(InventoryOperation, String, List<OrderItemEntity>)
      */
     @Test
-    public void testSendToInventoryRequestQueue_without_info() {
+    public void testSendToInventoryRequestDestination_without_info_jms() {
         // Given
         String orderNumber = "11-234-567";
         OrderItemEntity orderItem = new OrderItemEntity("name", "description", "imagePath", 1);
         orderItem.setItemId(1L);
         List<OrderItemEntity> orderItems = new ArrayList<>();
         orderItems.add(orderItem);
+        MQConfig.currentMQType = MqType.ACTIVE_MQ;
 
         // When
-        underTest.sendToInventoryRequestQueue(InventoryOperation.DECREASE, orderNumber, orderItems);
+        underTest.sendToInventoryRequestDestination(InventoryOperation.DECREASE, orderNumber, orderItems);
 
 
         // Then
@@ -105,24 +112,72 @@ public class OrderMQServiceTest {
     }
 
     /**
-     * Test for sendToInventoryRequestQueue(InventoryOperation, String, List<OrderItemEntity>, String)
+     * Test for sendToInventoryRequestDestination(InventoryOperation, String, List<OrderItemEntity>)
      *
-     * @see com.parasoft.demoapp.service.OrderMQService#sendToInventoryRequestQueue(InventoryOperation, String, List<OrderItemEntity>, String)
+     * @see com.parasoft.demoapp.service.OrderMQService#sendToInventoryRequestDestination(InventoryOperation, String, List<OrderItemEntity>)
      */
     @Test
-    public void testSendToInventoryRequestQueue_with_info() {
+    public void testSendToInventoryRequestDestination_without_info_kafka() {
         // Given
         String orderNumber = "11-234-567";
         OrderItemEntity orderItem = new OrderItemEntity("name", "description", "imagePath", 1);
         orderItem.setItemId(1L);
         List<OrderItemEntity> orderItems = new ArrayList<>();
         orderItems.add(orderItem);
+        MQConfig.currentMQType = MqType.KAFKA;
+        KafkaConfig.setOrderServiceRequestTopic("test.topic");
 
         // When
-        underTest.sendToInventoryRequestQueue(InventoryOperation.DECREASE, orderNumber, orderItems, "test");
+        underTest.sendToInventoryRequestDestination(InventoryOperation.DECREASE, orderNumber, orderItems);
+
+
+        // Then
+        Mockito.verify(operationRequestKafkaTemplate, times(1)).send(anyString(), anyString(), any(InventoryOperationRequestMessageDTO.class));
+    }
+
+    /**
+     * Test for sendToInventoryRequestDestination(InventoryOperation, String, List<OrderItemEntity>, String)
+     *
+     * @see com.parasoft.demoapp.service.OrderMQService#sendToInventoryRequestDestination(InventoryOperation, String, List<OrderItemEntity>, String)
+     */
+    @Test
+    public void testSendToInventoryRequestDestination_with_info_jms() {
+        // Given
+        String orderNumber = "11-234-567";
+        OrderItemEntity orderItem = new OrderItemEntity("name", "description", "imagePath", 1);
+        orderItem.setItemId(1L);
+        List<OrderItemEntity> orderItems = new ArrayList<>();
+        orderItems.add(orderItem);
+        MQConfig.currentMQType = MqType.ACTIVE_MQ;
+
+        // When
+        underTest.sendToInventoryRequestDestination(InventoryOperation.DECREASE, orderNumber, orderItems, "test");
 
         // Then
         Mockito.verify(jmsMessagingTemplate, times(1)).convertAndSend(any(ActiveMQQueue.class), any(InventoryOperationRequestMessageDTO.class));
+    }
+
+    /**
+     * Test for sendToInventoryRequestDestination(InventoryOperation, String, List<OrderItemEntity>, String)
+     *
+     * @see com.parasoft.demoapp.service.OrderMQService#sendToInventoryRequestDestination(InventoryOperation, String, List<OrderItemEntity>, String)
+     */
+    @Test
+    public void testSendToInventoryRequestDestination_with_info_kafka() {
+        // Given
+        String orderNumber = "11-234-567";
+        OrderItemEntity orderItem = new OrderItemEntity("name", "description", "imagePath", 1);
+        orderItem.setItemId(1L);
+        List<OrderItemEntity> orderItems = new ArrayList<>();
+        orderItems.add(orderItem);
+        MQConfig.currentMQType = MqType.KAFKA;
+        KafkaConfig.setOrderServiceRequestTopic("test.topic");
+
+        // When
+        underTest.sendToInventoryRequestDestination(InventoryOperation.DECREASE, orderNumber, orderItems, "test");
+
+        // Then
+        Mockito.verify(operationRequestKafkaTemplate, times(1)).send(anyString(), anyString(), any(InventoryOperationRequestMessageDTO.class));
     }
 
 	/**

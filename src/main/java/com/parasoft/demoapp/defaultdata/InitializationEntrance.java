@@ -119,7 +119,7 @@ public class InitializationEntrance {
         parasoftJDBCProxyService.refreshParasoftJDBCProxyDataSource();
 
         MqType mqType = globalPreferences.getMqType();
-        MQConfig.CURRENT_MQ_TYPE = mqType;
+        MQConfig.currentMQType = mqType;
         if (mqType == MqType.ACTIVE_MQ) {
             try {
                 globalPreferencesService.initializeActiveMqJmsQueuesOnStartup(globalPreferences);

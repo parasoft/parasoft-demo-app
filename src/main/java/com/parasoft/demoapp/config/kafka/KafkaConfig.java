@@ -2,6 +2,8 @@ package com.parasoft.demoapp.config.kafka;
 
 import com.parasoft.demoapp.dto.InventoryOperationRequestMessageDTO;
 import com.parasoft.demoapp.dto.InventoryOperationResultMessageDTO;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -18,9 +20,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
+@Getter
 public class KafkaConfig {
     public static final String DEFAULT_ORDER_SERVICE_REQUEST_TOPIC = "inventory.request";
     public static final String DEFAULT_ORDER_SERVICE_RESPONSE_TOPIC = "inventory.response";
+    @Setter private static String orderServiceRequestTopic = DEFAULT_ORDER_SERVICE_REQUEST_TOPIC;
+    @Setter private static String orderServiceResponseTopic = DEFAULT_ORDER_SERVICE_REQUEST_TOPIC;
+
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
     @Value("${spring.kafka.consumer.group-id}")
