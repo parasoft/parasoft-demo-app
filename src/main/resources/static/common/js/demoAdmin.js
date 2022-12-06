@@ -1428,7 +1428,7 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
                 options.configurationDetails = [
                     {
                         label: $filter('translate')('PROVIDER_URL_LABEL'),
-                        value: data.activeMqConfig.brokerUrl
+                        value: data.activeMqConfig.brokerUrl.replace("0.0.0.0", location.hostname)
                     }, {
                         label: $filter('translate')('INITIAL_CONTEXT_CLASS_LABEL'),
                         value: data.activeMqConfig.initialContextClass
@@ -1455,7 +1455,7 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
                 ];
             }
         }).catch(function(result) {
-            console.log(result);
+            console.error(result);
         });
     }
 });
