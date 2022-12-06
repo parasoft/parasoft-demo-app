@@ -35,7 +35,7 @@ public abstract class RefreshableMessageListener implements MessageListener {
         this.jmsQueueListenerContainerFactory = jmsQueueListenerContainerFactory;
         this.cachingConnectionFactory = cachingConnectionFactory;
 
-        if(MQConfig.CURRENT_MQ_TYPE == MqType.ACTIVE_MQ) {
+        if(MQConfig.currentMQType == MqType.ACTIVE_MQ) {
             registerListener(destinationName);
         }
     }
