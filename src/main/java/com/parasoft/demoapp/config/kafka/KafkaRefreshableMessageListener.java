@@ -15,7 +15,7 @@ public abstract class KafkaRefreshableMessageListener<T> extends RefreshableMess
     public KafkaRefreshableMessageListener(ConcurrentKafkaListenerContainerFactory<String, T> kafkaListenerContainerFactory,
                                             String topic) {
         this.kafkaListenerContainerFactory = kafkaListenerContainerFactory;
-        if(MQConfig.CURRENT_MQ_TYPE == MqType.KAFKA) {
+        if(MQConfig.currentMQType == MqType.KAFKA) {
             registerListener(topic);
         }
     }
