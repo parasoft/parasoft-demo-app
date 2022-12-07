@@ -41,6 +41,7 @@ public class KafkaConfig {
                 StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
                 JsonSerializer.class);
+        props.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, 2000);
         return props;
     }
 

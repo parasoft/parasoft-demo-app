@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsMessagingTemplate;
+import org.springframework.kafka.KafkaException;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
@@ -52,7 +53,11 @@ public class OrderMQService {
         } else if (MQConfig.currentMQType == MqType.KAFKA) {
             String destination = KafkaConfig.getOrderServiceSendToTopic();
             requestDestination = "Kafka topic: " + destination;
-            operationRequestKafkaTemplate.send(destination, message.getOrderNumber(), message);
+            try {
+                operationRequestKafkaTemplate.send(destination, message.getOrderNumber(), message);
+            } catch (Exception e) {
+                throw new KafkaException("Can not send message to Kafka broker.", e);
+            }
         }
 
         log.info("Order service sent a message to {} \n Message content: {}", requestDestination, message);

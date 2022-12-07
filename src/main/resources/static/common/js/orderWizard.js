@@ -130,6 +130,7 @@ app.controller('orderWizardController', function($scope, $rootScope, $http, $fil
         let error = (result, endpointType) => {
             let errCode = result.status;
             let errMsg;
+            let errTitle;
             switch (errCode) {
                 case -1:
                     errMsg = $filter('translate')('ERR_CONNECTION_REFUSED');
@@ -145,11 +146,19 @@ app.controller('orderWizardController', function($scope, $rootScope, $http, $fil
                         errMsg = $filter('translate')('NO_SUCH_ITEMS');
                     }
                     break;
+                case 500:
+                    if(result.data.message.indexOf("Can not send message to Kafka broker.") > -1) {
+                        errTitle = $filter('translate')('SUBMIT_ERROR')
+                        errMsg = $filter('translate')('KAFKA_BROKER_NOT_AVAILABLE');
+                    } else {
+                        errMsg = $filter('translate')('SUBMIT_ERROR');
+                    }
+                    break;
                 default:
                     errMsg = $filter('translate')('SUBMIT_ERROR');
             }
             if(!errorMessageHandled) {
-                toastrService().error(errMsg);
+                toastrService().error(errMsg, errTitle);
             }
         };
 
