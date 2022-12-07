@@ -28,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.MessageFormat;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -276,18 +275,26 @@ public class GlobalPreferencesService {
      *
      * @throws ParameterException
      */
-    public void initializeActiveMqJmsQueuesOnStartup(GlobalPreferencesEntity globalPreferences)
-            throws ParameterException, KafkaServerIsNotAvailableException {
+    public void initializeMqOnStartup(GlobalPreferencesEntity globalPreferences)
+            throws ParameterException {
         GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
         globalPreferencesDto.setMqType(globalPreferences.getMqType());
         globalPreferencesDto.setOrderServiceDestinationQueue(globalPreferences.getOrderServiceDestinationQueue());
         globalPreferencesDto.setOrderServiceReplyToQueue(globalPreferences.getOrderServiceReplyToQueue());
 
-        validateProxyConfig(globalPreferencesDto);
+        try {
+            validateMqConfig(globalPreferencesDto, false);
+        } catch (KafkaServerIsNotAvailableException e) {
+            // do nothing, it will never go into here.
+        }
 
-        ActiveMQConfig.setOrderServiceSendToQueue(new ActiveMQQueue(
-                globalPreferences.getOrderServiceDestinationQueue()));
-        ActiveMQConfig.setOrderServiceListenToQueue(globalPreferences.getOrderServiceReplyToQueue());
+        if (globalPreferences.getMqType() == MqType.ACTIVE_MQ) {
+            ActiveMQConfig.setOrderServiceSendToQueue(new ActiveMQQueue(
+                    globalPreferences.getOrderServiceDestinationQueue()));
+            ActiveMQConfig.setOrderServiceListenToQueue(globalPreferences.getOrderServiceReplyToQueue());
+        } else if (globalPreferences.getMqType() == MqType.KAFKA) {
+            // TODO: initialize Kafka topics on startup
+        }
     }
 
     private void handleParasoftJDBCProxy(GlobalPreferencesEntity currentPreferences,
@@ -400,7 +407,7 @@ public class GlobalPreferencesService {
 
     private void handleMqProxy(GlobalPreferencesEntity currentPreferences,
                                GlobalPreferencesDTO globalPreferencesDto) throws ParameterException, KafkaServerIsNotAvailableException {
-        validateProxyConfig(globalPreferencesDto);
+        validateMqConfig(globalPreferencesDto, true);
         mqProxyStatusChanged = checkMqProxyStatusHasChanged(currentPreferences, globalPreferencesDto);
         currentPreferences.setMqType(globalPreferencesDto.getMqType());
         currentPreferences.setOrderServiceDestinationQueue(globalPreferencesDto.getOrderServiceDestinationQueue());
@@ -470,13 +477,17 @@ public class GlobalPreferencesService {
         imageService.removeSpecificIndustryUploadedImages(IndustryRoutingDataSource.currentIndustry);
 	}
 
-    private void validateProxyConfig(GlobalPreferencesDTO globalPreferencesDto) throws ParameterException, KafkaServerIsNotAvailableException {
-        ParameterValidator.requireNonNull(globalPreferencesDto.getMqType(), GlobalPreferencesMessages.MQTYPE_MUST_NOT_BE_NULL);
-        ParameterValidator.requireNonBlank(globalPreferencesDto.getOrderServiceDestinationQueue(), GlobalPreferencesMessages.ORDER_SERVICE_DESTINATION_QUEUE_CANNOT_BE_NULL);
-        ParameterValidator.requireNonBlank(globalPreferencesDto.getOrderServiceReplyToQueue(), GlobalPreferencesMessages.ORDER_SERVICE_REPLY_TO_QUEUE_CANNOT_BE_NULL);
-        boolean useKafka = Objects.equals(globalPreferencesDto.getMqType(), MqType.KAFKA);
-        if (useKafka) {
-            validateKafkaBrokerUrl();
+    private void validateMqConfig(GlobalPreferencesDTO globalPreferencesDto, boolean needValidateKafkaBrokerUrlIfKafkaIsEnabled)
+                                                                    throws ParameterException, KafkaServerIsNotAvailableException {
+        if(globalPreferencesDto.getMqType() == MqType.KAFKA) {
+            // TODO: validate the topics are not empty and null
+            if(needValidateKafkaBrokerUrlIfKafkaIsEnabled) {
+                validateKafkaBrokerUrl();
+            }
+        } else if(globalPreferencesDto.getMqType() == MqType.ACTIVE_MQ) {
+            ParameterValidator.requireNonNull(globalPreferencesDto.getMqType(), GlobalPreferencesMessages.MQTYPE_MUST_NOT_BE_NULL);
+            ParameterValidator.requireNonBlank(globalPreferencesDto.getOrderServiceDestinationQueue(), GlobalPreferencesMessages.ORDER_SERVICE_DESTINATION_QUEUE_CANNOT_BE_NULL);
+            ParameterValidator.requireNonBlank(globalPreferencesDto.getOrderServiceReplyToQueue(), GlobalPreferencesMessages.ORDER_SERVICE_REPLY_TO_QUEUE_CANNOT_BE_NULL);
         }
     }
 
