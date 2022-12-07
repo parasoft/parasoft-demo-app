@@ -47,7 +47,7 @@ public class InventoryResponseQueueListener extends ActiveMQRefreshableMessageLi
             }
 
             InventoryOperationRequestMessageDTO messageToReply =
-                    orderService.handleMessageFromResponseQueue((InventoryOperationResultMessageDTO) object);
+                    orderService.handleMessageFromResponse((InventoryOperationResultMessageDTO) object);
             if(messageToReply == null) {
                 log.info("Order service has no response message to reply.");
                 return;
