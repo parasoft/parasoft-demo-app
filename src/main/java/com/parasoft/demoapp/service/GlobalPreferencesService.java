@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -139,7 +140,7 @@ public class GlobalPreferencesService {
             rollbackFor = {ParameterException.class, VirtualizeServerUrlException.class})
     public synchronized GlobalPreferencesEntity updateGlobalPreferences(GlobalPreferencesDTO globalPreferencesDto)
             throws GlobalPreferencesNotFoundException, GlobalPreferencesMoreThanOneException, ParameterException,
-            EndpointInvalidException, VirtualizeServerUrlException {
+            EndpointInvalidException, VirtualizeServerUrlException, KafkaServerIsNotAvailableException {
 
         IndustryType industry = globalPreferencesDto.getIndustryType();
         validateIndustry(industry);
@@ -276,7 +277,7 @@ public class GlobalPreferencesService {
      * @throws ParameterException
      */
     public void initializeActiveMqJmsQueuesOnStartup(GlobalPreferencesEntity globalPreferences)
-            throws ParameterException {
+            throws ParameterException, KafkaServerIsNotAvailableException {
         GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
         globalPreferencesDto.setMqType(globalPreferences.getMqType());
         globalPreferencesDto.setOrderServiceDestinationQueue(globalPreferences.getOrderServiceDestinationQueue());
@@ -398,7 +399,7 @@ public class GlobalPreferencesService {
     }
 
     private void handleMqProxy(GlobalPreferencesEntity currentPreferences,
-                               GlobalPreferencesDTO globalPreferencesDto) throws ParameterException {
+                               GlobalPreferencesDTO globalPreferencesDto) throws ParameterException, KafkaServerIsNotAvailableException {
         validateProxyConfig(globalPreferencesDto);
         mqProxyStatusChanged = checkMqProxyStatusHasChanged(currentPreferences, globalPreferencesDto);
         currentPreferences.setMqType(globalPreferencesDto.getMqType());
@@ -469,10 +470,14 @@ public class GlobalPreferencesService {
         imageService.removeSpecificIndustryUploadedImages(IndustryRoutingDataSource.currentIndustry);
 	}
 
-    private void validateProxyConfig(GlobalPreferencesDTO globalPreferencesDto) throws ParameterException {
+    private void validateProxyConfig(GlobalPreferencesDTO globalPreferencesDto) throws ParameterException, KafkaServerIsNotAvailableException {
         ParameterValidator.requireNonNull(globalPreferencesDto.getMqType(), GlobalPreferencesMessages.MQTYPE_MUST_NOT_BE_NULL);
         ParameterValidator.requireNonBlank(globalPreferencesDto.getOrderServiceDestinationQueue(), GlobalPreferencesMessages.ORDER_SERVICE_DESTINATION_QUEUE_CANNOT_BE_NULL);
         ParameterValidator.requireNonBlank(globalPreferencesDto.getOrderServiceReplyToQueue(), GlobalPreferencesMessages.ORDER_SERVICE_REPLY_TO_QUEUE_CANNOT_BE_NULL);
+        boolean useKafka = Objects.equals(globalPreferencesDto.getMqType(), MqType.KAFKA);
+        if (useKafka) {
+            validateKafkaBrokerUrl();
+        }
     }
 
     public void shutdownJMSService() {

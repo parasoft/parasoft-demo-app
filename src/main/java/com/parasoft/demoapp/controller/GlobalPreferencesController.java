@@ -53,7 +53,7 @@ public class GlobalPreferencesController {
 	@ResponseBody
 	public ResponseResult<GlobalPreferencesEntity> doSaveChanges(@RequestBody GlobalPreferencesDTO globalPreferencesDto)
 			throws GlobalPreferencesNotFoundException, GlobalPreferencesMoreThanOneException, ParameterException,
-			EndpointInvalidException, VirtualizeServerUrlException {
+			EndpointInvalidException, VirtualizeServerUrlException, KafkaServerIsNotAvailableException {
 
 		IndustryType previousIndustry = IndustryRoutingDataSource.currentIndustry;
 
