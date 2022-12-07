@@ -1,9 +1,11 @@
 package com.parasoft.demoapp.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.parasoft.demoapp.config.kafka.KafkaConfig;
 import com.parasoft.demoapp.defaultdata.global.GlobalUsersCreator;
 import com.parasoft.demoapp.dto.MQPropertiesResponseDTO;
 import com.parasoft.demoapp.messages.ConfigMessages;
+import com.parasoft.demoapp.messages.GlobalPreferencesMessages;
 import com.parasoft.demoapp.service.GlobalPreferencesService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +18,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+
+import java.text.MessageFormat;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -36,6 +40,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class GlobalPreferencesControllerSpringTest {
     @Autowired
     private GlobalPreferencesService globalPreferencesService;
+
+    @Autowired
+    private KafkaConfig kafkaConfig;
 
     @Autowired
     private MockMvc mockMvc;
@@ -87,4 +94,68 @@ public class GlobalPreferencesControllerSpringTest {
         assertEquals(ConfigMessages.USER_IS_NOT_AUTHORIZED, result.getMessage());
         assertEquals(result.getData(), "Bad credentials");
     }
+
+
+    /**
+     * Test for validateKafkaBrokerUrl()
+     * <br/>
+     * This test needs Kafka server enabled.
+     *
+     * @see com.parasoft.demoapp.controller.GlobalPreferencesController#validateKafkaBrokerUrl()
+     */
+    // @Test
+    public void test_validateKafkaBrokerUrl_normal() throws Exception {
+        assertNotNull(mockMvc);
+
+        String baseUrl = "/v1/demoAdmin/kafkaBrokerUrlValidation";
+        MvcResult mvcResult =
+                mockMvc.perform(get(baseUrl))
+                        .andExpect(status().isOk())
+                        .andReturn();
+        MockHttpServletResponse response  = mvcResult.getResponse();
+        ResponseResult result =
+                objectMapper.readValue(response.getContentAsString(), ResponseResult.class);
+
+        assertNotNull(result);
+        assertEquals(ResponseResult.STATUS_OK, result.getStatus());
+        assertEquals(ResponseResult.MESSAGE_OK, result.getMessage());
+    }
+
+    @Test
+    public void test_validateKafkaBrokerUrl_kafkaIsNotAvailable() throws Exception {
+        assertNotNull(mockMvc);
+
+        String baseUrl = "/v1/demoAdmin/kafkaBrokerUrlValidation";
+        MvcResult mvcResult =
+                mockMvc.perform(get(baseUrl))
+                        .andExpect(status().isInternalServerError())
+                        .andReturn();
+        MockHttpServletResponse response  = mvcResult.getResponse();
+        ResponseResult result =
+                objectMapper.readValue(response.getContentAsString(), ResponseResult.class);
+
+        assertNotNull(result);
+        assertEquals(ResponseResult.STATUS_ERR, result.getStatus());
+        assertEquals(MessageFormat.format(GlobalPreferencesMessages.KAFKA_SERVER_IS_NOT_AVAILABLE, kafkaConfig.getBootstrapServers()), result.getMessage());
+    }
+
+    @Test
+    public void test_validateKafkaBrokerUrl_incorrectAuthentication() throws Exception {
+        assertNotNull(mockMvc);
+
+        String baseUrl = "/v1/demoAdmin/kafkaBrokerUrlValidation";
+        MvcResult mvcResult =
+                mockMvc.perform(get(baseUrl).with(httpBasic(GlobalUsersCreator.USERNAME_PURCHASER,"invalidPass")))
+                        .andExpect(status().isUnauthorized())
+                        .andReturn();
+        MockHttpServletResponse response  = mvcResult.getResponse();
+        ResponseResult result =
+                objectMapper.readValue(response.getContentAsString(), ResponseResult.class);
+
+        assertNotNull(result);
+        assertEquals(ResponseResult.STATUS_ERR, result.getStatus());
+        assertEquals(ConfigMessages.USER_IS_NOT_AUTHORIZED, result.getMessage());
+        assertEquals(result.getData(), "Bad credentials");
+    }
+
 }

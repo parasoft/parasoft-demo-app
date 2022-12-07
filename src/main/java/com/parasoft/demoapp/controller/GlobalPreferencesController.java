@@ -176,4 +176,15 @@ public class GlobalPreferencesController {
 		response.setData(globalPreferencesService.getMQProperties());
 		return response;
 	}
+
+	@GetMapping("/v1/demoAdmin/kafkaBrokerUrlValidation")
+	@ResponseBody
+	public ResponseResult<Void> validateKafkaBrokerUrl() throws KafkaServerIsNotAvailableException {
+		ResponseResult<Void> response =
+				ResponseResult.getInstance(ResponseResult.STATUS_OK, ResponseResult.MESSAGE_OK);
+
+		globalPreferencesService.validateKafkaBrokerUrl();
+
+		return response;
+	}
 }
