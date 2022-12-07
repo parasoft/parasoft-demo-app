@@ -349,6 +349,8 @@ public class GlobalPreferencesService {
             String graphQLEndpoint = globalPreferencesDto.getGraphQLEndpoint();
             if (!StringUtils.isBlank(graphQLEndpoint)) {
                 endpointService.validateUrl(graphQLEndpoint, GlobalPreferencesMessages.INVALID_GRAPHQL_URL);
+            } else {
+                graphQLEndpoint = "";
             }
             currentPreferences.setGraphQLEndpoint(graphQLEndpoint);
             return;
