@@ -138,7 +138,7 @@ public class OrderService {
         order.setOrderNumber(orderNumber);
         order = orderRepository.save(order);
         shoppingCartService.clearShoppingCart(userId);
-        orderMQService.sendToInventoryRequestQueue(InventoryOperation.DECREASE, orderNumber, order.getOrderItems());
+        orderMQService.sendToInventoryRequestDestination(InventoryOperation.DECREASE, orderNumber, order.getOrderItems());
 
         return order;
     }
@@ -266,7 +266,7 @@ public class OrderService {
         newOrder = orderRepository.save(newOrder);
 
         if(sendRequestToIncreaseInventory) {
-            orderMQService.sendToInventoryRequestQueue(InventoryOperation.INCREASE,
+            orderMQService.sendToInventoryRequestDestination(InventoryOperation.INCREASE,
                     newOrder.getOrderNumber(),
                     newOrder.getOrderItems());
         }

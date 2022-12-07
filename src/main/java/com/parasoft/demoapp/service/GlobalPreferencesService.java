@@ -1,13 +1,17 @@
 package com.parasoft.demoapp.service;
 
 import com.parasoft.demoapp.config.ImplementedIndustries;
+import com.parasoft.demoapp.config.MQConfig;
 import com.parasoft.demoapp.config.activemq.ActiveMQConfig;
 import com.parasoft.demoapp.config.activemq.InventoryRequestQueueListener;
 import com.parasoft.demoapp.config.activemq.InventoryResponseQueueListener;
 import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
+import com.parasoft.demoapp.config.kafka.InventoryRequestTopicListener;
+import com.parasoft.demoapp.config.kafka.KafkaConfig;
 import com.parasoft.demoapp.defaultdata.ClearEntrance;
 import com.parasoft.demoapp.defaultdata.ResetEntrance;
 import com.parasoft.demoapp.dto.GlobalPreferencesDTO;
+import com.parasoft.demoapp.dto.MQPropertiesResponseDTO;
 import com.parasoft.demoapp.exception.*;
 import com.parasoft.demoapp.messages.GlobalPreferencesMessages;
 import com.parasoft.demoapp.model.global.preferences.*;
@@ -62,7 +66,16 @@ public class GlobalPreferencesService {
     private InventoryRequestQueueListener inventoryRequestQueueListener;
 
     @Autowired
+    private InventoryRequestTopicListener inventoryRequestTopicListener;
+
+    @Autowired
     private GlobalPreferencesDefaultSettingsService defaultGlobalPreferencesSettingsService;
+
+    @Autowired
+    private ActiveMQConfig activeMQConfig;
+
+    @Autowired
+    private KafkaConfig kafkaConfig;
 
     /**
      * A flag indicating whether the destinations of the mq proxy need to be updated when the global preference is updated.
@@ -243,10 +256,12 @@ public class GlobalPreferencesService {
 
         stopMQListenersExcept(currentPreferences.getMqType());
         if(MqType.ACTIVE_MQ == currentPreferences.getMqType()) {
+            MQConfig.currentMQType = MqType.ACTIVE_MQ;
             ActiveMQConfig.setOrderServiceSendToQueue(new ActiveMQQueue(orderServiceDestinationQueue));
             inventoryResponseQueueListener.refreshDestination(orderServiceReplyToQueue);
             inventoryRequestQueueListener.refreshDestination(ActiveMQConfig.getInventoryServiceListenToQueue());
         } else if(MqType.KAFKA == currentPreferences.getMqType()) {
+            MQConfig.currentMQType = MqType.KAFKA;
             // TODO: refresh listener on Kafka
         } else {
             throw new UnsupportedOperationException("Unsupported MQ type: " + currentPreferences.getMqType());
@@ -387,6 +402,8 @@ public class GlobalPreferencesService {
         currentPreferences.setMqType(globalPreferencesDto.getMqType());
         currentPreferences.setOrderServiceDestinationQueue(globalPreferencesDto.getOrderServiceDestinationQueue());
         currentPreferences.setOrderServiceReplyToQueue(globalPreferencesDto.getOrderServiceReplyToQueue());
+        currentPreferences.setOrderServiceRequestTopic(globalPreferencesDto.getInventoryServiceRequestTopic());
+        currentPreferences.setOrderServiceResponseTopic(globalPreferencesDto.getInventoryServiceResponseTopic());
     }
 
     public boolean checkMqProxyStatusHasChanged(GlobalPreferencesEntity currentPreferences,
@@ -462,12 +479,27 @@ public class GlobalPreferencesService {
 
     private void stopMQListenersExcept(MqType mqType) {
         if(MqType.ACTIVE_MQ == mqType) {
-            // TODO: stop listeners of Kafka
+            // Stop listeners on Kafka
+            inventoryRequestTopicListener.stopAllListenedDestinations();
         } else if(MqType.KAFKA == mqType) {
             // Stop listeners on ActiveMQ
-            inventoryResponseQueueListener.stopAllListenedListenerContainers();
-            inventoryRequestQueueListener.stopAllListenedListenerContainers();
+            inventoryResponseQueueListener.stopAllListenedDestinations();
+            inventoryRequestQueueListener.stopAllListenedDestinations();
         }
     }
 
+    public MQPropertiesResponseDTO getMQProperties() {
+        MQPropertiesResponseDTO.ActiveMQConfigResponse activeMQConfigResponse =
+                new MQPropertiesResponseDTO.ActiveMQConfigResponse(
+                        activeMQConfig.getBrokerUrl(),
+                        activeMQConfig.getUsername(),
+                        activeMQConfig.getPassword());
+        MQPropertiesResponseDTO.KafkaConfigResponse kafkaConfigResponse =
+                new MQPropertiesResponseDTO.KafkaConfigResponse(
+                        kafkaConfig.getBootstrapServers(),
+                        kafkaConfig.getGroupId()
+                );
+
+        return new MQPropertiesResponseDTO(activeMQConfigResponse, kafkaConfigResponse);
+    }
 }

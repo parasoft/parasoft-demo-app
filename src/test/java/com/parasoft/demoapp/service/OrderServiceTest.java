@@ -248,7 +248,7 @@ public class OrderServiceTest {
         assertEquals(eventNumber, result.getEventNumber());
         assertEquals("23-456-010", result.getOrderNumber());
         assertEquals(submissionDate, result.getSubmissionDate());
-        Mockito.verify(orderMQService).sendToInventoryRequestQueue(InventoryOperation.DECREASE, "23-456-010", orderItems);
+        Mockito.verify(orderMQService).sendToInventoryRequestDestination(InventoryOperation.DECREASE, "23-456-010", orderItems);
     }
 
     /**
@@ -280,7 +280,7 @@ public class OrderServiceTest {
 
         // Then
         Assertions.assertEquals(MessageFormat.format(OrderMessages.LOCATION_NOT_FOUND_FOR_REGION, region.toString()), message);
-        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestDestination(any(InventoryOperation.class), anyString(), anyList());
     }
 
     /**
@@ -315,7 +315,7 @@ public class OrderServiceTest {
 
         // Then
         Assertions.assertEquals(AssetMessages.NO_CART_ITEMS, message);
-        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestDestination(any(InventoryOperation.class), anyString(), anyList());
     }
 
     /**
@@ -345,7 +345,7 @@ public class OrderServiceTest {
 
         // Then
         Assertions.assertEquals(OrderMessages.USER_ID_CANNOT_BE_NULL, message);
-        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestDestination(any(InventoryOperation.class), anyString(), anyList());
     }
 
     /**
@@ -375,7 +375,7 @@ public class OrderServiceTest {
 
         // Then
         Assertions.assertEquals(OrderMessages.USERNAME_CANNOT_BE_NULL, message);
-        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestDestination(any(InventoryOperation.class), anyString(), anyList());
     }
 
     /**
@@ -405,7 +405,7 @@ public class OrderServiceTest {
 
         // Then
         Assertions.assertEquals(OrderMessages.REGION_CANNOT_BE_NULL, message);
-        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestDestination(any(InventoryOperation.class), anyString(), anyList());
     }
 
     /**
@@ -493,7 +493,7 @@ public class OrderServiceTest {
 
         // Then
         Assertions.assertEquals(OrderMessages.RECEIVER_ID_CANNOT_BE_BLANK, message);
-        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestDestination(any(InventoryOperation.class), anyString(), anyList());
 
     }
 
@@ -524,7 +524,7 @@ public class OrderServiceTest {
 
         // Then
         Assertions.assertEquals(OrderMessages.RECEIVER_ID_CANNOT_BE_BLANK, message);
-        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestDestination(any(InventoryOperation.class), anyString(), anyList());
 
     }
 
@@ -555,7 +555,7 @@ public class OrderServiceTest {
 
         // Then
         Assertions.assertEquals(OrderMessages.EVENT_ID_CANNOT_BE_BLANK, message);
-        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestDestination(any(InventoryOperation.class), anyString(), anyList());
 
     }
 
@@ -586,7 +586,7 @@ public class OrderServiceTest {
 
         // Then
         Assertions.assertEquals(OrderMessages.EVENT_ID_CANNOT_BE_BLANK, message);
-        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestDestination(any(InventoryOperation.class), anyString(), anyList());
 
     }
 
@@ -617,7 +617,7 @@ public class OrderServiceTest {
 
         // Then
         Assertions.assertEquals(OrderMessages.EVENT_NUMBER_CANNOT_BE_BLANK, message);
-        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestDestination(any(InventoryOperation.class), anyString(), anyList());
 
     }
 
@@ -648,7 +648,7 @@ public class OrderServiceTest {
 
         // Then
         Assertions.assertEquals(OrderMessages.EVENT_NUMBER_CANNOT_BE_BLANK, message);
-        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestDestination(any(InventoryOperation.class), anyString(), anyList());
 
     }
 
@@ -679,7 +679,7 @@ public class OrderServiceTest {
 
         // Then
         Assertions.assertEquals(OrderMessages.LOCATION_CANNOT_BE_BLANK, message);
-        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestDestination(any(InventoryOperation.class), anyString(), anyList());
 
     }
 
@@ -710,7 +710,7 @@ public class OrderServiceTest {
 
         // Then
         Assertions.assertEquals(OrderMessages.LOCATION_CANNOT_BE_BLANK, message);
-        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestDestination(any(InventoryOperation.class), anyString(), anyList());
 
     }
 
@@ -829,7 +829,7 @@ public class OrderServiceTest {
 
         // Then
         Assertions.assertEquals(OrderMessages.STATUS_CANNOT_BE_NULL, message);
-        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestDestination(any(InventoryOperation.class), anyString(), anyList());
     }
 
     /**
@@ -860,7 +860,7 @@ public class OrderServiceTest {
 
         // Then
         Assertions.assertEquals(OrderMessages.ORDER_NUMBER_CANNOT_BE_BLANK, message);
-        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestDestination(any(InventoryOperation.class), anyString(), anyList());
     }
 
     /**
@@ -891,7 +891,7 @@ public class OrderServiceTest {
 
         // Then
         Assertions.assertEquals(OrderMessages.ORDER_NUMBER_CANNOT_BE_BLANK, message);
-        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestDestination(any(InventoryOperation.class), anyString(), anyList());
     }
 
     /**
@@ -1127,7 +1127,7 @@ public class OrderServiceTest {
         assertNotNull(result);
         assertEquals(true, result.getReviewedByPRCH());
         assertEquals(false, result.getReviewedByAPV());
-        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestDestination(any(InventoryOperation.class), anyString(), anyList());
     }
 
     /**
@@ -1164,7 +1164,7 @@ public class OrderServiceTest {
 
         // Then
         assertEquals(MessageFormat.format(OrderMessages.NO_PERMISSION_TO_CHANGE_TO_ORDER_STATUS, newStatus), message);
-        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestDestination(any(InventoryOperation.class), anyString(), anyList());
     }
 
     /**
@@ -1201,7 +1201,7 @@ public class OrderServiceTest {
 
         // Then
         assertEquals(OrderMessages.CANNOT_SET_TRUE_TO_FALSE, message);
-        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestDestination(any(InventoryOperation.class), anyString(), anyList());
     }
 
     /**
@@ -1238,7 +1238,7 @@ public class OrderServiceTest {
 
         // Then
         assertEquals(OrderMessages.ORDER_REVIEW_STATUS_OF_PURCHASER_SHOULD_NOT_BE_NULL, message);
-        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestDestination(any(InventoryOperation.class), anyString(), anyList());
     }
 
     /**
@@ -1275,7 +1275,7 @@ public class OrderServiceTest {
 
         // Then
         assertEquals(OrderMessages.ORDER_REVIEW_STATUS_OF_APPROVER_SHOULD_NOT_BE_NULL, message);
-        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestDestination(any(InventoryOperation.class), anyString(), anyList());
     }
 
     /**
@@ -1312,7 +1312,7 @@ public class OrderServiceTest {
         // Then
         assertEquals(OrderMessages.ORDER_INFO_CANNOT_CHANGE_FROM_CANCELED, message);
         Mockito.verify(orderRepository, times(1)).findOrderByOrderNumber(anyString());
-        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestDestination(any(InventoryOperation.class), anyString(), anyList());
     }
 
     /**
@@ -1349,7 +1349,7 @@ public class OrderServiceTest {
         // Then
         assertEquals(OrderMessages.ORDER_INFO_CANNOT_CHANGE_FROM_SUBMITTED, message);
         Mockito.verify(orderRepository, times(1)).findOrderByOrderNumber(anyString());
-        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestDestination(any(InventoryOperation.class), anyString(), anyList());
     }
 
     /**
@@ -1386,7 +1386,7 @@ public class OrderServiceTest {
         // Then
         assertEquals(MessageFormat.format(OrderMessages.ORDER_STATUS_CHANGED_BACK_ERROR, order.getStatus(), newStatus), message);
         Mockito.verify(orderRepository, times(1)).findOrderByOrderNumber(anyString());
-        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestQueue(any(InventoryOperation.class), anyString(), anyList());
+        Mockito.verify(orderMQService, times(0)).sendToInventoryRequestDestination(any(InventoryOperation.class), anyString(), anyList());
 
         // Given
         newStatus = OrderStatus.CANCELED; // test point
@@ -1462,7 +1462,7 @@ public class OrderServiceTest {
         underTest.updateOrderByOrderNumber(orderNumber, userRoleName, newStatus,
                 reviewedByPRCH, reviewedByAPV, respondedBy, comments, publicToMQ);
         // Then
-        Mockito.verify(orderMQService).sendToInventoryRequestQueue(InventoryOperation.INCREASE, "11-234-567", null);
+        Mockito.verify(orderMQService).sendToInventoryRequestDestination(InventoryOperation.INCREASE, "11-234-567", null);
     }
 
     /**

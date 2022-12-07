@@ -115,10 +115,10 @@ button.close, button.close:hover {
     color: #555
 }
 
-.jms_configuration_details_modal_content {
+.queue_configuration_details_modal_content {
     width: 673px;
 }
 
-.jms_configuration_details a:hover {
+.queue_configuration_details a:hover {
     color: #E7FFA1;
 }

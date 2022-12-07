@@ -29,7 +29,7 @@ public class ItemInventoryService {
     private ItemInventoryRepository itemInventoryRepository;
 
     @Transactional(value = "industryTransactionManager")
-    public InventoryOperationResultMessageDTO handleMessageFromRequestQueue(InventoryOperationRequestMessageDTO
+    public InventoryOperationResultMessageDTO handleMessageFromRequest(InventoryOperationRequestMessageDTO
                                                                                         requestMessage) {
         InventoryOperation operation = requestMessage.getOperation();
         if (operation == NONE) {
