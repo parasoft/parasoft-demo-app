@@ -18,7 +18,7 @@ import javax.jms.Message;
 
 @Slf4j
 @Component
-public class InventoryRequestQueueListener extends RefreshableMessageListener {
+public class InventoryRequestQueueListener extends ActiveMQRefreshableMessageListener {
     private final ItemInventoryService itemInventoryService;
     private final ItemInventoryMQService itemInventoryMQService;
 
@@ -47,7 +47,7 @@ public class InventoryRequestQueueListener extends RefreshableMessageListener {
             }
 
             InventoryOperationResultMessageDTO messageToReply = itemInventoryService.
-                    handleMessageFromRequestQueue((InventoryOperationRequestMessageDTO) object);
+                    handleMessageFromRequest((InventoryOperationRequestMessageDTO) object);
             if(messageToReply == null) {
                 log.info("Inventory service has no response message to reply.");
                 return;

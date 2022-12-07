@@ -50,7 +50,7 @@ public class OrderMQService {
             requestDestination = "ActiveMQ: " + destination.toString();
             jmsMessagingTemplate.convertAndSend(destination, message);
         } else if (MQConfig.currentMQType == MqType.KAFKA) {
-            String destination = KafkaConfig.getOrderServiceRequestTopic();
+            String destination = KafkaConfig.getOrderServiceSendToTopic();
             requestDestination = "Kafka topic: " + destination;
             operationRequestKafkaTemplate.send(destination, message.getOrderNumber(), message);
         }
