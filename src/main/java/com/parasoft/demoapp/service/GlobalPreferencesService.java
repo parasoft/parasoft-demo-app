@@ -21,6 +21,8 @@ import com.parasoft.demoapp.util.BugsTypeSortOfDemoBugs;
 import com.parasoft.demoapp.util.RouteIdSortOfRestEndpoint;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.kafka.clients.admin.AdminClient;
+import org.apache.kafka.clients.admin.ListTopicsOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -508,5 +510,21 @@ public class GlobalPreferencesService {
                 );
 
         return new MQPropertiesResponseDTO(activeMQConfigResponse, kafkaConfigResponse);
+    }
+
+    public void validateKafkaBrokerUrl() throws KafkaServerIsNotAvailableException {
+        AdminClient client = AdminClient.create(kafkaConfig.adminClientConfigs());
+        try {
+            client.listTopics(new ListTopicsOptions().timeoutMs(KafkaConfig.ADMIN_CLIENT_TIMEOUT_MS))
+                    .names()
+                    .get();
+        } catch (Exception e) {
+            throw new KafkaServerIsNotAvailableException(
+                    MessageFormat.format(GlobalPreferencesMessages.KAFKA_SERVER_IS_NOT_AVAILABLE,
+                            kafkaConfig.getBootstrapServers()), e);
+        } finally {
+            // To avoid trying to connect all the time
+            client.close();
+        }
     }
 }

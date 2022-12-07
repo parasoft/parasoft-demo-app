@@ -31,6 +31,7 @@ public class GlobalPreferencesMessages extends Messages {
     public static final String MQTYPE_MUST_NOT_BE_NULL = "MqType must not be null.";
     public static final String WEBSERVICEMODE_MUST_NOT_BE_NULL = "WebServiceMode must not be null.";
     public static final String LABEL_CANNOT_BE_FOUND = "Label key {0} cannot be found.";
+    public static final String KAFKA_SERVER_IS_NOT_AVAILABLE = "Can not establish connection with Kafka server - {0}";
 
     public GlobalPreferencesMessages() {
         super("i18n/messages");
