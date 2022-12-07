@@ -18,7 +18,7 @@ import javax.jms.Message;
 
 @Slf4j
 @Component
-public class InventoryResponseQueueListener extends RefreshableMessageListener {
+public class InventoryResponseQueueListener extends ActiveMQRefreshableMessageListener {
     private final OrderService orderService;
     private final OrderMQService orderMQService;
 

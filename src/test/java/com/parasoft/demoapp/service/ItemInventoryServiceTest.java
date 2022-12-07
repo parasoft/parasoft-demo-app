@@ -48,7 +48,7 @@ public class ItemInventoryServiceTest {
 
         // When
         InventoryOperationResultMessageDTO resultMessage =
-                itemInventoryService.handleMessageFromRequestQueue(requestMessage);
+                itemInventoryService.handleMessageFromRequest(requestMessage);
 
         // Then
         InventoryOperationResultMessageDTO expectedResultMessage =
@@ -66,7 +66,7 @@ public class ItemInventoryServiceTest {
 
         // When
         InventoryOperationResultMessageDTO resultMessage =
-                itemInventoryService.handleMessageFromRequestQueue(requestMessage);
+                itemInventoryService.handleMessageFromRequest(requestMessage);
 
         // Then
         InventoryOperationResultMessageDTO expectedResultMessage =
@@ -85,7 +85,7 @@ public class ItemInventoryServiceTest {
 
         // When
         InventoryOperationResultMessageDTO resultMessage =
-                itemInventoryService.handleMessageFromRequestQueue(requestMessage);
+                itemInventoryService.handleMessageFromRequest(requestMessage);
 
         // Then
         InventoryOperationResultMessageDTO expectedResultMessage =
@@ -103,7 +103,7 @@ public class ItemInventoryServiceTest {
 
         // When
         InventoryOperationResultMessageDTO resultMessage =
-                itemInventoryService.handleMessageFromRequestQueue(requestMessage);
+                itemInventoryService.handleMessageFromRequest(requestMessage);
 
         // Then
         assertNull(resultMessage);
@@ -126,7 +126,7 @@ public class ItemInventoryServiceTest {
 
         // When
         InventoryOperationResultMessageDTO resultMessage =
-                itemInventoryService.handleMessageFromRequestQueue(requestMessage);
+                itemInventoryService.handleMessageFromRequest(requestMessage);
 
         // Then
         InventoryOperationResultMessageDTO expectedResultMessage =
@@ -144,7 +144,7 @@ public class ItemInventoryServiceTest {
 
         // When
         InventoryOperationResultMessageDTO resultMessage =
-                itemInventoryService.handleMessageFromRequestQueue(requestMessage);
+                itemInventoryService.handleMessageFromRequest(requestMessage);
 
         // Then
         InventoryOperationResultMessageDTO expectedResultMessage =
@@ -162,7 +162,7 @@ public class ItemInventoryServiceTest {
 
         // When
         InventoryOperationResultMessageDTO resultMessage =
-                itemInventoryService.handleMessageFromRequestQueue(requestMessage);
+                itemInventoryService.handleMessageFromRequest(requestMessage);
 
         // Then
         assertNull(resultMessage);
