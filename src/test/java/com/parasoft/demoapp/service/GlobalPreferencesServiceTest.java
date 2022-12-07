@@ -5,6 +5,8 @@ import com.parasoft.demoapp.config.activemq.ActiveMQConfig;
 import com.parasoft.demoapp.config.activemq.InventoryRequestQueueListener;
 import com.parasoft.demoapp.config.activemq.InventoryResponseQueueListener;
 import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
+import com.parasoft.demoapp.config.kafka.InventoryRequestTopicListener;
+import com.parasoft.demoapp.config.kafka.KafkaConfig;
 import com.parasoft.demoapp.dto.GlobalPreferencesDTO;
 import com.parasoft.demoapp.exception.*;
 import com.parasoft.demoapp.messages.GlobalPreferencesMessages;
@@ -25,6 +27,10 @@ import java.util.*;
 
 import static com.parasoft.demoapp.config.activemq.ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST;
 import static com.parasoft.demoapp.config.activemq.ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE;
+import static com.parasoft.demoapp.config.kafka.KafkaConfig.DEFAULT_ORDER_SERVICE_REQUEST_TOPIC;
+import static com.parasoft.demoapp.config.kafka.KafkaConfig.DEFAULT_ORDER_SERVICE_RESPONSE_TOPIC;
+import static com.parasoft.demoapp.messages.GlobalPreferencesMessages.ORDER_SERVICE_REQUEST_TOPIC_CANNOT_BE_NULL;
+import static com.parasoft.demoapp.messages.GlobalPreferencesMessages.ORDER_SERVICE_RESPONSE_TOPIC_CANNOT_BE_NULL;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -59,6 +65,9 @@ public class GlobalPreferencesServiceTest {
 	InventoryResponseQueueListener inventoryResponseQueueListener;
 
 	@Mock
+	InventoryRequestTopicListener inventoryRequestTopicListener;
+
+	@Mock
 	InventoryRequestQueueListener inventoryRequestQueueListener;
 
 	@Mock
@@ -73,6 +82,8 @@ public class GlobalPreferencesServiceTest {
 	public void tearDown() {
 		ActiveMQConfig.setOrderServiceListenToQueue(DEFAULT_QUEUE_INVENTORY_RESPONSE);
 		ActiveMQConfig.setOrderServiceSendToQueue(new ActiveMQQueue(DEFAULT_QUEUE_INVENTORY_REQUEST));
+		KafkaConfig.setOrderServiceSendToTopic(DEFAULT_ORDER_SERVICE_REQUEST_TOPIC);
+		KafkaConfig.setOrderServiceListenToTopic(DEFAULT_ORDER_SERVICE_RESPONSE_TOPIC);
 	}
 
 	/**
@@ -363,14 +374,13 @@ public class GlobalPreferencesServiceTest {
 	 * @see com.parasoft.demoapp.service.GlobalPreferencesService#updateGlobalPreferences(GlobalPreferencesDTO)
 	 */
 	@Test
-	public void testUpdateGlobalPreferences_normal() throws Throwable {
+	public void testUpdateGlobalPreferences_normal_with_jms() throws Throwable {
 		// Given
 		List<GlobalPreferencesEntity> findAllResult = new ArrayList<>();
 		GlobalPreferencesEntity globalPreferences = new GlobalPreferencesEntity();
 		findAllResult.add(globalPreferences);
 		when(globalPreferencesRepository.findAll()).thenReturn(findAllResult);
-		doNothing().when(inventoryResponseQueueListener).refreshDestination(any());
-		doNothing().when(inventoryRequestQueueListener).refreshDestination(any());
+		doNothing().when(inventoryRequestTopicListener).refreshDestination(any());
 
 		doNothing().when(restEndpointService).removeAllEndpoints();
 		when(globalPreferencesRepository.save(any(GlobalPreferencesEntity.class))).thenReturn(globalPreferences);
@@ -391,8 +401,8 @@ public class GlobalPreferencesServiceTest {
 		globalPreferencesDto.setLocationsRestEndpoint(locationsRestEndpointUrl);
 		globalPreferencesDto.setAdvertisingEnabled(false);
 		globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
-		globalPreferencesDto.setOrderServiceDestinationQueue("proxy.queue.inventory.request");
-		globalPreferencesDto.setOrderServiceReplyToQueue("proxy.queue.inventory.response");
+		globalPreferencesDto.setOrderServiceSendTo("proxy.queue.inventory.request");
+		globalPreferencesDto.setOrderServiceListenOn("proxy.queue.inventory.response");
 
 		GlobalPreferencesEntity result = underTest.updateGlobalPreferences(globalPreferencesDto);
 
@@ -435,6 +445,90 @@ public class GlobalPreferencesServiceTest {
 		assertEquals(MqType.ACTIVE_MQ, result.getMqType());
 		assertEquals("proxy.queue.inventory.request", result.getOrderServiceDestinationQueue());
 		assertEquals("proxy.queue.inventory.response", result.getOrderServiceReplyToQueue());
+		assertEquals(globalPreferences.getOrderServiceRequestTopic(), result.getOrderServiceRequestTopic());
+		assertEquals(globalPreferences.getOrderServiceResponseTopic(), result.getOrderServiceResponseTopic());
+	}
+
+	/**
+	 * Test for updateGlobalPreferences(GlobalPreferencesDTO)
+	 *
+	 * @see com.parasoft.demoapp.service.GlobalPreferencesService#updateGlobalPreferences(GlobalPreferencesDTO)
+	 */
+	@Test
+	public void testUpdateGlobalPreferences_normal_with_kafka() throws Throwable {
+		// Given
+		List<GlobalPreferencesEntity> findAllResult = new ArrayList<>();
+		GlobalPreferencesEntity globalPreferences = new GlobalPreferencesEntity();
+		findAllResult.add(globalPreferences);
+		when(globalPreferencesRepository.findAll()).thenReturn(findAllResult);
+		doNothing().when(inventoryResponseQueueListener).refreshDestination(any());
+		doNothing().when(inventoryRequestQueueListener).refreshDestination(any());
+
+		doNothing().when(restEndpointService).removeAllEndpoints();
+		when(globalPreferencesRepository.save(any(GlobalPreferencesEntity.class))).thenReturn(globalPreferences);
+
+		// When
+		String categoriesRestEndpointUrl = "http://localhost:8080/v1/assets/categories/";
+		String itemsRestEndpointUrl = "http://localhost:8080/v1/assets/items/";
+		String cartItemsRestEndpointUrl = "http://localhost:8080/v1/cartItems/";
+		String ordersRestEndpointUrl = "http://localhost:8080/v1/orders/";
+		String locationsRestEndpointUrl = "http://localhost:8080/v1/locations/";
+		GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
+		globalPreferencesDto.setIndustryType(IndustryType.AEROSPACE);
+		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
+		globalPreferencesDto.setCategoriesRestEndpoint(categoriesRestEndpointUrl);
+		globalPreferencesDto.setItemsRestEndpoint(itemsRestEndpointUrl);
+		globalPreferencesDto.setCartItemsRestEndpoint(cartItemsRestEndpointUrl);
+		globalPreferencesDto.setOrdersRestEndpoint(ordersRestEndpointUrl);
+		globalPreferencesDto.setLocationsRestEndpoint(locationsRestEndpointUrl);
+		globalPreferencesDto.setAdvertisingEnabled(false);
+		globalPreferencesDto.setMqType(MqType.KAFKA);
+		globalPreferencesDto.setOrderServiceSendTo("request.topic");
+		globalPreferencesDto.setOrderServiceListenOn("response.topic");
+
+		GlobalPreferencesEntity result = underTest.updateGlobalPreferences(globalPreferencesDto);
+
+		// Then
+		assertNotNull(result);
+		assertEquals(IndustryType.AEROSPACE, IndustryRoutingDataSource.currentIndustry);
+		assertEquals(IndustryType.AEROSPACE, globalPreferences.getIndustryType());
+		assertEquals(5, globalPreferences.getRestEndPoints().size());
+
+
+		Map<String, RestEndpointEntity> endpoints = new HashMap<>(); // Map<url,RestEndpointEntity>
+		for (RestEndpointEntity endpoint : globalPreferences.getRestEndPoints()) {
+			endpoints.put(endpoint.getUrl(), endpoint);
+		}
+		assertTrue(endpoints.containsKey(categoriesRestEndpointUrl));
+		RestEndpointEntity categoriesRestEndpoint = endpoints.get(categoriesRestEndpointUrl);
+		assertEquals(GlobalPreferencesDefaultSettingsService.CATEGORIES_ENDPOINT_ID, categoriesRestEndpoint.getRouteId());
+		assertEquals(GlobalPreferencesDefaultSettingsService.CATEGORIES_ENDPOINT_PATH, categoriesRestEndpoint.getPath());
+
+		assertTrue(endpoints.containsKey(itemsRestEndpointUrl));
+		RestEndpointEntity itemsRestEndpoint = endpoints.get(itemsRestEndpointUrl);
+		assertEquals(GlobalPreferencesDefaultSettingsService.ITEMS_ENDPOINT_ID, itemsRestEndpoint.getRouteId());
+		assertEquals(GlobalPreferencesDefaultSettingsService.ITEMS_ENDPOINT_PATH, itemsRestEndpoint.getPath());
+
+		assertTrue(endpoints.containsKey(cartItemsRestEndpointUrl));
+		RestEndpointEntity cartItemsRestEndpoint = endpoints.get(cartItemsRestEndpointUrl);
+		assertEquals(GlobalPreferencesDefaultSettingsService.CART_ENDPOINT_ID, cartItemsRestEndpoint.getRouteId());
+		assertEquals(GlobalPreferencesDefaultSettingsService.CART_ENDPOINT_PATH, cartItemsRestEndpoint.getPath());
+
+		assertTrue(endpoints.containsKey(ordersRestEndpointUrl));
+		RestEndpointEntity ordersRestEndpoint = endpoints.get(ordersRestEndpointUrl);
+		assertEquals(GlobalPreferencesDefaultSettingsService.ORDERS_ENDPOINT_ID, ordersRestEndpoint.getRouteId());
+		assertEquals(GlobalPreferencesDefaultSettingsService.ORDERS_ENDPOINT_PATH, ordersRestEndpoint.getPath());
+
+		assertTrue(endpoints.containsKey(locationsRestEndpointUrl));
+		RestEndpointEntity locationsRestEndpoint = endpoints.get(locationsRestEndpointUrl);
+		assertEquals(GlobalPreferencesDefaultSettingsService.LOCATIONS_ENDPOINT_ID, locationsRestEndpoint.getRouteId());
+		assertEquals(GlobalPreferencesDefaultSettingsService.LOCATIONS_ENDPOINT_PATH, locationsRestEndpoint.getPath());
+
+		assertEquals(MqType.KAFKA, result.getMqType());
+		assertEquals(globalPreferences.getOrderServiceDestinationQueue(), result.getOrderServiceDestinationQueue());
+		assertEquals(globalPreferences.getOrderServiceReplyToQueue(), result.getOrderServiceReplyToQueue());
+		assertEquals("request.topic", result.getOrderServiceRequestTopic());
+		assertEquals("response.topic", result.getOrderServiceResponseTopic());
 	}
 
 	/**
@@ -449,8 +543,7 @@ public class GlobalPreferencesServiceTest {
 		GlobalPreferencesEntity globalPreferences = new GlobalPreferencesEntity();
 		findAllResult.add(globalPreferences);
 		when(globalPreferencesRepository.findAll()).thenReturn(findAllResult);
-		doNothing().when(inventoryResponseQueueListener).refreshDestination(any());
-		doNothing().when(inventoryRequestQueueListener).refreshDestination(any());
+		doNothing().when(inventoryRequestTopicListener).refreshDestination(any());
 
 		doNothing().when(restEndpointService).removeAllEndpoints();
 		when(globalPreferencesRepository.save(any(GlobalPreferencesEntity.class))).thenReturn(globalPreferences);
@@ -471,8 +564,8 @@ public class GlobalPreferencesServiceTest {
 		globalPreferencesDto.setLocationsRestEndpoint(locationsRestEndpointUrl);
 		globalPreferencesDto.setAdvertisingEnabled(false);
 		globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
-		globalPreferencesDto.setOrderServiceDestinationQueue("proxy.queue.inventory.request");
-		globalPreferencesDto.setOrderServiceReplyToQueue("proxy.queue.inventory.response");
+		globalPreferencesDto.setOrderServiceSendTo("proxy.queue.inventory.request");
+		globalPreferencesDto.setOrderServiceListenOn("proxy.queue.inventory.response");
 
 		GlobalPreferencesEntity result = underTest.updateGlobalPreferences(globalPreferencesDto);
 
@@ -493,8 +586,7 @@ public class GlobalPreferencesServiceTest {
 		GlobalPreferencesEntity globalPreferences = new GlobalPreferencesEntity();
 		findAllResult.add(globalPreferences);
 		when(globalPreferencesRepository.findAll()).thenReturn(findAllResult);
-		doNothing().when(inventoryResponseQueueListener).refreshDestination(any());
-		doNothing().when(inventoryRequestQueueListener).refreshDestination(any());
+		doNothing().when(inventoryRequestTopicListener).refreshDestination(any());
 
 		doNothing().when(restEndpointService).removeAllEndpoints();
 		when(globalPreferencesRepository.save(any(GlobalPreferencesEntity.class))).thenReturn(globalPreferences);
@@ -515,8 +607,8 @@ public class GlobalPreferencesServiceTest {
 		globalPreferencesDto.setLocationsRestEndpoint(locationsRestEndpointUrl);
 		globalPreferencesDto.setAdvertisingEnabled(false);
 		globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
-		globalPreferencesDto.setOrderServiceDestinationQueue("proxy.queue.inventory.request");
-		globalPreferencesDto.setOrderServiceReplyToQueue("proxy.queue.inventory.response");
+		globalPreferencesDto.setOrderServiceSendTo("proxy.queue.inventory.request");
+		globalPreferencesDto.setOrderServiceListenOn("proxy.queue.inventory.response");
 
 		GlobalPreferencesEntity result = underTest.updateGlobalPreferences(globalPreferencesDto);
 
@@ -540,8 +632,7 @@ public class GlobalPreferencesServiceTest {
 
 		doNothing().when(restEndpointService).removeAllEndpoints();
 		doNothing().when(demoBugService).removeByGlobalPreferencesId(anyLong());
-		doNothing().when(inventoryResponseQueueListener).refreshDestination(any());
-		doNothing().when(inventoryRequestQueueListener).refreshDestination(any());
+		doNothing().when(inventoryRequestTopicListener).refreshDestination(any());
 		when(globalPreferencesRepository.save(any(GlobalPreferencesEntity.class))).thenReturn(globalPreferences);
 
 		// When
@@ -560,8 +651,8 @@ public class GlobalPreferencesServiceTest {
 		globalPreferencesDto.setLocationsRestEndpoint(locationsRestEndpointUrl);
 		globalPreferencesDto.setAdvertisingEnabled(false);
 		globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
-		globalPreferencesDto.setOrderServiceDestinationQueue("proxy.queue.inventory.request");
-		globalPreferencesDto.setOrderServiceReplyToQueue("proxy.queue.inventory.response");
+		globalPreferencesDto.setOrderServiceSendTo("proxy.queue.inventory.request");
+		globalPreferencesDto.setOrderServiceListenOn("proxy.queue.inventory.response");
 
 		GlobalPreferencesEntity result = underTest.updateGlobalPreferences(globalPreferencesDto);
 
@@ -606,8 +697,7 @@ public class GlobalPreferencesServiceTest {
 		GlobalPreferencesEntity globalPreferences = new GlobalPreferencesEntity();
 		findAllResult.add(globalPreferences);
 		when(globalPreferencesRepository.findAll()).thenReturn(findAllResult);
-		doNothing().when(inventoryResponseQueueListener).refreshDestination(any());
-		doNothing().when(inventoryRequestQueueListener).refreshDestination(any());
+		doNothing().when(inventoryRequestTopicListener).refreshDestination(any());
 
 		doNothing().when(restEndpointService).removeAllEndpoints();
 		when(globalPreferencesRepository.save(any(GlobalPreferencesEntity.class))).thenReturn(globalPreferences);
@@ -628,8 +718,8 @@ public class GlobalPreferencesServiceTest {
 		globalPreferencesDto.setLocationsRestEndpoint(locationsRestEndpointUrl);
 		globalPreferencesDto.setAdvertisingEnabled(false);
 		globalPreferencesDto.setMqType(null);
-		globalPreferencesDto.setOrderServiceDestinationQueue("proxy.queue.inventory.request");
-		globalPreferencesDto.setOrderServiceReplyToQueue("proxy.queue.inventory.response");
+		globalPreferencesDto.setOrderServiceSendTo("proxy.queue.inventory.request");
+		globalPreferencesDto.setOrderServiceListenOn("proxy.queue.inventory.response");
 		String message = "";
 		try {
 			underTest.updateGlobalPreferences(globalPreferencesDto);
@@ -653,8 +743,7 @@ public class GlobalPreferencesServiceTest {
 		GlobalPreferencesEntity globalPreferences = new GlobalPreferencesEntity();
 		findAllResult.add(globalPreferences);
 		when(globalPreferencesRepository.findAll()).thenReturn(findAllResult);
-		doNothing().when(inventoryResponseQueueListener).refreshDestination(any());
-		doNothing().when(inventoryRequestQueueListener).refreshDestination(any());
+		doNothing().when(inventoryRequestTopicListener).refreshDestination(any());
 
 		doNothing().when(restEndpointService).removeAllEndpoints();
 		when(globalPreferencesRepository.save(any(GlobalPreferencesEntity.class))).thenReturn(globalPreferences);
@@ -675,8 +764,8 @@ public class GlobalPreferencesServiceTest {
 		globalPreferencesDto.setLocationsRestEndpoint(locationsRestEndpointUrl);
 		globalPreferencesDto.setAdvertisingEnabled(false);
 		globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
-		globalPreferencesDto.setOrderServiceDestinationQueue(null);
-		globalPreferencesDto.setOrderServiceReplyToQueue("proxy.queue.inventory.response");
+		globalPreferencesDto.setOrderServiceSendTo(null);
+		globalPreferencesDto.setOrderServiceListenOn("proxy.queue.inventory.response");
 		String message = "";
 		try {
 			underTest.updateGlobalPreferences(globalPreferencesDto);
@@ -695,6 +784,52 @@ public class GlobalPreferencesServiceTest {
 	 */
 	@Test
 	public void testUpdateGlobalPreferences_exception_nullOrderServiceReplyToQueue() {
+		// Given
+		List<GlobalPreferencesEntity> findAllResult = new ArrayList<>();
+		GlobalPreferencesEntity globalPreferences = new GlobalPreferencesEntity();
+		findAllResult.add(globalPreferences);
+		when(globalPreferencesRepository.findAll()).thenReturn(findAllResult);
+		doNothing().when(inventoryRequestTopicListener).refreshDestination(any());
+
+		doNothing().when(restEndpointService).removeAllEndpoints();
+		when(globalPreferencesRepository.save(any(GlobalPreferencesEntity.class))).thenReturn(globalPreferences);
+
+		// When
+		String categoriesRestEndpointUrl = "http://localhost:8080/v1/assets/categories/";
+		String itemsRestEndpointUrl = "http://localhost:8080/v1/assets/items/";
+		String cartItemsRestEndpointUrl = "http://localhost:8080/v1/cartItems/";
+		String ordersRestEndpointUrl = "http://localhost:8080/v1/orders/";
+		String locationsRestEndpointUrl = "http://localhost:8080/v1/locations/";
+		GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
+		globalPreferencesDto.setIndustryType(IndustryType.AEROSPACE);
+		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
+		globalPreferencesDto.setCategoriesRestEndpoint(categoriesRestEndpointUrl);
+		globalPreferencesDto.setItemsRestEndpoint(itemsRestEndpointUrl);
+		globalPreferencesDto.setCartItemsRestEndpoint(cartItemsRestEndpointUrl);
+		globalPreferencesDto.setOrdersRestEndpoint(ordersRestEndpointUrl);
+		globalPreferencesDto.setLocationsRestEndpoint(locationsRestEndpointUrl);
+		globalPreferencesDto.setAdvertisingEnabled(false);
+		globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
+		globalPreferencesDto.setOrderServiceSendTo("proxy.queue.inventory.request");
+		globalPreferencesDto.setOrderServiceListenOn(null);
+		String message = "";
+		try {
+			underTest.updateGlobalPreferences(globalPreferencesDto);
+		} catch (Exception e) {
+			message = e.getMessage();
+		}
+
+		// Then
+		assertEquals("orderServiceReplyToQueue cannot be null or empty.", message);
+	}
+
+	/**
+	 * Test for updateGlobalPreferences(GlobalPreferencesDTO)
+	 *
+	 * @see com.parasoft.demoapp.service.GlobalPreferencesService#updateGlobalPreferences(GlobalPreferencesDTO)
+	 */
+	@Test
+	public void testUpdateGlobalPreferences_exception_nullOrderServiceRequestTopic() {
 		// Given
 		List<GlobalPreferencesEntity> findAllResult = new ArrayList<>();
 		GlobalPreferencesEntity globalPreferences = new GlobalPreferencesEntity();
@@ -721,9 +856,9 @@ public class GlobalPreferencesServiceTest {
 		globalPreferencesDto.setOrdersRestEndpoint(ordersRestEndpointUrl);
 		globalPreferencesDto.setLocationsRestEndpoint(locationsRestEndpointUrl);
 		globalPreferencesDto.setAdvertisingEnabled(false);
-		globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
-		globalPreferencesDto.setOrderServiceDestinationQueue("proxy.queue.inventory.request");
-		globalPreferencesDto.setOrderServiceReplyToQueue(null);
+		globalPreferencesDto.setMqType(MqType.KAFKA);
+		globalPreferencesDto.setOrderServiceSendTo(null);
+		globalPreferencesDto.setOrderServiceListenOn("response.topic");
 		String message = "";
 		try {
 			underTest.updateGlobalPreferences(globalPreferencesDto);
@@ -732,6 +867,53 @@ public class GlobalPreferencesServiceTest {
 		}
 
 		// Then
-		assertEquals("orderServiceReplyToQueue cannot be null or empty.", message);
+		assertEquals(ORDER_SERVICE_REQUEST_TOPIC_CANNOT_BE_NULL, message);
+	}
+
+	/**
+	 * Test for updateGlobalPreferences(GlobalPreferencesDTO)
+	 *
+	 * @see com.parasoft.demoapp.service.GlobalPreferencesService#updateGlobalPreferences(GlobalPreferencesDTO)
+	 */
+	@Test
+	public void testUpdateGlobalPreferences_exception_nullOrderServiceResponseTopic() {
+		// Given
+		List<GlobalPreferencesEntity> findAllResult = new ArrayList<>();
+		GlobalPreferencesEntity globalPreferences = new GlobalPreferencesEntity();
+		findAllResult.add(globalPreferences);
+		when(globalPreferencesRepository.findAll()).thenReturn(findAllResult);
+		doNothing().when(inventoryResponseQueueListener).refreshDestination(any());
+		doNothing().when(inventoryRequestQueueListener).refreshDestination(any());
+
+		doNothing().when(restEndpointService).removeAllEndpoints();
+		when(globalPreferencesRepository.save(any(GlobalPreferencesEntity.class))).thenReturn(globalPreferences);
+
+		// When
+		String categoriesRestEndpointUrl = "http://localhost:8080/v1/assets/categories/";
+		String itemsRestEndpointUrl = "http://localhost:8080/v1/assets/items/";
+		String cartItemsRestEndpointUrl = "http://localhost:8080/v1/cartItems/";
+		String ordersRestEndpointUrl = "http://localhost:8080/v1/orders/";
+		String locationsRestEndpointUrl = "http://localhost:8080/v1/locations/";
+		GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
+		globalPreferencesDto.setIndustryType(IndustryType.AEROSPACE);
+		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
+		globalPreferencesDto.setCategoriesRestEndpoint(categoriesRestEndpointUrl);
+		globalPreferencesDto.setItemsRestEndpoint(itemsRestEndpointUrl);
+		globalPreferencesDto.setCartItemsRestEndpoint(cartItemsRestEndpointUrl);
+		globalPreferencesDto.setOrdersRestEndpoint(ordersRestEndpointUrl);
+		globalPreferencesDto.setLocationsRestEndpoint(locationsRestEndpointUrl);
+		globalPreferencesDto.setAdvertisingEnabled(false);
+		globalPreferencesDto.setMqType(MqType.KAFKA);
+		globalPreferencesDto.setOrderServiceSendTo("request.topic");
+		globalPreferencesDto.setOrderServiceListenOn(null);
+		String message = "";
+		try {
+			underTest.updateGlobalPreferences(globalPreferencesDto);
+		} catch (Exception e) {
+			message = e.getMessage();
+		}
+
+		// Then
+		assertEquals(ORDER_SERVICE_RESPONSE_TOPIC_CANNOT_BE_NULL, message);
 	}
 }
