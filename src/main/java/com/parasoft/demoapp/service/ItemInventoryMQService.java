@@ -30,11 +30,11 @@ public class ItemInventoryMQService {
         String responseDestination = null;
         if (MQConfig.currentMQType == ACTIVE_MQ) {
             ActiveMQQueue destination = ActiveMQConfig.getInventoryServiceSendToQueue();
-            responseDestination = "ActiveMQ" + destination.toString();
+            responseDestination = "ActiveMQ: " + destination.toString();
             jmsMessagingTemplate.convertAndSend(destination, message);
         } else if (MQConfig.currentMQType == KAFKA) {
             String destination = KafkaConfig.getOrderServiceListenToTopic();
-            responseDestination = "Kafka: " + destination;
+            responseDestination = "Kafka topic: " + destination;
             operationResultKafkaTemplate.send(destination, message.getOrderNumber(), message);
         }
         log.info("Inventory service sent a message to {} \n Message content: {}", responseDestination, message);

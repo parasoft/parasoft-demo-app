@@ -6,6 +6,7 @@ import com.parasoft.demoapp.config.activemq.ActiveMQConfig;
 import com.parasoft.demoapp.config.activemq.InventoryRequestQueueListener;
 import com.parasoft.demoapp.config.activemq.InventoryResponseQueueListener;
 import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
+import com.parasoft.demoapp.config.kafka.InventoryRequestTopicListener;
 import com.parasoft.demoapp.config.kafka.KafkaConfig;
 import com.parasoft.demoapp.defaultdata.ClearEntrance;
 import com.parasoft.demoapp.defaultdata.ResetEntrance;
@@ -63,6 +64,9 @@ public class GlobalPreferencesService {
 
     @Autowired
     private InventoryRequestQueueListener inventoryRequestQueueListener;
+
+    @Autowired
+    private InventoryRequestTopicListener inventoryRequestTopicListener;
 
     @Autowired
     private GlobalPreferencesDefaultSettingsService defaultGlobalPreferencesSettingsService;
@@ -475,7 +479,8 @@ public class GlobalPreferencesService {
 
     private void stopMQListenersExcept(MqType mqType) {
         if(MqType.ACTIVE_MQ == mqType) {
-            // TODO: stop listeners of Kafka
+            // Stop listeners on Kafka
+            inventoryRequestTopicListener.stopAllListenedDestinations();
         } else if(MqType.KAFKA == mqType) {
             // Stop listeners on ActiveMQ
             inventoryResponseQueueListener.stopAllListenedDestinations();
