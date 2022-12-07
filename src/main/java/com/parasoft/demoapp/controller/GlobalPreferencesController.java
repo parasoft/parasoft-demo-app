@@ -167,6 +167,8 @@ public class GlobalPreferencesController {
 		return response;
 	}
 
+	@Operation(description = "Obtain MQ properties.")
+	@ApiResponse(responseCode = "200", description = "MQ properties were returned.")
 	@GetMapping("/v1/demoAdmin/mqProperties")
 	@ResponseBody
 	public ResponseResult<MQPropertiesResponseDTO> getMQProperties() {
@@ -177,6 +179,10 @@ public class GlobalPreferencesController {
 		return response;
 	}
 
+	@Operation(description = "Validate Kafka Broker URL.")
+	@ApiResponse(responseCode = "200", description = "Valid URL.")
+	@ApiResponse(responseCode = "500", description = "Invalid URL.",
+			content = {@Content(schema = @Schema(hidden = true))})
 	@GetMapping("/v1/demoAdmin/kafkaBrokerUrlValidation")
 	@ResponseBody
 	public ResponseResult<Void> validateKafkaBrokerUrl() throws KafkaServerIsNotAvailableException {

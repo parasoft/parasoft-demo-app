@@ -512,10 +512,9 @@ public class GlobalPreferencesService {
                     .names()
                     .get();
         } catch (Exception e) {
-            e.printStackTrace();
             throw new KafkaServerIsNotAvailableException(
                     MessageFormat.format(GlobalPreferencesMessages.KAFKA_SERVER_IS_NOT_AVAILABLE,
-                            kafkaConfig.getBootstrapServers(),  e.getMessage()), e);
+                            kafkaConfig.getBootstrapServers()), e);
         } finally {
             // To avoid trying to connect all the time
             client.close();
