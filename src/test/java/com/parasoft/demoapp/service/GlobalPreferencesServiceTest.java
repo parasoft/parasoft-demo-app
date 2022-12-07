@@ -5,6 +5,9 @@ import com.parasoft.demoapp.config.activemq.ActiveMQConfig;
 import com.parasoft.demoapp.config.activemq.InventoryRequestQueueListener;
 import com.parasoft.demoapp.config.activemq.InventoryResponseQueueListener;
 import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
+import com.parasoft.demoapp.config.kafka.InventoryRequestTopicListener;
+import com.parasoft.demoapp.config.kafka.InventoryResponseTopicListener;
+import com.parasoft.demoapp.config.kafka.KafkaConfig;
 import com.parasoft.demoapp.dto.GlobalPreferencesDTO;
 import com.parasoft.demoapp.exception.*;
 import com.parasoft.demoapp.messages.GlobalPreferencesMessages;
@@ -62,6 +65,12 @@ public class GlobalPreferencesServiceTest {
 	InventoryRequestQueueListener inventoryRequestQueueListener;
 
 	@Mock
+	InventoryResponseTopicListener inventoryResponseTopicListener;
+
+	@Mock
+	InventoryRequestTopicListener inventoryRequestTopicListener;
+
+	@Mock
 	WebConfig webConfig;
 
 	@Before
@@ -73,6 +82,8 @@ public class GlobalPreferencesServiceTest {
 	public void tearDown() {
 		ActiveMQConfig.setOrderServiceListenToQueue(DEFAULT_QUEUE_INVENTORY_RESPONSE);
 		ActiveMQConfig.setOrderServiceSendToQueue(new ActiveMQQueue(DEFAULT_QUEUE_INVENTORY_REQUEST));
+		KafkaConfig.setOrderServiceSendToTopic(KafkaConfig.DEFAULT_ORDER_SERVICE_REQUEST_TOPIC);
+		KafkaConfig.setOrderServiceListenToTopic(KafkaConfig.DEFAULT_ORDER_SERVICE_RESPONSE_TOPIC);
 	}
 
 	/**
@@ -391,8 +402,8 @@ public class GlobalPreferencesServiceTest {
 		globalPreferencesDto.setLocationsRestEndpoint(locationsRestEndpointUrl);
 		globalPreferencesDto.setAdvertisingEnabled(false);
 		globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
-		globalPreferencesDto.setOrderServiceDestinationQueue("proxy.queue.inventory.request");
-		globalPreferencesDto.setOrderServiceReplyToQueue("proxy.queue.inventory.response");
+		globalPreferencesDto.setOrderServiceDestinationQueue("test.inventory.request");
+		globalPreferencesDto.setOrderServiceReplyToQueue("test.inventory.response");
 
 		GlobalPreferencesEntity result = underTest.updateGlobalPreferences(globalPreferencesDto);
 
@@ -433,8 +444,8 @@ public class GlobalPreferencesServiceTest {
 		assertEquals(GlobalPreferencesDefaultSettingsService.LOCATIONS_ENDPOINT_PATH, locationsRestEndpoint.getPath());
 
 		assertEquals(MqType.ACTIVE_MQ, result.getMqType());
-		assertEquals("proxy.queue.inventory.request", result.getOrderServiceDestinationQueue());
-		assertEquals("proxy.queue.inventory.response", result.getOrderServiceReplyToQueue());
+		assertEquals("test.inventory.request", result.getOrderServiceDestinationQueue());
+		assertEquals("test.inventory.response", result.getOrderServiceReplyToQueue());
 	}
 
 	/**
@@ -471,8 +482,8 @@ public class GlobalPreferencesServiceTest {
 		globalPreferencesDto.setLocationsRestEndpoint(locationsRestEndpointUrl);
 		globalPreferencesDto.setAdvertisingEnabled(false);
 		globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
-		globalPreferencesDto.setOrderServiceDestinationQueue("proxy.queue.inventory.request");
-		globalPreferencesDto.setOrderServiceReplyToQueue("proxy.queue.inventory.response");
+		globalPreferencesDto.setOrderServiceDestinationQueue("test.inventory.request");
+		globalPreferencesDto.setOrderServiceReplyToQueue("test.inventory.response");
 
 		GlobalPreferencesEntity result = underTest.updateGlobalPreferences(globalPreferencesDto);
 
@@ -515,8 +526,8 @@ public class GlobalPreferencesServiceTest {
 		globalPreferencesDto.setLocationsRestEndpoint(locationsRestEndpointUrl);
 		globalPreferencesDto.setAdvertisingEnabled(false);
 		globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
-		globalPreferencesDto.setOrderServiceDestinationQueue("proxy.queue.inventory.request");
-		globalPreferencesDto.setOrderServiceReplyToQueue("proxy.queue.inventory.response");
+		globalPreferencesDto.setOrderServiceDestinationQueue("test.inventory.request");
+		globalPreferencesDto.setOrderServiceReplyToQueue("test.inventory.response");
 
 		GlobalPreferencesEntity result = underTest.updateGlobalPreferences(globalPreferencesDto);
 
@@ -560,8 +571,8 @@ public class GlobalPreferencesServiceTest {
 		globalPreferencesDto.setLocationsRestEndpoint(locationsRestEndpointUrl);
 		globalPreferencesDto.setAdvertisingEnabled(false);
 		globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
-		globalPreferencesDto.setOrderServiceDestinationQueue("proxy.queue.inventory.request");
-		globalPreferencesDto.setOrderServiceReplyToQueue("proxy.queue.inventory.response");
+		globalPreferencesDto.setOrderServiceDestinationQueue("test.inventory.request");
+		globalPreferencesDto.setOrderServiceReplyToQueue("test.inventory.response");
 
 		GlobalPreferencesEntity result = underTest.updateGlobalPreferences(globalPreferencesDto);
 
@@ -628,8 +639,8 @@ public class GlobalPreferencesServiceTest {
 		globalPreferencesDto.setLocationsRestEndpoint(locationsRestEndpointUrl);
 		globalPreferencesDto.setAdvertisingEnabled(false);
 		globalPreferencesDto.setMqType(null);
-		globalPreferencesDto.setOrderServiceDestinationQueue("proxy.queue.inventory.request");
-		globalPreferencesDto.setOrderServiceReplyToQueue("proxy.queue.inventory.response");
+		globalPreferencesDto.setOrderServiceDestinationQueue("test.inventory.request");
+		globalPreferencesDto.setOrderServiceReplyToQueue("test.inventory.response");
 		String message = "";
 		try {
 			underTest.updateGlobalPreferences(globalPreferencesDto);
@@ -676,7 +687,7 @@ public class GlobalPreferencesServiceTest {
 		globalPreferencesDto.setAdvertisingEnabled(false);
 		globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
 		globalPreferencesDto.setOrderServiceDestinationQueue(null);
-		globalPreferencesDto.setOrderServiceReplyToQueue("proxy.queue.inventory.response");
+		globalPreferencesDto.setOrderServiceReplyToQueue("test.inventory.response");
 		String message = "";
 		try {
 			underTest.updateGlobalPreferences(globalPreferencesDto);
@@ -722,7 +733,7 @@ public class GlobalPreferencesServiceTest {
 		globalPreferencesDto.setLocationsRestEndpoint(locationsRestEndpointUrl);
 		globalPreferencesDto.setAdvertisingEnabled(false);
 		globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
-		globalPreferencesDto.setOrderServiceDestinationQueue("proxy.queue.inventory.request");
+		globalPreferencesDto.setOrderServiceDestinationQueue("test.inventory.request");
 		globalPreferencesDto.setOrderServiceReplyToQueue(null);
 		String message = "";
 		try {
