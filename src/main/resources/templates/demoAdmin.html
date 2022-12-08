@@ -215,14 +215,29 @@
                             </div>
 
                             <div class="section_body">
-                                <div class="queue_configuration_details">
-                                    <a class="industry_font industry_color_1"
-                                       translate="CONFIGURATION_DETAILS"
-                                       data-toggle="modal"
-                                       data-target="#queue_configuration_details_modal"
-                                       ng-click="options.openConfigurationDetailsModal()">
-                                    </a>
+                                <div id="message_queue_type" class="message_queue_type">
+                                    <div class="mq_type">
+                                        <label>
+                                            <input type="radio" name="mqType" ng-model="options.mqType" value="ACTIVE_MQ">
+                                            <span class="input-label" translate="JMS"></span>
+                                        </label>
+                                    </div>
+                                    <div class="mq_type">
+                                        <label>
+                                            <input type="radio" name="mqType" ng-model="options.mqType" value="KAFKA">
+                                            <span class="input-label" translate="KAFKA"></span>
+                                        </label>
+                                    </div>
                                 </div>
+				<div class="queue_configuration_details">
+				    <a class="industry_font industry_color_1"
+				       data-toggle="modal"
+				       data-target="#queue_configuration_details_modal"
+				       ng-click="options.openConfigurationDetailsModal()">
+					<span ng-if="options.mqType === 'ACTIVE_MQ'" translate="JMS_CONFIGURATION_DETAILS"></span>
+					<span ng-if="options.mqType === 'KAFKA'" translate="KAFKA_CONFIGURATION_DETAILS"></span>
+				    </a>
+				</div>
 
                                 <div id="queue_configuration_details_modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
                                     <div class="modal-dialog">
@@ -249,20 +264,6 @@
                                     </div>
                                 </div>
 
-                                <div id="message_queue_type" class="message_queue_type">
-                                    <div class="mq_type">
-                                        <label>
-                                            <input type="radio" name="mqType" ng-model="options.mqType" value="ACTIVE_MQ">
-                                            <span class="input-label" translate="JMS"></span>
-                                        </label>
-                                    </div>
-                                    <div class="mq_type">
-                                        <label>
-                                            <input type="radio" name="mqType" ng-model="options.mqType" value="KAFKA">
-                                            <span class="input-label" translate="KAFKA"></span>
-                                        </label>
-                                    </div>
-                                </div>
                                 <div id="client_connection">
                                     <div ng-show="options.mqType === 'ACTIVE_MQ'">
                                         <div class="form-group">
