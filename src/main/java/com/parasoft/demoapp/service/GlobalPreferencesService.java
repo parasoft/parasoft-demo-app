@@ -143,7 +143,7 @@ public class GlobalPreferencesService {
             rollbackFor = {ParameterException.class, VirtualizeServerUrlException.class})
     public synchronized GlobalPreferencesEntity updateGlobalPreferences(GlobalPreferencesDTO globalPreferencesDto)
             throws GlobalPreferencesNotFoundException, GlobalPreferencesMoreThanOneException, ParameterException,
-            EndpointInvalidException, VirtualizeServerUrlException {
+            EndpointInvalidException, VirtualizeServerUrlException, KafkaServerIsNotAvailableException {
 
         IndustryType industry = globalPreferencesDto.getIndustryType();
         validateIndustry(industry);
@@ -279,18 +279,20 @@ public class GlobalPreferencesService {
      *
      * @throws ParameterException
      */
-    public void initializeActiveMqJmsQueuesOnStartup(GlobalPreferencesEntity globalPreferences)
+    public void initializeMqOnStartup(GlobalPreferencesEntity globalPreferences)
             throws ParameterException {
         GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
         globalPreferencesDto.setMqType(globalPreferences.getMqType());
         globalPreferencesDto.setOrderServiceDestinationQueue(globalPreferences.getOrderServiceDestinationQueue());
         globalPreferencesDto.setOrderServiceReplyToQueue(globalPreferences.getOrderServiceReplyToQueue());
-
-        validateProxyConfig(globalPreferencesDto);
-
-        ActiveMQConfig.setOrderServiceSendToQueue(new ActiveMQQueue(
-                globalPreferences.getOrderServiceDestinationQueue()));
-        ActiveMQConfig.setOrderServiceListenToQueue(globalPreferences.getOrderServiceReplyToQueue());
+        validateMqConfig(globalPreferencesDto);
+        if (globalPreferences.getMqType() == MqType.ACTIVE_MQ) {
+            ActiveMQConfig.setOrderServiceSendToQueue(new ActiveMQQueue(
+                    globalPreferences.getOrderServiceDestinationQueue()));
+            ActiveMQConfig.setOrderServiceListenToQueue(globalPreferences.getOrderServiceReplyToQueue());
+        } else if (globalPreferences.getMqType() == MqType.KAFKA) {
+            // TODO: initialize Kafka topics on startup
+        }
     }
 
     private void handleParasoftJDBCProxy(GlobalPreferencesEntity currentPreferences,
@@ -404,8 +406,11 @@ public class GlobalPreferencesService {
     }
 
     private void handleMqProxy(GlobalPreferencesEntity currentPreferences,
-                               GlobalPreferencesDTO globalPreferencesDto) throws ParameterException {
-        validateProxyConfig(globalPreferencesDto);
+                               GlobalPreferencesDTO globalPreferencesDto) throws ParameterException, KafkaServerIsNotAvailableException {
+        validateMqConfig(globalPreferencesDto);
+        if(globalPreferencesDto.getMqType() == MqType.KAFKA) {
+            validateKafkaBrokerUrl();
+        }
         mqProxyStatusChanged = checkMqProxyStatusHasChanged(currentPreferences, globalPreferencesDto);
         currentPreferences.setMqType(globalPreferencesDto.getMqType());
         currentPreferences.setOrderServiceDestinationQueue(globalPreferencesDto.getOrderServiceDestinationQueue());
@@ -475,10 +480,12 @@ public class GlobalPreferencesService {
         imageService.removeSpecificIndustryUploadedImages(IndustryRoutingDataSource.currentIndustry);
 	}
 
-    private void validateProxyConfig(GlobalPreferencesDTO globalPreferencesDto) throws ParameterException {
-        ParameterValidator.requireNonNull(globalPreferencesDto.getMqType(), GlobalPreferencesMessages.MQTYPE_MUST_NOT_BE_NULL);
-        ParameterValidator.requireNonBlank(globalPreferencesDto.getOrderServiceDestinationQueue(), GlobalPreferencesMessages.ORDER_SERVICE_DESTINATION_QUEUE_CANNOT_BE_NULL);
-        ParameterValidator.requireNonBlank(globalPreferencesDto.getOrderServiceReplyToQueue(), GlobalPreferencesMessages.ORDER_SERVICE_REPLY_TO_QUEUE_CANNOT_BE_NULL);
+    private void validateMqConfig(GlobalPreferencesDTO globalPreferencesDto) throws ParameterException {
+        if(globalPreferencesDto.getMqType() == MqType.ACTIVE_MQ) {
+            ParameterValidator.requireNonNull(globalPreferencesDto.getMqType(), GlobalPreferencesMessages.MQTYPE_MUST_NOT_BE_NULL);
+            ParameterValidator.requireNonBlank(globalPreferencesDto.getOrderServiceDestinationQueue(), GlobalPreferencesMessages.ORDER_SERVICE_DESTINATION_QUEUE_CANNOT_BE_NULL);
+            ParameterValidator.requireNonBlank(globalPreferencesDto.getOrderServiceReplyToQueue(), GlobalPreferencesMessages.ORDER_SERVICE_REPLY_TO_QUEUE_CANNOT_BE_NULL);
+        }
     }
 
     public void shutdownJMSService() {
