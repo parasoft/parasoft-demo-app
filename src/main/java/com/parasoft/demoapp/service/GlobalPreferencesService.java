@@ -7,6 +7,7 @@ import com.parasoft.demoapp.config.activemq.InventoryRequestQueueListener;
 import com.parasoft.demoapp.config.activemq.InventoryResponseQueueListener;
 import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
 import com.parasoft.demoapp.config.kafka.InventoryRequestTopicListener;
+import com.parasoft.demoapp.config.kafka.InventoryResponseTopicListener;
 import com.parasoft.demoapp.config.kafka.KafkaConfig;
 import com.parasoft.demoapp.defaultdata.ClearEntrance;
 import com.parasoft.demoapp.defaultdata.ResetEntrance;
@@ -20,6 +21,8 @@ import com.parasoft.demoapp.util.BugsTypeSortOfDemoBugs;
 import com.parasoft.demoapp.util.RouteIdSortOfRestEndpoint;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.kafka.clients.admin.AdminClient;
+import org.apache.kafka.clients.admin.ListTopicsOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,6 +70,9 @@ public class GlobalPreferencesService {
 
     @Autowired
     private InventoryRequestTopicListener inventoryRequestTopicListener;
+
+    @Autowired
+    private InventoryResponseTopicListener inventoryResponseTopicListener;
 
     @Autowired
     private GlobalPreferencesDefaultSettingsService defaultGlobalPreferencesSettingsService;
@@ -349,6 +355,8 @@ public class GlobalPreferencesService {
             String graphQLEndpoint = globalPreferencesDto.getGraphQLEndpoint();
             if (!StringUtils.isBlank(graphQLEndpoint)) {
                 endpointService.validateUrl(graphQLEndpoint, GlobalPreferencesMessages.INVALID_GRAPHQL_URL);
+            } else {
+                graphQLEndpoint = "";
             }
             currentPreferences.setGraphQLEndpoint(graphQLEndpoint);
             return;
@@ -481,6 +489,7 @@ public class GlobalPreferencesService {
         if(MqType.ACTIVE_MQ == mqType) {
             // Stop listeners on Kafka
             inventoryRequestTopicListener.stopAllListenedDestinations();
+            inventoryResponseTopicListener.stopAllListenedDestinations();
         } else if(MqType.KAFKA == mqType) {
             // Stop listeners on ActiveMQ
             inventoryResponseQueueListener.stopAllListenedDestinations();
@@ -501,5 +510,21 @@ public class GlobalPreferencesService {
                 );
 
         return new MQPropertiesResponseDTO(activeMQConfigResponse, kafkaConfigResponse);
+    }
+
+    public void validateKafkaBrokerUrl() throws KafkaServerIsNotAvailableException {
+        AdminClient client = AdminClient.create(kafkaConfig.adminClientConfigs());
+        try {
+            client.listTopics(new ListTopicsOptions().timeoutMs(KafkaConfig.ADMIN_CLIENT_TIMEOUT_MS))
+                    .names()
+                    .get();
+        } catch (Exception e) {
+            throw new KafkaServerIsNotAvailableException(
+                    MessageFormat.format(GlobalPreferencesMessages.KAFKA_SERVER_IS_NOT_AVAILABLE,
+                            kafkaConfig.getBootstrapServers()), e);
+        } finally {
+            // To avoid trying to connect all the time
+            client.close();
+        }
     }
 }

@@ -71,12 +71,12 @@ public class OrderServiceTest {
     }
 
     /**
-     * Test for handleMessageFromResponseQueue(InventoryOperationResultMessageDTO)
+     * Test for handleMessageFromResponse(InventoryOperationResultMessageDTO)
      *
-     * @see OrderService#handleMessageFromResponseQueue(InventoryOperationResultMessageDTO)
+     * @see OrderService#handleMessageFromResponse(InventoryOperationResultMessageDTO)
      */
     @Test
-    public void testHandleMessageFromResponseQueue_normal() {
+    public void testHandleMessageFromResponse_normal() {
         // Given
         String orderNumber = "123-456-789";
         OrderEntity order = new OrderEntity();
@@ -86,7 +86,7 @@ public class OrderServiceTest {
         when(orderRepository.save((OrderEntity) any())).thenReturn(order);
 
         // When
-        InventoryOperationRequestMessageDTO requestMessage = underTest.handleMessageFromResponseQueue(
+        InventoryOperationRequestMessageDTO requestMessage = underTest.handleMessageFromResponse(
                 new InventoryOperationResultMessageDTO(InventoryOperation.DECREASE, orderNumber, InventoryOperationStatus.SUCCESS, null));
 
         // Then
@@ -96,12 +96,12 @@ public class OrderServiceTest {
     }
 
     /**
-     * Test for handleMessageFromResponseQueue(InventoryOperationResultMessageDTO)
+     * Test for handleMessageFromResponse(InventoryOperationResultMessageDTO)
      *
-     * @see OrderService#handleMessageFromResponseQueue(InventoryOperationResultMessageDTO)
+     * @see OrderService#handleMessageFromResponse(InventoryOperationResultMessageDTO)
      */
     @Test
-    public void testHandleMessageFromResponseQueue_inventoryNotEnough() {
+    public void testHandleMessageFromResponse_inventoryNotEnough() {
         // Given
         String orderNumber = "123-456-789";
         OrderEntity order = new OrderEntity();
@@ -112,7 +112,7 @@ public class OrderServiceTest {
         String cancelledInfo = "Inventory item with id 1 is out of stock.";
 
         // When
-        InventoryOperationRequestMessageDTO requestMessage = underTest.handleMessageFromResponseQueue(
+        InventoryOperationRequestMessageDTO requestMessage = underTest.handleMessageFromResponse(
                 new InventoryOperationResultMessageDTO(InventoryOperation.DECREASE, orderNumber,
                         InventoryOperationStatus.FAIL, cancelledInfo));
 
@@ -124,12 +124,12 @@ public class OrderServiceTest {
     }
 
     /**
-     * Test for handleMessageFromResponseQueue(InventoryOperationResultMessageDTO)
+     * Test for handleMessageFromResponse(InventoryOperationResultMessageDTO)
      *
-     * @see OrderService#handleMessageFromResponseQueue(InventoryOperationResultMessageDTO)
+     * @see OrderService#handleMessageFromResponse(InventoryOperationResultMessageDTO)
      */
     @Test
-    public void testHandleMessageFromResponseQueue_reversedProcess() {
+    public void testHandleMessageFromResponse_reversedProcess() {
         // Given
         String orderNumber = "123-456-789";
         OrderEntity order = new OrderEntity();
@@ -140,7 +140,7 @@ public class OrderServiceTest {
         when(orderRepository.save((OrderEntity) any())).thenReturn(order);
 
         // When
-        InventoryOperationRequestMessageDTO requestMessage = underTest.handleMessageFromResponseQueue(
+        InventoryOperationRequestMessageDTO requestMessage = underTest.handleMessageFromResponse(
                 new InventoryOperationResultMessageDTO(InventoryOperation.DECREASE, orderNumber, InventoryOperationStatus.SUCCESS, null));
 
         // Then
@@ -152,18 +152,18 @@ public class OrderServiceTest {
     }
 
     /**
-     * Test for handleMessageFromResponseQueue(InventoryOperationResultMessageDTO)
+     * Test for handleMessageFromResponse(InventoryOperationResultMessageDTO)
      *
-     * @see OrderService#handleMessageFromResponseQueue(InventoryOperationResultMessageDTO)
+     * @see OrderService#handleMessageFromResponse(InventoryOperationResultMessageDTO)
      */
     @Test
-    public void testHandleMessageFromResponseQueue_orderNotExist() {
+    public void testHandleMessageFromResponse_orderNotExist() {
         // Given
         String orderNumber = "123-456-789";
         when(orderRepository.findOrderByOrderNumber(anyString())).thenReturn(null);
 
         // When
-        InventoryOperationRequestMessageDTO requestMessage = underTest.handleMessageFromResponseQueue(
+        InventoryOperationRequestMessageDTO requestMessage = underTest.handleMessageFromResponse(
                 new InventoryOperationResultMessageDTO(InventoryOperation.DECREASE, orderNumber, InventoryOperationStatus.SUCCESS, null));
 
         // Then

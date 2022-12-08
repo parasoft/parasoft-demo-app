@@ -4,6 +4,7 @@ import com.parasoft.demoapp.dto.InventoryOperationRequestMessageDTO;
 import com.parasoft.demoapp.dto.InventoryOperationResultMessageDTO;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -22,6 +23,8 @@ import java.util.Map;
 @Configuration
 @Getter
 public class KafkaConfig {
+    public static final int ADMIN_CLIENT_TIMEOUT_MS = 5000;
+
     public static final String DEFAULT_ORDER_SERVICE_REQUEST_TOPIC = "inventory.request";
     public static final String DEFAULT_ORDER_SERVICE_RESPONSE_TOPIC = "inventory.response";
     @Getter @Setter private static String orderServiceSendToTopic = DEFAULT_ORDER_SERVICE_REQUEST_TOPIC;
@@ -31,6 +34,13 @@ public class KafkaConfig {
     private String bootstrapServers;
     @Value("${spring.kafka.consumer.group-id}")
     private String groupId;
+
+    public Map<String, Object> adminClientConfigs() {
+        Map<String, Object> props = new HashMap<>();
+        props.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG,
+                bootstrapServers);
+        return props;
+    }
 
     @Bean
     public Map<String, Object> producerConfigs() {
