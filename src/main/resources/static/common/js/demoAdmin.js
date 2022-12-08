@@ -437,7 +437,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
             } else if(responseMessage.indexOf('Invalid virtualize group id') > -1){
                 errorMessage =  $filter('translate')('INVALID_PARASOFT_VIRTUALIZE_GROUP_ID');
             } else if(responseMessage.indexOf('can not establish connection with kafka server') > -1){
-                errorMessage =  $filter('translate')('INVALID_KAFKA_TOPIC');
+                errorMessage =  $filter('translate')('INVALID_KAFKA_SERVER_URL');
             } else {
                 errorMessage = responseMessage;
             }

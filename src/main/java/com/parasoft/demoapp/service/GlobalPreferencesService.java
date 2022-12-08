@@ -285,13 +285,7 @@ public class GlobalPreferencesService {
         globalPreferencesDto.setMqType(globalPreferences.getMqType());
         globalPreferencesDto.setOrderServiceDestinationQueue(globalPreferences.getOrderServiceDestinationQueue());
         globalPreferencesDto.setOrderServiceReplyToQueue(globalPreferences.getOrderServiceReplyToQueue());
-
-        try {
-            validateMqConfig(globalPreferencesDto, false);
-        } catch (KafkaServerIsNotAvailableException e) {
-            // do nothing, it will never go into here.
-        }
-
+        validateMqConfig(globalPreferencesDto);
         if (globalPreferences.getMqType() == MqType.ACTIVE_MQ) {
             ActiveMQConfig.setOrderServiceSendToQueue(new ActiveMQQueue(
                     globalPreferences.getOrderServiceDestinationQueue()));
@@ -413,7 +407,10 @@ public class GlobalPreferencesService {
 
     private void handleMqProxy(GlobalPreferencesEntity currentPreferences,
                                GlobalPreferencesDTO globalPreferencesDto) throws ParameterException, KafkaServerIsNotAvailableException {
-        validateMqConfig(globalPreferencesDto, true);
+        validateMqConfig(globalPreferencesDto);
+        if(globalPreferencesDto.getMqType() == MqType.KAFKA) {
+            validateKafkaBrokerUrl();
+        }
         mqProxyStatusChanged = checkMqProxyStatusHasChanged(currentPreferences, globalPreferencesDto);
         currentPreferences.setMqType(globalPreferencesDto.getMqType());
         currentPreferences.setOrderServiceDestinationQueue(globalPreferencesDto.getOrderServiceDestinationQueue());
@@ -483,14 +480,8 @@ public class GlobalPreferencesService {
         imageService.removeSpecificIndustryUploadedImages(IndustryRoutingDataSource.currentIndustry);
 	}
 
-    private void validateMqConfig(GlobalPreferencesDTO globalPreferencesDto, boolean needValidateKafkaBrokerUrlIfKafkaIsEnabled)
-                                                                    throws ParameterException, KafkaServerIsNotAvailableException {
-        if(globalPreferencesDto.getMqType() == MqType.KAFKA) {
-            // TODO: validate the topics are not empty and null
-            if(needValidateKafkaBrokerUrlIfKafkaIsEnabled) {
-                validateKafkaBrokerUrl();
-            }
-        } else if(globalPreferencesDto.getMqType() == MqType.ACTIVE_MQ) {
+    private void validateMqConfig(GlobalPreferencesDTO globalPreferencesDto) throws ParameterException {
+        if(globalPreferencesDto.getMqType() == MqType.ACTIVE_MQ) {
             ParameterValidator.requireNonNull(globalPreferencesDto.getMqType(), GlobalPreferencesMessages.MQTYPE_MUST_NOT_BE_NULL);
             ParameterValidator.requireNonBlank(globalPreferencesDto.getOrderServiceDestinationQueue(), GlobalPreferencesMessages.ORDER_SERVICE_DESTINATION_QUEUE_CANNOT_BE_NULL);
             ParameterValidator.requireNonBlank(globalPreferencesDto.getOrderServiceReplyToQueue(), GlobalPreferencesMessages.ORDER_SERVICE_REPLY_TO_QUEUE_CANNOT_BE_NULL);
