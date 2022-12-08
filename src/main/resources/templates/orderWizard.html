@@ -129,6 +129,7 @@
                     <div ng-show="isReview">
                         <div id="submit_for_approval" class="wizard_btn_position industry_font">
                             <button ng-show="!isSubmitted" class="btn wizard_btn" type="button"
+                                    ng-disabled="submitButtonDisabled"
                                     translate="SUBMIT_FOR_APPROVAL" ng-click=submitForApproval()></button>
                         </div>
                         <div class="wizard_title industry_font">

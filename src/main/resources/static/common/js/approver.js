@@ -164,6 +164,7 @@ app.controller('approverHomePageController', function($rootScope, $http, $filter
         };
 
         let error = (data) => {
+            approver.response.saveButtonDisabled = false;
             let errCode = data.status;
             let errMsg;
             let errTitle;
@@ -182,7 +183,7 @@ app.controller('approverHomePageController', function($rootScope, $http, $filter
                     break;
                 case 500:
                     if(data.data.message.indexOf("Can not send message to Kafka broker.") > -1) {
-                        errTitle = $filter('translate')('UPDATING_ERROR')
+                        errTitle = $filter('translate')('UPDATING_ERROR_TITLE')
                         errMsg = $filter('translate')('KAFKA_BROKER_NOT_AVAILABLE');
                     } else {
                         errMsg = $filter('translate')('UPDATING_ERROR');
@@ -194,12 +195,12 @@ app.controller('approverHomePageController', function($rootScope, $http, $filter
             toastrService().error(errMsg, errTitle);
         };
 
+        approver.response.saveButtonDisabled = true;
         let orderStatusData = angular.element('#order_response_form').serializeJSON();
         let variables = {
             "orderNumber": orderNumber,
             "orderStatusDTO": orderStatusData
         };
-
         if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
             let selectionSet = "{status,reviewedByAPV,orderNumber}"
             graphQLService.updateOrderByOrderNumber(variables, success, (data) => {error(data)}, selectionSet);

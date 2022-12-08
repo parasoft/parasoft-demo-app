@@ -128,6 +128,7 @@ app.controller('orderWizardController', function($scope, $rootScope, $http, $fil
         };
         let errorMessageHandled = false;
         let error = (result, endpointType) => {
+            $scope.submitButtonDisabled = false;
             let errCode = result.status;
             let errMsg;
             let errTitle;
@@ -148,7 +149,7 @@ app.controller('orderWizardController', function($scope, $rootScope, $http, $fil
                     break;
                 case 500:
                     if(result.data.message.indexOf("Can not send message to Kafka broker.") > -1) {
-                        errTitle = $filter('translate')('SUBMIT_ERROR')
+                        errTitle = $filter('translate')('SUBMIT_ERROR_TITLE')
                         errMsg = $filter('translate')('KAFKA_BROKER_NOT_AVAILABLE');
                     } else {
                         errMsg = $filter('translate')('SUBMIT_ERROR');
@@ -162,6 +163,7 @@ app.controller('orderWizardController', function($scope, $rootScope, $http, $fil
             }
         };
 
+        $scope.submitButtonDisabled = true;
         let params = {
             "region": $scope.region,
             "location": $scope.locationInfo,
