@@ -281,6 +281,7 @@ public class GlobalPreferencesService {
      */
     public void initializeMqOnStartup(GlobalPreferencesEntity globalPreferences)
             throws ParameterException {
+        MQConfig.currentMQType = globalPreferences.getMqType();
         GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
         globalPreferencesDto.setMqType(globalPreferences.getMqType());
         globalPreferencesDto.setOrderServiceDestinationQueue(globalPreferences.getOrderServiceDestinationQueue());
