@@ -1,6 +1,9 @@
 package com.parasoft.demoapp.service;
 
-import com.parasoft.demoapp.dto.*;
+import com.parasoft.demoapp.dto.InventoryOperation;
+import com.parasoft.demoapp.dto.InventoryOperationRequestMessageDTO;
+import com.parasoft.demoapp.dto.InventoryOperationResultMessageDTO;
+import com.parasoft.demoapp.dto.OrderMQMessageDTO;
 import com.parasoft.demoapp.exception.*;
 import com.parasoft.demoapp.messages.AssetMessages;
 import com.parasoft.demoapp.messages.OrderMessages;
@@ -84,6 +87,7 @@ public class OrderService {
         throw new OrderStatusException("Can not change order status from " + order.getStatus() + " to " + status);
     }
 
+    @Transactional(value = "industryTransactionManager", rollbackFor = {CartItemNotFoundException.class})
     public synchronized OrderEntity addNewOrderSynchronized(Long userId, String username, RegionType region, String location,
                                                             String receiverId, String eventId, String eventNumber)
             throws ParameterException, ItemNotFoundException, CartItemNotFoundException {
@@ -188,6 +192,7 @@ public class OrderService {
         return order;
     }
 
+    @Transactional(value = "industryTransactionManager")
     public synchronized OrderEntity updateOrderByOrderNumberSynchronized(String orderNumber, String userRoleName,
                                                                          OrderStatus newStatus, Boolean reviewedByPRCH, Boolean reviewedByAPV,
                                                                          String respondedBy, String comments, boolean publicToMQ)
@@ -208,7 +213,7 @@ public class OrderService {
         ParameterValidator.requireNonBlank(orderNumber, OrderMessages.ORDER_NUMBER_CANNOT_BE_BLANK);
         ParameterValidator.requireNonBlank(userRoleName, OrderMessages.USER_ROLE_NAME_CANNOT_BE_BLANK);
 
-        OrderEntity originalOrder = getOrderByOrderNumber(orderNumber);
+        OrderEntity originalOrder = getOrderByOrderNumber(orderNumber).copy();
 
         if(originalOrder.getStatus() == OrderStatus.CANCELED) {
             throw new IncorrectOperationException(OrderMessages.ORDER_INFO_CANNOT_CHANGE_FROM_CANCELED);
