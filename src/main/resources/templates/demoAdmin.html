@@ -264,7 +264,7 @@
                                     </div>
                                 </div>
                                 <div id="client_connection">
-                                    <div ng-show="options.mqType === 'ACTIVE_MQ'">
+                                    <div ng-if="options.mqType === 'ACTIVE_MQ'">
                                         <div class="form-group">
                                             <label for="order_service_destination_queue" class="form_label" translate="INVENTORY_SERVICE_REQUEST_QUEUE"></label>
                                             <div class="invalid_message"
@@ -304,7 +304,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div ng-show="options.mqType === 'KAFKA'">
+                                    <div ng-if="options.mqType === 'KAFKA'">
                                         <div class="form-group">
                                             <label for="inventory_service_request_topic" class="form_label" translate="INVENTORY_SERVICE_REQUEST_TOPIC"></label>
                                             <div class="invalid_message"
