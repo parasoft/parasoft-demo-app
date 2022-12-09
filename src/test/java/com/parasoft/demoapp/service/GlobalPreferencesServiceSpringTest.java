@@ -98,8 +98,8 @@ public class GlobalPreferencesServiceSpringTest {
 		IndustryType industry = IndustryType.AEROSPACE;
 		globalPreferencesDto.setIndustryType(industry);
 		globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
-		globalPreferencesDto.setOrderServiceDestinationQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
-		globalPreferencesDto.setOrderServiceReplyToQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE);
+		globalPreferencesDto.setOrderServiceSendTo(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
+		globalPreferencesDto.setOrderServiceListenOn(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE);
 		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 
 		// When
@@ -152,8 +152,8 @@ public class GlobalPreferencesServiceSpringTest {
 		globalPreferencesDto.setLocationsRestEndpoint(locationsRestEndpointUrl);
 		globalPreferencesDto.setAdvertisingEnabled(false);
 		globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
-		globalPreferencesDto.setOrderServiceDestinationQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
-		globalPreferencesDto.setOrderServiceReplyToQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE);
+		globalPreferencesDto.setOrderServiceSendTo(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
+		globalPreferencesDto.setOrderServiceListenOn(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE);
 		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 
 		// When
@@ -278,8 +278,8 @@ public class GlobalPreferencesServiceSpringTest {
 		globalPreferencesDto.setLocationsRestEndpoint(locationsRestEndpointUrl);
 		globalPreferencesDto.setAdvertisingEnabled(false);
 		globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
-		globalPreferencesDto.setOrderServiceDestinationQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
-		globalPreferencesDto.setOrderServiceReplyToQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE);
+		globalPreferencesDto.setOrderServiceSendTo(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
+		globalPreferencesDto.setOrderServiceListenOn(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE);
 		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 
 		// When
@@ -365,8 +365,8 @@ public class GlobalPreferencesServiceSpringTest {
 		DemoBugsType[] demoBugsTypes = { DemoBugsType.INCORRECT_LOCATION_FOR_APPROVED_ORDERS };
 		globalPreferencesDto.setDemoBugs(demoBugsTypes);
 		globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
-		globalPreferencesDto.setOrderServiceDestinationQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
-		globalPreferencesDto.setOrderServiceReplyToQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE);
+		globalPreferencesDto.setOrderServiceSendTo(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
+		globalPreferencesDto.setOrderServiceListenOn(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE);
 		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 
 		// When
@@ -414,8 +414,8 @@ public class GlobalPreferencesServiceSpringTest {
 		globalPreferencesDto.setUseParasoftJDBCProxy(useParasoftJDBCProxy);
 		globalPreferencesDto.setParasoftVirtualizeServerUrl(parasoftVirtualizeServerUrl);
 		globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
-		globalPreferencesDto.setOrderServiceDestinationQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
-		globalPreferencesDto.setOrderServiceReplyToQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE);
+		globalPreferencesDto.setOrderServiceSendTo(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
+		globalPreferencesDto.setOrderServiceListenOn(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE);
 		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 
 		// When
@@ -455,8 +455,8 @@ public class GlobalPreferencesServiceSpringTest {
 		globalPreferencesDto.setUseParasoftJDBCProxy(useParasoftJDBCProxy);
 		globalPreferencesDto.setParasoftVirtualizeServerUrl(parasoftVirtualizeServerUrl);
 		globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
-		globalPreferencesDto.setOrderServiceDestinationQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
-		globalPreferencesDto.setOrderServiceReplyToQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE);
+		globalPreferencesDto.setOrderServiceSendTo(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
+		globalPreferencesDto.setOrderServiceListenOn(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE);
 		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 
 		// When
@@ -538,8 +538,8 @@ public class GlobalPreferencesServiceSpringTest {
         globalPreferencesDto.setGraphQLEndpoint(graphQLEndPointUrl);
         globalPreferencesDto.setAdvertisingEnabled(false);
         globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
-        globalPreferencesDto.setOrderServiceDestinationQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
-        globalPreferencesDto.setOrderServiceReplyToQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE);
+        globalPreferencesDto.setOrderServiceSendTo(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
+        globalPreferencesDto.setOrderServiceListenOn(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE);
         globalPreferencesDto.setWebServiceMode(WebServiceMode.GRAPHQL);
 
         // When
@@ -589,8 +589,8 @@ public class GlobalPreferencesServiceSpringTest {
         globalPreferencesDto.setGraphQLEndpoint(graphQLEndPointUrl);
         globalPreferencesDto.setAdvertisingEnabled(false);
         globalPreferencesDto.setMqType(MqType.ACTIVE_MQ);
-        globalPreferencesDto.setOrderServiceDestinationQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
-        globalPreferencesDto.setOrderServiceReplyToQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE);
+        globalPreferencesDto.setOrderServiceSendTo(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
+        globalPreferencesDto.setOrderServiceListenOn(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE);
         globalPreferencesDto.setWebServiceMode(WebServiceMode.GRAPHQL);
 
         // When
