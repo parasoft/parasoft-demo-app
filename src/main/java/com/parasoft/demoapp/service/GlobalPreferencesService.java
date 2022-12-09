@@ -257,22 +257,18 @@ public class GlobalPreferencesService {
     }
 
     private void refreshInventoryDestinations(GlobalPreferencesEntity currentPreferences){
-        String orderServiceDestinationQueue = currentPreferences.getOrderServiceDestinationQueue();
-        String orderServiceReplyToQueue = currentPreferences.getOrderServiceReplyToQueue();
-        String orderServiceRequestTopic = currentPreferences.getOrderServiceRequestTopic();
-        String orderServiceResponseTopic = currentPreferences.getOrderServiceResponseTopic();
-
         stopMQListenersExcept(currentPreferences.getMqType());
         if(MqType.ACTIVE_MQ == currentPreferences.getMqType()) {
             MQConfig.currentMQType = MqType.ACTIVE_MQ;
-            ActiveMQConfig.setOrderServiceSendToQueue(new ActiveMQQueue(orderServiceDestinationQueue));
-            inventoryResponseQueueListener.refreshDestination(orderServiceReplyToQueue);
+            ActiveMQConfig.setOrderServiceSendToQueue(new ActiveMQQueue(currentPreferences.getOrderServiceDestinationQueue()));
+            inventoryResponseQueueListener.refreshDestination(currentPreferences.getOrderServiceReplyToQueue());
             inventoryRequestQueueListener.refreshDestination(ActiveMQConfig.getInventoryServiceListenToQueue());
         } else if(MqType.KAFKA == currentPreferences.getMqType()) {
+            String orderServiceRequestTopic = currentPreferences.getOrderServiceRequestTopic();
             MQConfig.currentMQType = MqType.KAFKA;
             KafkaConfig.setOrderServiceSendToTopic(orderServiceRequestTopic);
             inventoryRequestTopicListener.refreshDestination(orderServiceRequestTopic);
-            inventoryResponseQueueListener.refreshDestination(orderServiceResponseTopic);
+            inventoryResponseQueueListener.refreshDestination(currentPreferences.getOrderServiceResponseTopic());
         } else {
             throw new UnsupportedOperationException("Unsupported MQ type: " + currentPreferences.getMqType());
         }
@@ -288,14 +284,17 @@ public class GlobalPreferencesService {
         MQConfig.currentMQType = globalPreferences.getMqType();
         GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
         globalPreferencesDto.setMqType(globalPreferences.getMqType());
-        validateMqConfig(globalPreferencesDto);
         if (globalPreferences.getMqType() == MqType.ACTIVE_MQ) {
             globalPreferencesDto.setOrderServiceSendTo(globalPreferences.getOrderServiceDestinationQueue());
             globalPreferencesDto.setOrderServiceListenOn(globalPreferences.getOrderServiceReplyToQueue());
+            validateMqConfig(globalPreferencesDto);
             ActiveMQConfig.setOrderServiceSendToQueue(new ActiveMQQueue(
                     globalPreferences.getOrderServiceDestinationQueue()));
             ActiveMQConfig.setOrderServiceListenToQueue(globalPreferences.getOrderServiceReplyToQueue());
         } else if (globalPreferences.getMqType() == MqType.KAFKA) {
+            globalPreferencesDto.setOrderServiceSendTo(globalPreferences.getOrderServiceRequestTopic());
+            globalPreferencesDto.setOrderServiceListenOn(globalPreferences.getOrderServiceResponseTopic());
+            validateMqConfig(globalPreferencesDto);
             // TODO: initialize Kafka topics on startup
         }
     }
