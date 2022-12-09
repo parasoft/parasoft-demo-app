@@ -105,6 +105,18 @@ function initHeaderController(app){
                     //toastr.error($filter('translate')('CAN_NOT_CONNECT_TO_PARASOFT_JDBC_PROXY') + " " + parasoftVirtualizeServerUrl, '', {timeOut: 0});
                 });
             }
+
+            if(preferenceData.mqType === 'KAFKA') {
+                $http({
+                    method: 'GET',
+                    url: '/v1/demoAdmin/kafkaBrokerUrlValidation'
+                }).then(function success() {
+                    localStorage.setItem("kafkaAvailable", "true");
+                }, function error(response) {
+                    console.info(response);
+                    localStorage.setItem("kafkaAvailable", "false");
+                });
+            }
         }, function errorCallback(response) {
             console.log(response);
         });
