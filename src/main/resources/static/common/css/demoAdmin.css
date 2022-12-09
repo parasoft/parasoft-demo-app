@@ -489,4 +489,7 @@ textarea {
     margin-bottom: 10px;
 }
 
+.error_icon {
+    color: red;
+}
 /* LABELS tab */

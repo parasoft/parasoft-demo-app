@@ -35,6 +35,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
     var databaseResetFlag = localStorage.getItem("databaseResetStatus");
     connectAndSubscribeMQ(CURRENT_ROLE, $http, $rootScope, $filter, null, null, graphQLService);
 
+    demo.kafkaAvailable = localStorage.getItem("kafkaAvailable");
     demo.GENERAL = "active";
     //Get regions
     getAllRegions();
