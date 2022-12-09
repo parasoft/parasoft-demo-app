@@ -413,6 +413,9 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
         }).then(function(result) {
             localStorage.setItem("status", "true");
             localStorage.setItem("save_succeeded", $filter('translate')('SAVING_SUCCEEDS'));
+            if (result.data.data.mqType !== "KAFKA") {
+                localStorage.removeItem("kafkaAvailable");
+            }
             $window.location.reload();
             $('#saving_modal').modal('hide');
         }).catch(function(response) {
