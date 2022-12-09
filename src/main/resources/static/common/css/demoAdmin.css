@@ -102,7 +102,7 @@
     height: 37px;
 }
 
-.input-wrapper button {
+.input-wrapper button, #test_connection_kafka_service_button {
     height: 36px;
     font-size: 10px;
     box-sizing: border-box;
@@ -458,6 +458,10 @@ textarea {
     font-size: 15px;
     font-weight: normal;
     padding-bottom: 7px;
+}
+
+.test_connection_kafka_service {
+    text-align: center;
 }
 
 .queue_configuration_details_value {
