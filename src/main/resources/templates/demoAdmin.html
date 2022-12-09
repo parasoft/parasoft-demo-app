@@ -229,15 +229,19 @@
                                         </label>
                                     </div>
                                 </div>
-				<div class="queue_configuration_details">
-				    <a class="industry_font industry_color_1"
-				       data-toggle="modal"
-				       data-target="#queue_configuration_details_modal"
-				       ng-click="options.openConfigurationDetailsModal()">
-					<span ng-if="options.mqType === 'ACTIVE_MQ'" translate="JMS_CONFIGURATION_DETAILS"></span>
-					<span ng-if="options.mqType === 'KAFKA'" translate="KAFKA_CONFIGURATION_DETAILS"></span>
-				    </a>
-				</div>
+                                <div class="queue_configuration_details">
+                                    <a class="industry_font industry_color_1"
+                                       data-toggle="modal"
+                                       data-target="#queue_configuration_details_modal"
+                                       ng-click="options.openConfigurationDetailsModal()">
+                                        <span ng-if="options.mqType === 'ACTIVE_MQ'" translate="JMS_CONFIGURATION_DETAILS"></span>
+                                        <span ng-if="options.mqType === 'KAFKA'" translate="KAFKA_CONFIGURATION_DETAILS"></span>
+                                    </a>
+                                    <span ng-if="options.mqType === 'KAFKA' && demo.kafkaAvailable === 'false'">
+                                        ( <i class="fa fa-exclamation-circle error_icon" aria-hidden="true"></i>
+                                        <span translate="INVALID_KAFKA_SERVER_URL"></span> )
+                                    </span>
+                                </div>
 
                                 <div id="queue_configuration_details_modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
                                     <div class="modal-dialog">
