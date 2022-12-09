@@ -110,10 +110,11 @@ function initHeaderController(app){
                 $http({
                     method: 'GET',
                     url: '/v1/demoAdmin/kafkaBrokerUrlValidation'
-                }).then(function success(response) {
-                    localStorage.setItem("kafkaStatus", "true");
+                }).then(function success() {
+                    localStorage.setItem("kafkaAvailable", "true");
                 }, function error(response) {
-                    localStorage.setItem("kafkaStatus", "false");
+                    console.info(response);
+                    localStorage.setItem("kafkaAvailable", "false");
                 });
             }
         }, function errorCallback(response) {
