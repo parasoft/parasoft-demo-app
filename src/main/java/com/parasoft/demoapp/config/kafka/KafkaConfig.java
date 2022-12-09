@@ -27,6 +27,9 @@ public class KafkaConfig {
 
     public static final String DEFAULT_ORDER_SERVICE_REQUEST_TOPIC = "inventory.request";
     public static final String DEFAULT_ORDER_SERVICE_RESPONSE_TOPIC = "inventory.response";
+
+    @Getter private static final String inventoryServiceListenToTopic = DEFAULT_ORDER_SERVICE_REQUEST_TOPIC;
+    @Getter private static final String inventoryServiceSendToTopic = DEFAULT_ORDER_SERVICE_RESPONSE_TOPIC;
     @Getter @Setter private static String orderServiceSendToTopic = DEFAULT_ORDER_SERVICE_REQUEST_TOPIC;
     @Getter @Setter private static String orderServiceListenToTopic = DEFAULT_ORDER_SERVICE_RESPONSE_TOPIC;
 
@@ -66,6 +69,7 @@ public class KafkaConfig {
                 StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
                 JsonDeserializer.class);
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         return props;
     }
 
