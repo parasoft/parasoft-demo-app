@@ -406,6 +406,13 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 
     demo.saveAll = function() {
         let data = angular.element('#options_form').serializeJSON()
+        if (data.mqType === 'ACTIVE_MQ') {
+            data.orderServiceSendTo = data.orderServiceDestinationQueue;
+            data.orderServiceListenOn = data.orderServiceReplyToQueue;
+        } else if (data.mqType === 'KAFKA') {
+            data.orderServiceSendTo = data.inventoryServiceRequestTopic;
+            data.orderServiceListenOn = data.inventoryServiceResponseTopic;
+        }
         $http({
             method: 'PUT',
             url: '/v1/demoAdmin/preferences',
