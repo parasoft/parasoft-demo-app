@@ -86,6 +86,7 @@ button.close, button.close:hover {
 .saving-modal-content {
     background: #333;
     border: 1px solid;
+    margin: auto;
 }
 
 .button-primary {

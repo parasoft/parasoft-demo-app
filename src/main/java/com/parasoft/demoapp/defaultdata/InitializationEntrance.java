@@ -1,13 +1,11 @@
 package com.parasoft.demoapp.defaultdata;
 
-import com.parasoft.demoapp.config.MQConfig;
 import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
 import com.parasoft.demoapp.exception.ParameterException;
 import com.parasoft.demoapp.exception.VirtualizeServerUrlException;
 import com.parasoft.demoapp.messages.DatabaseOperationMessages;
 import com.parasoft.demoapp.model.global.DatabaseInitResultEntity;
 import com.parasoft.demoapp.model.global.preferences.GlobalPreferencesEntity;
-import com.parasoft.demoapp.model.global.preferences.MqType;
 import com.parasoft.demoapp.repository.global.DatabaseInitResultRepository;
 import com.parasoft.demoapp.service.GlobalPreferencesService;
 import com.parasoft.demoapp.service.ParasoftJDBCProxyService;
@@ -118,18 +116,10 @@ public class InitializationEntrance {
 
         parasoftJDBCProxyService.refreshParasoftJDBCProxyDataSource();
 
-        MqType mqType = globalPreferences.getMqType();
-        MQConfig.currentMQType = mqType;
-        if (mqType == MqType.ACTIVE_MQ) {
-            try {
-                globalPreferencesService.initializeActiveMqJmsQueuesOnStartup(globalPreferences);
-            } catch (ParameterException pe) {
-                log.error("Failed to initialize ActiveMQ JMS proxy: {}", pe.getMessage());
-            }
-        } else if (mqType == MqType.KAFKA) {
-            // TODO: initialize Kafka topics on startup
-        } else {
-            throw new UnsupportedOperationException("Unsupported MQ type: " + mqType);
+        try {
+            globalPreferencesService.initializeMqOnStartup(globalPreferences);
+        } catch (ParameterException pe) {
+            log.error("Failed to initialize MQ: {}", pe.getMessage());
         }
 
         log.info(MessageFormat.format(databaseOperationMessages.getString(DatabaseOperationMessages.CURRENT_INDUSTRY),

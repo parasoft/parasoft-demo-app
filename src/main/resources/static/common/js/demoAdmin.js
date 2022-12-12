@@ -405,6 +405,13 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 
     demo.saveAll = function() {
         let data = angular.element('#options_form').serializeJSON()
+        if (data.mqType === 'ACTIVE_MQ') {
+            data.orderServiceSendTo = data.orderServiceDestinationQueue;
+            data.orderServiceListenOn = data.orderServiceReplyToQueue;
+        } else if (data.mqType === 'KAFKA') {
+            data.orderServiceSendTo = data.inventoryServiceRequestTopic;
+            data.orderServiceListenOn = data.inventoryServiceResponseTopic;
+        }
         $http({
             method: 'PUT',
             url: '/v1/demoAdmin/preferences',
@@ -436,6 +443,8 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
                 errorMessage =  $filter('translate')('INVALID_PARASOFT_VIRTUALIZE_SERVER_PATH');
             } else if(responseMessage.indexOf('Invalid virtualize group id') > -1){
                 errorMessage =  $filter('translate')('INVALID_PARASOFT_VIRTUALIZE_GROUP_ID');
+            } else if(responseMessage.indexOf('can not establish connection with kafka server') > -1){
+                errorMessage =  $filter('translate')('INVALID_KAFKA_SERVER_URL');
             } else {
                 errorMessage = responseMessage;
             }
