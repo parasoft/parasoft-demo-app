@@ -132,6 +132,19 @@ a, a:hover, a:focus {
     z-index: 1;
 }
 
+.exclamation-mark {
+    position: absolute;
+    padding: 1.5% 3% 0% 3%;
+    height: 14px;
+    width: 14px;
+    top: 0;
+    left: 22px;
+    border-radius: 50%;
+    color: rgba(255, 0, 0, 1);
+    background-color: rgba(255, 255, 255, 1);
+    border-color: rgba(255, 255, 255, 1);
+}
+
 #username-button .dropdown-menu {
     min-width: 100px;
     min-height: 29px;

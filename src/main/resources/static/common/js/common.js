@@ -85,6 +85,7 @@ function initHeaderController(app){
         }).then(function successCallback(response) {
             var preferenceData = response.data.data;
             var industry = preferenceData.industryType;
+            $rootScope.mqType = preferenceData.mqType;
             $rootScope.INDUSTRY = industry;
             industry = industry.toLowerCase();
             $rootScope.industry = industry;
@@ -115,7 +116,7 @@ function initHeaderController(app){
                 }, function error(response) {
                     console.info(response);
                     localStorage.setItem("displayKafkaError", "true");
-                });
+                }).finally(() => {$rootScope.displayKafkaError = localStorage.getItem("displayKafkaError")});
             } else if(preferenceData.mqType === 'ACTIVE_MQ') {
                 localStorage.setItem("displayKafkaError", "false");
             }
@@ -128,6 +129,7 @@ function initHeaderController(app){
         $rootScope.isApprover = angular.equals(CURRENT_ROLE, ROLE_APPROVER);
         $rootScope.username = CURRENT_USERNAME;
 
+        $rootScope.displayKafkaError = localStorage.getItem("displayKafkaError");
         $rootScope.isShowSettingButton = true;
         $rootScope.isShowRequisitionButton = true;
         $rootScope.isShowRequisitionRequestButton = true;
