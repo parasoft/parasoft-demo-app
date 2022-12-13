@@ -146,3 +146,7 @@ button.close, button.close:hover {
 .queue_configuration_details a:hover {
     color: #0366AE;
 }
+
+.testing_connection_kafka_service {
+    margin-right: 136px;
+}

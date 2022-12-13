@@ -461,7 +461,10 @@ textarea {
 }
 
 .testing_connection_kafka_service {
-    font-size: 10px;
+    display: inline-block;
+    float: right;
+    margin-top: -27px;
+    margin-right: 170px;
 }
 
 .test_connection_kafka_service {
