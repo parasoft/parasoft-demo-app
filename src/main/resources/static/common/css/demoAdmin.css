@@ -462,6 +462,7 @@ textarea {
 
 .test_connection_kafka_service {
     text-align: center;
+    margin-top: 20px;
 }
 
 .queue_configuration_details_value {

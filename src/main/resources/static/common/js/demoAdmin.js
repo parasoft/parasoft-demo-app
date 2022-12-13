@@ -297,14 +297,14 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
             method: 'GET',
             url: '/v1/demoAdmin/kafkaBrokerUrlValidation'
         }).then(function success() {
+            localStorage.setItem("displayKafkaError", "false");
             toastr.success($filter('translate')('CONNECT_KAFKA_BROKER_SUCCESS'));
-            localStorage.setItem("kafkaAvailable", "true");
         }, function error() {
-            localStorage.setItem("kafkaAvailable", "false");
+            localStorage.setItem("displayKafkaError", "true");
             toastrService().error($filter('translate')('INVALID_KAFKA_SERVER_URL'));
         }).finally(function () {
             demo.disableConnectionKafkaServiceButton = false;
-            demo.kafkaAvailable = localStorage.getItem("kafkaAvailable");
+            demo.displayKafkaError = localStorage.getItem("displayKafkaError");
         });
     }
 
