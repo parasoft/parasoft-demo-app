@@ -1,10 +1,6 @@
-package com.parasoft.demoapp.config.kafka;
+package com.parasoft.demoapp.config;
 
-import com.parasoft.demoapp.config.MQConfig;
 import com.parasoft.demoapp.dto.GlobalPreferencesDTO;
-import com.parasoft.demoapp.dto.InventoryInfoDTO;
-import com.parasoft.demoapp.dto.InventoryOperation;
-import com.parasoft.demoapp.dto.InventoryOperationRequestMessageDTO;
 import com.parasoft.demoapp.model.global.UserEntity;
 import com.parasoft.demoapp.model.global.preferences.DemoBugEntity;
 import com.parasoft.demoapp.model.global.preferences.DemoBugsType;
@@ -13,6 +9,7 @@ import com.parasoft.demoapp.model.industry.ItemEntity;
 import com.parasoft.demoapp.model.industry.OrderEntity;
 import com.parasoft.demoapp.model.industry.OrderStatus;
 import com.parasoft.demoapp.model.industry.RegionType;
+import com.parasoft.demoapp.repository.industry.ItemInventoryRepository;
 import com.parasoft.demoapp.repository.industry.OrderRepository;
 import com.parasoft.demoapp.service.*;
 import com.parasoft.demoapp.utilfortest.OrderUtilForTest;
@@ -20,17 +17,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.kafka.annotation.EnableKafka;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.parasoft.demoapp.defaultdata.global.GlobalUsersCreator.USERNAME_APPROVER;
 import static com.parasoft.demoapp.defaultdata.global.GlobalUsersCreator.USERNAME_PURCHASER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -44,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
         })
 @SpringBootTest
 @TestPropertySource("file:./src/test/java/com/parasoft/demoapp/application.properties")
-public class KafkaIntegrationTest {
+public class MQIntegrationTest {
 
     @Autowired
     private GlobalPreferencesService globalPreferencesService;
@@ -71,32 +66,38 @@ public class KafkaIntegrationTest {
     private ItemInventoryService itemInventoryService;
 
     @Autowired
-    KafkaTemplate<String, InventoryOperationRequestMessageDTO> operationRequestKafkaTemplate;
+    private ItemInventoryRepository itemInventoryRepository;
 
     /**
     *  Use the work flow of placing an order to test the topics of Kafka.
     */
     @Test
-    public void testOrderFlowAgainstKafka() throws Throwable {
+    public void testOrderFlowAgainstDifferentMQs() throws Throwable {
+        // Test against default MQ when PDA starts up
+        assertEquals(MqType.ACTIVE_MQ, MQConfig.currentMQType);
+        testOrderFlow();
+
+        // Test against Kafka
         GlobalPreferencesDTO globalPreferencesDTO = getDefaultGlobalPreferencesDTO();
         globalPreferencesDTO.setMqType(MqType.KAFKA);
         globalPreferencesService.updateGlobalPreferences(globalPreferencesDTO);
-
-       /* System.out.println("++++++++++++++++++++");
-        operationRequestKafkaTemplate.send(KafkaConfig.DEFAULT_ORDER_SERVICE_REQUEST_TOPIC,
-                new InventoryOperationRequestMessageDTO(InventoryOperation.DECREASE,
-                        "123",
-                        Collections.singletonList(new InventoryInfoDTO(1L, 1)),
-                        ""));
-        System.out.println("++++++++++++++++++++");*/
-
-        // Change to use Kafka
         assertEquals(MqType.KAFKA, MQConfig.currentMQType);
+        testOrderFlow();
 
+        // Test against Kafka ActiveMQ
+        globalPreferencesDTO = getDefaultGlobalPreferencesDTO();
+        globalPreferencesDTO.setMqType(MqType.ACTIVE_MQ);
+        globalPreferencesService.updateGlobalPreferences(globalPreferencesDTO);
+        assertEquals(MqType.ACTIVE_MQ, MQConfig.currentMQType);
+        testOrderFlow();
+    }
+
+    private void testOrderFlow() throws Throwable {
         // Get necessary data
         UserEntity purchaser = userService.getUserByUsername(USERNAME_PURCHASER);
+        UserEntity approver = userService.getUserByUsername(USERNAME_APPROVER);
         ItemEntity blueSleepingBag = itemService.getItemByName("Blue Sleeping Bag");
-        Integer originalInventoryOfBlueSleepingBag  = itemInventoryService.getInStockByItemId(blueSleepingBag.getId());
+        int originalInventoryOfBlueSleepingBag = itemInventoryService.getInStockByItemId(blueSleepingBag.getId());
 
         // Add cart item into cart
         int quantity = 1;
@@ -117,8 +118,27 @@ public class KafkaIntegrationTest {
         assertEquals(OrderStatus.PROCESSED, order.getStatus());
 
         // Check inventory
-        Integer updatedInventoryOfBlueSleepingBag  = itemInventoryService.getInStockByItemId(blueSleepingBag.getId());
+        int updatedInventoryOfBlueSleepingBag = itemInventoryService.getInStockByItemId(blueSleepingBag.getId());
         assertEquals(originalInventoryOfBlueSleepingBag - quantity, updatedInventoryOfBlueSleepingBag);
+
+        // Decline the order
+        orderService.updateOrderByOrderNumberSynchronized(order.getOrderNumber(),
+                approver.getRole().getName(),
+                OrderStatus.DECLINED,
+                false,
+                true,
+                approver.getUsername(),
+                "Decline the order to roll back the inventory",
+                true);
+        OrderUtilForTest.waitChangeForItemInventory(blueSleepingBag.getId(), itemInventoryRepository, 9, 5);
+
+        // Check order status
+        order = orderService.getOrderByOrderNumber(order.getOrderNumber());
+        assertEquals(OrderStatus.DECLINED, order.getStatus());
+
+        // Check inventory
+        updatedInventoryOfBlueSleepingBag = itemInventoryService.getInStockByItemId(blueSleepingBag.getId());
+        assertEquals(originalInventoryOfBlueSleepingBag, updatedInventoryOfBlueSleepingBag);
     }
 
     private GlobalPreferencesDTO getDefaultGlobalPreferencesDTO() {
@@ -136,15 +156,14 @@ public class KafkaIntegrationTest {
         globalPreferencesDto.setItemsRestEndpoint(globalPreferencesDefaultSettingsService.defaultItemsEndpoint().getUrl());
         globalPreferencesDto.setCartItemsRestEndpoint(globalPreferencesDefaultSettingsService.defaultCartItemsEndpoint().getUrl());
         globalPreferencesDto.setOrdersRestEndpoint(globalPreferencesDefaultSettingsService.defaultOrdersEndpoint().getUrl());
+        globalPreferencesDto.setLocationsRestEndpoint(globalPreferencesDefaultSettingsService.defaultLocationsEndpoint().getUrl());
         globalPreferencesDto.setUseParasoftJDBCProxy(globalPreferencesDefaultSettingsService.defaultUseParasoftJDBCProxy());
         globalPreferencesDto.setParasoftVirtualizeServerUrl(globalPreferencesDefaultSettingsService.defaultParasoftVirtualizeServerUrl());
         globalPreferencesDto.setParasoftVirtualizeServerPath(globalPreferencesDefaultSettingsService.defaultParasoftVirtualizeServerPath());
         globalPreferencesDto.setParasoftVirtualizeGroupId(globalPreferencesDefaultSettingsService.defaultParasoftVirtualizeGroupId());
         globalPreferencesDto.setMqType(globalPreferencesDefaultSettingsService.defaultMqType());
-        globalPreferencesDto.setOrderServiceDestinationQueue(globalPreferencesDefaultSettingsService.defaultOrderServiceDestinationQueue());
-        globalPreferencesDto.setOrderServiceReplyToQueue(globalPreferencesDefaultSettingsService.defaultOrderServiceReplyToQueue());
-        globalPreferencesDto.setInventoryServiceRequestTopic(globalPreferencesDefaultSettingsService.defaultOrderServiceRequestTopic());
-        globalPreferencesDto.setInventoryServiceResponseTopic(globalPreferencesDefaultSettingsService.defaultOrderServiceResponseTopic());
+        globalPreferencesDto.setOrderServiceSendTo(globalPreferencesDefaultSettingsService.defaultOrderServiceRequestTopic());
+        globalPreferencesDto.setOrderServiceListenOn(globalPreferencesDefaultSettingsService.defaultOrderServiceResponseTopic());
         return globalPreferencesDto;
     }
 }
