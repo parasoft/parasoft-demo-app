@@ -32,5 +32,7 @@ public class InventoryResponseTopicListener extends KafkaRefreshableMessageListe
             log.info("Order service has no response message to reply.");
             return;
         }
+
+        orderMQService.sendToInventoryRequestDestination(messageToReply);
     }
 }
