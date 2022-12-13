@@ -134,7 +134,7 @@ a, a:hover, a:focus {
 
 .exclamation-mark {
     position: absolute;
-    padding: 1.5% 3% 0% 3%;
+    text-align: center;
     height: 14px;
     width: 14px;
     top: 0;

@@ -85,7 +85,6 @@ function initHeaderController(app){
         }).then(function successCallback(response) {
             var preferenceData = response.data.data;
             var industry = preferenceData.industryType;
-            $rootScope.mqType = preferenceData.mqType;
             $rootScope.INDUSTRY = industry;
             industry = industry.toLowerCase();
             $rootScope.industry = industry;
