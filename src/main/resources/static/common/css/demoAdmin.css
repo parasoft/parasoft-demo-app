@@ -460,6 +460,10 @@ textarea {
     padding-bottom: 7px;
 }
 
+.testing_connection_kafka_service {
+    font-size: 10px;
+}
+
 .test_connection_kafka_service {
     text-align: center;
     margin-top: 20px;

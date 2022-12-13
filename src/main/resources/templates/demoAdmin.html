@@ -251,6 +251,7 @@
                                                 <div class="modal-title">
                                                     <span ng-if="options.mqType === 'ACTIVE_MQ'">ActiveMQ JMS</span>
                                                     <span ng-if="options.mqType === 'KAFKA'">Kafka</span>
+                                                    <div class="testing_connection_kafka_service" ng-show="demo.disableConnectionKafkaServiceButton" translate={{'TESTING'|translate}}></div>
                                                 </div>
                                             </div>
 
@@ -265,7 +266,7 @@
                                                 </table>
                                                 <div class="test_connection_kafka_service" ng-if="options.mqType === 'KAFKA'">
                                                     <button id="test_connection_kafka_service_button" class="btn btn-default industry_button" translate="TEST_CONNECT"
-                                                            ng-disabled="demo.disableConnectionKafkaServiceButton" ng-click="demo.validateKafkaBrokerUrl()" ></button>
+                                                            ng-disabled="demo.disableConnectionKafkaServiceButton" ng-click="demo.validateKafkaBrokerUrl()"></button>
                                                 </div>
                                             </div>
                                         </div>
