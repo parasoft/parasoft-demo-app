@@ -7,4 +7,8 @@ USER root:root
 
 COPY ${WAR_FILE} ${TOMCAT_HOME}/webapps/ROOT.war
 
+# To enable injecting Virtualize JDBC driver into PDA.
+RUN unzip ${TOMCAT_HOME}/webapps/ROOT.war -d ${TOMCAT_HOME}/webapps/ROOT
+RUN rm ${TOMCAT_HOME}/webapps/ROOT.war
+
 EXPOSE 8080 9001 61623 61624 61626
