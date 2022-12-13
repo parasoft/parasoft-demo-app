@@ -266,7 +266,7 @@ public class GlobalPreferencesService {
         } else if(MqType.KAFKA == currentPreferences.getMqType()) {
             MQConfig.currentMQType = MqType.KAFKA;
             KafkaConfig.setOrderServiceSendToTopic(currentPreferences.getOrderServiceRequestTopic());
-            inventoryRequestTopicListener.refreshDestination(currentPreferences.getOrderServiceRequestTopic());
+            inventoryRequestTopicListener.refreshDestination(KafkaConfig.DEFAULT_ORDER_SERVICE_REQUEST_TOPIC);
             inventoryResponseTopicListener.refreshDestination(currentPreferences.getOrderServiceResponseTopic());
         } else {
             throw new UnsupportedOperationException("Unsupported MQ type: " + currentPreferences.getMqType());
@@ -294,6 +294,8 @@ public class GlobalPreferencesService {
             globalPreferencesDto.setOrderServiceSendTo(globalPreferences.getOrderServiceRequestTopic());
             globalPreferencesDto.setOrderServiceListenOn(globalPreferences.getOrderServiceResponseTopic());
             validateMqConfig(globalPreferencesDto);
+            KafkaConfig.setOrderServiceSendToTopic(globalPreferences.getOrderServiceRequestTopic());
+            KafkaConfig.setOrderServiceListenToTopic(globalPreferences.getOrderServiceResponseTopic());
         }
     }
 
