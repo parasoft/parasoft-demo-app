@@ -291,6 +291,23 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
         }
     }
 
+    demo.validateKafkaBrokerUrl = function () {
+        demo.isTestingKafkaBrokerUrl = true;
+        $http({
+            method: 'GET',
+            url: '/v1/demoAdmin/kafkaBrokerUrlValidation'
+        }).then(function success() {
+            localStorage.setItem("displayKafkaError", "false");
+            toastr.success($filter('translate')('CONNECT_KAFKA_BROKER_SUCCESS'));
+        }, function error() {
+            localStorage.setItem("displayKafkaError", "true");
+            toastrService().error($filter('translate')('INVALID_KAFKA_SERVER_URL'));
+        }).finally(function () {
+            demo.isTestingKafkaBrokerUrl = false;
+            demo.displayKafkaError = localStorage.getItem("displayKafkaError");
+        });
+    }
+
     demo.validateVirtualizeServerUrl = function(url){
         demo.clearVirtualizeServerUrlTestMessage();
         demo.isVirtualizeServerUrlTesting = true;
