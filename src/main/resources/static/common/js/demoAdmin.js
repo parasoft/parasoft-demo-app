@@ -35,6 +35,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
     var databaseResetFlag = localStorage.getItem("databaseResetStatus");
     connectAndSubscribeMQ(CURRENT_ROLE, $http, $rootScope, $filter, null, null, graphQLService);
 
+    demo.displayKafkaError = localStorage.getItem("displayKafkaError");
     demo.GENERAL = "active";
     //Get regions
     getAllRegions();
@@ -405,6 +406,13 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
 
     demo.saveAll = function() {
         let data = angular.element('#options_form').serializeJSON()
+        if (data.mqType === 'ACTIVE_MQ') {
+            data.orderServiceSendTo = data.orderServiceDestinationQueue;
+            data.orderServiceListenOn = data.orderServiceReplyToQueue;
+        } else if (data.mqType === 'KAFKA') {
+            data.orderServiceSendTo = data.inventoryServiceRequestTopic;
+            data.orderServiceListenOn = data.inventoryServiceResponseTopic;
+        }
         $http({
             method: 'PUT',
             url: '/v1/demoAdmin/preferences',
@@ -413,6 +421,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
         }).then(function(result) {
             localStorage.setItem("status", "true");
             localStorage.setItem("save_succeeded", $filter('translate')('SAVING_SUCCEEDS'));
+            localStorage.setItem("displayKafkaError", "false");
             $window.location.reload();
             $('#saving_modal').modal('hide');
         }).catch(function(response) {
@@ -436,7 +445,8 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
                 errorMessage =  $filter('translate')('INVALID_PARASOFT_VIRTUALIZE_SERVER_PATH');
             } else if(responseMessage.indexOf('Invalid virtualize group id') > -1){
                 errorMessage =  $filter('translate')('INVALID_PARASOFT_VIRTUALIZE_GROUP_ID');
-            } else if(responseMessage.indexOf('can not establish connection with kafka server') > -1){
+            } else if(responseMessage.indexOf('can not establish connection with kafka broker') > -1){
+                localStorage.setItem("displayKafkaError", "true");
                 errorMessage =  $filter('translate')('INVALID_KAFKA_SERVER_URL');
             } else {
                 errorMessage = responseMessage;
@@ -445,6 +455,8 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
             $('#saving_modal').modal('hide');
             localStorage.setItem("status", "false");
             toastrService().error($filter('translate')('SAVING_FAILS') + '<br/>' + errorMessage);
+        }).finally(function() {
+            demo.displayKafkaError = localStorage.getItem("displayKafkaError");
         });
     };
 
