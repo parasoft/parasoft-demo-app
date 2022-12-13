@@ -6,7 +6,7 @@
     color: rgb(51,153,135);
 }
 
-.input-wrapper button {
+.input-wrapper button, #test_connection_kafka_service_button {
     background-color: rgba(251, 232, 202, 1);
     border-color: rgba(121, 73, 0, 1);
     border-radius: 1px;
@@ -122,4 +122,8 @@ button.close, button.close:hover {
 
 .queue_configuration_details a:hover {
     color: #117563;
+}
+
+.testing_connection_kafka_service {
+    margin-right: 129px;
 }
