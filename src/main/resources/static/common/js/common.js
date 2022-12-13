@@ -115,9 +115,12 @@ function initHeaderController(app){
                 }, function error(response) {
                     console.info(response);
                     localStorage.setItem("displayKafkaError", "true");
-                }).finally(() => {$rootScope.displayKafkaError = localStorage.getItem("displayKafkaError")});
+                }).finally(() => {
+                    $rootScope.displayKafkaError = localStorage.getItem("displayKafkaError")
+                });
             } else if(preferenceData.mqType === 'ACTIVE_MQ') {
                 localStorage.setItem("displayKafkaError", "false");
+                $rootScope.displayKafkaError = localStorage.getItem("displayKafkaError");
             }
         }, function errorCallback(response) {
             console.log(response);
