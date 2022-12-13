@@ -56,11 +56,7 @@ public class GlobalPreferencesDTO {
 
     private MqType mqType;
 
-    private String orderServiceDestinationQueue;
+    private String orderServiceSendTo;
 
-    private String orderServiceReplyToQueue;
-
-    private String inventoryServiceRequestTopic;
-
-    private String inventoryServiceResponseTopic;
+    private String orderServiceListenOn;
 }

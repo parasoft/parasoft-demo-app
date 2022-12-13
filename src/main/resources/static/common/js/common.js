@@ -111,11 +111,13 @@ function initHeaderController(app){
                     method: 'GET',
                     url: '/v1/demoAdmin/kafkaBrokerUrlValidation'
                 }).then(function success() {
-                    localStorage.setItem("kafkaAvailable", "true");
+                    localStorage.setItem("displayKafkaError", "false");
                 }, function error(response) {
                     console.info(response);
-                    localStorage.setItem("kafkaAvailable", "false");
+                    localStorage.setItem("displayKafkaError", "true");
                 });
+            } else if(preferenceData.mqType === 'ACTIVE_MQ') {
+                localStorage.setItem("displayKafkaError", "false");
             }
         }, function errorCallback(response) {
             console.log(response);
