@@ -6,7 +6,7 @@ initProductBuildInfo(app);
 initAuthorizationHeader(app);
 initToastr();
 
-app.controller('approverHomePageController', function($rootScope, $http, $filter, graphQLService) {
+app.controller('approverHomePageController', function($rootScope, $http, $filter, graphQLService, $window) {
     var approver = this;
 
     var mqConsumeCallback = function mqConsumeCallback(){
@@ -17,6 +17,14 @@ app.controller('approverHomePageController', function($rootScope, $http, $filter
             approver.currentPage = 1;
         }
         approver.selectPage(approver.currentPage);
+    }
+
+    approver.scrollToQueueConfiguration = function () {
+        if (localStorage.getItem("displayKafkaError") === 'true') {
+            $window.location.href="/demoAdmin#parasoft_queue_configuration";
+        } else {
+            $window.location.href="/demoAdmin";
+        }
     }
 
     connectAndSubscribeMQ(CURRENT_ROLE,$http,$rootScope,$filter,mqConsumeCallback);

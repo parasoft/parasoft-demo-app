@@ -6,8 +6,8 @@
         <nav>
             <ul>
                 <li id="setting-button" ng-if="isShowSettingButton">
-                    <a href="/demoAdmin" class="button-body full-fill-center" title="{{'HEADER_DEMO_ADMIN_TITLE'|translate}}">
-                        <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                    <a href="{{demoAdminUrl}}" class="button-body full-fill-center" title="{{'HEADER_DEMO_ADMIN_TITLE'|translate}}">
+                        <span class="glyphicon glyphicon-cog" aria-hidden="true" ng-click="scrollToQueueConfiguration()"></span>
                     </a>
                 </li>
                 <li id="requisition-button" ng-if="isShowRequisitionButton">

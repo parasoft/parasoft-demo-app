@@ -105,6 +105,7 @@ function initHeaderController(app){
                     //toastr.error($filter('translate')('CAN_NOT_CONNECT_TO_PARASOFT_JDBC_PROXY') + " " + parasoftVirtualizeServerUrl, '', {timeOut: 0});
                 });
             }
+            $rootScope.demoAdminUrl = '/demoAdmin';
 
             if(preferenceData.mqType === 'KAFKA') {
                 $http({
@@ -115,6 +116,7 @@ function initHeaderController(app){
                 }, function error(response) {
                     console.info(response);
                     localStorage.setItem("displayKafkaError", "true");
+                    $rootScope.demoAdminUrl = '/demoAdmin#parasoft_queue_configuration';
                 });
             } else if(preferenceData.mqType === 'ACTIVE_MQ') {
                 localStorage.setItem("displayKafkaError", "false");
