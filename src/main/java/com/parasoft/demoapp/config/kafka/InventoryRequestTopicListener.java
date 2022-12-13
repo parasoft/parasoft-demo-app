@@ -19,7 +19,7 @@ public class InventoryRequestTopicListener extends KafkaRefreshableMessageListen
     public InventoryRequestTopicListener(
             ConcurrentKafkaListenerContainerFactory<String, InventoryOperationRequestMessageDTO> operationRequestContainerFactory,
             ItemInventoryService itemInventoryService, ItemInventoryMQService itemInventoryMQService) {
-        super(operationRequestContainerFactory, KafkaConfig.getOrderServiceSendToTopic());
+        super(operationRequestContainerFactory, KafkaConfig.DEFAULT_ORDER_SERVICE_REQUEST_TOPIC);
         this.itemInventoryService = itemInventoryService;
         this.itemInventoryMQService = itemInventoryMQService;
     }
