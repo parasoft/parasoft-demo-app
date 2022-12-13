@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @EmbeddedKafka(
         partitions = 1,
         brokerProperties = {
-                "listeners=PLAINTEXT://127.0.0.1:9092",
+                "listeners=PLAINTEXT://localhost:9092",
                 "port=9092"
         })
 @SpringBootTest
@@ -69,7 +69,7 @@ public class MQIntegrationTest {
     private ItemInventoryRepository itemInventoryRepository;
 
     /**
-    *  Use the work flow of placing an order to test the topics of Kafka.
+    *  Use the work flow of placing an order to test MQs.
     */
     @Test
     public void testOrderFlowAgainstDifferentMQs() throws Throwable {
@@ -84,7 +84,7 @@ public class MQIntegrationTest {
         assertEquals(MqType.KAFKA, MQConfig.currentMQType);
         testOrderFlow();
 
-        // Test against Kafka ActiveMQ
+        // Test against ActiveMQ
         globalPreferencesDTO = getDefaultGlobalPreferencesDTO();
         globalPreferencesDTO.setMqType(MqType.ACTIVE_MQ);
         globalPreferencesService.updateGlobalPreferences(globalPreferencesDTO);
