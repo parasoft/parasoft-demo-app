@@ -265,9 +265,9 @@
                                                 </table>
                                                 <div class="test_connection_kafka_service" ng-if="options.mqType === 'KAFKA'">
                                                         <button id="test_connection_kafka_service_button" class="btn btn-default industry_button" translate="TEST_CONNECT"
-                                                                  ng-disabled="demo.disableConnectionKafkaServiceButton" ng-click="demo.validateKafkaBrokerUrl()"></button>
+                                                                  ng-disabled="demo.isTestingKafkaBrokerUrl" ng-click="demo.validateKafkaBrokerUrl()"></button>
                                                 </div>
-                                                <span ng-show="demo.disableConnectionKafkaServiceButton" class="testing_connection_kafka_service"  translate={{'TESTING'|translate}}></span>
+                                                <span ng-show="demo.isTestingKafkaBrokerUrl" class="testing_connection_kafka_service"  translate={{'TESTING'|translate}}></span>
                                             </div>
                                         </div>
                                     </div>

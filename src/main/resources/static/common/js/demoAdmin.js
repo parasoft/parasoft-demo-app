@@ -292,7 +292,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
     }
 
     demo.validateKafkaBrokerUrl = function () {
-        demo.disableConnectionKafkaServiceButton = true;
+        demo.isTestingKafkaBrokerUrl = true;
         $http({
             method: 'GET',
             url: '/v1/demoAdmin/kafkaBrokerUrlValidation'
@@ -303,7 +303,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
             localStorage.setItem("displayKafkaError", "true");
             toastrService().error($filter('translate')('INVALID_KAFKA_SERVER_URL'));
         }).finally(function () {
-            demo.disableConnectionKafkaServiceButton = false;
+            demo.isTestingKafkaBrokerUrl = false;
             demo.displayKafkaError = localStorage.getItem("displayKafkaError");
         });
     }
