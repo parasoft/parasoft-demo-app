@@ -112,7 +112,7 @@ The virtual asset deployment should be configured to listen to the customized de
 <img src="src/main/resources/static/common/images/mq_virtual_asset_mode_diagram.png" alt="mq virtual asset mode diagram">
 
 ## Using Kafka and Virtual Asset
-Kafka is an **optional** message queue in PDA.
+Kafka is an **optional** MQ in PDA.
 
 **Configuration details for external Kafka server**
 
@@ -121,7 +121,7 @@ Kafka is an **optional** message queue in PDA.
 | Broker URL  |       `localhost:9092`         |
 | Group ID    |       `inventory-operation`    |
 
-PDA uses two default topics to support messaging between order service and inventory service. The configuration for queues can be changed or reset to default on PDA Demo Administration page.
+PDA uses two default topics to support messaging between order service and inventory service. The configuration for topics can be changed or reset to default on PDA Demo Administration page.
 
 <img src="src/main/resources/static/common/images/Kafka_default_mode_diagram.png" alt="Kafka default mode diagram">
 
@@ -130,14 +130,14 @@ To use Kafka in PDA, you will need to finish following steps:
 
 1. Start a Kafka server
 2. Set Kafka host and consumer group ID in application.properties file.
-3. Start PDA and go to parasoft queue configuration section in demoAdmin page. Change **MQ Type** to Kafka, Click **Kafka configuration details** link then you can click Test Connection to verify the connection with Kafka.
+3. Start PDA and go to parasoft queue configuration section in PDA Demo Administration page. Change **MQ Type** to Kafka, Click **Kafka configuration details** link then you can click Test Connection to verify the connection with Kafka.
 4. If you successfully connect to Kafka, click save button to save configuration.
 
 If Kafka server is down when PDA is using Kafka mode, there will be a warning sign on settings button. Please check your Kafka server when the warning sign appear;
 
 ### Using virtual asset
-To use Kafka listener with virtual asset, you can change Inventory service request topic
-to a customized request topic name. The virtual asset deployment should be configured to listen to the customized request topic and produce to the default response topic.
+To use Kafka with virtual asset, you can change Inventory service request topic
+to a customized request topic name. The virtual asset deployment should be configured to listen to the customized request topic and produce messages to the default response topic.
 
 <img src="src/main/resources/static/common/images/Kafka_virtual_asset_mode_diagram.png" alt="Kafka virtual asset mode diagram">
 
