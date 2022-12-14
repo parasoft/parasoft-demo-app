@@ -209,7 +209,7 @@
                             </div>
                         </div>
 
-                        <div class="section_container">
+                        <div id="parasoftQueueConfiguration" class="section_container">
                             <div class="section_title">
                                 <span class="align-to-icon" translate="PARASOFT_QUEUE_CONFIGURATION"></span>
                             </div>
@@ -237,7 +237,7 @@
                                         <span ng-if="options.mqType === 'ACTIVE_MQ'" translate="JMS_CONFIGURATION_DETAILS"></span>
                                         <span ng-if="options.mqType === 'KAFKA'" translate="KAFKA_CONFIGURATION_DETAILS"></span>
                                     </a>
-                                    <span ng-if="options.mqType === 'KAFKA' && demo.displayKafkaError === 'true'">
+                                    <span ng-if="options.mqType === 'KAFKA' && displayKafkaError === 'true'">
                                         ( <i class="fa fa-exclamation-circle error_icon" aria-hidden="true"></i>
                                         <span translate="INVALID_KAFKA_SERVER_URL"></span> )
                                     </span>
@@ -263,6 +263,11 @@
                                                     </tr>
                                                     </tbody>
                                                 </table>
+                                                <div class="test_connection_kafka_service" ng-if="options.mqType === 'KAFKA'">
+                                                        <button id="test_connection_kafka_service_button" class="btn btn-default industry_button" translate="TEST_CONNECT"
+                                                                  ng-disabled="demo.isTestingKafkaBrokerUrl" ng-click="demo.validateKafkaBrokerUrl()"></button>
+                                                </div>
+                                                <span ng-show="demo.isTestingKafkaBrokerUrl" class="testing_connection_kafka_service"  translate={{'TESTING'|translate}}></span>
                                             </div>
                                         </div>
                                     </div>

@@ -35,7 +35,6 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
     var databaseResetFlag = localStorage.getItem("databaseResetStatus");
     connectAndSubscribeMQ(CURRENT_ROLE, $http, $rootScope, $filter, null, null, graphQLService);
 
-    demo.displayKafkaError = localStorage.getItem("displayKafkaError");
     demo.GENERAL = "active";
     //Get regions
     getAllRegions();
@@ -291,6 +290,23 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
         }
     }
 
+    demo.validateKafkaBrokerUrl = function () {
+        demo.isTestingKafkaBrokerUrl = true;
+        $http({
+            method: 'GET',
+            url: '/v1/demoAdmin/kafkaBrokerUrlValidation'
+        }).then(function success() {
+            localStorage.setItem("displayKafkaError", "false");
+            toastr.success($filter('translate')('CONNECT_KAFKA_BROKER_SUCCESS'));
+        }, function error() {
+            localStorage.setItem("displayKafkaError", "true");
+            toastrService().error($filter('translate')('INVALID_KAFKA_SERVER_URL'));
+        }).finally(function () {
+            demo.isTestingKafkaBrokerUrl = false;
+            $rootScope.displayKafkaError = localStorage.getItem("displayKafkaError");
+        });
+    }
+
     demo.validateVirtualizeServerUrl = function(url){
         demo.clearVirtualizeServerUrlTestMessage();
         demo.isVirtualizeServerUrlTesting = true;
@@ -456,7 +472,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
             localStorage.setItem("status", "false");
             toastrService().error($filter('translate')('SAVING_FAILS') + '<br/>' + errorMessage);
         }).finally(function() {
-            demo.displayKafkaError = localStorage.getItem("displayKafkaError");
+            $rootScope.displayKafkaError = localStorage.getItem("displayKafkaError");
         });
     };
 
