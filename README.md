@@ -76,9 +76,15 @@ Parasoft Demo Application exposes port 9001 for the user to connect to the HSQLD
 | Username | `SA`                                                |
 | Password | `pass`                                              |
 
-## Using Parasoft JMS Proxy and Virtual Asset
+## Using Parasoft JMS Proxy and Virtual Asset with message queue
 There are two main services for order management in PDA, **order service** and **inventory service**. After an order is submitted, order service sends
-a request through messaging queue to check and decrease the inventory. After the operation is done, inventory service sends a response through messaging queue which includes the information of the operation result.
+a request through message queue to check and decrease the inventory. After the operation is done, inventory service sends a response through message queue which includes the information of the operation result.
+
+### Configuration
+PDA uses two default queues/topics to support messaging between **order service** and **inventory service**.
+The configuration for queues/topics can be changed or reset to default on PDA Demo Administration page.
+
+<img src="src/main/resources/static/common/images/mq_default_mode_diagram.png" alt="mq default mode diagram">
 
 **Configuration details for embedded ActiveMQ server**
 
@@ -92,11 +98,14 @@ a request through messaging queue to check and decrease the inventory. After the
 | Inventory service request queue   | `inventory.request`                                      |
 | Inventory service response queue  | `inventory.response`                                     |
 
+**Configuration details for external Kafka server (default)**
 
-PDA uses two default queues to support messaging between **order service** and **inventory service**.
-The configuration for queues can be changed or reset to default on PDA Demo Administration page.
+|    Option   |             Value              |
+|-------------|--------------------------------|
+| Broker URL  |       `localhost:9092`         |
+| Group ID    |       `inventory-operation`    |
 
-<img src="src/main/resources/static/common/images/mq_default_mode_diagram.png" alt="mq default mode diagram">
+This configuration can be changed in **application.properties** file.
 
 ### Using JMS Proxy
 To use the queueing system with JMS proxy, you can change **Destination queue** and **Reply to queue** to customized queue names.
@@ -105,11 +114,24 @@ The **Server Connection** in message proxy should be configured with the two def
 
 <img src="src/main/resources/static/common/images/mq_proxy_mode_diagram.png" alt="mq proxy mode diagram">
 
-### Using virtual asset
-To use the queueing system with virtual asset, you can change **Destination queue** to a customized destination queue name.
+### Using virtual asset with JMS
+To use the queueing system with virtual asset, you can change **Inventory service request queue** to a customized destination queue name.
 The virtual asset deployment should be configured to listen to the customized destination queue and reply to the default response queue.
 
 <img src="src/main/resources/static/common/images/mq_virtual_asset_mode_diagram.png" alt="mq virtual asset mode diagram">
+
+### Using virtual asset with Kafka
+To use Kafka with virtual asset, you can change **Inventory service request topic**
+to a customized request topic name. The virtual asset deployment should be configured to listen to the customized request topic and produce messages to the default response topic.
+
+<img src="src/main/resources/static/common/images/Kafka_virtual_asset_mode_diagram.png" alt="Kafka virtual asset mode diagram">
+
+### Using external Kafka server with PDA
+
+1. Start a Kafka server.
+2. Set Kafka broker URL and consumer group ID in **application.properties** file.
+3. Start PDA and change MQ type to Kafka in **PARASOFT QUEUE CONFIGURATION** section of PDA Demo Administration page.
+4. To test connection with Kafka server, either use **Test Connection** button in **Kafka configuration details** link or save changes in PDA Demo Administration page.
 
 ## Using Parasoft JDBC Proxy
 1. Find the **ParasoftJDBCDriver.jar** in **{SOAtest & Virtualize installation directory}/{version}/proxies**.
