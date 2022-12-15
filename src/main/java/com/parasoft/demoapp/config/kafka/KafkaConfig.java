@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.*;
+import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
@@ -79,9 +80,11 @@ public class KafkaConfig {
 
     @Bean
     public ConsumerFactory<String, InventoryOperationRequestMessageDTO> operationRequestConsumerFactory() {
+        ErrorHandlingDeserializer<InventoryOperationRequestMessageDTO> errorHandlingDeserializer
+                = new ErrorHandlingDeserializer<>(new JsonDeserializer<>(InventoryOperationRequestMessageDTO.class));
         return new DefaultKafkaConsumerFactory<>(consumerConfigs(),
                 new StringDeserializer(),
-                new JsonDeserializer<>(InventoryOperationRequestMessageDTO.class));
+                errorHandlingDeserializer);
     }
 
     @Bean
@@ -91,9 +94,11 @@ public class KafkaConfig {
 
     @Bean
     public ConsumerFactory<String, InventoryOperationResultMessageDTO> operationResultConsumerFactory() {
+        ErrorHandlingDeserializer<InventoryOperationResultMessageDTO> errorHandlingDeserializer
+                = new ErrorHandlingDeserializer<>(new JsonDeserializer<>(InventoryOperationResultMessageDTO.class));
         return new DefaultKafkaConsumerFactory<>(consumerConfigs(),
                 new StringDeserializer(),
-                new JsonDeserializer<>(InventoryOperationResultMessageDTO.class));
+                errorHandlingDeserializer);
     }
 
     @Bean
