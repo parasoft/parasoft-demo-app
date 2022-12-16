@@ -2,6 +2,7 @@ package com.parasoft.demoapp.defaultdata.global;
 
 import com.parasoft.demoapp.config.activemq.ActiveMQConfig;
 import com.parasoft.demoapp.config.kafka.KafkaConfig;
+import com.parasoft.demoapp.config.rabbitmq.RabbitMQConfig;
 import com.parasoft.demoapp.model.global.preferences.MqType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,6 +55,8 @@ public class GlobalPreferencesCreatorSpringTest {
         assertEquals(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE, currentGlobalPreferences.getOrderServiceReplyToQueue());
         assertEquals(KafkaConfig.DEFAULT_ORDER_SERVICE_REQUEST_TOPIC, currentGlobalPreferences.getOrderServiceRequestTopic());
         assertEquals(KafkaConfig.DEFAULT_ORDER_SERVICE_RESPONSE_TOPIC, currentGlobalPreferences.getOrderServiceReplyToQueue());
+        assertEquals(RabbitMQConfig.DEFAULT_ORDER_SERVICE_REQUEST_QUEUE, currentGlobalPreferences.getOrderServiceRequestQueue());
+        assertEquals(RabbitMQConfig.DEFAULT_ORDER_SERVICE_RESPONSE_QUEUE, currentGlobalPreferences.getOrderServiceResponseQueue());
     }
 
 }
