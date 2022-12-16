@@ -428,6 +428,10 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
         } else if (data.mqType === 'KAFKA') {
             data.orderServiceSendTo = data.inventoryServiceRequestTopic;
             data.orderServiceListenOn = data.inventoryServiceResponseTopic;
+        } else if (data.mqType === 'RABBITMQ') {
+            // TODO
+            data.orderServiceSendTo = "todo";
+            data.orderServiceListenOn = "todo";
         }
         $http({
             method: 'PUT',
