@@ -128,9 +128,9 @@ to a customized request topic name. The virtual asset deployment should be confi
 
 ### Using external Kafka server with PDA
 
-1. Start a Kafka server.
+1. Download, install and start a Kafka server (0.10.0.0 or later) using default settings.
 2. Set Kafka broker URL and consumer group ID in **application.properties** file.
-3. Start PDA and change MQ type to Kafka in **PARASOFT QUEUE CONFIGURATION** section of PDA Demo Administration page.
+3. Start PDA and change queue type to Kafka in **PARASOFT QUEUE CONFIGURATION** section of PDA Demo Administration page.
 4. To test connection with Kafka server, either use **Test Connection** button in **Kafka configuration details** link or save changes in PDA Demo Administration page.
 
 ## Using Parasoft JDBC Proxy
