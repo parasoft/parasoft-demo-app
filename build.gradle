@@ -70,6 +70,7 @@ dependencies {
 	}
 	implementation 'org.springframework.kafka:spring-kafka:2.9.1'
 	implementation 'org.apache.activemq:activemq-spring'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
 	implementation 'com.google.code.gson:gson'
 
 	implementation 'org.springdoc:springdoc-openapi-webmvc-core:1.6.13'
