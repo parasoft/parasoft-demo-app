@@ -429,9 +429,8 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
             data.orderServiceSendTo = data.inventoryServiceRequestTopic;
             data.orderServiceListenOn = data.inventoryServiceResponseTopic;
         } else if (data.mqType === 'RABBIT_MQ') {
-            // TODO
-            data.orderServiceSendTo = "todo";
-            data.orderServiceListenOn = "todo";
+            data.orderServiceSendTo = data.inventoryServiceRequestQueue;
+            data.orderServiceListenOn = data.inventoryServiceResponseQueue;
         }
         $http({
             method: 'PUT',
@@ -1342,6 +1341,8 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
         options.orderServiceReplyToQueue = data.activeMqConfig.orderServiceListenOn;
         options.inventoryServiceRequestTopic = data.kafkaConfig.orderServiceSendTo;
         options.inventoryServiceResponseTopic = data.kafkaConfig.orderServiceListenOn;
+        options.inventoryServiceRequestQueue = data.rabbitMqConfig.orderServiceSendTo;
+        options.inventoryServiceResponseQueue = data.rabbitMqConfig.orderServiceListenOn;
 
         options.webServiceMode = data.webServiceMode;
         options.graphQLEndpoint = data.graphQLEndpoint;
