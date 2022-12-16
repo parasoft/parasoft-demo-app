@@ -101,6 +101,14 @@ public class GlobalPreferencesEntity {
     @Column(name = "order_service_response_topic")
     private String orderServiceResponseTopic;
 
+    @Setter
+    @Column(name = "order_service_request_queue")
+    private String orderServiceRequestQueue;
+
+    @Setter
+    @Column(name = "order_service_response_queue")
+    private String orderServiceResponseQueue;
+
     public GlobalPreferencesEntity(DataAccessMode dataAccessMode, String soapEndpoint,
                                    Set<RestEndpointEntity> restEndpoints,
                                    IndustryType industryType, WebServiceMode webServiceMode,
@@ -112,7 +120,9 @@ public class GlobalPreferencesEntity {
                                    String orderServiceDestinationQueue,
                                    String orderServiceReplyToQueue,
                                    String orderServiceRequestTopic,
-                                   String orderServiceResponseTopic) {
+                                   String orderServiceResponseTopic,
+                                   String orderServiceRequestQueue,
+                                   String orderServiceResponseQueue) {
         this.dataAccessMode = dataAccessMode;
         this.soapEndPoint = soapEndpoint;
         this.restEndPoints = restEndpoints;
@@ -130,5 +140,7 @@ public class GlobalPreferencesEntity {
         this.orderServiceReplyToQueue = orderServiceReplyToQueue;
         this.orderServiceRequestTopic = orderServiceRequestTopic;
         this.orderServiceResponseTopic = orderServiceResponseTopic;
+        this.orderServiceRequestQueue = orderServiceRequestQueue;
+        this.orderServiceResponseQueue = orderServiceResponseQueue;
     }
 }

@@ -104,7 +104,9 @@ public class GlobalPreferencesService {
                                                            String orderServiceDestinationQueue,
                                                            String orderServiceReplyToQueue,
                                                            String orderServiceRequestTopic,
-                                                           String orderServiceResponseTopic) throws ParameterException {
+                                                           String orderServiceResponseTopic,
+                                                           String orderServiceRequestQueue,
+                                                           String orderServiceResponseQueue) throws ParameterException {
 
         validateIndustry(industryType);
         ParameterValidator.requireNonNull(advertisingEnabled, GlobalPreferencesMessages.ADVERTISING_ENABLED_CANNOT_BE_NULL);
@@ -130,7 +132,9 @@ public class GlobalPreferencesService {
                                                             orderServiceDestinationQueue,
                                                             orderServiceReplyToQueue,
                                                             orderServiceRequestTopic,
-                                                            orderServiceResponseTopic);
+                                                            orderServiceResponseTopic,
+                                                            orderServiceRequestQueue,
+                                                            orderServiceResponseQueue);
 
         for(DemoBugEntity demoBug : demoBugs){
             demoBug.setGlobalPreferences(newGlobalPreferences);

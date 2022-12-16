@@ -38,6 +38,8 @@ public class GlobalPreferencesResponseDTO {
 
     private MqConfigDTO kafkaConfig = new MqConfigDTO();
 
+    private MqConfigDTO rabbitMqConfig = new MqConfigDTO();
+
     public GlobalPreferencesResponseDTO(GlobalPreferencesEntity globalPreferencesEntity) {
         this.setIndustryType(globalPreferencesEntity.getIndustryType());
         this.setWebServiceMode(globalPreferencesEntity.getWebServiceMode());
@@ -54,5 +56,7 @@ public class GlobalPreferencesResponseDTO {
         this.getActiveMqConfig().setOrderServiceListenOn(globalPreferencesEntity.getOrderServiceReplyToQueue());
         this.getKafkaConfig().setOrderServiceSendTo(globalPreferencesEntity.getOrderServiceRequestTopic());
         this.getKafkaConfig().setOrderServiceListenOn(globalPreferencesEntity.getOrderServiceResponseTopic());
+        this.getRabbitMqConfig().setOrderServiceSendTo(globalPreferencesEntity.getOrderServiceRequestQueue());
+        this.getRabbitMqConfig().setOrderServiceListenOn(globalPreferencesEntity.getOrderServiceResponseQueue());
     }
 }
