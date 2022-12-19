@@ -1419,6 +1419,18 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
         });
     }
 
+    options.resetOrderServiceRequestQueue = function(){
+        resetValuesTemplate(function(defaultOptions){
+            options.inventoryServiceRequestQueue = defaultOptions.rabbitMqConfig.orderServiceSendTo;
+        });
+    }
+
+    options.resetOrderServiceResponseQueue = function(){
+        resetValuesTemplate(function(defaultOptions){
+            options.inventoryServiceResponseQueue = defaultOptions.rabbitMqConfig.orderServiceListenOn;
+        });
+    }
+
     options.resetVirtualizeServerUrl = function(){
         resetValuesTemplate(function(defaultOptions){
             options.parasoftVirtualizeServerUrl = defaultOptions.parasoftVirtualizeServerUrl;
