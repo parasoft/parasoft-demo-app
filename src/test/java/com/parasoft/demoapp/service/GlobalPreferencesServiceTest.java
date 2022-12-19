@@ -543,6 +543,89 @@ public class GlobalPreferencesServiceTest {
 		assertEquals("response.topic", result.getOrderServiceResponseTopic());
 	}
 
+    /**
+     * Test for updateGlobalPreferences(GlobalPreferencesDTO)
+     *
+     * @see com.parasoft.demoapp.service.GlobalPreferencesService#updateGlobalPreferences(GlobalPreferencesDTO)
+     */
+    @Test
+    public void testUpdateGlobalPreferences_normal_with_rabbitmq() throws Throwable {
+        // Given
+        List<GlobalPreferencesEntity> findAllResult = new ArrayList<>();
+        GlobalPreferencesEntity globalPreferences = new GlobalPreferencesEntity();
+        findAllResult.add(globalPreferences);
+        when(globalPreferencesRepository.findAll()).thenReturn(findAllResult);
+        doNothing().when(inventoryRequestTopicListener).refreshDestination(any());
+        doNothing().when(inventoryResponseTopicListener).refreshDestination(any());
+        doNothing().when(underTest).validateKafkaBrokerUrl();
+
+        doNothing().when(restEndpointService).removeAllEndpoints();
+        when(globalPreferencesRepository.save(any(GlobalPreferencesEntity.class))).thenReturn(globalPreferences);
+
+        // When
+        String categoriesRestEndpointUrl = "http://localhost:8080/v1/assets/categories/";
+        String itemsRestEndpointUrl = "http://localhost:8080/v1/assets/items/";
+        String cartItemsRestEndpointUrl = "http://localhost:8080/v1/cartItems/";
+        String ordersRestEndpointUrl = "http://localhost:8080/v1/orders/";
+        String locationsRestEndpointUrl = "http://localhost:8080/v1/locations/";
+        GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
+        globalPreferencesDto.setIndustryType(IndustryType.AEROSPACE);
+        globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
+        globalPreferencesDto.setCategoriesRestEndpoint(categoriesRestEndpointUrl);
+        globalPreferencesDto.setItemsRestEndpoint(itemsRestEndpointUrl);
+        globalPreferencesDto.setCartItemsRestEndpoint(cartItemsRestEndpointUrl);
+        globalPreferencesDto.setOrdersRestEndpoint(ordersRestEndpointUrl);
+        globalPreferencesDto.setLocationsRestEndpoint(locationsRestEndpointUrl);
+        globalPreferencesDto.setAdvertisingEnabled(false);
+        globalPreferencesDto.setMqType(MqType.RABBIT_MQ);
+        globalPreferencesDto.setOrderServiceSendTo("request.queue");
+        globalPreferencesDto.setOrderServiceListenOn("response.queue");
+
+        GlobalPreferencesEntity result = underTest.updateGlobalPreferences(globalPreferencesDto);
+
+        // Then
+        assertNotNull(result);
+        assertEquals(IndustryType.AEROSPACE, IndustryRoutingDataSource.currentIndustry);
+        assertEquals(IndustryType.AEROSPACE, globalPreferences.getIndustryType());
+        assertEquals(5, globalPreferences.getRestEndPoints().size());
+
+
+        Map<String, RestEndpointEntity> endpoints = new HashMap<>(); // Map<url,RestEndpointEntity>
+        for (RestEndpointEntity endpoint : globalPreferences.getRestEndPoints()) {
+            endpoints.put(endpoint.getUrl(), endpoint);
+        }
+        assertTrue(endpoints.containsKey(categoriesRestEndpointUrl));
+        RestEndpointEntity categoriesRestEndpoint = endpoints.get(categoriesRestEndpointUrl);
+        assertEquals(GlobalPreferencesDefaultSettingsService.CATEGORIES_ENDPOINT_ID, categoriesRestEndpoint.getRouteId());
+        assertEquals(GlobalPreferencesDefaultSettingsService.CATEGORIES_ENDPOINT_PATH, categoriesRestEndpoint.getPath());
+
+        assertTrue(endpoints.containsKey(itemsRestEndpointUrl));
+        RestEndpointEntity itemsRestEndpoint = endpoints.get(itemsRestEndpointUrl);
+        assertEquals(GlobalPreferencesDefaultSettingsService.ITEMS_ENDPOINT_ID, itemsRestEndpoint.getRouteId());
+        assertEquals(GlobalPreferencesDefaultSettingsService.ITEMS_ENDPOINT_PATH, itemsRestEndpoint.getPath());
+
+        assertTrue(endpoints.containsKey(cartItemsRestEndpointUrl));
+        RestEndpointEntity cartItemsRestEndpoint = endpoints.get(cartItemsRestEndpointUrl);
+        assertEquals(GlobalPreferencesDefaultSettingsService.CART_ENDPOINT_ID, cartItemsRestEndpoint.getRouteId());
+        assertEquals(GlobalPreferencesDefaultSettingsService.CART_ENDPOINT_PATH, cartItemsRestEndpoint.getPath());
+
+        assertTrue(endpoints.containsKey(ordersRestEndpointUrl));
+        RestEndpointEntity ordersRestEndpoint = endpoints.get(ordersRestEndpointUrl);
+        assertEquals(GlobalPreferencesDefaultSettingsService.ORDERS_ENDPOINT_ID, ordersRestEndpoint.getRouteId());
+        assertEquals(GlobalPreferencesDefaultSettingsService.ORDERS_ENDPOINT_PATH, ordersRestEndpoint.getPath());
+
+        assertTrue(endpoints.containsKey(locationsRestEndpointUrl));
+        RestEndpointEntity locationsRestEndpoint = endpoints.get(locationsRestEndpointUrl);
+        assertEquals(GlobalPreferencesDefaultSettingsService.LOCATIONS_ENDPOINT_ID, locationsRestEndpoint.getRouteId());
+        assertEquals(GlobalPreferencesDefaultSettingsService.LOCATIONS_ENDPOINT_PATH, locationsRestEndpoint.getPath());
+
+        assertEquals(MqType.RABBIT_MQ, result.getMqType());
+        assertEquals(globalPreferences.getOrderServiceDestinationQueue(), result.getOrderServiceDestinationQueue());
+        assertEquals(globalPreferences.getOrderServiceReplyToQueue(), result.getOrderServiceReplyToQueue());
+        assertEquals("request.queue", result.getOrderServiceRequestTopic());
+        assertEquals("response.queue", result.getOrderServiceResponseTopic());
+    }
+
 	/**
 	 * Test for updateGlobalPreferences(GlobalPreferencesDTO)
 	 *

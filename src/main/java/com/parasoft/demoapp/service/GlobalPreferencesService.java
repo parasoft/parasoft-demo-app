@@ -272,6 +272,9 @@ public class GlobalPreferencesService {
             KafkaConfig.setOrderServiceSendToTopic(currentPreferences.getOrderServiceRequestTopic());
             inventoryRequestTopicListener.refreshDestination(KafkaConfig.DEFAULT_ORDER_SERVICE_REQUEST_TOPIC);
             inventoryResponseTopicListener.refreshDestination(currentPreferences.getOrderServiceResponseTopic());
+        } else if(MqType.RABBIT_MQ == currentPreferences.getMqType()) {
+            MQConfig.currentMQType = MqType.RABBIT_MQ;
+            // TODO
         } else {
             throw new UnsupportedOperationException("Unsupported MQ type: " + currentPreferences.getMqType());
         }
@@ -429,6 +432,9 @@ public class GlobalPreferencesService {
         } else if (globalPreferencesDto.getMqType() == MqType.KAFKA) {
             currentPreferences.setOrderServiceRequestTopic(orderServiceSendTo);
             currentPreferences.setOrderServiceResponseTopic(orderServiceListenOn);
+        } else if (globalPreferencesDto.getMqType() == MqType.RABBIT_MQ) {
+            currentPreferences.setOrderServiceRequestQueue(orderServiceSendTo);
+            currentPreferences.setOrderServiceResponseQueue(orderServiceListenOn);
         }
     }
 
@@ -443,6 +449,10 @@ public class GlobalPreferencesService {
             mqStatusChanged = !(globalPreferencesDto.getMqType() == currentPreferences.getMqType()) ||
                     !(orderServiceSendTo.equals(currentPreferences.getOrderServiceRequestTopic())) ||
                     !(orderServiceListenOn.equals(currentPreferences.getOrderServiceResponseTopic()));
+        } else if (globalPreferencesDto.getMqType() == MqType.RABBIT_MQ) {
+            mqStatusChanged = !(globalPreferencesDto.getMqType() == currentPreferences.getMqType()) ||
+                    !(orderServiceSendTo.equals(currentPreferences.getOrderServiceRequestQueue())) ||
+                    !(orderServiceListenOn.equals(currentPreferences.getOrderServiceResponseQueue()));
         }
     }
 
