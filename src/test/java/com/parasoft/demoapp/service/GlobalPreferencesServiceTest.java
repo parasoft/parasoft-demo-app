@@ -458,6 +458,8 @@ public class GlobalPreferencesServiceTest {
 		assertEquals("test.inventory.response", result.getOrderServiceReplyToQueue());
 		assertEquals(globalPreferences.getOrderServiceRequestTopic(), result.getOrderServiceRequestTopic());
 		assertEquals(globalPreferences.getOrderServiceResponseTopic(), result.getOrderServiceResponseTopic());
+        assertEquals(globalPreferences.getOrderServiceRequestQueue(), result.getOrderServiceRequestQueue());
+        assertEquals(globalPreferences.getOrderServiceResponseQueue(), result.getOrderServiceResponseQueue());
 	}
 
 	/**
@@ -539,6 +541,8 @@ public class GlobalPreferencesServiceTest {
 		assertEquals(MqType.KAFKA, result.getMqType());
 		assertEquals(globalPreferences.getOrderServiceDestinationQueue(), result.getOrderServiceDestinationQueue());
 		assertEquals(globalPreferences.getOrderServiceReplyToQueue(), result.getOrderServiceReplyToQueue());
+        assertEquals(globalPreferences.getOrderServiceRequestQueue(), result.getOrderServiceRequestQueue());
+        assertEquals(globalPreferences.getOrderServiceResponseQueue(), result.getOrderServiceResponseQueue());
 		assertEquals("request.topic", result.getOrderServiceRequestTopic());
 		assertEquals("response.topic", result.getOrderServiceResponseTopic());
 	}
@@ -622,8 +626,10 @@ public class GlobalPreferencesServiceTest {
         assertEquals(MqType.RABBIT_MQ, result.getMqType());
         assertEquals(globalPreferences.getOrderServiceDestinationQueue(), result.getOrderServiceDestinationQueue());
         assertEquals(globalPreferences.getOrderServiceReplyToQueue(), result.getOrderServiceReplyToQueue());
-        assertEquals("request.queue", result.getOrderServiceRequestTopic());
-        assertEquals("response.queue", result.getOrderServiceResponseTopic());
+        assertEquals(globalPreferences.getOrderServiceRequestTopic(), result.getOrderServiceRequestTopic());
+        assertEquals(globalPreferences.getOrderServiceResponseTopic(), result.getOrderServiceResponseTopic());
+        assertEquals("request.queue", result.getOrderServiceRequestQueue());
+        assertEquals("response.queue", result.getOrderServiceResponseQueue());
     }
 
 	/**
