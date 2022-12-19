@@ -15,6 +15,13 @@ public class RabbitMQConfig {
 
     public static final String DEFAULT_ORDER_SERVICE_REQUEST_QUEUE = "inventory.request";
     public static final String DEFAULT_ORDER_SERVICE_RESPONSE_QUEUE = "inventory.response";
+    public static final String INVENTORY_DIRECT_EXCHANGE = "inventory.direct";
+    public static final String INVENTORY_QUEUE_REQUEST_ROUTING_KEY = "inventory.queue.request";
+    public static final String INVENTORY_QUEUE_RESPONSE_ROUTING_KEY = "inventory.queue.response";
+
+    private static final Queue orderServiceSendToQueue = new Queue(RabbitMQConfig.DEFAULT_ORDER_SERVICE_REQUEST_QUEUE);
+    private static final Queue inventoryServiceSendToQueue = new Queue(RabbitMQConfig.DEFAULT_ORDER_SERVICE_RESPONSE_QUEUE);
+    private static final DirectExchange inventoryDirectExchange = new DirectExchange(RabbitMQConfig.INVENTORY_DIRECT_EXCHANGE);
 
     @Value("${spring.rabbitmq.host}")
     private String rabbitMqHost;
@@ -36,27 +43,12 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue inventoryServiceRequestQueue() {
-        return new Queue(DEFAULT_ORDER_SERVICE_REQUEST_QUEUE);
-    }
-
-    @Bean
-    public Queue inventoryServiceResponseQueue() {
-        return new Queue(DEFAULT_ORDER_SERVICE_RESPONSE_QUEUE);
-    }
-
-    @Bean
-    public DirectExchange exchange() {
-        return new DirectExchange("inventory.exchange");
-    }
-
-    @Bean
     public Binding inventoryServiceRequestBindingExchange() {
-        return BindingBuilder.bind(inventoryServiceRequestQueue()).to(exchange()).with("request");
+        return BindingBuilder.bind(orderServiceSendToQueue).to(inventoryDirectExchange).with(RabbitMQConfig.INVENTORY_QUEUE_REQUEST_ROUTING_KEY);
     }
 
     @Bean
     public Binding inventoryServiceResponseBindingExchange() {
-        return BindingBuilder.bind(inventoryServiceResponseQueue()).to(exchange()).with("response");
+        return BindingBuilder.bind(inventoryServiceSendToQueue).to(inventoryDirectExchange).with(RabbitMQConfig.INVENTORY_QUEUE_RESPONSE_ROUTING_KEY);
     }
 }
