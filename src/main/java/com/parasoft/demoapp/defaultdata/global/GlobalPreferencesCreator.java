@@ -57,10 +57,12 @@ public class GlobalPreferencesCreator extends AbstractDataCreator {
                             defaultPreferences.getParasoftVirtualizeServerPath(),
                             defaultPreferences.getParasoftVirtualizeGroupId(),
                             defaultPreferences.getMqType(),
-                            defaultPreferences.getOrderServiceDestinationQueue(),
-                            defaultPreferences.getOrderServiceReplyToQueue(),
-                            defaultPreferences.getOrderServiceRequestTopic(),
-                            defaultPreferences.getOrderServiceResponseTopic());
+                            defaultPreferences.getOrderServiceActiveMqRequestQueue(),
+                            defaultPreferences.getOrderServiceActiveMqResponseQueue(),
+                            defaultPreferences.getOrderServiceKafkaRequestTopic(),
+                            defaultPreferences.getOrderServiceKafkaResponseTopic(),
+                            defaultPreferences.getOrderServiceRabbitMqRequestQueue(),
+                            defaultPreferences.getOrderServiceRabbitMqResponseQueue());
 
             for(RestEndpointEntity restEndpointEntity : restEndpointService.getAllEndpoints()){
                 restEndpointEntity.setGlobalPreferences(defaultPreferences);

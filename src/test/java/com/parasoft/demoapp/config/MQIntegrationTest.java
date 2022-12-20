@@ -162,8 +162,8 @@ public class MQIntegrationTest {
         globalPreferencesDto.setParasoftVirtualizeServerPath(globalPreferencesDefaultSettingsService.defaultParasoftVirtualizeServerPath());
         globalPreferencesDto.setParasoftVirtualizeGroupId(globalPreferencesDefaultSettingsService.defaultParasoftVirtualizeGroupId());
         globalPreferencesDto.setMqType(globalPreferencesDefaultSettingsService.defaultMqType());
-        globalPreferencesDto.setOrderServiceSendTo(globalPreferencesDefaultSettingsService.defaultOrderServiceRequestTopic());
-        globalPreferencesDto.setOrderServiceListenOn(globalPreferencesDefaultSettingsService.defaultOrderServiceResponseTopic());
+        globalPreferencesDto.setOrderServiceSendTo(globalPreferencesDefaultSettingsService.defaultOrderServiceActiveMqRequestQueue());
+        globalPreferencesDto.setOrderServiceListenOn(globalPreferencesDefaultSettingsService.defaultOrderServiceActiveMqResponseQueue());
         return globalPreferencesDto;
     }
 }

@@ -105,10 +105,12 @@ public class GlobalPreferencesService {
                                                            String parasoftVirtualizeServerUrl, String parasoftVirtualizeServerPath,
                                                            String parasoftVirtualizeGroupId,
                                                            MqType mqType,
-                                                           String orderServiceDestinationQueue,
-                                                           String orderServiceReplyToQueue,
-                                                           String orderServiceRequestTopic,
-                                                           String orderServiceResponseTopic) throws ParameterException {
+                                                           String orderServiceActiveMqRequestQueue,
+                                                           String orderServiceActiveMqResponseQueue,
+                                                           String orderServiceKafkaRequestTopic,
+                                                           String orderServiceKafkaResponseTopic,
+                                                           String orderServiceRabbitMqRequestQueue,
+                                                           String orderServiceRabbitMqResponseQueue) throws ParameterException {
 
         validateIndustry(industryType);
         ParameterValidator.requireNonNull(advertisingEnabled, GlobalPreferencesMessages.ADVERTISING_ENABLED_CANNOT_BE_NULL);
@@ -131,10 +133,12 @@ public class GlobalPreferencesService {
                                                             parasoftVirtualizeServerPath,
                                                             parasoftVirtualizeGroupId,
                                                             mqType,
-                                                            orderServiceDestinationQueue,
-                                                            orderServiceReplyToQueue,
-                                                            orderServiceRequestTopic,
-                                                            orderServiceResponseTopic);
+                                                            orderServiceActiveMqRequestQueue,
+                                                            orderServiceActiveMqResponseQueue,
+                                                            orderServiceKafkaRequestTopic,
+                                                            orderServiceKafkaResponseTopic,
+                                                            orderServiceRabbitMqRequestQueue,
+                                                            orderServiceRabbitMqResponseQueue);
 
         for(DemoBugEntity demoBug : demoBugs){
             demoBug.setGlobalPreferences(newGlobalPreferences);
@@ -264,14 +268,17 @@ public class GlobalPreferencesService {
         stopMQListenersExcept(currentPreferences.getMqType());
         if(MqType.ACTIVE_MQ == currentPreferences.getMqType()) {
             MQConfig.currentMQType = MqType.ACTIVE_MQ;
-            ActiveMQConfig.setOrderServiceSendToQueue(new ActiveMQQueue(currentPreferences.getOrderServiceDestinationQueue()));
-            inventoryResponseQueueListener.refreshDestination(currentPreferences.getOrderServiceReplyToQueue());
+            ActiveMQConfig.setOrderServiceSendToQueue(new ActiveMQQueue(currentPreferences.getOrderServiceActiveMqRequestQueue()));
+            inventoryResponseQueueListener.refreshDestination(currentPreferences.getOrderServiceActiveMqResponseQueue());
             inventoryRequestQueueListener.refreshDestination(ActiveMQConfig.getInventoryServiceListenToQueue());
         } else if(MqType.KAFKA == currentPreferences.getMqType()) {
             MQConfig.currentMQType = MqType.KAFKA;
-            KafkaConfig.setOrderServiceSendToTopic(currentPreferences.getOrderServiceRequestTopic());
+            KafkaConfig.setOrderServiceSendToTopic(currentPreferences.getOrderServiceKafkaRequestTopic());
             inventoryRequestTopicListener.refreshDestination(KafkaConfig.DEFAULT_ORDER_SERVICE_REQUEST_TOPIC);
-            inventoryResponseTopicListener.refreshDestination(currentPreferences.getOrderServiceResponseTopic());
+            inventoryResponseTopicListener.refreshDestination(currentPreferences.getOrderServiceKafkaResponseTopic());
+        } else if(MqType.RABBIT_MQ == currentPreferences.getMqType()) {
+            MQConfig.currentMQType = MqType.RABBIT_MQ;
+            // TODO
         } else {
             throw new UnsupportedOperationException("Unsupported MQ type: " + currentPreferences.getMqType());
         }
@@ -288,18 +295,18 @@ public class GlobalPreferencesService {
         GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
         globalPreferencesDto.setMqType(globalPreferences.getMqType());
         if (globalPreferences.getMqType() == MqType.ACTIVE_MQ) {
-            globalPreferencesDto.setOrderServiceSendTo(globalPreferences.getOrderServiceDestinationQueue());
-            globalPreferencesDto.setOrderServiceListenOn(globalPreferences.getOrderServiceReplyToQueue());
+            globalPreferencesDto.setOrderServiceSendTo(globalPreferences.getOrderServiceActiveMqRequestQueue());
+            globalPreferencesDto.setOrderServiceListenOn(globalPreferences.getOrderServiceActiveMqResponseQueue());
             validateMqConfig(globalPreferencesDto);
             ActiveMQConfig.setOrderServiceSendToQueue(new ActiveMQQueue(
-                    globalPreferences.getOrderServiceDestinationQueue()));
-            ActiveMQConfig.setOrderServiceListenToQueue(globalPreferences.getOrderServiceReplyToQueue());
+                    globalPreferences.getOrderServiceActiveMqRequestQueue()));
+            ActiveMQConfig.setOrderServiceListenToQueue(globalPreferences.getOrderServiceActiveMqResponseQueue());
         } else if (globalPreferences.getMqType() == MqType.KAFKA) {
-            globalPreferencesDto.setOrderServiceSendTo(globalPreferences.getOrderServiceRequestTopic());
-            globalPreferencesDto.setOrderServiceListenOn(globalPreferences.getOrderServiceResponseTopic());
+            globalPreferencesDto.setOrderServiceSendTo(globalPreferences.getOrderServiceKafkaRequestTopic());
+            globalPreferencesDto.setOrderServiceListenOn(globalPreferences.getOrderServiceKafkaResponseTopic());
             validateMqConfig(globalPreferencesDto);
-            KafkaConfig.setOrderServiceSendToTopic(globalPreferences.getOrderServiceRequestTopic());
-            KafkaConfig.setOrderServiceListenToTopic(globalPreferences.getOrderServiceResponseTopic());
+            KafkaConfig.setOrderServiceSendToTopic(globalPreferences.getOrderServiceKafkaRequestTopic());
+            KafkaConfig.setOrderServiceListenToTopic(globalPreferences.getOrderServiceKafkaResponseTopic());
         }
     }
 
@@ -424,11 +431,14 @@ public class GlobalPreferencesService {
         String orderServiceSendTo = globalPreferencesDto.getOrderServiceSendTo();
         String orderServiceListenOn = globalPreferencesDto.getOrderServiceListenOn();
         if (globalPreferencesDto.getMqType() == MqType.ACTIVE_MQ) {
-            currentPreferences.setOrderServiceDestinationQueue(orderServiceSendTo);
-            currentPreferences.setOrderServiceReplyToQueue(orderServiceListenOn);
+            currentPreferences.setOrderServiceActiveMqRequestQueue(orderServiceSendTo);
+            currentPreferences.setOrderServiceActiveMqResponseQueue(orderServiceListenOn);
         } else if (globalPreferencesDto.getMqType() == MqType.KAFKA) {
-            currentPreferences.setOrderServiceRequestTopic(orderServiceSendTo);
-            currentPreferences.setOrderServiceResponseTopic(orderServiceListenOn);
+            currentPreferences.setOrderServiceKafkaRequestTopic(orderServiceSendTo);
+            currentPreferences.setOrderServiceKafkaResponseTopic(orderServiceListenOn);
+        } else if (globalPreferencesDto.getMqType() == MqType.RABBIT_MQ) {
+            currentPreferences.setOrderServiceRabbitMqRequestQueue(orderServiceSendTo);
+            currentPreferences.setOrderServiceRabbitMqResponseQueue(orderServiceListenOn);
         }
     }
 
@@ -437,12 +447,16 @@ public class GlobalPreferencesService {
         String orderServiceListenOn = globalPreferencesDto.getOrderServiceListenOn();
         if (globalPreferencesDto.getMqType() == MqType.ACTIVE_MQ){
             mqStatusChanged = !(globalPreferencesDto.getMqType() == currentPreferences.getMqType()) ||
-                    !(orderServiceSendTo.equals(currentPreferences.getOrderServiceDestinationQueue())) ||
-                    !(orderServiceListenOn.equals(currentPreferences.getOrderServiceReplyToQueue()));
+                    !(orderServiceSendTo.equals(currentPreferences.getOrderServiceActiveMqRequestQueue())) ||
+                    !(orderServiceListenOn.equals(currentPreferences.getOrderServiceActiveMqResponseQueue()));
         } else if (globalPreferencesDto.getMqType() == MqType.KAFKA) {
             mqStatusChanged = !(globalPreferencesDto.getMqType() == currentPreferences.getMqType()) ||
-                    !(orderServiceSendTo.equals(currentPreferences.getOrderServiceRequestTopic())) ||
-                    !(orderServiceListenOn.equals(currentPreferences.getOrderServiceResponseTopic()));
+                    !(orderServiceSendTo.equals(currentPreferences.getOrderServiceKafkaRequestTopic())) ||
+                    !(orderServiceListenOn.equals(currentPreferences.getOrderServiceKafkaResponseTopic()));
+        } else if (globalPreferencesDto.getMqType() == MqType.RABBIT_MQ) {
+            mqStatusChanged = !(globalPreferencesDto.getMqType() == currentPreferences.getMqType()) ||
+                    !(orderServiceSendTo.equals(currentPreferences.getOrderServiceRabbitMqRequestQueue())) ||
+                    !(orderServiceListenOn.equals(currentPreferences.getOrderServiceRabbitMqResponseQueue()));
         }
     }
 

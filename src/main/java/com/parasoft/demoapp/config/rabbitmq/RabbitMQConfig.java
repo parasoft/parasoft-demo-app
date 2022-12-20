@@ -9,14 +9,15 @@ import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import com.parasoft.demoapp.config.MQConfig;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @Getter
 public class RabbitMQConfig {
 
-    public static final String DEFAULT_ORDER_SERVICE_REQUEST_QUEUE = "inventory.request";
-    public static final String DEFAULT_ORDER_SERVICE_RESPONSE_QUEUE = "inventory.response";
+    public static final String DEFAULT_ORDER_SERVICE_REQUEST_QUEUE = MQConfig.INVENTORY_REQUEST;
+    public static final String DEFAULT_ORDER_SERVICE_RESPONSE_QUEUE = MQConfig.INVENTORY_RESPONSE;
     public static final String INVENTORY_DIRECT_EXCHANGE = "inventory.direct";
     public static final String INVENTORY_QUEUE_REQUEST_ROUTING_KEY = "inventory.queue.request";
     public static final String INVENTORY_QUEUE_RESPONSE_ROUTING_KEY = "inventory.queue.response";
