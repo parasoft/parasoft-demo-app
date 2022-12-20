@@ -31,7 +31,7 @@ public class RabbitMQConfig {
     @Value("${spring.rabbitmq.port}")
     private int rabbitMqPort;
     @Value("${spring.rabbitmq.username}")
-    private String user;
+    private String username;
     @Value("${spring.rabbitmq.password}")
     private String password;
 
@@ -40,7 +40,7 @@ public class RabbitMQConfig {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost(rabbitMqHost);
         factory.setPort(rabbitMqPort);
-        factory.setUsername(user);
+        factory.setUsername(username);
         factory.setPassword(password);
         return factory.newConnection();
     }

@@ -551,7 +551,7 @@ public class GlobalPreferencesService {
                 new MQPropertiesResponseDTO.RabbitMQConfigResponse(
                         rabbitMQConfig.getRabbitMqHost(),
                         rabbitMQConfig.getRabbitMqPort(),
-                        rabbitMQConfig.getUser(),
+                        rabbitMQConfig.getUsername(),
                         rabbitMQConfig.getPassword());
 
         return new MQPropertiesResponseDTO(activeMQConfigResponse, kafkaConfigResponse, rabbitMQConfigResponse);
