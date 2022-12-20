@@ -242,6 +242,7 @@
                                        ng-click="options.openConfigurationDetailsModal()">
                                         <span ng-if="options.mqType === 'ACTIVE_MQ'" translate="JMS_CONFIGURATION_DETAILS"></span>
                                         <span ng-if="options.mqType === 'KAFKA'" translate="KAFKA_CONFIGURATION_DETAILS"></span>
+                                        <span ng-if="options.mqType === 'RABBIT_MQ'" translate="RABBIT_MQ_CONFIGURATION_DETAILS"></span>
                                     </a>
                                     <span ng-if="options.mqType === 'KAFKA' && displayKafkaError === 'true'">
                                         ( <i class="fa fa-exclamation-circle error_icon" aria-hidden="true"></i>
@@ -257,6 +258,7 @@
                                                 <div class="modal-title">
                                                     <span ng-if="options.mqType === 'ACTIVE_MQ'">ActiveMQ JMS</span>
                                                     <span ng-if="options.mqType === 'KAFKA'">Kafka</span>
+                                                    <span ng-if="options.mqType === 'RABBIT_MQ'">RabbitMQ</span>
                                                 </div>
                                             </div>
 
