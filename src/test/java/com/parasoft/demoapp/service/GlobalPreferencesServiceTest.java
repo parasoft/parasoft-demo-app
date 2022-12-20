@@ -111,24 +111,24 @@ public class GlobalPreferencesServiceTest {
 		String parasoftVirtualizeServerPath = "/myVirtualDB";
 		String parasoftVirtualizeGroupId = "pda-group";
 		MqType mqType = MqType.ACTIVE_MQ;
-		String orderServiceDestinationQueue = "inventory.request";
-		String orderServiceReplyToQueue = "inventory.response";
-		String orderServiceRequestTopic = "inventory.request";
-		String orderServiceResponseTopic = "inventory.response";
-		String orderServiceRequestQueue = "inventory.request";
-		String orderServiceResponseQueue = "inventory.response";
+		String orderServiceActiveMqRequestQueue = "inventory.request";
+		String orderServiceActiveMqResponseQueue = "inventory.response";
+		String orderServiceKafkaRequestTopic = "inventory.request";
+		String orderServiceKafkaResponseTopic = "inventory.response";
+		String orderServiceRabbitMqRequestQueue = "inventory.request";
+		String orderServiceRabbitMqResponseQueue = "inventory.response";
 
 		GlobalPreferencesEntity saveResult = new GlobalPreferencesEntity(dataAccessMode, soapEndPoint, restEndPoints,
 				industryType, webServiceMode, graphQLEndpoint, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
-				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, mqType, orderServiceDestinationQueue,
-				orderServiceReplyToQueue, orderServiceRequestTopic, orderServiceResponseTopic, orderServiceRequestQueue, orderServiceResponseQueue);
+				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, mqType, orderServiceActiveMqRequestQueue,
+				orderServiceActiveMqResponseQueue, orderServiceKafkaRequestTopic, orderServiceKafkaResponseTopic, orderServiceRabbitMqRequestQueue, orderServiceRabbitMqResponseQueue);
 		doReturn(saveResult).when(globalPreferencesRepository).save((GlobalPreferencesEntity) any());
 
 		// When
 		GlobalPreferencesEntity result = underTest.addNewGlobalPreferences(dataAccessMode, soapEndPoint, restEndPoints,
 				industryType, webServiceMode, graphQLEndpoint, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
-				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, mqType, orderServiceDestinationQueue,
-				orderServiceReplyToQueue, orderServiceRequestTopic, orderServiceResponseTopic, orderServiceRequestQueue, orderServiceResponseQueue);
+				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, mqType, orderServiceActiveMqRequestQueue,
+				orderServiceActiveMqResponseQueue, orderServiceKafkaRequestTopic, orderServiceKafkaResponseTopic, orderServiceRabbitMqRequestQueue, orderServiceRabbitMqResponseQueue);
 
 		// Then
 		assertNotNull(result);
@@ -139,8 +139,8 @@ public class GlobalPreferencesServiceTest {
 		assertEquals(IndustryType.DEFENSE.getValue(), result.getIndustryType().getValue());
 		assertEquals(false, result.getAdvertisingEnabled());
 		assertEquals(mqType, result.getMqType());
-		assertEquals(orderServiceDestinationQueue, result.getOrderServiceDestinationQueue());
-		assertEquals(orderServiceReplyToQueue, result.getOrderServiceReplyToQueue());
+		assertEquals(orderServiceActiveMqRequestQueue, result.getOrderServiceActiveMqRequestQueue());
+		assertEquals(orderServiceActiveMqResponseQueue, result.getOrderServiceActiveMqResponseQueue());
 	}
 
 	/**
@@ -166,24 +166,24 @@ public class GlobalPreferencesServiceTest {
 		String parasoftVirtualizeServerPath = "/myVirtualDB";
 		String parasoftVirtualizeGroupId = "pda-group";
 		MqType mqType = MqType.ACTIVE_MQ;
-		String orderServiceDestinationQueue = "inventory.request";
-		String orderServiceReplyToQueue = "inventory.response";
-		String orderServiceRequestTopic = "inventory.request";
-		String orderServiceResponseTopic = "inventory.response";
-		String orderServiceRequestQueue = "inventory.request";
-		String orderServiceResponseQueue = "inventory.response";
+		String orderServiceActiveMqRequestQueue = "inventory.request";
+		String orderServiceActiveMqResponseQueue = "inventory.response";
+		String orderServiceKafkaRequestTopic = "inventory.request";
+		String orderServiceKafkaResponseTopic = "inventory.response";
+		String orderServiceRabbitMqRequestQueue = "inventory.request";
+		String orderServiceRabbitMqResponseQueue = "inventory.response";
 
 		GlobalPreferencesEntity saveResult = new GlobalPreferencesEntity(dataAccessMode, soapEndPoint, restEndPoints,
 				industryType, webServiceMode, graphQLEndpoint, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
-				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, mqType, orderServiceDestinationQueue,
-				orderServiceReplyToQueue, orderServiceRequestTopic, orderServiceResponseTopic, orderServiceRequestQueue, orderServiceResponseQueue);
+				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, mqType, orderServiceActiveMqRequestQueue,
+				orderServiceActiveMqResponseQueue, orderServiceKafkaRequestTopic, orderServiceKafkaResponseTopic, orderServiceRabbitMqRequestQueue, orderServiceRabbitMqResponseQueue);
 		doReturn(saveResult).when(globalPreferencesRepository).save((GlobalPreferencesEntity) any());
 
 		// When
 		GlobalPreferencesEntity result = underTest.addNewGlobalPreferences(dataAccessMode, soapEndPoint, restEndPoints,
 				industryType, webServiceMode, graphQLEndpoint, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
-				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, mqType, orderServiceDestinationQueue,
-				orderServiceReplyToQueue, orderServiceRequestTopic, orderServiceResponseTopic, orderServiceRequestQueue, orderServiceResponseQueue);
+				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, mqType, orderServiceActiveMqRequestQueue,
+				orderServiceActiveMqResponseQueue, orderServiceKafkaRequestTopic, orderServiceKafkaResponseTopic, orderServiceRabbitMqRequestQueue, orderServiceRabbitMqResponseQueue);
 
 		// Then
 		assertNotNull(result);
@@ -213,24 +213,24 @@ public class GlobalPreferencesServiceTest {
 		String parasoftVirtualizeServerPath = "/myVirtualDB";
 		String parasoftVirtualizeGroupId = "pda-group";
 		MqType mqType = MqType.ACTIVE_MQ;
-		String orderServiceDestinationQueue = "inventory.request";
-		String orderServiceReplyToQueue = "inventory.response";
-		String orderServiceRequestTopic = "inventory.request";
-		String orderServiceResponseTopic = "inventory.response";
-		String orderServiceRequestQueue = "inventory.request";
-		String orderServiceResponseQueue = "inventory.response";
+		String orderServiceActiveMqRequestQueue = "inventory.request";
+		String orderServiceActiveMqResponseQueue = "inventory.response";
+		String orderServiceKafkaRequestTopic = "inventory.request";
+		String orderServiceKafkaResponseTopic = "inventory.response";
+		String orderServiceRabbitMqRequestQueue = "inventory.request";
+		String orderServiceRabbitMqResponseQueue = "inventory.response";
 
 		GlobalPreferencesEntity saveResult = new GlobalPreferencesEntity(dataAccessMode, soapEndPoint, restEndPoints,
 				industryType, webServiceMode, graphQLEndpoint, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
-				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, mqType, orderServiceDestinationQueue,
-				orderServiceReplyToQueue, orderServiceRequestTopic, orderServiceResponseTopic, orderServiceRequestQueue, orderServiceResponseQueue);
+				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, mqType, orderServiceActiveMqRequestQueue,
+				orderServiceActiveMqResponseQueue, orderServiceKafkaRequestTopic, orderServiceKafkaResponseTopic, orderServiceRabbitMqRequestQueue, orderServiceRabbitMqResponseQueue);
 		doReturn(saveResult).when(globalPreferencesRepository).save((GlobalPreferencesEntity) any());
 
 		// When
 		GlobalPreferencesEntity result = underTest.addNewGlobalPreferences(dataAccessMode, soapEndPoint, restEndPoints,
 				industryType, webServiceMode, graphQLEndpoint, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
-				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, mqType, orderServiceDestinationQueue,
-				orderServiceReplyToQueue, orderServiceRequestTopic, orderServiceResponseTopic, orderServiceRequestQueue, orderServiceResponseQueue);
+				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, mqType, orderServiceActiveMqRequestQueue,
+				orderServiceActiveMqResponseQueue, orderServiceKafkaRequestTopic, orderServiceKafkaResponseTopic, orderServiceRabbitMqRequestQueue, orderServiceRabbitMqResponseQueue);
 
 		// Then
 		assertNotNull(result);
@@ -260,17 +260,17 @@ public class GlobalPreferencesServiceTest {
 		String parasoftVirtualizeServerPath = "/myVirtualDB";
 		String parasoftVirtualizeGroupId = "pda-group";
 		MqType mqType = MqType.ACTIVE_MQ;
-		String orderServiceDestinationQueue = "inventory.request";
-		String orderServiceReplyToQueue = "inventory.response";
-		String orderServiceRequestTopic = "inventory.request";
-		String orderServiceResponseTopic = "inventory.response";
-		String orderServiceRequestQueue = "inventory.request";
-		String orderServiceResponseQueue = "inventory.response";
+		String orderServiceActiveMqRequestQueue = "inventory.request";
+		String orderServiceActiveMqResponseQueue = "inventory.response";
+		String orderServiceKafkaRequestTopic = "inventory.request";
+		String orderServiceKafkaResponseTopic = "inventory.response";
+		String orderServiceRabbitMqRequestQueue = "inventory.request";
+		String orderServiceRabbitMqResponseQueue = "inventory.response";
 
 		GlobalPreferencesEntity saveResult = new GlobalPreferencesEntity(dataAccessMode, soapEndPoint, restEndPoints,
 				industryType, webServiceMode, graphQLEndpoint, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
-				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, mqType, orderServiceDestinationQueue,
-				orderServiceReplyToQueue, orderServiceRequestTopic, orderServiceResponseTopic, orderServiceRequestQueue, orderServiceResponseQueue);
+				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, mqType, orderServiceActiveMqRequestQueue,
+				orderServiceActiveMqResponseQueue, orderServiceKafkaRequestTopic, orderServiceKafkaResponseTopic, orderServiceRabbitMqRequestQueue, orderServiceRabbitMqResponseQueue);
 		doReturn(saveResult).when(globalPreferencesRepository).save((GlobalPreferencesEntity) any());
 
 		// When
@@ -278,8 +278,8 @@ public class GlobalPreferencesServiceTest {
 		try {
 			underTest.addNewGlobalPreferences(dataAccessMode, soapEndPoint, restEndPoints, industryType, webServiceMode, graphQLEndpoint,
 					demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
-					parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, mqType, orderServiceDestinationQueue,
-					orderServiceReplyToQueue, orderServiceRequestTopic, orderServiceResponseTopic, orderServiceRequestQueue, orderServiceResponseQueue);
+					parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, mqType, orderServiceActiveMqRequestQueue,
+					orderServiceActiveMqResponseQueue, orderServiceKafkaRequestTopic, orderServiceKafkaResponseTopic, orderServiceRabbitMqRequestQueue, orderServiceRabbitMqResponseQueue);
 		} catch (Exception e) {
 			message = e.getMessage();
 		}
@@ -309,17 +309,17 @@ public class GlobalPreferencesServiceTest {
 		String parasoftVirtualizeServerPath = "/myVirtualDB";
 		String parasoftVirtualizeGroupId = "pda-group";
 		MqType mqType = MqType.ACTIVE_MQ;
-		String orderServiceDestinationQueue = "inventory.request";
-		String orderServiceReplyToQueue = "inventory.response";
-		String orderServiceRequestTopic = "inventory.request";
-		String orderServiceResponseTopic = "inventory.response";
-		String orderServiceRequestQueue = "inventory.request";
-		String orderServiceResponseQueue = "inventory.response";
+		String orderServiceActiveMqRequestQueue = "inventory.request";
+		String orderServiceActiveMqResponseQueue = "inventory.response";
+		String orderServiceKafkaRequestTopic = "inventory.request";
+		String orderServiceKafkaResponseTopic = "inventory.response";
+		String orderServiceRabbitMqRequestQueue = "inventory.request";
+		String orderServiceRabbitMqResponseQueue = "inventory.response";
 
 		GlobalPreferencesEntity globalPreferencesEntity = new GlobalPreferencesEntity(dataAccessMode, soapEndPoint, restEndPoints,
 				industryType, webServiceMode, graphQLEndpoint, demoBugSet, advertisingEnabled, useParasoftJDBCProxy, parasoftVirtualizeServerUrl,
-				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, mqType, orderServiceDestinationQueue,
-				orderServiceReplyToQueue, orderServiceRequestTopic, orderServiceResponseTopic, orderServiceRequestQueue, orderServiceResponseQueue);
+				parasoftVirtualizeServerPath, parasoftVirtualizeGroupId, mqType, orderServiceActiveMqRequestQueue,
+				orderServiceActiveMqResponseQueue, orderServiceKafkaRequestTopic, orderServiceKafkaResponseTopic, orderServiceRabbitMqRequestQueue, orderServiceRabbitMqResponseQueue);
 
 		when(globalPreferencesRepository.findAll()).thenReturn(Arrays.asList(globalPreferencesEntity));
 
@@ -454,12 +454,12 @@ public class GlobalPreferencesServiceTest {
 		assertEquals(GlobalPreferencesDefaultSettingsService.LOCATIONS_ENDPOINT_PATH, locationsRestEndpoint.getPath());
 
 		assertEquals(MqType.ACTIVE_MQ, result.getMqType());
-		assertEquals("test.inventory.request", result.getOrderServiceDestinationQueue());
-		assertEquals("test.inventory.response", result.getOrderServiceReplyToQueue());
-		assertEquals(globalPreferences.getOrderServiceRequestTopic(), result.getOrderServiceRequestTopic());
-		assertEquals(globalPreferences.getOrderServiceResponseTopic(), result.getOrderServiceResponseTopic());
-        assertEquals(globalPreferences.getOrderServiceRequestQueue(), result.getOrderServiceRequestQueue());
-        assertEquals(globalPreferences.getOrderServiceResponseQueue(), result.getOrderServiceResponseQueue());
+		assertEquals("test.inventory.request", result.getOrderServiceActiveMqRequestQueue());
+		assertEquals("test.inventory.response", result.getOrderServiceActiveMqResponseQueue());
+		assertEquals(globalPreferences.getOrderServiceKafkaRequestTopic(), result.getOrderServiceKafkaRequestTopic());
+		assertEquals(globalPreferences.getOrderServiceKafkaResponseTopic(), result.getOrderServiceKafkaResponseTopic());
+        assertEquals(globalPreferences.getOrderServiceRabbitMqRequestQueue(), result.getOrderServiceRabbitMqRequestQueue());
+        assertEquals(globalPreferences.getOrderServiceRabbitMqResponseQueue(), result.getOrderServiceRabbitMqResponseQueue());
 	}
 
 	/**
@@ -539,12 +539,12 @@ public class GlobalPreferencesServiceTest {
 		assertEquals(GlobalPreferencesDefaultSettingsService.LOCATIONS_ENDPOINT_PATH, locationsRestEndpoint.getPath());
 
 		assertEquals(MqType.KAFKA, result.getMqType());
-		assertEquals(globalPreferences.getOrderServiceDestinationQueue(), result.getOrderServiceDestinationQueue());
-		assertEquals(globalPreferences.getOrderServiceReplyToQueue(), result.getOrderServiceReplyToQueue());
-        assertEquals(globalPreferences.getOrderServiceRequestQueue(), result.getOrderServiceRequestQueue());
-        assertEquals(globalPreferences.getOrderServiceResponseQueue(), result.getOrderServiceResponseQueue());
-		assertEquals("request.topic", result.getOrderServiceRequestTopic());
-		assertEquals("response.topic", result.getOrderServiceResponseTopic());
+		assertEquals(globalPreferences.getOrderServiceActiveMqRequestQueue(), result.getOrderServiceActiveMqRequestQueue());
+		assertEquals(globalPreferences.getOrderServiceActiveMqResponseQueue(), result.getOrderServiceActiveMqResponseQueue());
+        assertEquals(globalPreferences.getOrderServiceRabbitMqRequestQueue(), result.getOrderServiceRabbitMqRequestQueue());
+        assertEquals(globalPreferences.getOrderServiceRabbitMqResponseQueue(), result.getOrderServiceRabbitMqResponseQueue());
+		assertEquals("request.topic", result.getOrderServiceKafkaRequestTopic());
+		assertEquals("response.topic", result.getOrderServiceKafkaResponseTopic());
 	}
 
     /**
@@ -624,12 +624,12 @@ public class GlobalPreferencesServiceTest {
         assertEquals(GlobalPreferencesDefaultSettingsService.LOCATIONS_ENDPOINT_PATH, locationsRestEndpoint.getPath());
 
         assertEquals(MqType.RABBIT_MQ, result.getMqType());
-        assertEquals(globalPreferences.getOrderServiceDestinationQueue(), result.getOrderServiceDestinationQueue());
-        assertEquals(globalPreferences.getOrderServiceReplyToQueue(), result.getOrderServiceReplyToQueue());
-        assertEquals(globalPreferences.getOrderServiceRequestTopic(), result.getOrderServiceRequestTopic());
-        assertEquals(globalPreferences.getOrderServiceResponseTopic(), result.getOrderServiceResponseTopic());
-        assertEquals("request.queue", result.getOrderServiceRequestQueue());
-        assertEquals("response.queue", result.getOrderServiceResponseQueue());
+        assertEquals(globalPreferences.getOrderServiceActiveMqRequestQueue(), result.getOrderServiceActiveMqRequestQueue());
+        assertEquals(globalPreferences.getOrderServiceActiveMqResponseQueue(), result.getOrderServiceActiveMqResponseQueue());
+        assertEquals(globalPreferences.getOrderServiceKafkaRequestTopic(), result.getOrderServiceKafkaRequestTopic());
+        assertEquals(globalPreferences.getOrderServiceKafkaResponseTopic(), result.getOrderServiceKafkaResponseTopic());
+        assertEquals("request.queue", result.getOrderServiceRabbitMqRequestQueue());
+        assertEquals("response.queue", result.getOrderServiceRabbitMqResponseQueue());
     }
 
 	/**

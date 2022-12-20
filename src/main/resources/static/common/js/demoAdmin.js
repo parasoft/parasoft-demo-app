@@ -423,14 +423,14 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
     demo.saveAll = function() {
         let data = angular.element('#options_form').serializeJSON()
         if (data.mqType === 'ACTIVE_MQ') {
-            data.orderServiceSendTo = data.orderServiceDestinationQueue;
-            data.orderServiceListenOn = data.orderServiceReplyToQueue;
+            data.orderServiceSendTo = data.orderServiceAvtiveMqRequestQueue;
+            data.orderServiceListenOn = data.orderServiceAvtiveMqResponseQueue;
         } else if (data.mqType === 'KAFKA') {
-            data.orderServiceSendTo = data.inventoryServiceRequestTopic;
-            data.orderServiceListenOn = data.inventoryServiceResponseTopic;
+            data.orderServiceSendTo = data.inventoryServiceKafkaRequestTopic;
+            data.orderServiceListenOn = data.inventoryServiceKafkaResponseTopic;
         } else if (data.mqType === 'RABBIT_MQ') {
-            data.orderServiceSendTo = data.inventoryServiceRequestQueue;
-            data.orderServiceListenOn = data.inventoryServiceResponseQueue;
+            data.orderServiceSendTo = data.inventoryServiceRabbitMqRequestQueue;
+            data.orderServiceListenOn = data.inventoryServiceRabbitMqResponseQueue;
         }
         $http({
             method: 'PUT',
@@ -1337,12 +1337,12 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
         options.parasoftVirtualizeGroupId = data.parasoftVirtualizeGroupId;
 
         options.mqType = data.mqType;
-        options.orderServiceDestinationQueue = data.activeMqConfig.orderServiceSendTo;
-        options.orderServiceReplyToQueue = data.activeMqConfig.orderServiceListenOn;
-        options.inventoryServiceRequestTopic = data.kafkaConfig.orderServiceSendTo;
-        options.inventoryServiceResponseTopic = data.kafkaConfig.orderServiceListenOn;
-        options.inventoryServiceRequestQueue = data.rabbitMqConfig.orderServiceSendTo;
-        options.inventoryServiceResponseQueue = data.rabbitMqConfig.orderServiceListenOn;
+        options.orderServiceAvtiveMqRequestQueue = data.activeMqConfig.orderServiceSendTo;
+        options.orderServiceAvtiveMqResponseQueue = data.activeMqConfig.orderServiceListenOn;
+        options.inventoryServiceKafkaRequestTopic = data.kafkaConfig.orderServiceSendTo;
+        options.inventoryServiceKafkaResponseTopic = data.kafkaConfig.orderServiceListenOn;
+        options.inventoryServiceRabbitMqRequestQueue = data.rabbitMqConfig.orderServiceSendTo;
+        options.inventoryServiceRabbitMqResponseQueue = data.rabbitMqConfig.orderServiceListenOn;
 
         options.webServiceMode = data.webServiceMode;
         options.graphQLEndpoint = data.graphQLEndpoint;
@@ -1395,39 +1395,39 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
         });
     }
 
-    options.resetOrderServiceDestinationQueue = function(){
+    options.resetOrderServiceActiveMqRequestQueue = function(){
         resetValuesTemplate(function(defaultOptions){
-            options.orderServiceDestinationQueue = defaultOptions.activeMqConfig.orderServiceSendTo;
+            options.orderServiceAvtiveMqRequestQueue = defaultOptions.activeMqConfig.orderServiceSendTo;
         });
     }
 
-    options.resetOrderServiceReplyToQueue = function(){
+    options.resetOrderServiceActiveMqResponseQueue = function(){
         resetValuesTemplate(function(defaultOptions){
-            options.orderServiceReplyToQueue = defaultOptions.activeMqConfig.orderServiceListenOn;
+            options.orderServiceAvtiveMqResponseQueue = defaultOptions.activeMqConfig.orderServiceListenOn;
         });
     }
 
-    options.restInventoryServiceRequestTopic = function(){
+    options.restInventoryServiceKafkaRequestTopic = function(){
         resetValuesTemplate(function(defaultOptions){
-            options.inventoryServiceRequestTopic = defaultOptions.kafkaConfig.orderServiceSendTo;
+            options.inventoryServiceKafkaRequestTopic = defaultOptions.kafkaConfig.orderServiceSendTo;
         });
     }
 
-    options.restInventoryServiceResponseTopic = function() {
+    options.restInventoryServiceKafkaResponseTopic = function() {
         resetValuesTemplate(function(defaultOptions){
-            options.inventoryServiceResponseTopic = defaultOptions.kafkaConfig.orderServiceListenOn;
+            options.inventoryServiceKafkaResponseTopic = defaultOptions.kafkaConfig.orderServiceListenOn;
         });
     }
 
-    options.resetOrderServiceRequestQueue = function(){
+    options.resetOrderServiceRabbitMqRequestQueue = function(){
         resetValuesTemplate(function(defaultOptions){
-            options.inventoryServiceRequestQueue = defaultOptions.rabbitMqConfig.orderServiceSendTo;
+            options.inventoryServiceRabbitMqRequestQueue = defaultOptions.rabbitMqConfig.orderServiceSendTo;
         });
     }
 
-    options.resetOrderServiceResponseQueue = function(){
+    options.resetOrderServiceRabbitMqResponseQueue = function(){
         resetValuesTemplate(function(defaultOptions){
-            options.inventoryServiceResponseQueue = defaultOptions.rabbitMqConfig.orderServiceListenOn;
+            options.inventoryServiceRabbitMqResponseQueue = defaultOptions.rabbitMqConfig.orderServiceListenOn;
         });
     }
 

@@ -1,5 +1,6 @@
 package com.parasoft.demoapp.config.kafka;
 
+import com.parasoft.demoapp.config.MQConfig;
 import com.parasoft.demoapp.dto.InventoryOperationRequestMessageDTO;
 import com.parasoft.demoapp.dto.InventoryOperationResultMessageDTO;
 import lombok.Getter;
@@ -27,8 +28,8 @@ public class KafkaConfig {
     public static final int ADMIN_CLIENT_TIMEOUT_MS = 5000;
     public static final String AUTO_OFFSET_RESET_EARLIEST = "earliest";
 
-    public static final String DEFAULT_ORDER_SERVICE_REQUEST_TOPIC = "inventory.request";
-    public static final String DEFAULT_ORDER_SERVICE_RESPONSE_TOPIC = "inventory.response";
+    public static final String DEFAULT_ORDER_SERVICE_REQUEST_TOPIC = MQConfig.INVENTORY_REQUEST;
+    public static final String DEFAULT_ORDER_SERVICE_RESPONSE_TOPIC = MQConfig.INVENTORY_RESPONSE;
 
     @Getter @Setter private static String orderServiceSendToTopic = DEFAULT_ORDER_SERVICE_REQUEST_TOPIC;
     @Getter @Setter private static String orderServiceListenToTopic = DEFAULT_ORDER_SERVICE_RESPONSE_TOPIC;

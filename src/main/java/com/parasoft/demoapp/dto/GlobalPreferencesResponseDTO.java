@@ -52,11 +52,11 @@ public class GlobalPreferencesResponseDTO {
         this.setParasoftVirtualizeServerPath(globalPreferencesEntity.getParasoftVirtualizeServerPath());
         this.setParasoftVirtualizeGroupId(globalPreferencesEntity.getParasoftVirtualizeGroupId());
         this.setMqType(globalPreferencesEntity.getMqType());
-        this.getActiveMqConfig().setOrderServiceSendTo(globalPreferencesEntity.getOrderServiceDestinationQueue());
-        this.getActiveMqConfig().setOrderServiceListenOn(globalPreferencesEntity.getOrderServiceReplyToQueue());
-        this.getKafkaConfig().setOrderServiceSendTo(globalPreferencesEntity.getOrderServiceRequestTopic());
-        this.getKafkaConfig().setOrderServiceListenOn(globalPreferencesEntity.getOrderServiceResponseTopic());
-        this.getRabbitMqConfig().setOrderServiceSendTo(globalPreferencesEntity.getOrderServiceRequestQueue());
-        this.getRabbitMqConfig().setOrderServiceListenOn(globalPreferencesEntity.getOrderServiceResponseQueue());
+        this.getActiveMqConfig().setOrderServiceSendTo(globalPreferencesEntity.getOrderServiceActiveMqRequestQueue());
+        this.getActiveMqConfig().setOrderServiceListenOn(globalPreferencesEntity.getOrderServiceActiveMqResponseQueue());
+        this.getKafkaConfig().setOrderServiceSendTo(globalPreferencesEntity.getOrderServiceKafkaRequestTopic());
+        this.getKafkaConfig().setOrderServiceListenOn(globalPreferencesEntity.getOrderServiceKafkaResponseTopic());
+        this.getRabbitMqConfig().setOrderServiceSendTo(globalPreferencesEntity.getOrderServiceRabbitMqRequestQueue());
+        this.getRabbitMqConfig().setOrderServiceListenOn(globalPreferencesEntity.getOrderServiceRabbitMqResponseQueue());
     }
 }

@@ -51,12 +51,12 @@ public class GlobalPreferencesCreatorSpringTest {
         assertEquals(2, currentGlobalPreferences.getDemoBugs().size());
         assertTrue(currentGlobalPreferences.getAdvertisingEnabled());
         assertEquals(MqType.ACTIVE_MQ, currentGlobalPreferences.getMqType());
-        assertEquals(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST, currentGlobalPreferences.getOrderServiceDestinationQueue());
-        assertEquals(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE, currentGlobalPreferences.getOrderServiceReplyToQueue());
-        assertEquals(KafkaConfig.DEFAULT_ORDER_SERVICE_REQUEST_TOPIC, currentGlobalPreferences.getOrderServiceRequestTopic());
-        assertEquals(KafkaConfig.DEFAULT_ORDER_SERVICE_RESPONSE_TOPIC, currentGlobalPreferences.getOrderServiceReplyToQueue());
-        assertEquals(RabbitMQConfig.DEFAULT_ORDER_SERVICE_REQUEST_QUEUE, currentGlobalPreferences.getOrderServiceRequestQueue());
-        assertEquals(RabbitMQConfig.DEFAULT_ORDER_SERVICE_RESPONSE_QUEUE, currentGlobalPreferences.getOrderServiceResponseQueue());
+        assertEquals(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST, currentGlobalPreferences.getOrderServiceActiveMqRequestQueue());
+        assertEquals(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE, currentGlobalPreferences.getOrderServiceActiveMqResponseQueue());
+        assertEquals(KafkaConfig.DEFAULT_ORDER_SERVICE_REQUEST_TOPIC, currentGlobalPreferences.getOrderServiceKafkaRequestTopic());
+        assertEquals(KafkaConfig.DEFAULT_ORDER_SERVICE_RESPONSE_TOPIC, currentGlobalPreferences.getOrderServiceKafkaResponseTopic());
+        assertEquals(RabbitMQConfig.DEFAULT_ORDER_SERVICE_REQUEST_QUEUE, currentGlobalPreferences.getOrderServiceRabbitMqRequestQueue());
+        assertEquals(RabbitMQConfig.DEFAULT_ORDER_SERVICE_RESPONSE_QUEUE, currentGlobalPreferences.getOrderServiceRabbitMqResponseQueue());
     }
 
 }
