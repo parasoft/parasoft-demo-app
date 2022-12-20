@@ -56,6 +56,7 @@ public class KafkaConfig {
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
                 JsonSerializer.class);
         props.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, 2000);
+        props.put(JsonSerializer.ADD_TYPE_INFO_HEADERS, false);
         return props;
     }
 
@@ -71,6 +72,7 @@ public class KafkaConfig {
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
                 JsonDeserializer.class);
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, AUTO_OFFSET_RESET_EARLIEST);
+        props.put(JsonSerializer.ADD_TYPE_INFO_HEADERS, false);
         return props;
     }
 
