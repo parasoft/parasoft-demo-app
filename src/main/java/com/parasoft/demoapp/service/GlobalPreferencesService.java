@@ -9,6 +9,7 @@ import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
 import com.parasoft.demoapp.config.kafka.InventoryRequestTopicListener;
 import com.parasoft.demoapp.config.kafka.InventoryResponseTopicListener;
 import com.parasoft.demoapp.config.kafka.KafkaConfig;
+import com.parasoft.demoapp.config.rabbitmq.RabbitMQConfig;
 import com.parasoft.demoapp.defaultdata.ClearEntrance;
 import com.parasoft.demoapp.defaultdata.ResetEntrance;
 import com.parasoft.demoapp.dto.GlobalPreferencesDTO;
@@ -82,6 +83,9 @@ public class GlobalPreferencesService {
 
     @Autowired
     private KafkaConfig kafkaConfig;
+
+    @Autowired
+    private RabbitMQConfig rabbitMQConfig;
 
     /**
      * A flag indicating whether the destinations of the mq need to be updated when the global preference is updated.
@@ -543,8 +547,14 @@ public class GlobalPreferencesService {
                         kafkaConfig.getBootstrapServers(),
                         kafkaConfig.getGroupId()
                 );
+        MQPropertiesResponseDTO.RabbitMQConfigResponse rabbitMQConfigResponse =
+                new MQPropertiesResponseDTO.RabbitMQConfigResponse(
+                        rabbitMQConfig.getRabbitMqHost(),
+                        rabbitMQConfig.getRabbitMqPort(),
+                        rabbitMQConfig.getUser(),
+                        rabbitMQConfig.getPassword());
 
-        return new MQPropertiesResponseDTO(activeMQConfigResponse, kafkaConfigResponse);
+        return new MQPropertiesResponseDTO(activeMQConfigResponse, kafkaConfigResponse, rabbitMQConfigResponse);
     }
 
     public void validateKafkaBrokerUrl() throws KafkaServerIsNotAvailableException {

@@ -2,6 +2,7 @@ package com.parasoft.demoapp.config.rabbitmq;
 
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import lombok.Getter;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
@@ -12,6 +13,7 @@ import com.parasoft.demoapp.config.MQConfig;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@Getter
 public class RabbitMQConfig {
 
     public static final String DEFAULT_ORDER_SERVICE_REQUEST_QUEUE = MQConfig.INVENTORY_REQUEST;
