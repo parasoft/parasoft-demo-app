@@ -4,6 +4,7 @@ import com.parasoft.demoapp.config.WebConfig;
 import com.parasoft.demoapp.config.activemq.ActiveMQConfig;
 import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
 import com.parasoft.demoapp.config.kafka.KafkaConfig;
+import com.parasoft.demoapp.config.rabbitmq.RabbitMQConfig;
 import com.parasoft.demoapp.model.global.preferences.*;
 import com.parasoft.demoapp.model.industry.RegionType;
 import com.parasoft.demoapp.util.BugsTypeSortOfDemoBugs;
@@ -64,10 +65,12 @@ public class GlobalPreferencesDefaultSettingsService {
         String parasoftVirtualizeServerPath = defaultParasoftVirtualizeServerPath();
         String parasoftVirtualizeGroupId = defaultParasoftVirtualizeGroupId();
         MqType mqType = defaultMqType();
-        String orderServiceDestinationQueue = defaultOrderServiceDestinationQueue();
-        String orderServiceReplyToQueue = defaultOrderServiceReplyToQueue();
-        String orderServiceRequestTopic = defaultOrderServiceRequestTopic();
-        String orderServiceResponseTopic = defaultOrderServiceResponseTopic();
+        String orderServiceActiveMqRequestQueue = defaultOrderServiceActiveMqRequestQueue();
+        String orderServiceActiveMQResponseQueue = defaultOrderServiceActiveMqResponseQueue();
+        String orderServiceKafkaRequestTopic = defaultOrderServiceKafkaRequestTopic();
+        String orderServiceKafkaResponseTopic = defaultOrderServiceKafkaResponseTopic();
+        String orderServiceRabbitMQRequestQueue = defaultOrderServiceRabbitMqRequestQueue();
+        String orderServiceRabbitMQResponseQueue = defaultOrderServiceRabbitMqResponseQueue();
 
 
         defaultPreferences.setDataAccessMode(dataAccessMode);
@@ -84,10 +87,12 @@ public class GlobalPreferencesDefaultSettingsService {
         defaultPreferences.setParasoftVirtualizeGroupId(parasoftVirtualizeGroupId);
 
         defaultPreferences.setMqType(mqType);
-        defaultPreferences.setOrderServiceDestinationQueue(orderServiceDestinationQueue);
-        defaultPreferences.setOrderServiceReplyToQueue(orderServiceReplyToQueue);
-        defaultPreferences.setOrderServiceRequestTopic(orderServiceRequestTopic);
-        defaultPreferences.setOrderServiceResponseTopic(orderServiceResponseTopic);
+        defaultPreferences.setOrderServiceActiveMqRequestQueue(orderServiceActiveMqRequestQueue);
+        defaultPreferences.setOrderServiceActiveMqResponseQueue(orderServiceActiveMQResponseQueue);
+        defaultPreferences.setOrderServiceKafkaRequestTopic(orderServiceKafkaRequestTopic);
+        defaultPreferences.setOrderServiceKafkaResponseTopic(orderServiceKafkaResponseTopic);
+        defaultPreferences.setOrderServiceRabbitMqRequestQueue(orderServiceRabbitMQRequestQueue);
+        defaultPreferences.setOrderServiceRabbitMqResponseQueue(orderServiceRabbitMQResponseQueue);
 
         return defaultPreferences;
     }
@@ -281,19 +286,27 @@ public class GlobalPreferencesDefaultSettingsService {
         return MqType.ACTIVE_MQ;
     }
 
-    public String defaultOrderServiceDestinationQueue() {
+    public String defaultOrderServiceActiveMqRequestQueue() {
         return ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST;
     }
 
-    public String defaultOrderServiceReplyToQueue() {
+    public String defaultOrderServiceActiveMqResponseQueue() {
         return ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE;
     }
 
-    public String defaultOrderServiceRequestTopic() {
+    public String defaultOrderServiceKafkaRequestTopic() {
         return KafkaConfig.DEFAULT_ORDER_SERVICE_REQUEST_TOPIC;
     }
 
-    public String defaultOrderServiceResponseTopic() {
+    public String defaultOrderServiceKafkaResponseTopic() {
         return KafkaConfig.DEFAULT_ORDER_SERVICE_RESPONSE_TOPIC;
+    }
+
+    public String defaultOrderServiceRabbitMqRequestQueue() {
+        return RabbitMQConfig.DEFAULT_ORDER_SERVICE_REQUEST_QUEUE;
+    }
+
+    public String defaultOrderServiceRabbitMqResponseQueue() {
+        return RabbitMQConfig.DEFAULT_ORDER_SERVICE_RESPONSE_QUEUE;
     }
 }

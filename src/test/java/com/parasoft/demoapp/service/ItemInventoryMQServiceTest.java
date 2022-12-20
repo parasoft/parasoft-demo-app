@@ -84,7 +84,7 @@ public class ItemInventoryMQServiceTest {
         String orderNumber = "23-456-002";
         InventoryOperationResultMessageDTO messageDto = new InventoryOperationResultMessageDTO(InventoryOperation.DECREASE, orderNumber, InventoryOperationStatus.SUCCESS, information);
         GlobalPreferencesEntity globalPreferences = new GlobalPreferencesEntity();
-        globalPreferences.setOrderServiceResponseTopic("response.topic");
+        globalPreferences.setOrderServiceKafkaResponseTopic("response.topic");
         doReturn(globalPreferences).when(globalPreferencesService).getCurrentGlobalPreferences();
         underTest.sendToInventoryResponseDestination(messageDto);
 
