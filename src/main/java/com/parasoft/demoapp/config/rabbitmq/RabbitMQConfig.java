@@ -1,6 +1,5 @@
 package com.parasoft.demoapp.config.rabbitmq;
 
-import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import lombok.Getter;
 import org.springframework.amqp.core.Binding;
@@ -36,13 +35,13 @@ public class RabbitMQConfig {
     private String password;
 
     @Bean
-    public Connection connection() throws Exception {
+    public ConnectionFactory factory() throws Exception {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost(rabbitMqHost);
         factory.setPort(rabbitMqPort);
         factory.setUsername(user);
         factory.setPassword(password);
-        return factory.newConnection();
+        return factory;
     }
 
     @Bean
