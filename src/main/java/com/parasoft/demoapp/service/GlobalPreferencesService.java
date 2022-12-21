@@ -9,6 +9,7 @@ import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
 import com.parasoft.demoapp.config.kafka.KafkaConfig;
 import com.parasoft.demoapp.config.kafka.KafkaInventoryRequestTopicListener;
 import com.parasoft.demoapp.config.kafka.KafkaInventoryResponseTopicListener;
+import com.parasoft.demoapp.config.rabbitmq.RabbitMQConfig;
 import com.parasoft.demoapp.defaultdata.ClearEntrance;
 import com.parasoft.demoapp.defaultdata.ResetEntrance;
 import com.parasoft.demoapp.dto.GlobalPreferencesDTO;
@@ -23,6 +24,7 @@ import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.ListTopicsOptions;
+import org.springframework.amqp.rabbit.connection.Connection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -82,6 +84,9 @@ public class GlobalPreferencesService {
 
     @Autowired
     private KafkaConfig kafkaConfig;
+
+    @Autowired
+    private RabbitMQConfig rabbitMQConfig;
 
     /**
      * A flag indicating whether the destinations of the mq need to be updated when the global preference is updated.
@@ -543,8 +548,14 @@ public class GlobalPreferencesService {
                         kafkaConfig.getBootstrapServers(),
                         kafkaConfig.getGroupId()
                 );
+        MQPropertiesResponseDTO.RabbitMQConfigResponse rabbitMQConfigResponse =
+                new MQPropertiesResponseDTO.RabbitMQConfigResponse(
+                        rabbitMQConfig.getRabbitMqHost(),
+                        rabbitMQConfig.getRabbitMqPort(),
+                        rabbitMQConfig.getUsername(),
+                        rabbitMQConfig.getPassword());
 
-        return new MQPropertiesResponseDTO(activeMQConfigResponse, kafkaConfigResponse);
+        return new MQPropertiesResponseDTO(activeMQConfigResponse, kafkaConfigResponse, rabbitMQConfigResponse);
     }
 
     public void validateKafkaBrokerUrl() throws KafkaServerIsNotAvailableException {
@@ -560,6 +571,21 @@ public class GlobalPreferencesService {
         } finally {
             // To avoid trying to connect all the time
             client.close();
+        }
+    }
+
+    public void validateRabbitMQServerUrl() throws Exception {
+        Connection connection = null;
+        try {
+            connection = rabbitMQConfig.factory().createConnection();
+        } catch (Exception e) {
+            throw new RabbitMQServerIsNotAvailableException(
+                    MessageFormat.format(GlobalPreferencesMessages.RABBITMQ_SERVER_IS_NOT_AVAILABLE,
+                            rabbitMQConfig.getRabbitMqHost() + ":" + rabbitMQConfig.getRabbitMqPort()), e);
+        } finally {
+            if (connection != null) {
+                connection.close();
+            }
         }
     }
 }

@@ -242,6 +242,7 @@
                                        ng-click="options.openConfigurationDetailsModal()">
                                         <span ng-if="options.mqType === 'ACTIVE_MQ'" translate="JMS_CONFIGURATION_DETAILS"></span>
                                         <span ng-if="options.mqType === 'KAFKA'" translate="KAFKA_CONFIGURATION_DETAILS"></span>
+                                        <span ng-if="options.mqType === 'RABBIT_MQ'" translate="RABBIT_MQ_CONFIGURATION_DETAILS"></span>
                                     </a>
                                     <span ng-if="options.mqType === 'KAFKA' && displayKafkaError === 'true'">
                                         ( <i class="fa fa-exclamation-circle error_icon" aria-hidden="true"></i>
@@ -257,6 +258,7 @@
                                                 <div class="modal-title">
                                                     <span ng-if="options.mqType === 'ACTIVE_MQ'">ActiveMQ JMS</span>
                                                     <span ng-if="options.mqType === 'KAFKA'">Kafka</span>
+                                                    <span ng-if="options.mqType === 'RABBIT_MQ'">RabbitMQ</span>
                                                 </div>
                                             </div>
 
@@ -284,14 +286,14 @@
                                         <div class="form-group">
                                             <label for="order_service_destination_queue" class="form_label" translate="INVENTORY_SERVICE_REQUEST_QUEUE"></label>
                                             <div class="invalid_message"
-                                                 ng-show="optionsForm.orderServiceAvtiveMqRequestQueue.$invalid"
+                                                 ng-show="optionsForm.inventoryServiceActiveMqRequestQueue.$invalid"
                                                  translate="QUEUE_NAME_SHOULD_NOT_BE_EMPTY"></div>
                                             <div class="input-wrapper">
                                                 <input type="text"
-                                                       name="orderServiceAvtiveMqRequestQueue"
+                                                       name="inventoryServiceActiveMqRequestQueue"
                                                        id="order_service_destination_queue"
                                                        class="form-control"
-                                                       ng-model="options.orderServiceAvtiveMqRequestQueue"
+                                                       ng-model="options.inventoryServiceActiveMqRequestQueue"
                                                        ng-required="true"
                                                        ng-trim="true">
                                                 <button class="btn btn-default industry_button labels_reset_btn"
@@ -303,14 +305,14 @@
                                         <div class="form-group">
                                             <label for="order_service_reply_to_queue" class="form_label" translate="INVENTORY_SERVICE_RESPONSE_QUEUE"></label>
                                             <div class="invalid_message"
-                                                 ng-show="optionsForm.orderServiceAvtiveMqResponseQueue.$invalid"
+                                                 ng-show="optionsForm.inventoryServiceActiveMqResponseQueue.$invalid"
                                                  translate="QUEUE_NAME_SHOULD_NOT_BE_EMPTY"></div>
                                             <div class="input-wrapper">
                                                 <input type="text"
-                                                       name="orderServiceAvtiveMqResponseQueue"
+                                                       name="inventoryServiceActiveMqResponseQueue"
                                                        id="order_service_reply_to_queue"
                                                        class="form-control"
-                                                       ng-model="options.orderServiceAvtiveMqResponseQueue"
+                                                       ng-model="options.inventoryServiceActiveMqResponseQueue"
                                                        ng-required="true"
                                                        ng-trim="true">
                                                 <button class="btn btn-default industry_button labels_reset_btn"

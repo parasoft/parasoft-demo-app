@@ -17,6 +17,7 @@ import com.parasoft.demoapp.config.MQConfig;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@Getter
 public class RabbitMQConfig {
 
     public static final String DEFAULT_ORDER_SERVICE_REQUEST_QUEUE = MQConfig.INVENTORY_REQUEST;
@@ -33,17 +34,17 @@ public class RabbitMQConfig {
     @Value("${spring.rabbitmq.port}")
     private int rabbitMqPort;
     @Value("${spring.rabbitmq.username}")
-    private String user;
+    private String username;
     @Value("${spring.rabbitmq.password}")
     private String password;
 
 
     @Bean
-    public ConnectionFactory connection() throws Exception {
+    public CachingConnectionFactory factory() throws Exception {
         CachingConnectionFactory factory = new CachingConnectionFactory();
         factory.setHost(rabbitMqHost);
         factory.setPort(rabbitMqPort);
-        factory.setUsername(user);
+        factory.setUsername(username);
         factory.setPassword(password);
         return factory;
     }

@@ -193,4 +193,19 @@ public class GlobalPreferencesController {
 
 		return response;
 	}
+
+	@Operation(description = "Validate RabbitMQ server URL.")
+	@ApiResponse(responseCode = "200", description = "Valid URL.")
+	@ApiResponse(responseCode = "500", description = "Invalid URL.",
+			content = {@Content(schema = @Schema(hidden = true))})
+	@GetMapping("/v1/demoAdmin/rabbitMQUrlValidation")
+	@ResponseBody
+	public ResponseResult<Void> validateRabbitMQServerUrl() throws Exception {
+		ResponseResult<Void> response =
+				ResponseResult.getInstance(ResponseResult.STATUS_OK, ResponseResult.MESSAGE_OK);
+
+		globalPreferencesService.validateRabbitMQServerUrl();
+
+		return response;
+	}
 }
