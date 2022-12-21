@@ -1,13 +1,14 @@
 package com.parasoft.demoapp.config.rabbitmq;
 
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,14 +37,22 @@ public class RabbitMQConfig {
     @Value("${spring.rabbitmq.password}")
     private String password;
 
+
     @Bean
-    public Connection connection() throws Exception {
-        ConnectionFactory factory = new ConnectionFactory();
+    public ConnectionFactory connection() throws Exception {
+        CachingConnectionFactory factory = new CachingConnectionFactory();
         factory.setHost(rabbitMqHost);
         factory.setPort(rabbitMqPort);
         factory.setUsername(user);
         factory.setPassword(password);
-        return factory.newConnection();
+        return factory;
+    }
+
+    @Bean
+    SimpleRabbitListenerContainerFactory simpleRabbitListenerContainerFactory(org.springframework.amqp.rabbit.connection.ConnectionFactory connectionFactory) {
+        SimpleRabbitListenerContainerFactory simpleRabbitListenerContainerFactory = new SimpleRabbitListenerContainerFactory();
+        simpleRabbitListenerContainerFactory.setConnectionFactory(connectionFactory);
+        return simpleRabbitListenerContainerFactory;
     }
 
     @Bean
