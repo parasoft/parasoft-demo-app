@@ -3,6 +3,7 @@ package com.parasoft.demoapp.config.rabbitmq;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
@@ -23,9 +24,8 @@ public class RabbitMQConfig {
     public static final String INVENTORY_QUEUE_REQUEST_ROUTING_KEY = "inventory.queue.request";
     public static final String INVENTORY_QUEUE_RESPONSE_ROUTING_KEY = "inventory.queue.response";
 
-    @Getter private static final Queue orderServiceSendToQueue = new Queue(RabbitMQConfig.DEFAULT_ORDER_SERVICE_REQUEST_QUEUE);
-    @Getter private static final Queue inventoryServiceSendToQueue = new Queue(RabbitMQConfig.DEFAULT_ORDER_SERVICE_RESPONSE_QUEUE);
-    private static final DirectExchange inventoryDirectExchange = new DirectExchange(RabbitMQConfig.INVENTORY_DIRECT_EXCHANGE);
+    @Getter @Setter private static String orderServiceSendToQueue = DEFAULT_ORDER_SERVICE_REQUEST_QUEUE;
+    @Getter @Setter private static String orderServiceListenToQueue = DEFAULT_ORDER_SERVICE_RESPONSE_QUEUE;
 
     @Value("${spring.rabbitmq.host}")
     private String rabbitMqHost;
@@ -53,11 +53,16 @@ public class RabbitMQConfig {
 
     @Bean
     public Binding inventoryServiceRequestBindingExchange() {
-        return BindingBuilder.bind(orderServiceSendToQueue).to(inventoryDirectExchange).with(RabbitMQConfig.INVENTORY_QUEUE_REQUEST_ROUTING_KEY);
+        return BindingBuilder.bind(new Queue(orderServiceSendToQueue)).to(inventoryDirectExchange()).with(RabbitMQConfig.INVENTORY_QUEUE_REQUEST_ROUTING_KEY);
     }
 
     @Bean
     public Binding inventoryServiceResponseBindingExchange() {
-        return BindingBuilder.bind(inventoryServiceSendToQueue).to(inventoryDirectExchange).with(RabbitMQConfig.INVENTORY_QUEUE_RESPONSE_ROUTING_KEY);
+        return BindingBuilder.bind(new Queue(DEFAULT_ORDER_SERVICE_RESPONSE_QUEUE)).to(inventoryDirectExchange()).with(RabbitMQConfig.INVENTORY_QUEUE_RESPONSE_ROUTING_KEY);
+    }
+
+    @Bean
+    public DirectExchange inventoryDirectExchange() {
+        return new DirectExchange(RabbitMQConfig.INVENTORY_DIRECT_EXCHANGE);
     }
 }

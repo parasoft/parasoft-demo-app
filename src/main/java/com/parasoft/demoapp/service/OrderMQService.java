@@ -65,9 +65,10 @@ public class OrderMQService {
                 throw new KafkaException("Can not send message to Kafka broker.", e);
             }
         } else if (MQConfig.currentMQType == MqType.RABBIT_MQ) {
-            Queue destination = RabbitMQConfig.getOrderServiceSendToQueue();
-            requestDestination = "RabbitMQ: " + destination.toString();
-            rabbitTemplate.convertAndSend(RabbitMQConfig.INVENTORY_DIRECT_EXCHANGE, RabbitMQConfig.INVENTORY_QUEUE_REQUEST_ROUTING_KEY, message);
+            requestDestination = "RabbitMQ queue: " + RabbitMQConfig.getOrderServiceSendToQueue();
+            rabbitTemplate.convertAndSend(RabbitMQConfig.INVENTORY_DIRECT_EXCHANGE,
+                                          RabbitMQConfig.INVENTORY_QUEUE_REQUEST_ROUTING_KEY,
+                                          message);
         }
 
         log.info("Order service sent a message to {} \n Message content: {}", requestDestination, message);
