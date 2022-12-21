@@ -2,7 +2,7 @@ version: "2"
 
 services:
   pda:
-    image: parasoft/demo-app:${PDA_IMAGE_TAG:-main}
+    image: parasoft/demo-app:${PDA_IMAGE_TAG:-latest}
     ports:
       - "8080:8080"
       - "9001:9001"
@@ -12,8 +12,10 @@ services:
     working_dir: /usr/local/tomcat/data
     volumes:
       - "pda_data:/usr/local/tomcat/data"
-      - "./lib/ParasoftJDBCDriver.jar:/usr/local/tomcat/webapps/ROOT/WEB-INF/lib/ParasoftJDBCDriver.jar:ro"
-      - "./config/application.properties:/usr/local/tomcat/data/config/application.properties:ro"
+      # Uncomment if JDBC proxy is needed. Create a lib folder under current directory and copy <VIRTUALIZE_INSTALL_DIR>/proxies/ParasoftJDBCDriver.jar into it
+      # - "./lib/ParasoftJDBCDriver.jar:/usr/local/tomcat/webapps/ROOT/WEB-INF/lib/ParasoftJDBCDriver.jar:ro"
+      # Uncomment if application.properties needs to be customized. Create a config folder and put customized application.properties file in it.
+      # - "./config/application.properties:/usr/local/tomcat/data/config/application.properties:ro"
     environment:
       - JAVA_OPTS=-Dspring.kafka.bootstrap-servers=kafka:9092
     depends_on:
