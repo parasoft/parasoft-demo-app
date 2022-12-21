@@ -20,7 +20,7 @@ public abstract class KafkaRefreshableMessageListener<T> extends RefreshableMess
         }
     }
 
-    private void registerListener(String topic) {
+    protected void registerListener(String topic) {
         ConcurrentMessageListenerContainer<String, T> container = kafkaListenerContainerFactory.createContainer(topic);
         container.getContainerProperties().setMessageListener(this);
         container.start();

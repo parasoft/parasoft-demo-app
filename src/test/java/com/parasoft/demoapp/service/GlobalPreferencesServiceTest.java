@@ -2,11 +2,11 @@ package com.parasoft.demoapp.service;
 
 import com.parasoft.demoapp.config.WebConfig;
 import com.parasoft.demoapp.config.activemq.ActiveMQConfig;
-import com.parasoft.demoapp.config.activemq.InventoryRequestQueueListener;
-import com.parasoft.demoapp.config.activemq.InventoryResponseQueueListener;
+import com.parasoft.demoapp.config.activemq.ActiveMQInventoryRequestQueueListener;
+import com.parasoft.demoapp.config.activemq.ActiveMQInventoryResponseQueueListener;
 import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
-import com.parasoft.demoapp.config.kafka.InventoryRequestTopicListener;
-import com.parasoft.demoapp.config.kafka.InventoryResponseTopicListener;
+import com.parasoft.demoapp.config.kafka.KafkaInventoryRequestTopicListener;
+import com.parasoft.demoapp.config.kafka.KafkaInventoryResponseTopicListener;
 import com.parasoft.demoapp.config.kafka.KafkaConfig;
 import com.parasoft.demoapp.config.rabbitmq.RabbitMQConfig;
 import com.parasoft.demoapp.dto.GlobalPreferencesDTO;
@@ -63,16 +63,16 @@ public class GlobalPreferencesServiceTest {
 	private ParasoftJDBCProxyService parasoftJDBCProxyDriverService;
 
 	@Mock
-	InventoryResponseQueueListener inventoryResponseQueueListener;
+	ActiveMQInventoryResponseQueueListener inventoryResponseQueueListener;
 
 	@Mock
-	InventoryRequestQueueListener inventoryRequestQueueListener;
+	ActiveMQInventoryRequestQueueListener inventoryRequestQueueListener;
 
 	@Mock
-	InventoryResponseTopicListener inventoryResponseTopicListener;
+	KafkaInventoryResponseTopicListener inventoryResponseTopicListener;
 
 	@Mock
-	InventoryRequestTopicListener inventoryRequestTopicListener;
+	KafkaInventoryRequestTopicListener inventoryRequestTopicListener;
 
 	@Mock
 	WebConfig webConfig;
