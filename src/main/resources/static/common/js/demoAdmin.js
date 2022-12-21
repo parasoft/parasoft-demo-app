@@ -1512,7 +1512,23 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
                         value: data.kafkaConfig.groupId
                     }
                 ];
-            }
+            } else if(options.mqType === "RABBIT_MQ") {
+                options.configurationDetails = [
+                     {
+                         label: $filter('translate')('RABBITMQ_HOST'),
+                         value: data.rabbitMQConfig.rabbitMqHost
+                    }, {
+                         label: $filter('translate')('RABBITMQ_PORT'),
+                         value: data.rabbitMQConfig.rabbitMqPort
+                    }, {
+                         label: $filter('translate')('USER'),
+                         value: data.rabbitMQConfig.username
+                    }, {
+                         label: $filter('translate')('PASSWORD'),
+                         value: data.rabbitMQConfig.password
+                    }
+                ];
+             };
         }).catch(function(result) {
             console.error(result);
         });

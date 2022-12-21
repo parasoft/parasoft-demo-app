@@ -6,11 +6,14 @@ import lombok.Data;
 public class MQPropertiesResponseDTO {
     private ActiveMQConfigResponse activeMqConfig;
     private KafkaConfigResponse kafkaConfig;
+    private RabbitMQConfigResponse rabbitMQConfig;
 
     public MQPropertiesResponseDTO(ActiveMQConfigResponse activeMqConfig,
-                                   KafkaConfigResponse kafkaConfig) {
+                                   KafkaConfigResponse kafkaConfig,
+                                   RabbitMQConfigResponse rabbitMQConfig) {
         this.activeMqConfig = activeMqConfig;
         this.kafkaConfig = kafkaConfig;
+        this.rabbitMQConfig = rabbitMQConfig;
     }
 
     @Data
@@ -38,6 +41,21 @@ public class MQPropertiesResponseDTO {
         public KafkaConfigResponse(String bootstrapServers, String groupId) {
             this.bootstrapServers = bootstrapServers;
             this.groupId = groupId;
+        }
+    }
+
+    @Data
+    public static class RabbitMQConfigResponse  {
+        private String rabbitMqHost;
+        private int rabbitMqPort;
+        private String username;
+        private String password;
+
+        public RabbitMQConfigResponse(String rabbitMqHost, int rabbitMqPort, String username, String password) {
+            this.rabbitMqHost = rabbitMqHost;
+            this.rabbitMqPort = rabbitMqPort;
+            this.username = username;
+            this.password = password;
         }
     }
 }
