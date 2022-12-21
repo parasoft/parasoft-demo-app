@@ -114,6 +114,8 @@ dependencies {
 	testImplementation 'org.springframework.kafka:spring-kafka-test:2.9.1'
 	testImplementation 'org.apache.kafka:kafka-clients:3.2.3:test'
 	testImplementation 'org.apache.kafka:kafka_2.13:3.2.3:test'
+
+    testImplementation 'org.springframework.amqp:spring-rabbit-test:'
 }
 
 test {

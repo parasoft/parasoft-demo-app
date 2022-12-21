@@ -2,10 +2,13 @@ package com.parasoft.demoapp.config.rabbitmq;
 
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import lombok.Getter;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import com.parasoft.demoapp.config.MQConfig;
@@ -20,8 +23,8 @@ public class RabbitMQConfig {
     public static final String INVENTORY_QUEUE_REQUEST_ROUTING_KEY = "inventory.queue.request";
     public static final String INVENTORY_QUEUE_RESPONSE_ROUTING_KEY = "inventory.queue.response";
 
-    private static final Queue orderServiceSendToQueue = new Queue(RabbitMQConfig.DEFAULT_ORDER_SERVICE_REQUEST_QUEUE);
-    private static final Queue inventoryServiceSendToQueue = new Queue(RabbitMQConfig.DEFAULT_ORDER_SERVICE_RESPONSE_QUEUE);
+    @Getter private static final Queue orderServiceSendToQueue = new Queue(RabbitMQConfig.DEFAULT_ORDER_SERVICE_REQUEST_QUEUE);
+    @Getter private static final Queue inventoryServiceSendToQueue = new Queue(RabbitMQConfig.DEFAULT_ORDER_SERVICE_RESPONSE_QUEUE);
     private static final DirectExchange inventoryDirectExchange = new DirectExchange(RabbitMQConfig.INVENTORY_DIRECT_EXCHANGE);
 
     @Value("${spring.rabbitmq.host}")
@@ -41,6 +44,11 @@ public class RabbitMQConfig {
         factory.setUsername(user);
         factory.setPassword(password);
         return factory.newConnection();
+    }
+
+    @Bean
+    public MessageConverter messageConverter() {
+        return new Jackson2JsonMessageConverter();
     }
 
     @Bean
