@@ -20,6 +20,7 @@ import com.parasoft.demoapp.model.global.preferences.*;
 import com.parasoft.demoapp.repository.global.GlobalPreferencesRepository;
 import com.parasoft.demoapp.util.BugsTypeSortOfDemoBugs;
 import com.parasoft.demoapp.util.RouteIdSortOfRestEndpoint;
+import com.rabbitmq.client.Connection;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.admin.AdminClient;
@@ -570,6 +571,21 @@ public class GlobalPreferencesService {
         } finally {
             // To avoid trying to connect all the time
             client.close();
+        }
+    }
+
+    public void validateRabbitMQServerUrl() throws Exception {
+        Connection connection = null;
+        try {
+            connection = rabbitMQConfig.factory().newConnection();
+        } catch (Exception e) {
+            throw new RabbitMQServerIsNotAvailableException(
+                    MessageFormat.format(GlobalPreferencesMessages.RABBITMQ_SERVER_IS_NOT_AVAILABLE,
+                            rabbitMQConfig.getRabbitMqHost() + ":" + rabbitMQConfig.getRabbitMqPort()), e);
+        } finally {
+            if (connection != null) {
+                connection.close();
+            }
         }
     }
 }
