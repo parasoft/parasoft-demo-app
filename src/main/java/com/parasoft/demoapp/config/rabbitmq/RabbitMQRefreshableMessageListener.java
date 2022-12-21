@@ -1,11 +1,14 @@
 package com.parasoft.demoapp.config.rabbitmq;
 
 
+import com.parasoft.demoapp.config.MQConfig;
 import com.parasoft.demoapp.config.RefreshableMessageListener;
+import com.parasoft.demoapp.model.global.preferences.MqType;
 import org.springframework.amqp.core.MessageListener;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerEndpoint;
 import org.springframework.amqp.rabbit.listener.MessageListenerContainer;
+import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 
 
 public abstract class RabbitMQRefreshableMessageListener extends RefreshableMessageListener<MessageListenerContainer> implements MessageListener {
@@ -18,7 +21,9 @@ public abstract class RabbitMQRefreshableMessageListener extends RefreshableMess
                                               String destinationName) {
         this.simpleRabbitListenerContainerFactory = simpleRabbitListenerContainerFactory;
 
-        registerListener(destinationName);
+        if(MQConfig.currentMQType == MqType.RABBIT_MQ) {
+            registerListener(destinationName);
+        }
     }
 
     protected void registerListener(String destinationName) {
@@ -26,7 +31,8 @@ public abstract class RabbitMQRefreshableMessageListener extends RefreshableMess
         rabbitListenerEndpoint.setMessageListener(this);
         rabbitListenerEndpoint.setId(ID_PREFIX + destinationName);
         rabbitListenerEndpoint.setQueueNames(destinationName);
-        MessageListenerContainer messageListenerContainer = simpleRabbitListenerContainerFactory.createListenerContainer(rabbitListenerEndpoint);
+        SimpleMessageListenerContainer messageListenerContainer = simpleRabbitListenerContainerFactory.createListenerContainer(rabbitListenerEndpoint);
+        messageListenerContainer.setConsumerStartTimeout(5000);
         messageListenerContainer.start();
         listenedListenerContainers.put(destinationName, messageListenerContainer);
     }

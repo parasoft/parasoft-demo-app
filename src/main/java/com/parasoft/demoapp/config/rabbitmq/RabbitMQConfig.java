@@ -61,13 +61,33 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Binding inventoryServiceRequestBindingExchange() {
-        return BindingBuilder.bind(new Queue(orderServiceSendToQueue)).to(inventoryDirectExchange()).with(RabbitMQConfig.INVENTORY_QUEUE_REQUEST_ROUTING_KEY);
+    public Queue orderServiceSendToQueue() {
+        return new Queue(orderServiceSendToQueue);
     }
 
     @Bean
-    public Binding inventoryServiceResponseBindingExchange() {
-        return BindingBuilder.bind(new Queue(DEFAULT_ORDER_SERVICE_RESPONSE_QUEUE)).to(inventoryDirectExchange()).with(RabbitMQConfig.INVENTORY_QUEUE_RESPONSE_ROUTING_KEY);
+    public Queue orderServiceListenToQueue() {
+        return new Queue(orderServiceListenToQueue);
+    }
+
+    @Bean
+    public Queue inventoryServiceSendToQueue() {
+        return new Queue(DEFAULT_ORDER_SERVICE_RESPONSE_QUEUE);
+    }
+
+    @Bean
+    public Queue inventoryServiceListenToQueue() {
+        return new Queue(DEFAULT_ORDER_SERVICE_REQUEST_QUEUE);
+    }
+
+    @Bean
+    public Binding orderServiceSendToQueueBinding() {
+        return BindingBuilder.bind(orderServiceSendToQueue()).to(inventoryDirectExchange()).with(RabbitMQConfig.INVENTORY_QUEUE_REQUEST_ROUTING_KEY);
+    }
+
+    @Bean
+    public Binding inventoryServiceSendToQueueBinding() {
+        return BindingBuilder.bind(inventoryServiceSendToQueue()).to(inventoryDirectExchange()).with(RabbitMQConfig.INVENTORY_QUEUE_RESPONSE_ROUTING_KEY);
     }
 
     @Bean
