@@ -49,7 +49,7 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    SimpleRabbitListenerContainerFactory simpleRabbitListenerContainerFactory(org.springframework.amqp.rabbit.connection.ConnectionFactory connectionFactory) {
+    SimpleRabbitListenerContainerFactory simpleRabbitListenerContainerFactory(ConnectionFactory connectionFactory) {
         SimpleRabbitListenerContainerFactory simpleRabbitListenerContainerFactory = new SimpleRabbitListenerContainerFactory();
         simpleRabbitListenerContainerFactory.setConnectionFactory(connectionFactory);
         return simpleRabbitListenerContainerFactory;
