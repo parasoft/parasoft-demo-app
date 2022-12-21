@@ -1522,7 +1522,7 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
                          value: data.rabbitMQConfig.rabbitMqPort
                     }, {
                          label: $filter('translate')('USER'),
-                         value: data.rabbitMQConfig.user
+                         value: data.rabbitMQConfig.username
                     }, {
                          label: $filter('translate')('PASSWORD'),
                          value: data.rabbitMQConfig.password

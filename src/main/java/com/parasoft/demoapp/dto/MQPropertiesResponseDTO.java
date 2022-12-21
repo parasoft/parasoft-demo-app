@@ -48,13 +48,13 @@ public class MQPropertiesResponseDTO {
     public static class RabbitMQConfigResponse  {
         private String rabbitMqHost;
         private int rabbitMqPort;
-        private String user;
+        private String username;
         private String password;
 
-        public RabbitMQConfigResponse(String rabbitMqHost, int rabbitMqPort, String user, String password) {
+        public RabbitMQConfigResponse(String rabbitMqHost, int rabbitMqPort, String username, String password) {
             this.rabbitMqHost = rabbitMqHost;
             this.rabbitMqPort = rabbitMqPort;
-            this.user = user;
+            this.username = username;
             this.password = password;
         }
     }
