@@ -423,8 +423,8 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
     demo.saveAll = function() {
         let data = angular.element('#options_form').serializeJSON()
         if (data.mqType === 'ACTIVE_MQ') {
-            data.orderServiceSendTo = data.orderServiceAvtiveMqRequestQueue;
-            data.orderServiceListenOn = data.orderServiceAvtiveMqResponseQueue;
+            data.orderServiceSendTo = data.inventoryServiceActiveMqRequestQueue;
+            data.orderServiceListenOn = data.inventoryServiceActiveMqResponseQueue;
         } else if (data.mqType === 'KAFKA') {
             data.orderServiceSendTo = data.inventoryServiceKafkaRequestTopic;
             data.orderServiceListenOn = data.inventoryServiceKafkaResponseTopic;
@@ -1337,8 +1337,8 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
         options.parasoftVirtualizeGroupId = data.parasoftVirtualizeGroupId;
 
         options.mqType = data.mqType;
-        options.orderServiceAvtiveMqRequestQueue = data.activeMqConfig.orderServiceSendTo;
-        options.orderServiceAvtiveMqResponseQueue = data.activeMqConfig.orderServiceListenOn;
+        options.inventoryServiceActiveMqRequestQueue = data.activeMqConfig.orderServiceSendTo;
+        options.inventoryServiceActiveMqResponseQueue = data.activeMqConfig.orderServiceListenOn;
         options.inventoryServiceKafkaRequestTopic = data.kafkaConfig.orderServiceSendTo;
         options.inventoryServiceKafkaResponseTopic = data.kafkaConfig.orderServiceListenOn;
         options.inventoryServiceRabbitMqRequestQueue = data.rabbitMqConfig.orderServiceSendTo;
@@ -1397,13 +1397,13 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
 
     options.resetOrderServiceActiveMqRequestQueue = function(){
         resetValuesTemplate(function(defaultOptions){
-            options.orderServiceAvtiveMqRequestQueue = defaultOptions.activeMqConfig.orderServiceSendTo;
+            options.inventoryServiceActiveMqRequestQueue = defaultOptions.activeMqConfig.orderServiceSendTo;
         });
     }
 
     options.resetOrderServiceActiveMqResponseQueue = function(){
         resetValuesTemplate(function(defaultOptions){
-            options.orderServiceAvtiveMqResponseQueue = defaultOptions.activeMqConfig.orderServiceListenOn;
+            options.inventoryServiceActiveMqResponseQueue = defaultOptions.activeMqConfig.orderServiceListenOn;
         });
     }
 
