@@ -18,16 +18,16 @@ import javax.jms.Message;
 
 @Slf4j
 @Component
-public class InventoryResponseQueueListener extends ActiveMQRefreshableMessageListener {
+public class ActiveMQInventoryResponseQueueListener extends ActiveMQRefreshableMessageListener {
     private final OrderService orderService;
     private final OrderMQService orderMQService;
 
-    public InventoryResponseQueueListener(MessageConverter jmsMessageConverter,
-                                          JmsListenerEndpointRegistry jmsListenerEndpointRegistry,
-                                          DefaultJmsListenerContainerFactory jmsQueueListenerContainerFactory,
-                                          OrderService orderService,
-                                          OrderMQService orderMQService,
-                                          CachingConnectionFactory cachingConnectionFactory) {
+    public ActiveMQInventoryResponseQueueListener(MessageConverter jmsMessageConverter,
+                                                  JmsListenerEndpointRegistry jmsListenerEndpointRegistry,
+                                                  DefaultJmsListenerContainerFactory jmsQueueListenerContainerFactory,
+                                                  OrderService orderService,
+                                                  OrderMQService orderMQService,
+                                                  CachingConnectionFactory cachingConnectionFactory) {
         super(jmsMessageConverter, jmsListenerEndpointRegistry, jmsQueueListenerContainerFactory,
                 ActiveMQConfig.getOrderServiceListenToQueue(), cachingConnectionFactory);
 

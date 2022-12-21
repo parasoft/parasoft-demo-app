@@ -37,7 +37,7 @@ public abstract class ActiveMQRefreshableMessageListener extends RefreshableMess
         }
     }
 
-    private void registerListener(String destinationName) {
+    protected void registerListener(String destinationName) {
         SimpleJmsListenerEndpoint jmsListenerEndpoint = new SimpleJmsListenerEndpoint();
         jmsListenerEndpoint.setMessageListener(this);
         jmsListenerEndpoint.setDestination(destinationName);
