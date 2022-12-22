@@ -9,7 +9,7 @@ import com.parasoft.demoapp.model.global.preferences.MqType;
 import com.parasoft.demoapp.model.industry.OrderItemEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.activemq.command.ActiveMQQueue;
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsMessagingTemplate;
@@ -66,9 +66,13 @@ public class OrderMQService {
             }
         } else if (MQConfig.currentMQType == MqType.RABBIT_MQ) {
             requestDestination = "RabbitMQ queue: " + RabbitMQConfig.getOrderServiceSendToQueue();
-            rabbitTemplate.convertAndSend(RabbitMQConfig.INVENTORY_DIRECT_EXCHANGE,
-                                          RabbitMQConfig.INVENTORY_QUEUE_REQUEST_ROUTING_KEY,
-                                          message);
+            try{
+                rabbitTemplate.convertAndSend(RabbitMQConfig.INVENTORY_DIRECT_EXCHANGE,
+                                              RabbitMQConfig.INVENTORY_QUEUE_REQUEST_ROUTING_KEY,
+                                              message);
+            } catch (Exception e) {
+                throw new AmqpException("Can not send message to RabbitMQ broker.", e);
+            }
         }
 
         log.info("Order service sent a message to {} \n Message content: {}", requestDestination, message);
