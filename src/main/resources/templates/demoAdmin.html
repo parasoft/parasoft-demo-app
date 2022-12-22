@@ -817,9 +817,44 @@
                     <div class="support_link_wrapper">
                         <a href="/schema.graphqls" class="support_link industry_color_1" target="_blank" translate="GRAPHQL_SCHEMA"></a>
                     </div>
+                    <div class="support_link_wrapper">
+                        <a class="support_link industry_color_1 available_user_accounts_link" translate="AVAILABLE_USER_ACCOUNTS" data-toggle="modal"
+                           data-target="#available_user_accounts_info_modal"></a>
+                    </div>
                 </div>
             </div>
         </div>
+        <div id="available_user_accounts_info_modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+            <div class="modal-dialog">
+                <div class="modal-content industry_font available_user_accounts_info_modal_content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <div class="modal-title">
+                            <div translate="AVAILABLE_USER_ACCOUNTS"></div>
+                        </div>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="available_user_accounts_description" translate="AVAILABLE_USER_ACCOUNTS_DESCRIPTION"></div>
+                        <table class="available_user_accounts_info">
+                            <tr>
+                                <td><span translate="PURCHASER_TITLE"></span></td>
+                                <td><span translate="APPROVER_TITLE"></span></td>
+                            </tr>
+                            <tr ng-repeat="info in demo.userAccountsInfo">
+                                <td>{{info.purchaserInfo}}</td>
+                                <td>{{info.approverInfo}}</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn button-secondary modal_cancel_btn" data-dismiss="modal" translate="CLOSE"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div id="img_modal" ng-if="demo.isShowImgModal" class="common_industry" ng-style="demo.modalStyle">
             <div ng-click="demo.closeImgModal()"><span id="close_btn" ng-bind="'x'" class="common_div font_color2"></span></div>
             <img id="img_in_modal" ng-src="{{demo.itemImg}}">
