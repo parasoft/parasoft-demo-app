@@ -107,6 +107,9 @@ function initHeaderController(app){
             }
 
             if(preferenceData.mqType === 'KAFKA') {
+                localStorage.setItem("displayRabbitMQError", "false");
+                $rootScope.displayRabbitMQError = localStorage.getItem("displayRabbitMQError");
+
                 $http({
                     method: 'GET',
                     url: '/v1/demoAdmin/kafkaBrokerUrlValidation'
@@ -118,9 +121,26 @@ function initHeaderController(app){
                 }).finally(() => {
                     $rootScope.displayKafkaError = localStorage.getItem("displayKafkaError")
                 });
-            } else if(preferenceData.mqType === 'ACTIVE_MQ') {
+            } else if(preferenceData.mqType === 'RABBIT_MQ') {
                 localStorage.setItem("displayKafkaError", "false");
                 $rootScope.displayKafkaError = localStorage.getItem("displayKafkaError");
+
+                $http({
+                    method: 'GET',
+                    url: '/v1/demoAdmin/rabbitMQUrlValidation'
+                }).then(function success() {
+                    localStorage.setItem("displayRabbitMQError", "false");
+                }, function error(response) {
+                    console.info(response);
+                    localStorage.setItem("displayRabbitMQError", "true");
+                }).finally(() => {
+                    $rootScope.displayRabbitMQError = localStorage.getItem("displayRabbitMQError");
+                });
+            } else {
+                localStorage.setItem("displayKafkaError", "false");
+                localStorage.setItem("displayRabbitMQError", "false");
+                $rootScope.displayKafkaError = localStorage.getItem("displayKafkaError");
+                $rootScope.displayRabbitMQError = localStorage.getItem("displayRabbitMQError");
             }
         }, function errorCallback(response) {
             console.log(response);
@@ -132,6 +152,7 @@ function initHeaderController(app){
         $rootScope.username = CURRENT_USERNAME;
 
         $rootScope.displayKafkaError = localStorage.getItem("displayKafkaError");
+        $rootScope.displayRabbitMQError = localStorage.getItem("displayRabbitMQError");
         $rootScope.isShowSettingButton = true;
         $rootScope.isShowRequisitionButton = true;
         $rootScope.isShowRequisitionRequestButton = true;
