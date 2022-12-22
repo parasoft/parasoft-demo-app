@@ -3,9 +3,12 @@ package com.parasoft.demoapp.service;
 import com.parasoft.demoapp.config.MQConfig;
 import com.parasoft.demoapp.config.activemq.ActiveMQConfig;
 import com.parasoft.demoapp.config.kafka.KafkaConfig;
+import com.parasoft.demoapp.config.rabbitmq.RabbitMQConfig;
 import com.parasoft.demoapp.dto.InventoryOperationResultMessageDTO;
+import com.parasoft.demoapp.model.global.preferences.MqType;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.activemq.command.ActiveMQQueue;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -25,6 +28,9 @@ public class ItemInventoryMQService {
 
     @Autowired
     private KafkaTemplate<String, InventoryOperationResultMessageDTO> operationResultKafkaTemplate;
+    
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     public void sendToInventoryResponseDestination(InventoryOperationResultMessageDTO message) {
         String responseDestination = null;
@@ -36,7 +42,13 @@ public class ItemInventoryMQService {
             String destination = KafkaConfig.getOrderServiceListenToTopic();
             responseDestination = "Kafka topic: " + destination;
             operationResultKafkaTemplate.send(destination, message.getOrderNumber(), message);
+        } else if (MQConfig.currentMQType == MqType.RABBIT_MQ) {
+            responseDestination = "RabbitMQ queue: " + RabbitMQConfig.getOrderServiceListenToQueue();
+            rabbitTemplate.convertAndSend(RabbitMQConfig.INVENTORY_DIRECT_EXCHANGE,
+                                          RabbitMQConfig.INVENTORY_QUEUE_RESPONSE_ROUTING_KEY,
+                                          message);
         }
+        
         log.info("Inventory service sent a message to {} \n Message content: {}", responseDestination, message);
     }
 

@@ -42,8 +42,7 @@ public class RabbitMQInventoryRequestQueueListener extends RabbitMQRefreshableMe
             log.info("Inventory service has no response message to reply.");
             return;
         }
-
-        // TODO: reply message to response queue
-
+        
+        itemInventoryMQService.sendToInventoryResponseDestination(messageToReply);
     }
 }
