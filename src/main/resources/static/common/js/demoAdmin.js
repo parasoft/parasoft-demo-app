@@ -49,6 +49,13 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
         }
     }
 
+    demo.userAccountsInfo = [
+        "purchaser / password; approver / password",
+        "purchaser2 / password; approver2 / password",
+        "...",
+        "purchaser50 / password; approver50 / password"
+    ];
+
     demo.changeToCategories = function(){
         if(demo.CATEGORIES !== "active"){
             demo.CATEGORIES = "active";
