@@ -3,7 +3,7 @@
     height: 318px;
 }
 
-.input-wrapper button, #test_connection_kafka_service_button {
+.input-wrapper button, #test_connection_kafka_service_button, #test_connection_rabbitmq_service_button {
     background-color: rgba(122, 141, 149, 1);
     border-color: rgba(182, 221, 238, 1);
     border-radius: 20px;

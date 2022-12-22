@@ -279,7 +279,12 @@
                                                         <button id="test_connection_kafka_service_button" class="btn btn-default industry_button" translate="TEST_CONNECT"
                                                                   ng-disabled="demo.isTestingKafkaBrokerUrl" ng-click="demo.validateKafkaBrokerUrl()"></button>
                                                 </div>
+                                                <div class="test_connection_rabbitmq_service" ng-if="options.mqType === 'RABBIT_MQ'">
+                                                    <button id="test_connection_rabbitmq_service_button" class="btn btn-default industry_button" translate="TEST_CONNECT"
+                                                            ng-disabled="demo.isTestingRabbitMQServerUrl" ng-click="demo.validateRabbitMQServerUrl()"></button>
+                                                </div>
                                                 <span ng-show="demo.isTestingKafkaBrokerUrl" class="testing_connection_kafka_service"  translate={{'TESTING'|translate}}></span>
+                                                <span ng-show="demo.isTestingRabbitMQServerUrl" class="testing_connection_rabbitmq_service"  translate={{'TESTING'|translate}}></span>
                                             </div>
                                         </div>
                                     </div>

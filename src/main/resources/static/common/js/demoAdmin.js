@@ -307,6 +307,23 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
         });
     }
 
+    demo.validateRabbitMQServerUrl = function () {
+        demo.isTestingRabbitMQServerUrl = true;
+        $http({
+            method: 'GET',
+            url: '/v1/demoAdmin/rabbitMQUrlValidation'
+        }).then(function success() {
+            localStorage.setItem("displayRabbitMQError", "false");
+            toastr.success($filter('translate')('CONNECT_RABBIT_MQ_SERVER_SUCCESS'));
+        }, function error() {
+            localStorage.setItem("displayRabbitMQError", "true");
+            toastrService().error($filter('translate')('INVALID_RABBIT_MQ_SERVER_URL'));
+        }).finally(function () {
+            demo.isTestingRabbitMQServerUrl = false;
+            $rootScope.displayRabbitMQError = localStorage.getItem("displayRabbitMQError");
+        });
+    }
+
     demo.validateVirtualizeServerUrl = function(url){
         demo.clearVirtualizeServerUrlTestMessage();
         demo.isVirtualizeServerUrlTesting = true;
