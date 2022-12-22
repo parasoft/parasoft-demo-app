@@ -50,10 +50,22 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
     }
 
     demo.userAccountsInfo = [
-        "purchaser / password; approver / password",
-        "purchaser2 / password; approver2 / password",
-        "...",
-        "purchaser50 / password; approver50 / password"
+        {
+            purchaserInfo: "purchaser / password",
+            approverInfo: "approver / password"
+        },
+        {
+            purchaserInfo: "purchaser2 / password",
+            approverInfo: "approver2 / password"
+        },
+        {
+            purchaserInfo: "...",
+            approverInfo: "..."
+        },
+        {
+            purchaserInfo: "purchaser50 / password",
+            approverInfo: "approver50 / password"
+        }
     ];
 
     demo.changeToCategories = function(){

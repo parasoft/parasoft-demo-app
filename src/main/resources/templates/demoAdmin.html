@@ -836,9 +836,16 @@
 
                     <div class="modal-body">
                         <div class="available_user_accounts_description" translate="AVAILABLE_USER_ACCOUNTS_DESCRIPTION"></div>
-                        <div class="available_user_accounts_info" ng-repeat="info in demo.userAccountsInfo">
-                            <div ng-bind="info"></div>
-                        </div>
+                        <table class="available_user_accounts_info">
+                            <tr>
+                                <td><span translate="PURCHASER_TITLE"></span></td>
+                                <td><span translate="APPROVER_TITLE"></span></td>
+                            </tr>
+                            <tr ng-repeat="info in demo.userAccountsInfo">
+                                <td>{{info.purchaserInfo}}</td>
+                                <td>{{info.approverInfo}}</td>
+                            </tr>
+                        </table>
                     </div>
 
                     <div class="modal-footer">

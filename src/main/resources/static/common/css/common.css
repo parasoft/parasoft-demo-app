@@ -437,10 +437,18 @@ a, a:hover, a:focus {
     cursor:pointer
 }
 
-.available_user_accounts_description, .available_user_accounts_info {
+.available_user_accounts_description {
     font-size: 15px;
+    margin: 0px 22px 15px;
 }
 
-.available_user_accounts_description {
-    margin-bottom: 15px;
+.available_user_accounts_info {
+    margin: auto;
+    width: fit-content;
+}
+.available_user_accounts_info td {
+    width: 200px;
+    text-align: center;
+    border: 1px solid lightgrey;
+    padding: 5px;
 }
