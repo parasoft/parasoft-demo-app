@@ -6,11 +6,11 @@
         <nav>
             <ul>
                 <li id="setting-button" ng-if="isShowSettingButton">
-                    <a ng-href="{{displayKafkaError === 'true' ? '/demoAdmin#parasoftQueueConfiguration' : '/demoAdmin'}}"
+                    <a ng-href="{{(displayKafkaError === 'true' || displayRabbitMQError === 'true') ? '/demoAdmin#parasoftQueueConfiguration' : '/demoAdmin'}}"
                        class="button-body full-fill-center" title="{{'HEADER_DEMO_ADMIN_TITLE'|translate}}">
                         <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
                     </a>
-                    <i class="fa fa-exclamation-circle exclamation-mark" ng-if="displayKafkaError === 'true'">
+                    <i class="fa fa-exclamation-circle exclamation-mark" ng-if="displayKafkaError === 'true' || displayRabbitMQError === 'true'">
                         <span class="exclamation-mark-for-gear"></span>
                     </i>
                 </li>

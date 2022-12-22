@@ -441,6 +441,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
             localStorage.setItem("status", "true");
             localStorage.setItem("save_succeeded", $filter('translate')('SAVING_SUCCEEDS'));
             localStorage.setItem("displayKafkaError", "false");
+            localStorage.setItem("displayRabbitMQError", "false");
             $window.location.reload();
             $('#saving_modal').modal('hide');
         }).catch(function(response) {
@@ -467,6 +468,9 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
             } else if(responseMessage.indexOf('can not establish connection with kafka broker') > -1){
                 localStorage.setItem("displayKafkaError", "true");
                 errorMessage =  $filter('translate')('INVALID_KAFKA_SERVER_URL');
+            } else if(responseMessage.indexOf('can not establish connection with rabbitmq server') > -1) {
+                localStorage.setItem("displayRabbitMQError", "true");
+                errorMessage =  $filter('translate')('INVALID_RABBIT_MQ_SERVER_URL');
             } else {
                 errorMessage = responseMessage;
             }
@@ -476,6 +480,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
             toastrService().error($filter('translate')('SAVING_FAILS') + '<br/>' + errorMessage);
         }).finally(function() {
             $rootScope.displayKafkaError = localStorage.getItem("displayKafkaError");
+            $rootScope.displayRabbitMQError = localStorage.getItem("displayRabbitMQError");
         });
     };
 
