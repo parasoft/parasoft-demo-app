@@ -23,7 +23,7 @@ public class RabbitMQInventoryResponseQueueListener extends RabbitMQRefreshableM
                                                   OrderMQService orderMQService,
                                                   SimpleRabbitListenerContainerFactory simpleRabbitListenerContainerFactory) {
         super(simpleRabbitListenerContainerFactory,
-                RabbitMQConfig.DEFAULT_ORDER_SERVICE_RESPONSE_QUEUE);
+                RabbitMQConfig.getOrderServiceListenToQueue());
 
         this.rabbitMqMessageConverter = rabbitMqMessageConverter;
         this.orderService = orderService;
