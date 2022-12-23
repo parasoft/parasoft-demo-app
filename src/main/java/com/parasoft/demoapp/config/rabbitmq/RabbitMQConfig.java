@@ -40,7 +40,7 @@ public class RabbitMQConfig {
 
 
     @Bean
-    public CachingConnectionFactory factory() throws Exception {
+    public CachingConnectionFactory connectionFactory() throws Exception {
         CachingConnectionFactory factory = new CachingConnectionFactory();
         factory.setHost(rabbitMqHost);
         factory.setPort(rabbitMqPort);
