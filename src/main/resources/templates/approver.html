@@ -28,10 +28,10 @@
                 <nav>
                     <ul>
                         <li id="setting-button">
-                            <a href="/demoAdmin" class="button-body full-fill-center" title="{{'HEADER_DEMO_ADMIN_TITLE'|translate}}">
+                            <a ng-href="{{(displayKafkaError === 'true' || displayRabbitMQError === 'true') ? '/demoAdmin#parasoftQueueConfiguration' : '/demoAdmin'}}" class="button-body full-fill-center" title="{{'HEADER_DEMO_ADMIN_TITLE'|translate}}">
                                 <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
                             </a>
-                            <div class="fa fa-exclamation-circle exclamation-mark" ng-if="displayKafkaError === 'true'">
+                            <div class="fa fa-exclamation-circle exclamation-mark" ng-if="displayKafkaError === 'true' || displayRabbitMQError === 'true'">
                                 <span class="exclamation-mark-for-gear"></span>
                             </div>
                         </li>

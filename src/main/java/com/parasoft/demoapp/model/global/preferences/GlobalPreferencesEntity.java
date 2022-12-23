@@ -86,20 +86,28 @@ public class GlobalPreferencesEntity {
     private MqType mqType;
 
     @Setter
-    @Column(name = "order_service_destination_queue")
-    private String orderServiceDestinationQueue;
+    @Column(name = "order_service_active_mq_request_queue")
+    private String orderServiceActiveMqRequestQueue;
 
     @Setter
-    @Column(name = "order_service_reply_to_queue")
-    private String orderServiceReplyToQueue;
+    @Column(name = "order_service_active_mq_response_queue")
+    private String orderServiceActiveMqResponseQueue;
 
     @Setter
-    @Column(name = "order_service_request_topic")
-    private String orderServiceRequestTopic;
+    @Column(name = "order_service_kafka_request_topic")
+    private String orderServiceKafkaRequestTopic;
 
     @Setter
-    @Column(name = "order_service_response_topic")
-    private String orderServiceResponseTopic;
+    @Column(name = "order_service_kafka_response_topic")
+    private String orderServiceKafkaResponseTopic;
+
+    @Setter
+    @Column(name = "order_service_rabbit_mq_request_queue")
+    private String orderServiceRabbitMqRequestQueue;
+
+    @Setter
+    @Column(name = "order_service_rabbit_mq_response_queue")
+    private String orderServiceRabbitMqResponseQueue;
 
     public GlobalPreferencesEntity(DataAccessMode dataAccessMode, String soapEndpoint,
                                    Set<RestEndpointEntity> restEndpoints,
@@ -109,10 +117,12 @@ public class GlobalPreferencesEntity {
                                    String parasoftVirtualizeServerUrl, String parasoftVirtualizeServerPath,
                                    String parasoftVirtualizeGroupId,
                                    MqType mqType,
-                                   String orderServiceDestinationQueue,
-                                   String orderServiceReplyToQueue,
-                                   String orderServiceRequestTopic,
-                                   String orderServiceResponseTopic) {
+                                   String orderServiceActiveMqRequestQueue,
+                                   String orderServiceActiveMqResponseQueue,
+                                   String orderServiceKafkaRequestTopic,
+                                   String orderServiceKafkaResponseTopic,
+                                   String orderServiceRabbitMqRequestQueue,
+                                   String orderServiceRabbitMqResponseQueue) {
         this.dataAccessMode = dataAccessMode;
         this.soapEndPoint = soapEndpoint;
         this.restEndPoints = restEndpoints;
@@ -126,9 +136,11 @@ public class GlobalPreferencesEntity {
         this.parasoftVirtualizeServerPath = parasoftVirtualizeServerPath;
         this.parasoftVirtualizeGroupId = parasoftVirtualizeGroupId;
         this.mqType = mqType;
-        this.orderServiceDestinationQueue = orderServiceDestinationQueue;
-        this.orderServiceReplyToQueue = orderServiceReplyToQueue;
-        this.orderServiceRequestTopic = orderServiceRequestTopic;
-        this.orderServiceResponseTopic = orderServiceResponseTopic;
+        this.orderServiceActiveMqRequestQueue = orderServiceActiveMqRequestQueue;
+        this.orderServiceActiveMqResponseQueue = orderServiceActiveMqResponseQueue;
+        this.orderServiceKafkaRequestTopic = orderServiceKafkaRequestTopic;
+        this.orderServiceKafkaResponseTopic = orderServiceKafkaResponseTopic;
+        this.orderServiceRabbitMqRequestQueue = orderServiceRabbitMqRequestQueue;
+        this.orderServiceRabbitMqResponseQueue = orderServiceRabbitMqResponseQueue;
     }
 }

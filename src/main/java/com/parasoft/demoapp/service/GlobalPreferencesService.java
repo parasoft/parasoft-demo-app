@@ -3,12 +3,13 @@ package com.parasoft.demoapp.service;
 import com.parasoft.demoapp.config.ImplementedIndustries;
 import com.parasoft.demoapp.config.MQConfig;
 import com.parasoft.demoapp.config.activemq.ActiveMQConfig;
-import com.parasoft.demoapp.config.activemq.InventoryRequestQueueListener;
-import com.parasoft.demoapp.config.activemq.InventoryResponseQueueListener;
+import com.parasoft.demoapp.config.activemq.ActiveMQInventoryRequestQueueListener;
+import com.parasoft.demoapp.config.activemq.ActiveMQInventoryResponseQueueListener;
 import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
-import com.parasoft.demoapp.config.kafka.InventoryRequestTopicListener;
-import com.parasoft.demoapp.config.kafka.InventoryResponseTopicListener;
 import com.parasoft.demoapp.config.kafka.KafkaConfig;
+import com.parasoft.demoapp.config.kafka.KafkaInventoryRequestTopicListener;
+import com.parasoft.demoapp.config.kafka.KafkaInventoryResponseTopicListener;
+import com.parasoft.demoapp.config.rabbitmq.RabbitMQConfig;
 import com.parasoft.demoapp.defaultdata.ClearEntrance;
 import com.parasoft.demoapp.defaultdata.ResetEntrance;
 import com.parasoft.demoapp.dto.GlobalPreferencesDTO;
@@ -23,6 +24,7 @@ import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.ListTopicsOptions;
+import org.springframework.amqp.rabbit.connection.Connection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,16 +65,16 @@ public class GlobalPreferencesService {
     private ParasoftJDBCProxyService parasoftJDBCProxyService;
 
     @Autowired
-    private InventoryResponseQueueListener inventoryResponseQueueListener;
+    private ActiveMQInventoryResponseQueueListener activeMQInventoryResponseQueueListener;
 
     @Autowired
-    private InventoryRequestQueueListener inventoryRequestQueueListener;
+    private ActiveMQInventoryRequestQueueListener activeMQInventoryRequestQueueListener;
 
     @Autowired
-    private InventoryRequestTopicListener inventoryRequestTopicListener;
+    private KafkaInventoryRequestTopicListener kafkaInventoryRequestTopicListener;
 
     @Autowired
-    private InventoryResponseTopicListener inventoryResponseTopicListener;
+    private KafkaInventoryResponseTopicListener kafkaInventoryResponseTopicListener;
 
     @Autowired
     private GlobalPreferencesDefaultSettingsService defaultGlobalPreferencesSettingsService;
@@ -82,6 +84,9 @@ public class GlobalPreferencesService {
 
     @Autowired
     private KafkaConfig kafkaConfig;
+
+    @Autowired
+    private RabbitMQConfig rabbitMQConfig;
 
     /**
      * A flag indicating whether the destinations of the mq need to be updated when the global preference is updated.
@@ -101,10 +106,12 @@ public class GlobalPreferencesService {
                                                            String parasoftVirtualizeServerUrl, String parasoftVirtualizeServerPath,
                                                            String parasoftVirtualizeGroupId,
                                                            MqType mqType,
-                                                           String orderServiceDestinationQueue,
-                                                           String orderServiceReplyToQueue,
-                                                           String orderServiceRequestTopic,
-                                                           String orderServiceResponseTopic) throws ParameterException {
+                                                           String orderServiceActiveMqRequestQueue,
+                                                           String orderServiceActiveMqResponseQueue,
+                                                           String orderServiceKafkaRequestTopic,
+                                                           String orderServiceKafkaResponseTopic,
+                                                           String orderServiceRabbitMqRequestQueue,
+                                                           String orderServiceRabbitMqResponseQueue) throws ParameterException {
 
         validateIndustry(industryType);
         ParameterValidator.requireNonNull(advertisingEnabled, GlobalPreferencesMessages.ADVERTISING_ENABLED_CANNOT_BE_NULL);
@@ -127,10 +134,12 @@ public class GlobalPreferencesService {
                                                             parasoftVirtualizeServerPath,
                                                             parasoftVirtualizeGroupId,
                                                             mqType,
-                                                            orderServiceDestinationQueue,
-                                                            orderServiceReplyToQueue,
-                                                            orderServiceRequestTopic,
-                                                            orderServiceResponseTopic);
+                                                            orderServiceActiveMqRequestQueue,
+                                                            orderServiceActiveMqResponseQueue,
+                                                            orderServiceKafkaRequestTopic,
+                                                            orderServiceKafkaResponseTopic,
+                                                            orderServiceRabbitMqRequestQueue,
+                                                            orderServiceRabbitMqResponseQueue);
 
         for(DemoBugEntity demoBug : demoBugs){
             demoBug.setGlobalPreferences(newGlobalPreferences);
@@ -260,14 +269,17 @@ public class GlobalPreferencesService {
         stopMQListenersExcept(currentPreferences.getMqType());
         if(MqType.ACTIVE_MQ == currentPreferences.getMqType()) {
             MQConfig.currentMQType = MqType.ACTIVE_MQ;
-            ActiveMQConfig.setOrderServiceSendToQueue(new ActiveMQQueue(currentPreferences.getOrderServiceDestinationQueue()));
-            inventoryResponseQueueListener.refreshDestination(currentPreferences.getOrderServiceReplyToQueue());
-            inventoryRequestQueueListener.refreshDestination(ActiveMQConfig.getInventoryServiceListenToQueue());
+            ActiveMQConfig.setOrderServiceSendToQueue(new ActiveMQQueue(currentPreferences.getOrderServiceActiveMqRequestQueue()));
+            activeMQInventoryResponseQueueListener.refreshDestination(currentPreferences.getOrderServiceActiveMqResponseQueue());
+            activeMQInventoryRequestQueueListener.refreshDestination(ActiveMQConfig.getInventoryServiceListenToQueue());
         } else if(MqType.KAFKA == currentPreferences.getMqType()) {
             MQConfig.currentMQType = MqType.KAFKA;
-            KafkaConfig.setOrderServiceSendToTopic(currentPreferences.getOrderServiceRequestTopic());
-            inventoryRequestTopicListener.refreshDestination(KafkaConfig.DEFAULT_ORDER_SERVICE_REQUEST_TOPIC);
-            inventoryResponseTopicListener.refreshDestination(currentPreferences.getOrderServiceResponseTopic());
+            KafkaConfig.setOrderServiceSendToTopic(currentPreferences.getOrderServiceKafkaRequestTopic());
+            kafkaInventoryRequestTopicListener.refreshDestination(KafkaConfig.DEFAULT_ORDER_SERVICE_REQUEST_TOPIC);
+            kafkaInventoryResponseTopicListener.refreshDestination(currentPreferences.getOrderServiceKafkaResponseTopic());
+        } else if(MqType.RABBIT_MQ == currentPreferences.getMqType()) {
+            MQConfig.currentMQType = MqType.RABBIT_MQ;
+            // TODO
         } else {
             throw new UnsupportedOperationException("Unsupported MQ type: " + currentPreferences.getMqType());
         }
@@ -284,18 +296,18 @@ public class GlobalPreferencesService {
         GlobalPreferencesDTO globalPreferencesDto = new GlobalPreferencesDTO();
         globalPreferencesDto.setMqType(globalPreferences.getMqType());
         if (globalPreferences.getMqType() == MqType.ACTIVE_MQ) {
-            globalPreferencesDto.setOrderServiceSendTo(globalPreferences.getOrderServiceDestinationQueue());
-            globalPreferencesDto.setOrderServiceListenOn(globalPreferences.getOrderServiceReplyToQueue());
+            globalPreferencesDto.setOrderServiceSendTo(globalPreferences.getOrderServiceActiveMqRequestQueue());
+            globalPreferencesDto.setOrderServiceListenOn(globalPreferences.getOrderServiceActiveMqResponseQueue());
             validateMqConfig(globalPreferencesDto);
             ActiveMQConfig.setOrderServiceSendToQueue(new ActiveMQQueue(
-                    globalPreferences.getOrderServiceDestinationQueue()));
-            ActiveMQConfig.setOrderServiceListenToQueue(globalPreferences.getOrderServiceReplyToQueue());
+                    globalPreferences.getOrderServiceActiveMqRequestQueue()));
+            ActiveMQConfig.setOrderServiceListenToQueue(globalPreferences.getOrderServiceActiveMqResponseQueue());
         } else if (globalPreferences.getMqType() == MqType.KAFKA) {
-            globalPreferencesDto.setOrderServiceSendTo(globalPreferences.getOrderServiceRequestTopic());
-            globalPreferencesDto.setOrderServiceListenOn(globalPreferences.getOrderServiceResponseTopic());
+            globalPreferencesDto.setOrderServiceSendTo(globalPreferences.getOrderServiceKafkaRequestTopic());
+            globalPreferencesDto.setOrderServiceListenOn(globalPreferences.getOrderServiceKafkaResponseTopic());
             validateMqConfig(globalPreferencesDto);
-            KafkaConfig.setOrderServiceSendToTopic(globalPreferences.getOrderServiceRequestTopic());
-            KafkaConfig.setOrderServiceListenToTopic(globalPreferences.getOrderServiceResponseTopic());
+            KafkaConfig.setOrderServiceSendToTopic(globalPreferences.getOrderServiceKafkaRequestTopic());
+            KafkaConfig.setOrderServiceListenToTopic(globalPreferences.getOrderServiceKafkaResponseTopic());
         }
     }
 
@@ -420,11 +432,14 @@ public class GlobalPreferencesService {
         String orderServiceSendTo = globalPreferencesDto.getOrderServiceSendTo();
         String orderServiceListenOn = globalPreferencesDto.getOrderServiceListenOn();
         if (globalPreferencesDto.getMqType() == MqType.ACTIVE_MQ) {
-            currentPreferences.setOrderServiceDestinationQueue(orderServiceSendTo);
-            currentPreferences.setOrderServiceReplyToQueue(orderServiceListenOn);
+            currentPreferences.setOrderServiceActiveMqRequestQueue(orderServiceSendTo);
+            currentPreferences.setOrderServiceActiveMqResponseQueue(orderServiceListenOn);
         } else if (globalPreferencesDto.getMqType() == MqType.KAFKA) {
-            currentPreferences.setOrderServiceRequestTopic(orderServiceSendTo);
-            currentPreferences.setOrderServiceResponseTopic(orderServiceListenOn);
+            currentPreferences.setOrderServiceKafkaRequestTopic(orderServiceSendTo);
+            currentPreferences.setOrderServiceKafkaResponseTopic(orderServiceListenOn);
+        } else if (globalPreferencesDto.getMqType() == MqType.RABBIT_MQ) {
+            currentPreferences.setOrderServiceRabbitMqRequestQueue(orderServiceSendTo);
+            currentPreferences.setOrderServiceRabbitMqResponseQueue(orderServiceListenOn);
         }
     }
 
@@ -433,12 +448,16 @@ public class GlobalPreferencesService {
         String orderServiceListenOn = globalPreferencesDto.getOrderServiceListenOn();
         if (globalPreferencesDto.getMqType() == MqType.ACTIVE_MQ){
             mqStatusChanged = !(globalPreferencesDto.getMqType() == currentPreferences.getMqType()) ||
-                    !(orderServiceSendTo.equals(currentPreferences.getOrderServiceDestinationQueue())) ||
-                    !(orderServiceListenOn.equals(currentPreferences.getOrderServiceReplyToQueue()));
+                    !(orderServiceSendTo.equals(currentPreferences.getOrderServiceActiveMqRequestQueue())) ||
+                    !(orderServiceListenOn.equals(currentPreferences.getOrderServiceActiveMqResponseQueue()));
         } else if (globalPreferencesDto.getMqType() == MqType.KAFKA) {
             mqStatusChanged = !(globalPreferencesDto.getMqType() == currentPreferences.getMqType()) ||
-                    !(orderServiceSendTo.equals(currentPreferences.getOrderServiceRequestTopic())) ||
-                    !(orderServiceListenOn.equals(currentPreferences.getOrderServiceResponseTopic()));
+                    !(orderServiceSendTo.equals(currentPreferences.getOrderServiceKafkaRequestTopic())) ||
+                    !(orderServiceListenOn.equals(currentPreferences.getOrderServiceKafkaResponseTopic()));
+        } else if (globalPreferencesDto.getMqType() == MqType.RABBIT_MQ) {
+            mqStatusChanged = !(globalPreferencesDto.getMqType() == currentPreferences.getMqType()) ||
+                    !(orderServiceSendTo.equals(currentPreferences.getOrderServiceRabbitMqRequestQueue())) ||
+                    !(orderServiceListenOn.equals(currentPreferences.getOrderServiceRabbitMqResponseQueue()));
         }
     }
 
@@ -509,12 +528,12 @@ public class GlobalPreferencesService {
     private void stopMQListenersExcept(MqType mqType) {
         if(MqType.ACTIVE_MQ == mqType) {
             // Stop listeners on Kafka
-            inventoryRequestTopicListener.stopAllListenedDestinations();
-            inventoryResponseTopicListener.stopAllListenedDestinations();
+            kafkaInventoryRequestTopicListener.stopAllListenedDestinations();
+            kafkaInventoryResponseTopicListener.stopAllListenedDestinations();
         } else if(MqType.KAFKA == mqType) {
             // Stop listeners on ActiveMQ
-            inventoryResponseQueueListener.stopAllListenedDestinations();
-            inventoryRequestQueueListener.stopAllListenedDestinations();
+            activeMQInventoryResponseQueueListener.stopAllListenedDestinations();
+            activeMQInventoryRequestQueueListener.stopAllListenedDestinations();
         }
     }
 
@@ -529,8 +548,14 @@ public class GlobalPreferencesService {
                         kafkaConfig.getBootstrapServers(),
                         kafkaConfig.getGroupId()
                 );
+        MQPropertiesResponseDTO.RabbitMQConfigResponse rabbitMQConfigResponse =
+                new MQPropertiesResponseDTO.RabbitMQConfigResponse(
+                        rabbitMQConfig.getRabbitMqHost(),
+                        rabbitMQConfig.getRabbitMqPort(),
+                        rabbitMQConfig.getUsername(),
+                        rabbitMQConfig.getPassword());
 
-        return new MQPropertiesResponseDTO(activeMQConfigResponse, kafkaConfigResponse);
+        return new MQPropertiesResponseDTO(activeMQConfigResponse, kafkaConfigResponse, rabbitMQConfigResponse);
     }
 
     public void validateKafkaBrokerUrl() throws KafkaServerIsNotAvailableException {
@@ -546,6 +571,21 @@ public class GlobalPreferencesService {
         } finally {
             // To avoid trying to connect all the time
             client.close();
+        }
+    }
+
+    public void validateRabbitMQServerUrl() throws RabbitMQServerIsNotAvailableException {
+        Connection connection = null;
+        try {
+            connection = rabbitMQConfig.factory().createConnection();
+        } catch (Exception e) {
+            throw new RabbitMQServerIsNotAvailableException(
+                    MessageFormat.format(GlobalPreferencesMessages.RABBITMQ_SERVER_IS_NOT_AVAILABLE,
+                            rabbitMQConfig.getRabbitMqHost() + ":" + rabbitMQConfig.getRabbitMqPort()), e);
+        } finally {
+            if (connection != null) {
+                connection.close();
+            }
         }
     }
 }

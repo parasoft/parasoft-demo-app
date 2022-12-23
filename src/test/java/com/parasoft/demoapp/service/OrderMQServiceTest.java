@@ -17,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
 
@@ -44,6 +45,9 @@ public class OrderMQServiceTest {
 
 	@Mock
 	KafkaTemplate<String, InventoryOperationRequestMessageDTO> operationRequestKafkaTemplate;
+
+    @Mock
+    RabbitTemplate rabbitTemplate;
 
 	@Before
 	public void setupMocks() {
@@ -178,6 +182,28 @@ public class OrderMQServiceTest {
 
         // Then
         Mockito.verify(operationRequestKafkaTemplate, times(1)).send(anyString(), anyString(), any(InventoryOperationRequestMessageDTO.class));
+    }
+
+    /**
+     * Test for sendToInventoryRequestDestination(InventoryOperation, String, List<OrderItemEntity>, String)
+     *
+     * @see com.parasoft.demoapp.service.OrderMQService#sendToInventoryRequestDestination(InventoryOperation, String, List<OrderItemEntity>, String)
+     */
+    @Test
+    public void testSendToInventoryRequestDestination_with_info_rabbit() {
+        // Given
+        String orderNumber = "11-234-567";
+        OrderItemEntity orderItem = new OrderItemEntity("name", "description", "imagePath", 1);
+        orderItem.setItemId(1L);
+        List<OrderItemEntity> orderItems = new ArrayList<>();
+        orderItems.add(orderItem);
+        MQConfig.currentMQType = MqType.RABBIT_MQ;
+
+        // When
+        underTest.sendToInventoryRequestDestination(InventoryOperation.DECREASE, orderNumber, orderItems, "test");
+
+        // Then
+        Mockito.verify(rabbitTemplate, times(1)).convertAndSend(anyString(), anyString(), any(InventoryOperationRequestMessageDTO.class));
     }
 
 	/**

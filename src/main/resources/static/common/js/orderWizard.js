@@ -163,6 +163,9 @@ app.controller('orderWizardController', function($scope, $rootScope, $http, $fil
                     if(result.data.message.indexOf("Can not send message to Kafka broker.") > -1) {
                         errTitle = $filter('translate')('SUBMIT_ERROR_TITLE')
                         errMsg = $filter('translate')('KAFKA_BROKER_NOT_AVAILABLE');
+                    } else if(result.data.message.indexOf("Can not send message to RabbitMQ broker.") > -1) {
+                        errTitle = $filter('translate')('SUBMIT_ERROR_TITLE')
+                        errMsg = $filter('translate')('RABBITMQ_HOST_NOT_AVAILABLE');
                     } else {
                         errMsg = $filter('translate')('SUBMIT_ERROR');
                     }

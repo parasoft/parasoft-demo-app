@@ -49,6 +49,25 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
         }
     }
 
+    demo.userAccountsInfo = [
+        {
+            purchaserInfo: "purchaser / password",
+            approverInfo: "approver / password"
+        },
+        {
+            purchaserInfo: "purchaser2 / password",
+            approverInfo: "approver2 / password"
+        },
+        {
+            purchaserInfo: "...",
+            approverInfo: "..."
+        },
+        {
+            purchaserInfo: "purchaser50 / password",
+            approverInfo: "approver50 / password"
+        }
+    ];
+
     demo.changeToCategories = function(){
         if(demo.CATEGORIES !== "active"){
             demo.CATEGORIES = "active";
@@ -307,6 +326,23 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
         });
     }
 
+    demo.validateRabbitMQServerUrl = function () {
+        demo.isTestingRabbitMQServerUrl = true;
+        $http({
+            method: 'GET',
+            url: '/v1/demoAdmin/rabbitMQUrlValidation'
+        }).then(function success() {
+            localStorage.setItem("displayRabbitMQError", "false");
+            toastr.success($filter('translate')('CONNECT_RABBIT_MQ_SERVER_SUCCESS'));
+        }, function error() {
+            localStorage.setItem("displayRabbitMQError", "true");
+            toastrService().error($filter('translate')('INVALID_RABBIT_MQ_SERVER_URL'));
+        }).finally(function () {
+            demo.isTestingRabbitMQServerUrl = false;
+            $rootScope.displayRabbitMQError = localStorage.getItem("displayRabbitMQError");
+        });
+    }
+
     demo.validateVirtualizeServerUrl = function(url){
         demo.clearVirtualizeServerUrlTestMessage();
         demo.isVirtualizeServerUrlTesting = true;
@@ -423,11 +459,14 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
     demo.saveAll = function() {
         let data = angular.element('#options_form').serializeJSON()
         if (data.mqType === 'ACTIVE_MQ') {
-            data.orderServiceSendTo = data.orderServiceDestinationQueue;
-            data.orderServiceListenOn = data.orderServiceReplyToQueue;
+            data.orderServiceSendTo = data.inventoryServiceActiveMqRequestQueue;
+            data.orderServiceListenOn = data.inventoryServiceActiveMqResponseQueue;
         } else if (data.mqType === 'KAFKA') {
-            data.orderServiceSendTo = data.inventoryServiceRequestTopic;
-            data.orderServiceListenOn = data.inventoryServiceResponseTopic;
+            data.orderServiceSendTo = data.inventoryServiceKafkaRequestTopic;
+            data.orderServiceListenOn = data.inventoryServiceKafkaResponseTopic;
+        } else if (data.mqType === 'RABBIT_MQ') {
+            data.orderServiceSendTo = data.inventoryServiceRabbitMqRequestQueue;
+            data.orderServiceListenOn = data.inventoryServiceRabbitMqResponseQueue;
         }
         $http({
             method: 'PUT',
@@ -438,6 +477,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
             localStorage.setItem("status", "true");
             localStorage.setItem("save_succeeded", $filter('translate')('SAVING_SUCCEEDS'));
             localStorage.setItem("displayKafkaError", "false");
+            localStorage.setItem("displayRabbitMQError", "false");
             $window.location.reload();
             $('#saving_modal').modal('hide');
         }).catch(function(response) {
@@ -464,6 +504,9 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
             } else if(responseMessage.indexOf('can not establish connection with kafka broker') > -1){
                 localStorage.setItem("displayKafkaError", "true");
                 errorMessage =  $filter('translate')('INVALID_KAFKA_SERVER_URL');
+            } else if(responseMessage.indexOf('can not establish connection with rabbitmq server') > -1) {
+                localStorage.setItem("displayRabbitMQError", "true");
+                errorMessage =  $filter('translate')('INVALID_RABBIT_MQ_SERVER_URL');
             } else {
                 errorMessage = responseMessage;
             }
@@ -473,6 +516,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
             toastrService().error($filter('translate')('SAVING_FAILS') + '<br/>' + errorMessage);
         }).finally(function() {
             $rootScope.displayKafkaError = localStorage.getItem("displayKafkaError");
+            $rootScope.displayRabbitMQError = localStorage.getItem("displayRabbitMQError");
         });
     };
 
@@ -1334,10 +1378,12 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
         options.parasoftVirtualizeGroupId = data.parasoftVirtualizeGroupId;
 
         options.mqType = data.mqType;
-        options.orderServiceDestinationQueue = data.activeMqConfig.orderServiceSendTo;
-        options.orderServiceReplyToQueue = data.activeMqConfig.orderServiceListenOn;
-        options.inventoryServiceRequestTopic = data.kafkaConfig.orderServiceSendTo;
-        options.inventoryServiceResponseTopic = data.kafkaConfig.orderServiceListenOn;
+        options.inventoryServiceActiveMqRequestQueue = data.activeMqConfig.orderServiceSendTo;
+        options.inventoryServiceActiveMqResponseQueue = data.activeMqConfig.orderServiceListenOn;
+        options.inventoryServiceKafkaRequestTopic = data.kafkaConfig.orderServiceSendTo;
+        options.inventoryServiceKafkaResponseTopic = data.kafkaConfig.orderServiceListenOn;
+        options.inventoryServiceRabbitMqRequestQueue = data.rabbitMqConfig.orderServiceSendTo;
+        options.inventoryServiceRabbitMqResponseQueue = data.rabbitMqConfig.orderServiceListenOn;
 
         options.webServiceMode = data.webServiceMode;
         options.graphQLEndpoint = data.graphQLEndpoint;
@@ -1390,27 +1436,39 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
         });
     }
 
-    options.resetOrderServiceDestinationQueue = function(){
+    options.resetOrderServiceActiveMqRequestQueue = function(){
         resetValuesTemplate(function(defaultOptions){
-            options.orderServiceDestinationQueue = defaultOptions.activeMqConfig.orderServiceSendTo;
+            options.inventoryServiceActiveMqRequestQueue = defaultOptions.activeMqConfig.orderServiceSendTo;
         });
     }
 
-    options.resetOrderServiceReplyToQueue = function(){
+    options.resetOrderServiceActiveMqResponseQueue = function(){
         resetValuesTemplate(function(defaultOptions){
-            options.orderServiceReplyToQueue = defaultOptions.activeMqConfig.orderServiceListenOn;
+            options.inventoryServiceActiveMqResponseQueue = defaultOptions.activeMqConfig.orderServiceListenOn;
         });
     }
 
-    options.restInventoryServiceRequestTopic = function(){
+    options.restInventoryServiceKafkaRequestTopic = function(){
         resetValuesTemplate(function(defaultOptions){
-            options.inventoryServiceRequestTopic = defaultOptions.kafkaConfig.orderServiceSendTo;
+            options.inventoryServiceKafkaRequestTopic = defaultOptions.kafkaConfig.orderServiceSendTo;
         });
     }
 
-    options.restInventoryServiceResponseTopic = function() {
+    options.restInventoryServiceKafkaResponseTopic = function() {
         resetValuesTemplate(function(defaultOptions){
-            options.inventoryServiceResponseTopic = defaultOptions.kafkaConfig.orderServiceListenOn;
+            options.inventoryServiceKafkaResponseTopic = defaultOptions.kafkaConfig.orderServiceListenOn;
+        });
+    }
+
+    options.resetOrderServiceRabbitMqRequestQueue = function(){
+        resetValuesTemplate(function(defaultOptions){
+            options.inventoryServiceRabbitMqRequestQueue = defaultOptions.rabbitMqConfig.orderServiceSendTo;
+        });
+    }
+
+    options.resetOrderServiceRabbitMqResponseQueue = function(){
+        resetValuesTemplate(function(defaultOptions){
+            options.inventoryServiceRabbitMqResponseQueue = defaultOptions.rabbitMqConfig.orderServiceListenOn;
         });
     }
 
@@ -1495,7 +1553,23 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
                         value: data.kafkaConfig.groupId
                     }
                 ];
-            }
+            } else if(options.mqType === "RABBIT_MQ") {
+                options.configurationDetails = [
+                     {
+                         label: $filter('translate')('RABBITMQ_HOST'),
+                         value: data.rabbitMQConfig.rabbitMqHost
+                    }, {
+                         label: $filter('translate')('RABBITMQ_PORT'),
+                         value: data.rabbitMQConfig.rabbitMqPort
+                    }, {
+                         label: $filter('translate')('USER'),
+                         value: data.rabbitMQConfig.username
+                    }, {
+                         label: $filter('translate')('PASSWORD'),
+                         value: data.rabbitMQConfig.password
+                    }
+                ];
+             };
         }).catch(function(result) {
             console.error(result);
         });

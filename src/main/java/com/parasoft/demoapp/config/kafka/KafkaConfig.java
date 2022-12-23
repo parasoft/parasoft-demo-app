@@ -1,5 +1,6 @@
 package com.parasoft.demoapp.config.kafka;
 
+import com.parasoft.demoapp.config.MQConfig;
 import com.parasoft.demoapp.dto.InventoryOperationRequestMessageDTO;
 import com.parasoft.demoapp.dto.InventoryOperationResultMessageDTO;
 import lombok.Getter;
@@ -14,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.*;
+import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
@@ -26,8 +28,8 @@ public class KafkaConfig {
     public static final int ADMIN_CLIENT_TIMEOUT_MS = 5000;
     public static final String AUTO_OFFSET_RESET_EARLIEST = "earliest";
 
-    public static final String DEFAULT_ORDER_SERVICE_REQUEST_TOPIC = "inventory.request";
-    public static final String DEFAULT_ORDER_SERVICE_RESPONSE_TOPIC = "inventory.response";
+    public static final String DEFAULT_ORDER_SERVICE_REQUEST_TOPIC = MQConfig.INVENTORY_REQUEST;
+    public static final String DEFAULT_ORDER_SERVICE_RESPONSE_TOPIC = MQConfig.INVENTORY_RESPONSE;
 
     @Getter @Setter private static String orderServiceSendToTopic = DEFAULT_ORDER_SERVICE_REQUEST_TOPIC;
     @Getter @Setter private static String orderServiceListenToTopic = DEFAULT_ORDER_SERVICE_RESPONSE_TOPIC;
@@ -54,6 +56,7 @@ public class KafkaConfig {
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
                 JsonSerializer.class);
         props.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, 2000);
+        props.put(JsonSerializer.ADD_TYPE_INFO_HEADERS, false);
         return props;
     }
 
@@ -69,6 +72,7 @@ public class KafkaConfig {
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
                 JsonDeserializer.class);
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, AUTO_OFFSET_RESET_EARLIEST);
+        props.put(JsonSerializer.ADD_TYPE_INFO_HEADERS, false);
         return props;
     }
 
@@ -79,9 +83,11 @@ public class KafkaConfig {
 
     @Bean
     public ConsumerFactory<String, InventoryOperationRequestMessageDTO> operationRequestConsumerFactory() {
+        ErrorHandlingDeserializer<InventoryOperationRequestMessageDTO> errorHandlingDeserializer
+                = new ErrorHandlingDeserializer<>(new JsonDeserializer<>(InventoryOperationRequestMessageDTO.class));
         return new DefaultKafkaConsumerFactory<>(consumerConfigs(),
                 new StringDeserializer(),
-                new JsonDeserializer<>(InventoryOperationRequestMessageDTO.class));
+                errorHandlingDeserializer);
     }
 
     @Bean
@@ -91,9 +97,11 @@ public class KafkaConfig {
 
     @Bean
     public ConsumerFactory<String, InventoryOperationResultMessageDTO> operationResultConsumerFactory() {
+        ErrorHandlingDeserializer<InventoryOperationResultMessageDTO> errorHandlingDeserializer
+                = new ErrorHandlingDeserializer<>(new JsonDeserializer<>(InventoryOperationResultMessageDTO.class));
         return new DefaultKafkaConsumerFactory<>(consumerConfigs(),
                 new StringDeserializer(),
-                new JsonDeserializer<>(InventoryOperationResultMessageDTO.class));
+                errorHandlingDeserializer);
     }
 
     @Bean

@@ -12,13 +12,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
 
 import javax.jms.Destination;
 
-import static com.parasoft.demoapp.model.global.preferences.MqType.ACTIVE_MQ;
-import static com.parasoft.demoapp.model.global.preferences.MqType.KAFKA;
+import static com.parasoft.demoapp.model.global.preferences.MqType.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.*;
@@ -39,6 +39,9 @@ public class ItemInventoryMQServiceTest {
 
     @Mock
     KafkaTemplate operationResultKafkaTemplate;
+    
+    @Mock
+    RabbitTemplate rabbitTemplate;
 
     @Mock
     GlobalPreferencesService globalPreferencesService;
@@ -84,14 +87,35 @@ public class ItemInventoryMQServiceTest {
         String orderNumber = "23-456-002";
         InventoryOperationResultMessageDTO messageDto = new InventoryOperationResultMessageDTO(InventoryOperation.DECREASE, orderNumber, InventoryOperationStatus.SUCCESS, information);
         GlobalPreferencesEntity globalPreferences = new GlobalPreferencesEntity();
-        globalPreferences.setOrderServiceResponseTopic("response.topic");
+        globalPreferences.setOrderServiceKafkaResponseTopic("response.topic");
         doReturn(globalPreferences).when(globalPreferencesService).getCurrentGlobalPreferences();
         underTest.sendToInventoryResponseDestination(messageDto);
 
         //then
         Mockito.verify(operationResultKafkaTemplate, times(1)).send(any(String.class), any(String.class), any(InventoryOperationResultMessageDTO.class));
     }
-
+    
+    /**
+     * Test for sendToInventoryResponseDestination(InventoryOperationResultMessageDTO)
+     *
+     * @see com.parasoft.demoapp.service.ItemInventoryMQService#sendToInventoryResponseDestination(InventoryOperationResultMessageDTO)
+     */
+    @Test
+    public void testSendToInventoryResponseDestination_rabbit() throws Throwable {
+        // Given
+        MQConfig.currentMQType = RABBIT_MQ;
+        doNothing().when(rabbitTemplate).convertAndSend(nullable(String.class), nullable(String.class), nullable(Object.class));
+        
+        // When
+        String requestedBy = "purchaser";
+        String information = "Order 23-456-001 is submitted";
+        InventoryOperationResultMessageDTO messageDto = new InventoryOperationResultMessageDTO(InventoryOperation.DECREASE, requestedBy, InventoryOperationStatus.SUCCESS, information);
+        underTest.sendToInventoryResponseDestination(messageDto);
+        
+        //then
+        Mockito.verify(rabbitTemplate, times(1)).convertAndSend(anyString(), anyString(), any(InventoryOperationResultMessageDTO.class));
+    }
+    
     /**
      * send(Destination, InventoryOperationResultMessageDTO)
      *

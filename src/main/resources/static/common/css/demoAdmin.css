@@ -102,7 +102,7 @@
     height: 37px;
 }
 
-.input-wrapper button, #test_connection_kafka_service_button {
+.input-wrapper button, #test_connection_kafka_service_button, #test_connection_rabbitmq_service_button {
     height: 36px;
     font-size: 10px;
     box-sizing: border-box;
@@ -460,14 +460,14 @@ textarea {
     padding-bottom: 7px;
 }
 
-.testing_connection_kafka_service {
+.testing_connection_kafka_service, .testing_connection_rabbitmq_service {
     display: inline-block;
     float: right;
     margin-top: -27px;
     margin-right: 170px;
 }
 
-.test_connection_kafka_service {
+.test_connection_kafka_service, .test_connection_rabbitmq_service {
     text-align: center;
     margin-top: 20px;
 }

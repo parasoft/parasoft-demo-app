@@ -432,3 +432,23 @@ a, a:hover, a:focus {
     line-height: 3rem;
     cursor: pointer;
 }
+
+.available_user_accounts_link {
+    cursor:pointer
+}
+
+.available_user_accounts_description {
+    font-size: 15px;
+    margin: 0px 22px 15px;
+}
+
+.available_user_accounts_info {
+    margin: auto;
+    width: fit-content;
+}
+.available_user_accounts_info td {
+    width: 200px;
+    text-align: center;
+    border: 1px solid lightgrey;
+    padding: 5px;
+}

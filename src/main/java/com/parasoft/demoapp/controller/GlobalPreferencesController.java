@@ -135,7 +135,7 @@ public class GlobalPreferencesController {
 
 		return response;
 	}
-	
+
 	@Operation(description = "Clear current industry database.")
 	@ApiResponse(responseCode = "200", description = "Current industry database has been reset.")
 	@ApiResponse(responseCode = "401",
@@ -151,7 +151,7 @@ public class GlobalPreferencesController {
 
 		return response;
 	}
-	
+
 	@Operation(description = "Validate Parasoft Virtualize server URL.")
 	@ApiResponse(responseCode = "200", description = "Valid URL.")
 	@ApiResponse(responseCode = "400", description = "Invalid URL.",
@@ -190,6 +190,21 @@ public class GlobalPreferencesController {
 				ResponseResult.getInstance(ResponseResult.STATUS_OK, ResponseResult.MESSAGE_OK);
 
 		globalPreferencesService.validateKafkaBrokerUrl();
+
+		return response;
+	}
+
+	@Operation(description = "Validate RabbitMQ server URL.")
+	@ApiResponse(responseCode = "200", description = "Valid URL.")
+	@ApiResponse(responseCode = "500", description = "Invalid URL.",
+			content = {@Content(schema = @Schema(hidden = true))})
+	@GetMapping("/v1/demoAdmin/rabbitMQUrlValidation")
+	@ResponseBody
+	public ResponseResult<Void> validateRabbitMQServerUrl() throws RabbitMQServerIsNotAvailableException {
+		ResponseResult<Void> response =
+				ResponseResult.getInstance(ResponseResult.STATUS_OK, ResponseResult.MESSAGE_OK);
+
+		globalPreferencesService.validateRabbitMQServerUrl();
 
 		return response;
 	}

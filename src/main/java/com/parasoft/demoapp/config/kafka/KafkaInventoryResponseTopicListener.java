@@ -11,11 +11,11 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class InventoryResponseTopicListener extends KafkaRefreshableMessageListener<InventoryOperationResultMessageDTO> {
+public class KafkaInventoryResponseTopicListener extends KafkaRefreshableMessageListener<InventoryOperationResultMessageDTO> {
     private final OrderService orderService;
     private final OrderMQService orderMQService;
 
-    public InventoryResponseTopicListener(
+    public KafkaInventoryResponseTopicListener(
                                         ConcurrentKafkaListenerContainerFactory<String, InventoryOperationResultMessageDTO> kafkaListenerContainerFactory,
                                         OrderService orderService, OrderMQService orderMQService) {
         super(kafkaListenerContainerFactory, KafkaConfig.getOrderServiceListenToTopic());
