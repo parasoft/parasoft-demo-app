@@ -1,6 +1,6 @@
 package com.parasoft.demoapp.exception;
 
-public class KafkaServerIsNotAvailableException extends Exception {
+public class KafkaServerIsNotAvailableException extends MQServerIsNotAvailableException {
 
     private static final long serialVersionUID = 1744501427075570091L;
 
