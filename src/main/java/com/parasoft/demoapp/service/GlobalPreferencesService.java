@@ -577,7 +577,7 @@ public class GlobalPreferencesService {
     public void validateRabbitMQServerUrl() throws RabbitMQServerIsNotAvailableException {
         Connection connection = null;
         try {
-            connection = rabbitMQConfig.factory().createConnection();
+            connection = rabbitMQConfig.connectionFactory().createConnection();
         } catch (Exception e) {
             throw new RabbitMQServerIsNotAvailableException(
                     MessageFormat.format(GlobalPreferencesMessages.RABBITMQ_SERVER_IS_NOT_AVAILABLE,
