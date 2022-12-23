@@ -35,14 +35,14 @@ public class RabbitMQInventoryResponseQueueListener extends RabbitMQRefreshableM
         Object object = rabbitMqMessageConverter.fromMessage(message);
 
         log.info("Order service receives a message from RabbitMQ queue: {} \n Message content: {}", message.getMessageProperties().getConsumerQueue(), object);
-    
+
         InventoryOperationRequestMessageDTO messageToReply = orderService.handleMessageFromResponse((InventoryOperationResultMessageDTO)object);
 
         if(messageToReply == null) {
             log.info("Order service has no response message to reply.");
             return;
         }
-    
+
         orderMQService.sendToInventoryRequestDestination(messageToReply);
     }
 }
