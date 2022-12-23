@@ -2,6 +2,7 @@ package com.parasoft.demoapp.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.parasoft.demoapp.config.kafka.KafkaConfig;
+import com.parasoft.demoapp.config.rabbitmq.RabbitMQConfig;
 import com.parasoft.demoapp.defaultdata.global.GlobalUsersCreator;
 import com.parasoft.demoapp.dto.MQPropertiesResponseDTO;
 import com.parasoft.demoapp.messages.ConfigMessages;
@@ -49,6 +50,9 @@ public class GlobalPreferencesControllerSpringTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    RabbitMQConfig rabbitMQConfig;
 
     @Test
     public void test_getMQProperties_normal() throws Exception {
@@ -158,4 +162,66 @@ public class GlobalPreferencesControllerSpringTest {
         assertEquals(result.getData(), "Bad credentials");
     }
 
+    /**
+     * Test for validateRabbitMQServerUrl()
+     * <br/>
+     * This test needs RabbitMQ server enabled.
+     *
+     * @see com.parasoft.demoapp.controller.GlobalPreferencesController#validateRabbitMQServerUrl()
+     */
+    //@Test
+    public void test_validateRabbitMQServerUrl_normal() throws Exception {
+        assertNotNull(mockMvc);
+
+        String baseUrl = "/v1/demoAdmin/rabbitMQUrlValidation";
+        MvcResult mvcResult =
+                mockMvc.perform(get(baseUrl))
+                        .andExpect(status().isOk())
+                        .andReturn();
+        MockHttpServletResponse response  = mvcResult.getResponse();
+        ResponseResult result =
+                objectMapper.readValue(response.getContentAsString(), ResponseResult.class);
+
+        assertNotNull(result);
+        assertEquals(ResponseResult.STATUS_OK, result.getStatus());
+        assertEquals(ResponseResult.MESSAGE_OK, result.getMessage());
+    }
+
+    @Test
+    public void test_validateRabbitMQServerUrl_rabbitMQIsNotAvailable() throws Exception {
+        assertNotNull(mockMvc);
+
+        String baseUrl = "/v1/demoAdmin/rabbitMQUrlValidation";
+        MvcResult mvcResult =
+                mockMvc.perform(get(baseUrl))
+                        .andExpect(status().isInternalServerError())
+                        .andReturn();
+        MockHttpServletResponse response  = mvcResult.getResponse();
+        ResponseResult result =
+                objectMapper.readValue(response.getContentAsString(), ResponseResult.class);
+
+        assertNotNull(result);
+        assertEquals(ResponseResult.STATUS_ERR, result.getStatus());
+        assertEquals(MessageFormat.format(GlobalPreferencesMessages.RABBITMQ_SERVER_IS_NOT_AVAILABLE,
+                rabbitMQConfig.getRabbitMqHost() + ":" + rabbitMQConfig.getRabbitMqPort()), result.getMessage());
+    }
+
+    @Test
+    public void test_validateRabbitMQServerUrl_incorrectAuthentication() throws Exception {
+        assertNotNull(mockMvc);
+
+        String baseUrl = "/v1/demoAdmin/rabbitMQUrlValidation";
+        MvcResult mvcResult =
+                mockMvc.perform(get(baseUrl).with(httpBasic(GlobalUsersCreator.USERNAME_PURCHASER,"invalidPass")))
+                        .andExpect(status().isUnauthorized())
+                        .andReturn();
+        MockHttpServletResponse response  = mvcResult.getResponse();
+        ResponseResult result =
+                objectMapper.readValue(response.getContentAsString(), ResponseResult.class);
+
+        assertNotNull(result);
+        assertEquals(ResponseResult.STATUS_ERR, result.getStatus());
+        assertEquals(ConfigMessages.USER_IS_NOT_AUTHORIZED, result.getMessage());
+        assertEquals(result.getData(), "Bad credentials");
+    }
 }

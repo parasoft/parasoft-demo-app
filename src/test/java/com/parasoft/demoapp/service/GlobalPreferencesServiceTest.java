@@ -8,7 +8,6 @@ import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
 import com.parasoft.demoapp.config.kafka.KafkaInventoryRequestTopicListener;
 import com.parasoft.demoapp.config.kafka.KafkaInventoryResponseTopicListener;
 import com.parasoft.demoapp.config.kafka.KafkaConfig;
-import com.parasoft.demoapp.config.rabbitmq.RabbitMQConfig;
 import com.parasoft.demoapp.dto.GlobalPreferencesDTO;
 import com.parasoft.demoapp.exception.*;
 import com.parasoft.demoapp.messages.GlobalPreferencesMessages;
@@ -16,15 +15,12 @@ import com.parasoft.demoapp.model.global.preferences.*;
 import com.parasoft.demoapp.repository.global.GlobalPreferencesRepository;
 import com.parasoft.demoapp.util.BugsTypeSortOfDemoBugs;
 import com.parasoft.demoapp.util.RouteIdSortOfRestEndpoint;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.*;
 
-import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.*;
 
@@ -76,9 +72,6 @@ public class GlobalPreferencesServiceTest {
 
 	@Mock
 	WebConfig webConfig;
-
-	@Mock
-	RabbitMQConfig rabbitMQConfig;
 
 	@Before
 	public void setupMocks() {
@@ -935,37 +928,5 @@ public class GlobalPreferencesServiceTest {
 
 		// Then
 		assertEquals(ORDER_SERVICE_LISTEN_ON_CANNOT_BE_NULL, message);
-	}
-
-	@Test
-	public void test_validateRabbitMQServerUrl_normal() throws Exception {
-		//Given
-		ConnectionFactory factory = mock(ConnectionFactory.class);
-		Connection connection = mock(Connection.class);
-		doReturn(connection).when(factory).newConnection();
-		doReturn(factory).when(rabbitMQConfig).factory();
-
-		//When
-		underTest.validateRabbitMQServerUrl();
-	}
-
-	@Test
-	public void test_validateRabbitMQServerUrl_rabbitMQServerIsNotAvailableException() throws Exception {
-		//Given
-		ConnectionFactory factory = mock(ConnectionFactory.class);
-		doThrow(IOException.class).when(factory).newConnection();
-		doReturn(factory).when(rabbitMQConfig).factory();
-
-		//When
-		String message = "";
-		try {
-			underTest.validateRabbitMQServerUrl();
-		} catch (Exception e) {
-			message = e.getMessage();
-		}
-
-		// Then
-		assertEquals(MessageFormat.format(GlobalPreferencesMessages.RABBITMQ_SERVER_IS_NOT_AVAILABLE,
-				rabbitMQConfig.getRabbitMqHost() + ":" + rabbitMQConfig.getRabbitMqPort()), message);
 	}
 }
