@@ -185,7 +185,7 @@ app.controller('approverHomePageController', function($rootScope, $http, $filter
                     if(data.data.message.indexOf("Can not send message to Kafka broker.") > -1) {
                         errTitle = $filter('translate')('UPDATING_ERROR_TITLE')
                         errMsg = $filter('translate')('KAFKA_BROKER_NOT_AVAILABLE');
-                    } else if(data.data.message.indexOf("Can not send message to RabbitMQ broker.") > -1) {
+                    } else if(data.data.message.indexOf("Can not send message to RabbitMQ server.") > -1) {
                         errTitle = $filter('translate')('UPDATING_ERROR_TITLE')
                         errMsg = $filter('translate')('RABBITMQ_HOST_NOT_AVAILABLE');
                     } else {

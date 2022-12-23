@@ -71,7 +71,7 @@ public class OrderMQService {
                                               RabbitMQConfig.INVENTORY_QUEUE_REQUEST_ROUTING_KEY,
                                               message);
             } catch (Exception e) {
-                throw new AmqpException("Can not send message to RabbitMQ broker.", e);
+                throw new AmqpException("Can not send message to RabbitMQ server.", e);
             }
         }
 
