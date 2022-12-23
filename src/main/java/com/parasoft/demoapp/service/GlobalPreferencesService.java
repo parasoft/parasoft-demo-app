@@ -323,6 +323,12 @@ public class GlobalPreferencesService {
             validateMqConfig(globalPreferencesDto);
             KafkaConfig.setOrderServiceSendToTopic(globalPreferences.getOrderServiceKafkaRequestTopic());
             KafkaConfig.setOrderServiceListenToTopic(globalPreferences.getOrderServiceKafkaResponseTopic());
+        } else if (globalPreferences.getMqType() == MqType.RABBIT_MQ) {
+            globalPreferencesDto.setOrderServiceSendTo(globalPreferences.getOrderServiceRabbitMqRequestQueue());
+            globalPreferencesDto.setOrderServiceListenOn(globalPreferences.getOrderServiceRabbitMqResponseQueue());
+            validateMqConfig(globalPreferencesDto);
+            RabbitMQConfig.setOrderServiceSendToQueue(globalPreferences.getOrderServiceRabbitMqRequestQueue());
+            RabbitMQConfig.setOrderServiceListenToQueue(globalPreferences.getOrderServiceRabbitMqResponseQueue());
         }
     }
 
