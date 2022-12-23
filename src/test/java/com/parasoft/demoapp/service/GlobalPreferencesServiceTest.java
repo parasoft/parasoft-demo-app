@@ -8,6 +8,9 @@ import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
 import com.parasoft.demoapp.config.kafka.KafkaInventoryRequestTopicListener;
 import com.parasoft.demoapp.config.kafka.KafkaInventoryResponseTopicListener;
 import com.parasoft.demoapp.config.kafka.KafkaConfig;
+import com.parasoft.demoapp.config.rabbitmq.RabbitMQConfig;
+import com.parasoft.demoapp.config.rabbitmq.RabbitMQInventoryRequestQueueListener;
+import com.parasoft.demoapp.config.rabbitmq.RabbitMQInventoryResponseQueueListener;
 import com.parasoft.demoapp.dto.GlobalPreferencesDTO;
 import com.parasoft.demoapp.exception.*;
 import com.parasoft.demoapp.messages.GlobalPreferencesMessages;
@@ -59,19 +62,28 @@ public class GlobalPreferencesServiceTest {
 	private ParasoftJDBCProxyService parasoftJDBCProxyDriverService;
 
 	@Mock
-	ActiveMQInventoryResponseQueueListener inventoryResponseQueueListener;
+	ActiveMQInventoryResponseQueueListener activeMQInventoryResponseQueueListener;
 
 	@Mock
-	ActiveMQInventoryRequestQueueListener inventoryRequestQueueListener;
+	ActiveMQInventoryRequestQueueListener activeMQInventoryRequestQueueListener;
 
 	@Mock
-	KafkaInventoryResponseTopicListener inventoryResponseTopicListener;
+	KafkaInventoryResponseTopicListener kafkaInventoryResponseTopicListener;
 
 	@Mock
-	KafkaInventoryRequestTopicListener inventoryRequestTopicListener;
+	KafkaInventoryRequestTopicListener kafkaInventoryRequestTopicListener;
+
+	@Mock
+	private RabbitMQInventoryRequestQueueListener rabbitMQInventoryRequestQueueListener;
+
+	@Mock
+	private RabbitMQInventoryResponseQueueListener rabbitMQInventoryResponseQueueListener;
 
 	@Mock
 	WebConfig webConfig;
+
+	@Mock
+	RabbitMQConfig rabbitMQConfig;
 
 	@Before
 	public void setupMocks() {
@@ -390,8 +402,8 @@ public class GlobalPreferencesServiceTest {
 		GlobalPreferencesEntity globalPreferences = new GlobalPreferencesEntity();
 		findAllResult.add(globalPreferences);
 		when(globalPreferencesRepository.findAll()).thenReturn(findAllResult);
-		doNothing().when(inventoryResponseQueueListener).refreshDestination(any());
-		doNothing().when(inventoryRequestQueueListener).refreshDestination(any());
+		doNothing().when(activeMQInventoryResponseQueueListener).refreshDestination(any());
+		doNothing().when(activeMQInventoryRequestQueueListener).refreshDestination(any());
 
 		doNothing().when(restEndpointService).removeAllEndpoints();
 		when(globalPreferencesRepository.save(any(GlobalPreferencesEntity.class))).thenReturn(globalPreferences);
@@ -474,8 +486,8 @@ public class GlobalPreferencesServiceTest {
 		GlobalPreferencesEntity globalPreferences = new GlobalPreferencesEntity();
 		findAllResult.add(globalPreferences);
 		when(globalPreferencesRepository.findAll()).thenReturn(findAllResult);
-		doNothing().when(inventoryRequestTopicListener).refreshDestination(any());
-		doNothing().when(inventoryResponseTopicListener).refreshDestination(any());
+		doNothing().when(kafkaInventoryRequestTopicListener).refreshDestination(any());
+		doNothing().when(kafkaInventoryResponseTopicListener).refreshDestination(any());
 		doNothing().when(underTest).validateKafkaBrokerUrl();
 
 		doNothing().when(restEndpointService).removeAllEndpoints();
@@ -559,9 +571,9 @@ public class GlobalPreferencesServiceTest {
         GlobalPreferencesEntity globalPreferences = new GlobalPreferencesEntity();
         findAllResult.add(globalPreferences);
         when(globalPreferencesRepository.findAll()).thenReturn(findAllResult);
-        doNothing().when(inventoryRequestTopicListener).refreshDestination(any());
-        doNothing().when(inventoryResponseTopicListener).refreshDestination(any());
-        doNothing().when(underTest).validateKafkaBrokerUrl();
+        doNothing().when(rabbitMQInventoryRequestQueueListener).refreshDestination(any());
+        doNothing().when(rabbitMQInventoryResponseQueueListener).refreshDestination(any());
+        doNothing().when(underTest).validateRabbitMQServerUrl();
 
         doNothing().when(restEndpointService).removeAllEndpoints();
         when(globalPreferencesRepository.save(any(GlobalPreferencesEntity.class))).thenReturn(globalPreferences);
@@ -644,8 +656,8 @@ public class GlobalPreferencesServiceTest {
 		GlobalPreferencesEntity globalPreferences = new GlobalPreferencesEntity();
 		findAllResult.add(globalPreferences);
 		when(globalPreferencesRepository.findAll()).thenReturn(findAllResult);
-		doNothing().when(inventoryResponseQueueListener).refreshDestination(any());
-		doNothing().when(inventoryRequestQueueListener).refreshDestination(any());
+		doNothing().when(activeMQInventoryResponseQueueListener).refreshDestination(any());
+		doNothing().when(activeMQInventoryRequestQueueListener).refreshDestination(any());
 
 		doNothing().when(restEndpointService).removeAllEndpoints();
 		when(globalPreferencesRepository.save(any(GlobalPreferencesEntity.class))).thenReturn(globalPreferences);
@@ -688,8 +700,8 @@ public class GlobalPreferencesServiceTest {
 		GlobalPreferencesEntity globalPreferences = new GlobalPreferencesEntity();
 		findAllResult.add(globalPreferences);
 		when(globalPreferencesRepository.findAll()).thenReturn(findAllResult);
-		doNothing().when(inventoryResponseQueueListener).refreshDestination(any());
-		doNothing().when(inventoryRequestQueueListener).refreshDestination(any());
+		doNothing().when(activeMQInventoryResponseQueueListener).refreshDestination(any());
+		doNothing().when(activeMQInventoryRequestQueueListener).refreshDestination(any());
 
 		doNothing().when(restEndpointService).removeAllEndpoints();
 		when(globalPreferencesRepository.save(any(GlobalPreferencesEntity.class))).thenReturn(globalPreferences);
@@ -735,8 +747,8 @@ public class GlobalPreferencesServiceTest {
 
 		doNothing().when(restEndpointService).removeAllEndpoints();
 		doNothing().when(demoBugService).removeByGlobalPreferencesId(anyLong());
-		doNothing().when(inventoryResponseQueueListener).refreshDestination(any());
-		doNothing().when(inventoryRequestQueueListener).refreshDestination(any());
+		doNothing().when(activeMQInventoryResponseQueueListener).refreshDestination(any());
+		doNothing().when(activeMQInventoryRequestQueueListener).refreshDestination(any());
 		when(globalPreferencesRepository.save(any(GlobalPreferencesEntity.class))).thenReturn(globalPreferences);
 
 		// When
@@ -801,8 +813,8 @@ public class GlobalPreferencesServiceTest {
 		GlobalPreferencesEntity globalPreferences = new GlobalPreferencesEntity();
 		findAllResult.add(globalPreferences);
 		when(globalPreferencesRepository.findAll()).thenReturn(findAllResult);
-		doNothing().when(inventoryResponseQueueListener).refreshDestination(any());
-		doNothing().when(inventoryRequestQueueListener).refreshDestination(any());
+		doNothing().when(activeMQInventoryResponseQueueListener).refreshDestination(any());
+		doNothing().when(activeMQInventoryRequestQueueListener).refreshDestination(any());
 
 		doNothing().when(restEndpointService).removeAllEndpoints();
 		when(globalPreferencesRepository.save(any(GlobalPreferencesEntity.class))).thenReturn(globalPreferences);
@@ -848,8 +860,8 @@ public class GlobalPreferencesServiceTest {
 		GlobalPreferencesEntity globalPreferences = new GlobalPreferencesEntity();
 		findAllResult.add(globalPreferences);
 		when(globalPreferencesRepository.findAll()).thenReturn(findAllResult);
-		doNothing().when(inventoryResponseQueueListener).refreshDestination(any());
-		doNothing().when(inventoryRequestQueueListener).refreshDestination(any());
+		doNothing().when(activeMQInventoryResponseQueueListener).refreshDestination(any());
+		doNothing().when(activeMQInventoryRequestQueueListener).refreshDestination(any());
 
 		doNothing().when(restEndpointService).removeAllEndpoints();
 		when(globalPreferencesRepository.save(any(GlobalPreferencesEntity.class))).thenReturn(globalPreferences);
@@ -895,8 +907,8 @@ public class GlobalPreferencesServiceTest {
 		GlobalPreferencesEntity globalPreferences = new GlobalPreferencesEntity();
 		findAllResult.add(globalPreferences);
 		when(globalPreferencesRepository.findAll()).thenReturn(findAllResult);
-		doNothing().when(inventoryResponseQueueListener).refreshDestination(any());
-		doNothing().when(inventoryRequestQueueListener).refreshDestination(any());
+		doNothing().when(activeMQInventoryResponseQueueListener).refreshDestination(any());
+		doNothing().when(activeMQInventoryRequestQueueListener).refreshDestination(any());
 
 		doNothing().when(restEndpointService).removeAllEndpoints();
 		when(globalPreferencesRepository.save(any(GlobalPreferencesEntity.class))).thenReturn(globalPreferences);
