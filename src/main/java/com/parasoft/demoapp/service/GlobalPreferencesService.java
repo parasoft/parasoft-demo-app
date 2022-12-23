@@ -10,6 +10,8 @@ import com.parasoft.demoapp.config.kafka.KafkaConfig;
 import com.parasoft.demoapp.config.kafka.KafkaInventoryRequestTopicListener;
 import com.parasoft.demoapp.config.kafka.KafkaInventoryResponseTopicListener;
 import com.parasoft.demoapp.config.rabbitmq.RabbitMQConfig;
+import com.parasoft.demoapp.config.rabbitmq.RabbitMQInventoryRequestQueueListener;
+import com.parasoft.demoapp.config.rabbitmq.RabbitMQInventoryResponseQueueListener;
 import com.parasoft.demoapp.defaultdata.ClearEntrance;
 import com.parasoft.demoapp.defaultdata.ResetEntrance;
 import com.parasoft.demoapp.dto.GlobalPreferencesDTO;
@@ -75,6 +77,12 @@ public class GlobalPreferencesService {
 
     @Autowired
     private KafkaInventoryResponseTopicListener kafkaInventoryResponseTopicListener;
+
+    @Autowired
+    private RabbitMQInventoryRequestQueueListener rabbitMQInventoryRequestQueueListener;
+
+    @Autowired
+    private RabbitMQInventoryResponseQueueListener rabbitMQInventoryResponseQueueListener;
 
     @Autowired
     private GlobalPreferencesDefaultSettingsService defaultGlobalPreferencesSettingsService;
@@ -152,7 +160,7 @@ public class GlobalPreferencesService {
             rollbackFor = {ParameterException.class, VirtualizeServerUrlException.class})
     public synchronized GlobalPreferencesEntity updateGlobalPreferences(GlobalPreferencesDTO globalPreferencesDto)
             throws GlobalPreferencesNotFoundException, GlobalPreferencesMoreThanOneException, ParameterException,
-            EndpointInvalidException, VirtualizeServerUrlException, KafkaServerIsNotAvailableException {
+            EndpointInvalidException, VirtualizeServerUrlException, MQServerIsNotAvailableException {
 
         IndustryType industry = globalPreferencesDto.getIndustryType();
         validateIndustry(industry);
@@ -279,7 +287,14 @@ public class GlobalPreferencesService {
             kafkaInventoryResponseTopicListener.refreshDestination(currentPreferences.getOrderServiceKafkaResponseTopic());
         } else if(MqType.RABBIT_MQ == currentPreferences.getMqType()) {
             MQConfig.currentMQType = MqType.RABBIT_MQ;
-            // TODO
+
+            // Need to unbind the existing queue in exchange and replace it with new queue.
+            rabbitMQConfig.replaceQueueForOrderServiceSendToQueueBinding(currentPreferences.getOrderServiceRabbitMqRequestQueue());
+
+            rabbitMQInventoryRequestQueueListener.refreshDestination(RabbitMQConfig.DEFAULT_ORDER_SERVICE_REQUEST_QUEUE);
+            // Need to add the queue in RabbitMQ before listen on it.
+            rabbitMQConfig.declareQueue(currentPreferences.getOrderServiceRabbitMqResponseQueue());
+            rabbitMQInventoryResponseQueueListener.refreshDestination(currentPreferences.getOrderServiceRabbitMqResponseQueue());
         } else {
             throw new UnsupportedOperationException("Unsupported MQ type: " + currentPreferences.getMqType());
         }
@@ -422,10 +437,12 @@ public class GlobalPreferencesService {
     }
 
     private void handleMq(GlobalPreferencesEntity currentPreferences,
-                               GlobalPreferencesDTO globalPreferencesDto) throws ParameterException, KafkaServerIsNotAvailableException {
+                          GlobalPreferencesDTO globalPreferencesDto) throws ParameterException, MQServerIsNotAvailableException {
         validateMqConfig(globalPreferencesDto);
         if(globalPreferencesDto.getMqType() == MqType.KAFKA) {
             validateKafkaBrokerUrl();
+        } else if (globalPreferencesDto.getMqType() == MqType.RABBIT_MQ) {
+            validateRabbitMQServerUrl();
         }
         checkMqStatusHasChanged(currentPreferences, globalPreferencesDto);
         currentPreferences.setMqType(globalPreferencesDto.getMqType());
@@ -530,10 +547,23 @@ public class GlobalPreferencesService {
             // Stop listeners on Kafka
             kafkaInventoryRequestTopicListener.stopAllListenedDestinations();
             kafkaInventoryResponseTopicListener.stopAllListenedDestinations();
+            // Stop listeners on RabbitMQ
+            rabbitMQInventoryRequestQueueListener.stopAllListenedDestinations();
+            rabbitMQInventoryResponseQueueListener.stopAllListenedDestinations();
         } else if(MqType.KAFKA == mqType) {
             // Stop listeners on ActiveMQ
             activeMQInventoryResponseQueueListener.stopAllListenedDestinations();
             activeMQInventoryRequestQueueListener.stopAllListenedDestinations();
+            // Stop listeners on RabbitMQ
+            rabbitMQInventoryRequestQueueListener.stopAllListenedDestinations();
+            rabbitMQInventoryResponseQueueListener.stopAllListenedDestinations();
+        } else if(MqType.RABBIT_MQ == mqType) {
+            // Stop listeners on ActiveMQ
+            activeMQInventoryResponseQueueListener.stopAllListenedDestinations();
+            activeMQInventoryRequestQueueListener.stopAllListenedDestinations();
+            // Stop listeners on Kafka
+            kafkaInventoryRequestTopicListener.stopAllListenedDestinations();
+            kafkaInventoryResponseTopicListener.stopAllListenedDestinations();
         }
     }
 
@@ -577,7 +607,7 @@ public class GlobalPreferencesService {
     public void validateRabbitMQServerUrl() throws RabbitMQServerIsNotAvailableException {
         Connection connection = null;
         try {
-            connection = rabbitMQConfig.factory().createConnection();
+            connection = rabbitMQConfig.connectionFactory().createConnection();
         } catch (Exception e) {
             throw new RabbitMQServerIsNotAvailableException(
                     MessageFormat.format(GlobalPreferencesMessages.RABBITMQ_SERVER_IS_NOT_AVAILABLE,
