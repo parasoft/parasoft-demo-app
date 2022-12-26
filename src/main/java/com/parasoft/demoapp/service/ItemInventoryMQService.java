@@ -28,7 +28,7 @@ public class ItemInventoryMQService {
 
     @Autowired
     private KafkaTemplate<String, InventoryOperationResultMessageDTO> operationResultKafkaTemplate;
-    
+
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
@@ -48,7 +48,7 @@ public class ItemInventoryMQService {
                                           RabbitMQConfig.INVENTORY_QUEUE_RESPONSE_ROUTING_KEY,
                                           message);
         }
-        
+
         log.info("Inventory service sent a message to {} \n Message content: {}", responseDestination, message);
     }
 

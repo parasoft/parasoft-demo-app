@@ -10,6 +10,8 @@ import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFacto
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.stereotype.Component;
 
+import static org.springframework.kafka.support.mapping.AbstractJavaTypeMapper.DEFAULT_CLASSID_FIELD_NAME;
+
 @Slf4j
 @Component
 public class RabbitMQInventoryRequestQueueListener extends RabbitMQRefreshableMessageListener {
@@ -32,6 +34,7 @@ public class RabbitMQInventoryRequestQueueListener extends RabbitMQRefreshableMe
 
     @Override
     public void onMessage(Message message) {
+        message.getMessageProperties().setHeader(DEFAULT_CLASSID_FIELD_NAME, InventoryOperationRequestMessageDTO.class.getName());
         Object object = rabbitMqMessageConverter.fromMessage(message);
 
         log.info("Inventory service receives a message from RabbitMQ queue: {} \n Message content: {}", message.getMessageProperties().getConsumerQueue(), object);
@@ -42,7 +45,7 @@ public class RabbitMQInventoryRequestQueueListener extends RabbitMQRefreshableMe
             log.info("Inventory service has no response message to reply.");
             return;
         }
-        
+
         itemInventoryMQService.sendToInventoryResponseDestination(messageToReply);
     }
 }

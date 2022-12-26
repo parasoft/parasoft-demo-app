@@ -10,6 +10,8 @@ import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFacto
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.stereotype.Component;
 
+import static org.springframework.kafka.support.mapping.AbstractJavaTypeMapper.DEFAULT_CLASSID_FIELD_NAME;
+
 @Slf4j
 @Component
 public class RabbitMQInventoryResponseQueueListener extends RabbitMQRefreshableMessageListener {
@@ -32,6 +34,7 @@ public class RabbitMQInventoryResponseQueueListener extends RabbitMQRefreshableM
 
     @Override
     public void onMessage(Message message) {
+        message.getMessageProperties().setHeader(DEFAULT_CLASSID_FIELD_NAME, InventoryOperationResultMessageDTO.class.getName());
         Object object = rabbitMqMessageConverter.fromMessage(message);
 
         log.info("Order service receives a message from RabbitMQ queue: {} \n Message content: {}", message.getMessageProperties().getConsumerQueue(), object);
