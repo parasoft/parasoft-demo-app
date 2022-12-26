@@ -447,7 +447,7 @@ a, a:hover, a:focus {
     width: fit-content;
 }
 .available_user_accounts_info td {
-    width: 200px;
+    width: 210px;
     text-align: center;
     border: 1px solid lightgrey;
     padding: 5px;

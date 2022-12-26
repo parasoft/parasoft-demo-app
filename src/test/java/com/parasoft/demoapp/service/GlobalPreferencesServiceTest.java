@@ -9,6 +9,8 @@ import com.parasoft.demoapp.config.kafka.KafkaInventoryRequestTopicListener;
 import com.parasoft.demoapp.config.kafka.KafkaInventoryResponseTopicListener;
 import com.parasoft.demoapp.config.kafka.KafkaConfig;
 import com.parasoft.demoapp.config.rabbitmq.RabbitMQConfig;
+import com.parasoft.demoapp.config.rabbitmq.RabbitMQInventoryRequestQueueListener;
+import com.parasoft.demoapp.config.rabbitmq.RabbitMQInventoryResponseQueueListener;
 import com.parasoft.demoapp.dto.GlobalPreferencesDTO;
 import com.parasoft.demoapp.exception.*;
 import com.parasoft.demoapp.messages.GlobalPreferencesMessages;
@@ -16,15 +18,12 @@ import com.parasoft.demoapp.model.global.preferences.*;
 import com.parasoft.demoapp.repository.global.GlobalPreferencesRepository;
 import com.parasoft.demoapp.util.BugsTypeSortOfDemoBugs;
 import com.parasoft.demoapp.util.RouteIdSortOfRestEndpoint;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.*;
 
-import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.*;
 
@@ -63,16 +62,22 @@ public class GlobalPreferencesServiceTest {
 	private ParasoftJDBCProxyService parasoftJDBCProxyDriverService;
 
 	@Mock
-	ActiveMQInventoryResponseQueueListener inventoryResponseQueueListener;
+	ActiveMQInventoryResponseQueueListener activeMQInventoryResponseQueueListener;
 
 	@Mock
-	ActiveMQInventoryRequestQueueListener inventoryRequestQueueListener;
+	ActiveMQInventoryRequestQueueListener activeMQInventoryRequestQueueListener;
 
 	@Mock
-	KafkaInventoryResponseTopicListener inventoryResponseTopicListener;
+	KafkaInventoryResponseTopicListener kafkaInventoryResponseTopicListener;
 
 	@Mock
-	KafkaInventoryRequestTopicListener inventoryRequestTopicListener;
+	KafkaInventoryRequestTopicListener kafkaInventoryRequestTopicListener;
+
+	@Mock
+	private RabbitMQInventoryRequestQueueListener rabbitMQInventoryRequestQueueListener;
+
+	@Mock
+	private RabbitMQInventoryResponseQueueListener rabbitMQInventoryResponseQueueListener;
 
 	@Mock
 	WebConfig webConfig;
@@ -397,8 +402,8 @@ public class GlobalPreferencesServiceTest {
 		GlobalPreferencesEntity globalPreferences = new GlobalPreferencesEntity();
 		findAllResult.add(globalPreferences);
 		when(globalPreferencesRepository.findAll()).thenReturn(findAllResult);
-		doNothing().when(inventoryResponseQueueListener).refreshDestination(any());
-		doNothing().when(inventoryRequestQueueListener).refreshDestination(any());
+		doNothing().when(activeMQInventoryResponseQueueListener).refreshDestination(any());
+		doNothing().when(activeMQInventoryRequestQueueListener).refreshDestination(any());
 
 		doNothing().when(restEndpointService).removeAllEndpoints();
 		when(globalPreferencesRepository.save(any(GlobalPreferencesEntity.class))).thenReturn(globalPreferences);
@@ -481,8 +486,8 @@ public class GlobalPreferencesServiceTest {
 		GlobalPreferencesEntity globalPreferences = new GlobalPreferencesEntity();
 		findAllResult.add(globalPreferences);
 		when(globalPreferencesRepository.findAll()).thenReturn(findAllResult);
-		doNothing().when(inventoryRequestTopicListener).refreshDestination(any());
-		doNothing().when(inventoryResponseTopicListener).refreshDestination(any());
+		doNothing().when(kafkaInventoryRequestTopicListener).refreshDestination(any());
+		doNothing().when(kafkaInventoryResponseTopicListener).refreshDestination(any());
 		doNothing().when(underTest).validateKafkaBrokerUrl();
 
 		doNothing().when(restEndpointService).removeAllEndpoints();
@@ -566,9 +571,9 @@ public class GlobalPreferencesServiceTest {
         GlobalPreferencesEntity globalPreferences = new GlobalPreferencesEntity();
         findAllResult.add(globalPreferences);
         when(globalPreferencesRepository.findAll()).thenReturn(findAllResult);
-        doNothing().when(inventoryRequestTopicListener).refreshDestination(any());
-        doNothing().when(inventoryResponseTopicListener).refreshDestination(any());
-        doNothing().when(underTest).validateKafkaBrokerUrl();
+        doNothing().when(rabbitMQInventoryRequestQueueListener).refreshDestination(any());
+        doNothing().when(rabbitMQInventoryResponseQueueListener).refreshDestination(any());
+        doNothing().when(underTest).validateRabbitMQServerUrl();
 
         doNothing().when(restEndpointService).removeAllEndpoints();
         when(globalPreferencesRepository.save(any(GlobalPreferencesEntity.class))).thenReturn(globalPreferences);
@@ -651,8 +656,8 @@ public class GlobalPreferencesServiceTest {
 		GlobalPreferencesEntity globalPreferences = new GlobalPreferencesEntity();
 		findAllResult.add(globalPreferences);
 		when(globalPreferencesRepository.findAll()).thenReturn(findAllResult);
-		doNothing().when(inventoryResponseQueueListener).refreshDestination(any());
-		doNothing().when(inventoryRequestQueueListener).refreshDestination(any());
+		doNothing().when(activeMQInventoryResponseQueueListener).refreshDestination(any());
+		doNothing().when(activeMQInventoryRequestQueueListener).refreshDestination(any());
 
 		doNothing().when(restEndpointService).removeAllEndpoints();
 		when(globalPreferencesRepository.save(any(GlobalPreferencesEntity.class))).thenReturn(globalPreferences);
@@ -695,8 +700,8 @@ public class GlobalPreferencesServiceTest {
 		GlobalPreferencesEntity globalPreferences = new GlobalPreferencesEntity();
 		findAllResult.add(globalPreferences);
 		when(globalPreferencesRepository.findAll()).thenReturn(findAllResult);
-		doNothing().when(inventoryResponseQueueListener).refreshDestination(any());
-		doNothing().when(inventoryRequestQueueListener).refreshDestination(any());
+		doNothing().when(activeMQInventoryResponseQueueListener).refreshDestination(any());
+		doNothing().when(activeMQInventoryRequestQueueListener).refreshDestination(any());
 
 		doNothing().when(restEndpointService).removeAllEndpoints();
 		when(globalPreferencesRepository.save(any(GlobalPreferencesEntity.class))).thenReturn(globalPreferences);
@@ -742,8 +747,8 @@ public class GlobalPreferencesServiceTest {
 
 		doNothing().when(restEndpointService).removeAllEndpoints();
 		doNothing().when(demoBugService).removeByGlobalPreferencesId(anyLong());
-		doNothing().when(inventoryResponseQueueListener).refreshDestination(any());
-		doNothing().when(inventoryRequestQueueListener).refreshDestination(any());
+		doNothing().when(activeMQInventoryResponseQueueListener).refreshDestination(any());
+		doNothing().when(activeMQInventoryRequestQueueListener).refreshDestination(any());
 		when(globalPreferencesRepository.save(any(GlobalPreferencesEntity.class))).thenReturn(globalPreferences);
 
 		// When
@@ -808,8 +813,8 @@ public class GlobalPreferencesServiceTest {
 		GlobalPreferencesEntity globalPreferences = new GlobalPreferencesEntity();
 		findAllResult.add(globalPreferences);
 		when(globalPreferencesRepository.findAll()).thenReturn(findAllResult);
-		doNothing().when(inventoryResponseQueueListener).refreshDestination(any());
-		doNothing().when(inventoryRequestQueueListener).refreshDestination(any());
+		doNothing().when(activeMQInventoryResponseQueueListener).refreshDestination(any());
+		doNothing().when(activeMQInventoryRequestQueueListener).refreshDestination(any());
 
 		doNothing().when(restEndpointService).removeAllEndpoints();
 		when(globalPreferencesRepository.save(any(GlobalPreferencesEntity.class))).thenReturn(globalPreferences);
@@ -855,8 +860,8 @@ public class GlobalPreferencesServiceTest {
 		GlobalPreferencesEntity globalPreferences = new GlobalPreferencesEntity();
 		findAllResult.add(globalPreferences);
 		when(globalPreferencesRepository.findAll()).thenReturn(findAllResult);
-		doNothing().when(inventoryResponseQueueListener).refreshDestination(any());
-		doNothing().when(inventoryRequestQueueListener).refreshDestination(any());
+		doNothing().when(activeMQInventoryResponseQueueListener).refreshDestination(any());
+		doNothing().when(activeMQInventoryRequestQueueListener).refreshDestination(any());
 
 		doNothing().when(restEndpointService).removeAllEndpoints();
 		when(globalPreferencesRepository.save(any(GlobalPreferencesEntity.class))).thenReturn(globalPreferences);
@@ -902,8 +907,8 @@ public class GlobalPreferencesServiceTest {
 		GlobalPreferencesEntity globalPreferences = new GlobalPreferencesEntity();
 		findAllResult.add(globalPreferences);
 		when(globalPreferencesRepository.findAll()).thenReturn(findAllResult);
-		doNothing().when(inventoryResponseQueueListener).refreshDestination(any());
-		doNothing().when(inventoryRequestQueueListener).refreshDestination(any());
+		doNothing().when(activeMQInventoryResponseQueueListener).refreshDestination(any());
+		doNothing().when(activeMQInventoryRequestQueueListener).refreshDestination(any());
 
 		doNothing().when(restEndpointService).removeAllEndpoints();
 		when(globalPreferencesRepository.save(any(GlobalPreferencesEntity.class))).thenReturn(globalPreferences);
@@ -935,37 +940,5 @@ public class GlobalPreferencesServiceTest {
 
 		// Then
 		assertEquals(ORDER_SERVICE_LISTEN_ON_CANNOT_BE_NULL, message);
-	}
-
-	@Test
-	public void test_validateRabbitMQServerUrl_normal() throws Exception {
-		//Given
-		ConnectionFactory factory = mock(ConnectionFactory.class);
-		Connection connection = mock(Connection.class);
-		doReturn(connection).when(factory).newConnection();
-		doReturn(factory).when(rabbitMQConfig).factory();
-
-		//When
-		underTest.validateRabbitMQServerUrl();
-	}
-
-	@Test
-	public void test_validateRabbitMQServerUrl_rabbitMQServerIsNotAvailableException() throws Exception {
-		//Given
-		ConnectionFactory factory = mock(ConnectionFactory.class);
-		doThrow(IOException.class).when(factory).newConnection();
-		doReturn(factory).when(rabbitMQConfig).factory();
-
-		//When
-		String message = "";
-		try {
-			underTest.validateRabbitMQServerUrl();
-		} catch (Exception e) {
-			message = e.getMessage();
-		}
-
-		// Then
-		assertEquals(MessageFormat.format(GlobalPreferencesMessages.RABBITMQ_SERVER_IS_NOT_AVAILABLE,
-				rabbitMQConfig.getRabbitMqHost() + ":" + rabbitMQConfig.getRabbitMqPort()), message);
 	}
 }

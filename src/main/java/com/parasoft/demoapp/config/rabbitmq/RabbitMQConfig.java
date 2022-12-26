@@ -1,19 +1,17 @@
 package com.parasoft.demoapp.config.rabbitmq;
 
+import com.parasoft.demoapp.config.MQConfig;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import com.parasoft.demoapp.config.MQConfig;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
@@ -38,9 +36,10 @@ public class RabbitMQConfig {
     @Value("${spring.rabbitmq.password}")
     private String password;
 
+    private Binding orderServiceSendToQueueBinding;
 
     @Bean
-    public CachingConnectionFactory factory() throws Exception {
+    public CachingConnectionFactory connectionFactory() {
         CachingConnectionFactory factory = new CachingConnectionFactory();
         factory.setHost(rabbitMqHost);
         factory.setPort(rabbitMqPort);
@@ -83,16 +82,46 @@ public class RabbitMQConfig {
 
     @Bean
     public Binding orderServiceSendToQueueBinding() {
-        return BindingBuilder.bind(orderServiceSendToQueue()).to(inventoryDirectExchange()).with(RabbitMQConfig.INVENTORY_QUEUE_REQUEST_ROUTING_KEY);
+        orderServiceSendToQueueBinding = BindingBuilder
+                                            .bind(orderServiceSendToQueue())
+                                            .to(inventoryDirectExchange())
+                                            .with(RabbitMQConfig.INVENTORY_QUEUE_REQUEST_ROUTING_KEY);
+        return orderServiceSendToQueueBinding;
     }
 
     @Bean
     public Binding inventoryServiceSendToQueueBinding() {
-        return BindingBuilder.bind(inventoryServiceSendToQueue()).to(inventoryDirectExchange()).with(RabbitMQConfig.INVENTORY_QUEUE_RESPONSE_ROUTING_KEY);
+        return BindingBuilder
+                .bind(inventoryServiceSendToQueue())
+                .to(inventoryDirectExchange())
+                .with(RabbitMQConfig.INVENTORY_QUEUE_RESPONSE_ROUTING_KEY);
     }
 
     @Bean
     public DirectExchange inventoryDirectExchange() {
         return new DirectExchange(RabbitMQConfig.INVENTORY_DIRECT_EXCHANGE);
+    }
+
+    @Bean
+    public AmqpAdmin amqpAdmin() {
+        return new RabbitAdmin(connectionFactory());
+    }
+
+    public void replaceQueueForOrderServiceSendToQueueBinding(String newOrderServiceSendToQueue) {
+        AmqpAdmin amqpAdmin = amqpAdmin();
+        amqpAdmin.removeBinding(orderServiceSendToQueueBinding);
+        Queue queue = declareQueue(newOrderServiceSendToQueue);
+        orderServiceSendToQueueBinding = BindingBuilder
+                                            .bind(queue)
+                                            .to(inventoryDirectExchange())
+                                            .with(RabbitMQConfig.INVENTORY_QUEUE_REQUEST_ROUTING_KEY);
+        amqpAdmin.declareBinding(orderServiceSendToQueueBinding);
+        orderServiceSendToQueue = newOrderServiceSendToQueue;
+    }
+
+    public Queue declareQueue(String queueName) {
+        Queue queue = new Queue(queueName);
+        amqpAdmin().declareQueue(queue);
+        return queue;
     }
 }
