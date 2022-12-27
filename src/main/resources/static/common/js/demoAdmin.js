@@ -1567,6 +1567,18 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
                     }, {
                          label: $filter('translate')('PASSWORD'),
                          value: data.rabbitMQConfig.password
+                    }, {
+                        label: $filter('translate')('REQUEST_QUEUE_BINDING_EXCHANGE'),
+                        value: data.rabbitMQConfig.requestDirectExchange
+                    }, {
+                        label: $filter('translate')('REQUEST_QUEUE_BINDING_ROUTING_KEY'),
+                        value: data.rabbitMQConfig.requestRoutingKey
+                    }, {
+                        label: $filter('translate')('RESPONSE_QUEUE_BINDING_EXCHANGE'),
+                        value: data.rabbitMQConfig.responseDirectExchange
+                    }, {
+                        label: $filter('translate')('RESPONSE_QUEUE_BINDING_ROUTING_KEY'),
+                        value: data.rabbitMQConfig.responseRoutingKey
                     }
                 ];
              };
