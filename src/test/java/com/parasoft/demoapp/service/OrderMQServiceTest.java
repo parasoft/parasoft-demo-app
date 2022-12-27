@@ -20,6 +20,8 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
+import org.springframework.util.concurrent.ListenableFuture;
 
 import javax.jms.Destination;
 import java.util.ArrayList;
@@ -130,6 +132,8 @@ public class OrderMQServiceTest {
         orderItems.add(orderItem);
         MQConfig.currentMQType = MqType.KAFKA;
         KafkaConfig.setOrderServiceSendToTopic("test.topic");
+        ListenableFuture<SendResult<String, InventoryOperationRequestMessageDTO>> future = mock(ListenableFuture.class);
+        doReturn(future).when(operationRequestKafkaTemplate).send(anyString(), anyString(), any(InventoryOperationRequestMessageDTO.class));
 
         // When
         underTest.sendToInventoryRequestDestination(InventoryOperation.DECREASE, orderNumber, orderItems);
@@ -176,6 +180,8 @@ public class OrderMQServiceTest {
         orderItems.add(orderItem);
         MQConfig.currentMQType = MqType.KAFKA;
         KafkaConfig.setOrderServiceSendToTopic("test.topic");
+        ListenableFuture<SendResult<String, InventoryOperationRequestMessageDTO>> future = mock(ListenableFuture.class);
+        doReturn(future).when(operationRequestKafkaTemplate).send(anyString(), anyString(), any(InventoryOperationRequestMessageDTO.class));
 
         // When
         underTest.sendToInventoryRequestDestination(InventoryOperation.DECREASE, orderNumber, orderItems, "test");

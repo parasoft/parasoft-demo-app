@@ -19,6 +19,9 @@ import org.springframework.stereotype.Component;
 
 import javax.jms.Destination;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import static com.parasoft.demoapp.config.kafka.KafkaConfig.ADMIN_CLIENT_TIMEOUT_MS;
 
 @Slf4j
 @Component
@@ -60,7 +63,7 @@ public class OrderMQService {
             String destination = KafkaConfig.getOrderServiceSendToTopic();
             requestDestination = "Kafka topic: " + destination;
             try {
-                operationRequestKafkaTemplate.send(destination, message.getOrderNumber(), message);
+                operationRequestKafkaTemplate.send(destination, message.getOrderNumber(), message).get(ADMIN_CLIENT_TIMEOUT_MS, TimeUnit.MILLISECONDS);
             } catch (Exception e) {
                 throw new KafkaException("Can not send message to Kafka broker.", e);
             }
