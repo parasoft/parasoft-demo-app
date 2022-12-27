@@ -18,6 +18,7 @@ import javax.jms.Destination;
 
 import static com.parasoft.demoapp.model.global.preferences.MqType.ACTIVE_MQ;
 import static com.parasoft.demoapp.model.global.preferences.MqType.KAFKA;
+import static org.springframework.amqp.core.Address.AMQ_RABBITMQ_REPLY_TO;
 
 @Slf4j
 @Service
@@ -54,5 +55,15 @@ public class ItemInventoryMQService {
 
     public void send(Destination destination, InventoryOperationResultMessageDTO message) {
         jmsMessagingTemplate.convertAndSend(destination, message);
+    }
+
+    /**
+     * This method is used for sending message to "amq.rabbitmq.reply-to" queue.<br/>
+     * It needs to use with reply-to property in message header.<br/>
+     * Here is the usage of <a href="https://www.rabbitmq.com/direct-reply-to.html">Direct Reply-to</a> for RabbitMQ.
+     * */
+    public void sendToAmqRabbitMqReplyToQueue(InventoryOperationResultMessageDTO messageToReply, String routingKey) {
+        rabbitTemplate.convertAndSend("", routingKey, messageToReply);
+        log.info("Inventory service sent a message to RabbitMQ queue: {} \n Message content: {}", AMQ_RABBITMQ_REPLY_TO, messageToReply);
     }
 }

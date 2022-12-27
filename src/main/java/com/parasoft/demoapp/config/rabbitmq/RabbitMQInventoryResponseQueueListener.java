@@ -10,6 +10,7 @@ import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFacto
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.stereotype.Component;
 
+import static org.springframework.amqp.core.Address.AMQ_RABBITMQ_REPLY_TO;
 import static org.springframework.kafka.support.mapping.AbstractJavaTypeMapper.DEFAULT_CLASSID_FIELD_NAME;
 
 @Slf4j
@@ -46,6 +47,11 @@ public class RabbitMQInventoryResponseQueueListener extends RabbitMQRefreshableM
             return;
         }
 
-        orderMQService.sendToInventoryRequestDestination(messageToReply);
+        String replyTo = message.getMessageProperties().getReplyTo();
+        if(replyTo != null && replyTo.startsWith(AMQ_RABBITMQ_REPLY_TO)) {
+            orderMQService.sendToAmqRabbitMqReplyToQueue(messageToReply, message.getMessageProperties().getReplyTo());
+        } else {
+            orderMQService.sendToInventoryRequestDestination(messageToReply);
+        }
     }
 }
