@@ -107,12 +107,15 @@ The configuration for queues/topics can be changed or reset to default on PDA De
 
 **Configuration details for external RabbitMQ server (default)**
 
-| Option   | Value       |
-|----------|-------------|
-| host     | `localhost` |
-| port     | `5672`      |
-| username | `guest`     |
-| password | `guest`     |
+| Option                     | Value                      |
+|----------------------------|----------------------------|
+| Host                       | `localhost`                |
+| Port                       | `5672`                     |
+| Username                   | `guest`                    |
+| Password                   | `guest`                    |
+| Exchange                   | `inventory.direct`         |
+| Request queue routing key  | `inventory.queue.request`  |
+| Response queue routing key | `inventory.queue.response` |
 
 This configuration can be changed in **application.properties** file.
 
@@ -144,8 +147,8 @@ to a customized request topic name. The virtual asset deployment should be confi
 
 ### Using external RabbitMQ server with PDA
 1. Download and install Erlang.
-2. Download, install and start a RabbitMQ server (RabbitMQ version should correspond to Erlang RabbitMQ) using default settings.
-3. Set Rabbitmq host, port, username, password in **application.properties** file.
+2. Download, install and start a RabbitMQ server (RabbitMQ version should be compatible with Erlang version) using default settings.
+3. Set RabbitMQ host, port, username, password in **application.properties** file.
 4. Start PDA and change queue type to RabbitMQ in **PARASOFT QUEUE CONFIGURATION** section of PDA Demo Administration page.
 5. To test connection with RabbitMQ server, either use **Test Connection** button in **RabbitMQ configuration details** link or save changes in PDA Demo Administration page.
 
