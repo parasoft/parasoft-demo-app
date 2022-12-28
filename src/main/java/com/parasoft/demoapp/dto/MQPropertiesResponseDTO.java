@@ -2,6 +2,8 @@ package com.parasoft.demoapp.dto;
 
 import lombok.Data;
 
+import static com.parasoft.demoapp.config.rabbitmq.RabbitMQConfig.*;
+
 @Data
 public class MQPropertiesResponseDTO {
     private ActiveMQConfigResponse activeMqConfig;
@@ -50,12 +52,18 @@ public class MQPropertiesResponseDTO {
         private int rabbitMqPort;
         private String username;
         private String password;
+        private String exchange;
+        private String requestRoutingKey;
+        private String responseRoutingKey;
 
         public RabbitMQConfigResponse(String rabbitMqHost, int rabbitMqPort, String username, String password) {
             this.rabbitMqHost = rabbitMqHost;
             this.rabbitMqPort = rabbitMqPort;
             this.username = username;
             this.password = password;
+            this.exchange = INVENTORY_DIRECT_EXCHANGE;
+            this.requestRoutingKey = INVENTORY_QUEUE_REQUEST_ROUTING_KEY;
+            this.responseRoutingKey = INVENTORY_QUEUE_RESPONSE_ROUTING_KEY;
         }
     }
 }

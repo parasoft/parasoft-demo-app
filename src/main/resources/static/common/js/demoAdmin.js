@@ -1567,6 +1567,15 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
                     }, {
                          label: $filter('translate')('PASSWORD'),
                          value: data.rabbitMQConfig.password
+                    }, {
+                        label: $filter('translate')('EXCHANGE'),
+                        value: data.rabbitMQConfig.exchange
+                    }, {
+                        label: $filter('translate')('REQUEST_QUEUE_ROUTING_KEY'),
+                        value: data.rabbitMQConfig.requestRoutingKey
+                    }, {
+                        label: $filter('translate')('RESPONSE_QUEUE_ROUTING_KEY'),
+                        value: data.rabbitMQConfig.responseRoutingKey
                     }
                 ];
              };
