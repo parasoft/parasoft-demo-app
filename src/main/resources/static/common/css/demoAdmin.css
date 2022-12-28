@@ -447,6 +447,7 @@ textarea {
 
 .queue_configuration_details_modal_content {
     width: 560px;
+    top: 0;
 }
 
 .queue_configuration_details_table {

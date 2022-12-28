@@ -105,6 +105,18 @@ The configuration for queues/topics can be changed or reset to default on PDA De
 | Broker URL  |       `localhost:9092`         |
 | Group ID    |       `inventory-operation`    |
 
+**Configuration details for external RabbitMQ server (default)**
+
+| Option                     | Value                      |
+|----------------------------|----------------------------|
+| Host                       | `localhost`                |
+| Port                       | `5672`                     |
+| Username                   | `guest`                    |
+| Password                   | `guest`                    |
+| Exchange                   | `inventory.direct`         |
+| Request queue routing key  | `inventory.queue.request`  |
+| Response queue routing key | `inventory.queue.response` |
+
 This configuration can be changed in **application.properties** file.
 
 ### Using JMS Proxy
@@ -114,7 +126,7 @@ The **Server Connection** in message proxy should be configured with the two def
 
 <img src="src/main/resources/static/common/images/mq_proxy_mode_diagram.png" alt="mq proxy mode diagram">
 
-### Using virtual asset with JMS
+### Using virtual asset with JMS and RabbitMQ
 To use the queueing system with virtual asset, you can change **Inventory service request queue** to a customized destination queue name.
 The virtual asset deployment should be configured to listen to the customized destination queue and reply to the default response queue.
 
@@ -132,6 +144,13 @@ to a customized request topic name. The virtual asset deployment should be confi
 2. Set Kafka broker URL and consumer group ID in **application.properties** file.
 3. Start PDA and change queue type to Kafka in **PARASOFT QUEUE CONFIGURATION** section of PDA Demo Administration page.
 4. To test connection with Kafka server, either use **Test Connection** button in **Kafka configuration details** link or save changes in PDA Demo Administration page.
+
+### Using external RabbitMQ server with PDA
+1. Download and install Erlang.
+2. Download, install and start a RabbitMQ server (RabbitMQ version should be compatible with Erlang version) using default settings.
+3. Set RabbitMQ host, port, username, password in **application.properties** file.
+4. Start PDA and change queue type to RabbitMQ in **PARASOFT QUEUE CONFIGURATION** section of PDA Demo Administration page.
+5. To test connection with RabbitMQ server, either use **Test Connection** button in **RabbitMQ configuration details** link or save changes in PDA Demo Administration page.
 
 ## Using Parasoft JDBC Proxy
 1. Find the **ParasoftJDBCDriver.jar** in **{SOAtest & Virtualize installation directory}/{version}/proxies**.

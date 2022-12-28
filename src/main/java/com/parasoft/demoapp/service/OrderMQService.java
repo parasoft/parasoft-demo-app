@@ -23,6 +23,8 @@ import java.util.concurrent.TimeUnit;
 
 import static com.parasoft.demoapp.config.kafka.KafkaConfig.ADMIN_CLIENT_TIMEOUT_MS;
 
+import static org.springframework.amqp.core.Address.AMQ_RABBITMQ_REPLY_TO;
+
 @Slf4j
 @Component
 public class OrderMQService {
@@ -85,4 +87,13 @@ public class OrderMQService {
         jmsMessagingTemplate.convertAndSend(destination, message);
     }
 
+    /**
+     * This method is used for sending message to "amq.rabbitmq.reply-to" queue.<br/>
+     * It needs to use with reply-to property in message header.<br/>
+     * Here is the usage of <a href="https://www.rabbitmq.com/direct-reply-to.html">Direct Reply-to</a> for RabbitMQ.
+    * */
+    public void sendToAmqRabbitMqReplyToQueue(InventoryOperationRequestMessageDTO messageToReply, String routingKey) {
+        rabbitTemplate.convertAndSend("", routingKey, messageToReply);
+        log.info("Order service sent a message to RabbitMQ queue: {} \n Message content: {}", AMQ_RABBITMQ_REPLY_TO, messageToReply);
+    }
 }
