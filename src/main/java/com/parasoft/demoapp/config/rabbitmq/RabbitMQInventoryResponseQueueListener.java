@@ -48,8 +48,8 @@ public class RabbitMQInventoryResponseQueueListener extends RabbitMQRefreshableM
         }
 
         String replyTo = message.getMessageProperties().getReplyTo();
-        if(replyTo != null && replyTo.startsWith(AMQ_RABBITMQ_REPLY_TO)) {
-            orderMQService.sendToAmqRabbitMqReplyToQueue(messageToReply, message.getMessageProperties().getReplyTo());
+        if(replyTo != null && replyTo.startsWith(AMQ_RABBITMQ_REPLY_TO + ".")) {
+            orderMQService.sendToAmqRabbitMqReplyToQueue(messageToReply, replyTo);
         } else {
             orderMQService.sendToInventoryRequestDestination(messageToReply);
         }
