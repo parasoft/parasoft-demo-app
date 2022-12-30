@@ -36,8 +36,6 @@ repositories {
 	mavenCentral()
 }
 
-def grpcVersion = '1.49.0' // GRPC_VERSION
-
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-activemq'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
@@ -80,8 +78,6 @@ dependencies {
 	implementation 'org.springdoc:springdoc-openapi-data-rest:1.6.13'
 
     //gRPC
-    implementation "io.grpc:grpc-stub:${grpcVersion}"
-    implementation "io.grpc:grpc-netty:${grpcVersion}"
     implementation 'net.devh:grpc-spring-boot-starter:2.13.1.RELEASE'
 
 	developmentOnly fileTree(dir:'lib',includes:['*jar'])
