@@ -57,13 +57,8 @@ public class ItemInventoryMQService {
         jmsMessagingTemplate.convertAndSend(destination, message);
     }
 
-    /**
-     * This method is used for sending message to "amq.rabbitmq.reply-to" queue.<br/>
-     * It needs to use with reply-to property in message header.<br/>
-     * Here is the usage of <a href="https://www.rabbitmq.com/direct-reply-to.html">Direct Reply-to</a> for RabbitMQ.
-     * */
     public void sendToAmqRabbitMqReplyToQueue(InventoryOperationResultMessageDTO messageToReply, String routingKey) {
-        rabbitTemplate.convertAndSend("", routingKey, messageToReply);
+        rabbitTemplate.convertAndSend(routingKey, messageToReply);
         log.info("Inventory service sent a message to RabbitMQ queue: {} \n Message content: {}", AMQ_RABBITMQ_REPLY_TO, messageToReply);
     }
 }
