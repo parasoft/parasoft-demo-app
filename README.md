@@ -1,6 +1,7 @@
 # Parasoft Demo Application
 The Parasoft Demo Application is an example Spring Boot project. The application is configurable and customizable, and is used to demonstrate functionality in a variety of Parasoft tools.
 
+Docker Hub repository: https://hub.docker.com/r/parasoft/demo-app
 ## Getting Started
 ### Building .war from sources
 Once you download the sources, build the project as a .war file using the Gradle wrapper.
