@@ -20,10 +20,15 @@ message Items {
   repeated Item items = 1;
 }
 
+enum Operation {
+  DEDUCTION = 0;
+  ADDITION = 1;
+}
+
 message UpdateItemsInStockRequest {
   int64 id = 1;
-  int32 deduction = 2;
-  int32 addition = 3;
+  Operation operation = 2;
+  int32 value = 3;
 }
 
 message Item {
