@@ -35,6 +35,7 @@ public class AssetMessages extends Messages {
 	public static final String THERE_IS_NO_CART_ITEM_CORRESPONDING_TO = "There is no cart item corresponding to {0}.";
 	public static final String SEARCH_FIELD_CANNOT_BE_BLANK = "Search field cannot be an empty string(null, '' or '  ').";
 	public static final String INVENTORY_NOT_FOUND_WITH_ITEM_ID = "Inventory not found with item id {0}.";
+	public static final String INVALID_REQUEST = "Invalid request, can not parse it.";
 
     public AssetMessages() {
 		super("i18n/messages");

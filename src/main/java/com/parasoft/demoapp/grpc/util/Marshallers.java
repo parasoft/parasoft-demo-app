@@ -2,12 +2,14 @@ package com.parasoft.demoapp.grpc.util;
 
 import com.google.gson.Gson;
 import io.grpc.MethodDescriptor.Marshaller;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
+@Slf4j
 public class Marshallers {
     public static <T> Marshaller<T> marshallerFor(Class<T> clz) {
         Gson gson = new Gson();
@@ -19,7 +21,13 @@ public class Marshallers {
 
             @Override
             public T parse(InputStream stream) {
-                return gson.fromJson(new InputStreamReader(stream, StandardCharsets.UTF_8), clz);
+                T t = null;
+                try {
+                    t = gson.fromJson(new InputStreamReader(stream, StandardCharsets.UTF_8), clz);
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                }
+                return t;
             }
         };
     }
