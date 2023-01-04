@@ -30,6 +30,10 @@ Or as a .war file with Java (after building):
 ```
 java -jar build/libs/parasoft-demo-app-1.1.0.war
 ```
+Port can be specified when running .war file:
+```
+java -jar build/libs/parasoft-demo-app-1.1.0.war --server.port=8888
+```
 ### Importing into your IDE
 If you want to import the project into your IDE, be sure to do the following:
 1. Import the project as a Gradle project. You may need to synchronize or refresh the project after importing.
