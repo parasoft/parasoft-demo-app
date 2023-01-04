@@ -66,10 +66,10 @@ public class JsonServiceImpl extends JsonServiceImplBase {
                     .withDescription(e.getMessage())
                     .withCause(e)
                     .asRuntimeException());
-        } catch (Throwable t) {
+        } catch (Exception e) {
             responseObserver.onError(Status.INTERNAL
-                    .withDescription(t.getMessage())
-                    .withCause(t)
+                    .withDescription(e.getMessage())
+                    .withCause(e)
                     .asRuntimeException());
         }
     }
