@@ -109,6 +109,34 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
         }
     }
 
+    demo.loadGRPCConfigurationDetails = function() {
+        demo.gRPCConfigurationDetails = [
+            {
+               label: $filter('translate')('GRPC_HOST'),
+               value: "localhost"
+            },{
+               label: $filter('translate')('GRPC_PORT'),
+               value: 50051
+            },{
+               label: $filter('translate')('GRPC_SERVICE_NAME'),
+               value: "grpc.demoApp.JsonService"
+            }
+        ];
+
+        demo.gRPCMethods = [
+            {
+               label: "getStockByItemId:",
+               value: $filter('translate')('GETSTOCKBYITEMID_DESCRIPTION'),
+            },{
+               label: "getItemsInStock:",
+               value: $filter('translate')('GETITEMSINSTOCK_DESCRIPTION'),
+            },{
+               label: "updateItemsInStock:",
+               value: $filter('translate')('UPDATEITEMSINSTOCK_DESCRIPTION'),
+            }
+        ];
+    }
+
     function getAllItems() {
         let getCategoriesSuccess = (data) => {
             demo.modalCategories = data.content;

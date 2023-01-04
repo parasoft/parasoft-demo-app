@@ -433,20 +433,32 @@ a, a:hover, a:focus {
     cursor: pointer;
 }
 
-.available_user_accounts_link {
+.available_user_accounts_link, .gRPC_configuration_details_link {
     cursor:pointer
 }
 
-.available_user_accounts_description {
+.available_user_accounts_description, .gRPC_configuration_details_description {
     font-size: 15px;
     margin: 0px 22px 15px;
 }
 
-.available_user_accounts_info {
+.gRPC_methods {
+    font-size: 15px;
+    margin: 20px 22px 15px;
+}
+
+.available_user_accounts_info, .gRPC_configuration_details_info {
     margin: auto;
     width: fit-content;
 }
 .available_user_accounts_info td {
+    width: 210px;
+    text-align: center;
+    border: 1px solid lightgrey;
+    padding: 5px;
+}
+
+.gRPC_configuration_details_info td {
     width: 210px;
     text-align: center;
     border: 1px solid lightgrey;

@@ -450,11 +450,18 @@ textarea {
     top: 0;
 }
 
-.queue_configuration_details_table {
+.queue_configuration_details_table, .gRPC_configuration_details_table {
     margin: 0 auto;
 }
 
 .queue_configuration_details_table th{
+    text-align: start;
+    font-size: 15px;
+    font-weight: normal;
+    padding-bottom: 7px;
+}
+
+.gRPC_configuration_details_table th{
     text-align: start;
     font-size: 15px;
     font-weight: normal;
@@ -473,7 +480,7 @@ textarea {
     margin-top: 20px;
 }
 
-.queue_configuration_details_value {
+.queue_configuration_details_value, .gRPC_configuration_details_value {
     padding-left: 10px;
 }
 

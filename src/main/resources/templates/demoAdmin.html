@@ -830,6 +830,10 @@
                         <a class="support_link industry_color_1 available_user_accounts_link" translate="AVAILABLE_USER_ACCOUNTS" data-toggle="modal"
                            data-target="#available_user_accounts_info_modal"></a>
                     </div>
+                    <div class="support_link_wrapper">
+                        <a class="support_link industry_color_1 gRPC_configuration_details_link" translate="GRPC_CONFIGURATION_DETAILS" data-toggle="modal"
+                           data-target="#gRPC_configuration_details_modal" ng-click="demo.loadGRPCConfigurationDetails()"></a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -853,6 +857,46 @@
                             <tr ng-repeat="info in demo.userAccountsInfo">
                                 <td>{{info.purchaserInfo}}</td>
                                 <td>{{info.approverInfo}}</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn button-secondary modal_cancel_btn" data-dismiss="modal" translate="CLOSE"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="gRPC_configuration_details_modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+            <div class="modal-dialog">
+                <div class="modal-content industry_font gRPC_configuration_details_modal_content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <div class="modal-title">
+                            <div translate="GRPC_CONFIGURATION_DETAILS"></div>
+                        </div>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="gRPC_configuration_details_description" translate="GRPC_CONFIGURATION_DETAILS_DESCRIPTION"></div>
+                        <table class="gRPC_configuration_details_table">
+                            <tbody>
+                                <tr ng-repeat="configuration in demo.gRPCConfigurationDetails">
+                                    <th ng-bind="configuration.label"></th>
+                                    <th class="gRPC_configuration_details_value" ng-bind="configuration.value"></th>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="gRPC_methods" translate="METHODS_AND_BRIEF_DESCRIPTION"></div>
+                        <table class="gRPC_configuration_details_info">
+                            <tr>
+                                <td><span translate="METHOD"></span></td>
+                                <td><span translate="DESCRIPTION"></span></td>
+                            </tr>
+                            <tr ng-repeat="method in demo.gRPCMethods">
+                                <td>{{method.label}}</td>
+                                <td>{{method.value}}</td>
                             </tr>
                         </table>
                     </div>
