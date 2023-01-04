@@ -1,0 +1,40 @@
+syntax = "proto3";
+option java_multiple_files = true;
+package grpc.demoApp;
+
+service ProtoServer {
+  rpc getStockByItemId(GetStockByItemIdRequest) returns(GetStockByItemIdResponse);
+  rpc getItemsInStock(Empty) returns(stream Items);
+  rpc updateItemsInStock(stream UpdateItemsInStockRequest) returns(stream Item);
+}
+
+message GetStockByItemIdRequest {
+  int64 id = 1;
+}
+
+message GetStockByItemIdResponse {
+  int32 stock = 1;
+}
+
+message Items {
+  repeated Item items = 1;
+}
+
+enum Operation {
+  DEDUCTION = 0;
+  ADDITION = 1;
+}
+
+message UpdateItemsInStockRequest {
+  int64 id = 1;
+  Operation operation = 2;
+  int32 value = 3;
+}
+
+message Item {
+  int64 id = 1;
+  string name = 2;
+  int32 stock = 3;
+}
+
+message Empty {}
