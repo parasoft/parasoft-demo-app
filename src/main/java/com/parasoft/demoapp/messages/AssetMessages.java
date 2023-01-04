@@ -36,6 +36,7 @@ public class AssetMessages extends Messages {
 	public static final String SEARCH_FIELD_CANNOT_BE_BLANK = "Search field cannot be an empty string(null, '' or '  ').";
 	public static final String INVENTORY_NOT_FOUND_WITH_ITEM_ID = "Inventory not found with item id {0}.";
 	public static final String INCORRECT_OPERATION = "Incorrect operation";
+	public static final String REQUEST_PARAMETER_CANNOT_BE_EMPTY="The request parameter cannot be empty.";
 
     public AssetMessages() {
 		super("i18n/messages");

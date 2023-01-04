@@ -6,6 +6,7 @@ import com.parasoft.demoapp.exception.ParameterException;
 import com.parasoft.demoapp.grpc.message.OperationType;
 import com.parasoft.demoapp.messages.AssetMessages;
 import com.parasoft.demoapp.service.ItemInventoryService;
+import com.parasoft.demoapp.service.ParameterValidator;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import com.parasoft.demoapp.exception.IncorrectOperationException;
@@ -65,19 +66,17 @@ public class JsonServiceImpl extends JsonServiceImplBase {
             @Override
             public void onNext(ItemRequest value) {
                 try {
+                    ParameterValidator.requireNonNull(value, AssetMessages.REQUEST_PARAMETER_CANNOT_BE_EMPTY);
+                    ParameterValidator.requireNonNull(value.getValue(), AssetMessages.IN_STOCK_CANNOT_BE_NULL);
                     Integer newInStock = 0;
                     ItemEntity item = itemService.getItemById(value.getId());
                     Integer inStock = item.getInStock();
 
-                    if (value.getValue() == null) {
-                        throw new ParameterException(AssetMessages.IN_STOCK_CANNOT_BE_NULL);
-                    } else if (value.getOperation() == null) {
+                    if (value.getOperation() == null) {
                         throw new IncorrectOperationException(AssetMessages.INCORRECT_OPERATION);
                     } else if (value.getOperation() == OperationType.DEDUCTION) {
                         newInStock = inStock - value.getValue();
-                        if (newInStock < 0) {
-                            throw new ParameterException(AssetMessages.INVENTORY_IS_NOT_ENOUGH);
-                        }
+                        ParameterValidator.requireNonNegative(newInStock, AssetMessages.INVENTORY_IS_NOT_ENOUGH);
                     } else if (value.getOperation() == OperationType.ADDITION) {
                         newInStock = inStock + value.getValue();
                     }
