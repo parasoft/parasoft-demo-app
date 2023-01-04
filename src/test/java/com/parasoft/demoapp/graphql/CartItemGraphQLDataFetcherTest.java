@@ -557,7 +557,7 @@ public class CartItemGraphQLDataFetcherTest {
                 .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
                 .perform(UPDATE_ITEM_IN_CART_GRAPHQL_RESOURCE, variables);
 
-        assertError_updateItemInCart(response, HttpStatus.BAD_REQUEST, AssetMessages.IN_STOCK_OF_CART_ITEM_IS_INSUFFICIENT);
+        assertError_updateItemInCart(response, HttpStatus.BAD_REQUEST, AssetMessages.INVENTORY_IS_NOT_ENOUGH);
     }
 
     @Test
