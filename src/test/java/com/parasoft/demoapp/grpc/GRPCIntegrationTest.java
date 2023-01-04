@@ -52,9 +52,7 @@ public class GRPCIntegrationTest {
     @Test
     public void testGetStockByItemId_normal() throws Throwable {
         Long id = 1L;
-        ManagedChannel channel = ManagedChannelBuilder.forTarget(TARGET).usePlaintext().build();
-        ClientCall<Long, Integer> call = channel.newCall(GET_STOCK_BY_ITEM_ID_METHOD, CallOptions.DEFAULT);
-        ListenableFuture<Integer> result = ClientCalls.futureUnaryCall(call, id);
+        ListenableFuture<Integer> result = createGetStockByItemIdCall(id);
 
         Integer stock = result.get();
         assertNotNull(stock);
@@ -63,11 +61,9 @@ public class GRPCIntegrationTest {
     @Test
     public void testGetStockByItemId_notFound() throws InterruptedException {
         Long id = 0L;
-        ManagedChannel channel = ManagedChannelBuilder.forTarget(TARGET).usePlaintext().build();
-        ClientCall<Long, Integer> call = channel.newCall(GET_STOCK_BY_ITEM_ID_METHOD, CallOptions.DEFAULT);
-        ListenableFuture<Integer> result = ClientCalls.futureUnaryCall(call, id);
+        ListenableFuture<Integer> result = createGetStockByItemIdCall(id);
         try {
-            Integer stock = result.get();
+            result.get();
         } catch (ExecutionException e) {
             String expectedMessage = Status.NOT_FOUND.getCode() + ": " + MessageFormat.format(AssetMessages.INVENTORY_NOT_FOUND_WITH_ITEM_ID, id);
             assertEquals(expectedMessage, e.getCause().getMessage());
@@ -77,13 +73,17 @@ public class GRPCIntegrationTest {
     @Test
     public void testGetStockByItemId_null() throws InterruptedException {
         Long id = null;
-        ManagedChannel channel = ManagedChannelBuilder.forTarget(TARGET).usePlaintext().build();
-        ClientCall<Long, Integer> call = channel.newCall(GET_STOCK_BY_ITEM_ID_METHOD, CallOptions.DEFAULT);
-        ListenableFuture<Integer> result = ClientCalls.futureUnaryCall(call, id);
+        ListenableFuture<Integer> result = createGetStockByItemIdCall(id);
         try {
-            Integer stock = result.get();
+            result.get();
         } catch (ExecutionException e) {
             assertTrue(e.getCause().getMessage().startsWith(Status.INTERNAL.getCode().toString()));
         }
+    }
+
+    private ListenableFuture<Integer> createGetStockByItemIdCall(Long id) {
+        ManagedChannel channel = ManagedChannelBuilder.forTarget(TARGET).usePlaintext().build();
+        ClientCall<Long, Integer> call = channel.newCall(GET_STOCK_BY_ITEM_ID_METHOD, CallOptions.DEFAULT);
+        return ClientCalls.futureUnaryCall(call, id);
     }
 }
