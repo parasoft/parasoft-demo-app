@@ -28,9 +28,6 @@ import static org.junit.Assert.*;
 public class GRPCIntegrationTest {
 
     @Autowired
-    ItemInventoryService itemInventoryService;
-
-    @Autowired
     GlobalPreferencesService globalPreferencesService;
 
     public static final String SERVICE_NAME = "grpc.demoApp.JsonService";
