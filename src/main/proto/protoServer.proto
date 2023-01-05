@@ -2,9 +2,9 @@ syntax = "proto3";
 option java_multiple_files = true;
 package grpc.demoApp;
 
-service ProtobufService {
+service ProtoServer {
   rpc getStockByItemId(GetStockByItemIdRequest) returns(GetStockByItemIdResponse);
-  rpc getItemsInStock(Empty) returns(stream Item);
+  rpc getItemsInStock(Empty) returns(stream Items);
   rpc updateItemsInStock(stream UpdateItemsInStockRequest) returns(stream Item);
 }
 
@@ -14,6 +14,10 @@ message GetStockByItemIdRequest {
 
 message GetStockByItemIdResponse {
   int32 stock = 1;
+}
+
+message Items {
+  repeated Item items = 1;
 }
 
 enum Operation {
