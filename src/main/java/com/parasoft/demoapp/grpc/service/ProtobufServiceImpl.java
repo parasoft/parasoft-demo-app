@@ -6,16 +6,18 @@ import com.parasoft.demoapp.messages.AssetMessages;
 import com.parasoft.demoapp.service.ItemInventoryService;
 import grpc.demoApp.GetStockByItemIdRequest;
 import grpc.demoApp.GetStockByItemIdResponse;
-import grpc.demoApp.ProtoServerGrpc;
+import grpc.demoApp.ProtobufServiceGrpc;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
+import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.MessageFormat;
 
+@Slf4j
 @GrpcService
-public class ProtoServiceImpl extends ProtoServerGrpc.ProtoServerImplBase {
+public class ProtobufServiceImpl extends ProtobufServiceGrpc.ProtobufServiceImplBase {
     @Autowired
     private ItemInventoryService itemInventoryService;
     
@@ -33,16 +35,19 @@ public class ProtoServiceImpl extends ProtoServerGrpc.ProtoServerImplBase {
                     .withDescription(e.getMessage())
                     .withCause(e)
                     .asRuntimeException());
+            log.error(e.getMessage(), e);
         } catch (InventoryNotFoundException e) {
             responseObserver.onError(Status.NOT_FOUND
                     .withDescription(e.getMessage())
                     .withCause(e)
                     .asRuntimeException());
+            log.error(e.getMessage(), e);
         } catch (Exception e) {
             responseObserver.onError(Status.INTERNAL
                     .withDescription(e.getMessage())
                     .withCause(e)
                     .asRuntimeException());
+            log.error(e.getMessage(), e);
         }
     }
 }
