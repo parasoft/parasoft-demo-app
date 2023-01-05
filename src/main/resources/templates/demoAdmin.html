@@ -879,13 +879,22 @@
                     </div>
 
                     <div class="modal-body">
-                        <div class="gRPC_configuration_details_description" translate="GRPC_CONFIGURATION_DETAILS_DESCRIPTION"></div>
+                        <div class="gRPC_configuration_details_description" translate="GRPC_JSON_CONFIGURATION_DETAILS_DESCRIPTION"></div>
                         <table class="gRPC_configuration_details_table">
                             <tbody>
-                                <tr ng-repeat="configuration in demo.gRPCConfigurationDetails">
-                                    <th ng-bind="configuration.label"></th>
-                                    <th class="gRPC_configuration_details_value" ng-bind="configuration.value"></th>
+                                <tr ng-repeat="configuration in demo.gRPCConfigurationJsonDetails">
+                                    <th ng-bind="configuration.label" class="gRPC_configuration_label"></th>
+                                    <th class="gRPC_configuration_details_value gRPC_configuration_value" ng-bind="configuration.value"></th>
                                 </tr>
+                            </tbody>
+                        </table>
+                        <div class="gRPC_configuration_details_description" translate="GRPC_PROTOBUF_CONFIGURATION_DETAILS_DESCRIPTION"></div>
+                        <table class="gRPC_configuration_details_table">
+                            <tbody>
+                            <tr ng-repeat="configuration in demo.gRPCConfigurationProtobufDetails">
+                                <th ng-bind="configuration.label" class="gRPC_configuration_label"></th>
+                                <th class="gRPC_configuration_details_value gRPC_configuration_value" ng-bind="configuration.value"></th>
+                            </tr>
                             </tbody>
                         </table>
                         <div class="gRPC_methods" translate="METHODS_AND_BRIEF_DESCRIPTION"></div>
@@ -895,7 +904,7 @@
                                 <td><span translate="DESCRIPTION"></span></td>
                             </tr>
                             <tr ng-repeat="method in demo.gRPCMethods">
-                                <td>{{method.label}}</td>
+                                <td class="gRPC_method_name">{{method.label}}</td>
                                 <td>{{method.value}}</td>
                             </tr>
                         </table>

@@ -213,7 +213,7 @@ label {
 }
 
 .modal-content {
-    width: 500px;
+    width: 600px;
     top: 65px;
 }
 
@@ -232,7 +232,6 @@ label {
 
 .modal-dialog {
     position: relative;
-    top: 10%;
 }
 
 .warning_text {
@@ -450,8 +449,12 @@ textarea {
     top: 0;
 }
 
-.queue_configuration_details_table, .gRPC_configuration_details_table {
+.queue_configuration_details_table {
     margin: 0 auto;
+}
+
+.gRPC_configuration_details_table {
+    margin: 0 auto 15px;
 }
 
 .queue_configuration_details_table th{
@@ -462,10 +465,20 @@ textarea {
 }
 
 .gRPC_configuration_details_table th{
-    text-align: start;
-    font-size: 15px;
-    font-weight: normal;
-    padding-bottom: 7px;
+     border: 1px solid lightgrey;
+     padding: 5px;
+     text-align: center;
+     font-size: 15px;
+     font-weight: normal;
+     padding-bottom: 7px;
+}
+
+.gRPC_configuration_label {
+     width: 130px;
+}
+
+.gRPC_configuration_value {
+    width: 230px;
 }
 
 .testing_connection_kafka_service, .testing_connection_rabbitmq_service {

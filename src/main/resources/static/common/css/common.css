@@ -449,7 +449,7 @@ a, a:hover, a:focus {
 
 .available_user_accounts_info, .gRPC_configuration_details_info {
     margin: auto;
-    width: fit-content;
+    width: 560px;
 }
 .available_user_accounts_info td {
     width: 210px;
@@ -459,8 +459,11 @@ a, a:hover, a:focus {
 }
 
 .gRPC_configuration_details_info td {
-    width: 210px;
-    text-align: center;
     border: 1px solid lightgrey;
     padding: 5px;
+}
+
+.gRPC_method_name {
+    text-align: center;
+    width: 150px;
 }
