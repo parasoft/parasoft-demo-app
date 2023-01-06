@@ -10,12 +10,14 @@ import com.parasoft.demoapp.service.ItemInventoryService;
 import com.parasoft.demoapp.service.ItemService;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
+import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.MessageFormat;
 import java.util.List;
 
+@Slf4j
 @GrpcService
 public class JsonServiceImpl extends JsonServiceImplBase {
     @Autowired
@@ -35,6 +37,7 @@ public class JsonServiceImpl extends JsonServiceImplBase {
                         .withDescription(inventoryNotFoundException.getMessage())
                         .withCause(inventoryNotFoundException)
                         .asRuntimeException());
+                log.error(inventoryNotFoundException.getMessage(), inventoryNotFoundException);
                 return;
             }
             responseObserver.onNext(inStock);
@@ -44,11 +47,13 @@ public class JsonServiceImpl extends JsonServiceImplBase {
                     .withDescription(e.getMessage())
                     .withCause(e)
                     .asRuntimeException());
+            log.error(e.getMessage(), e);
         } catch (Exception e) {
             responseObserver.onError(Status.INTERNAL
                     .withDescription(e.getMessage())
                     .withCause(e)
                     .asRuntimeException());
+            log.error(e.getMessage(), e);
         }
     }
     
@@ -67,11 +72,13 @@ public class JsonServiceImpl extends JsonServiceImplBase {
                     .withDescription(e.getMessage())
                     .withCause(e)
                     .asRuntimeException());
+            log.error(e.getMessage(), e);
         } catch (Exception e) {
             responseObserver.onError(Status.INTERNAL
                     .withDescription(e.getMessage())
                     .withCause(e)
                     .asRuntimeException());
+            log.error(e.getMessage(), e);
         }
     }
 }
