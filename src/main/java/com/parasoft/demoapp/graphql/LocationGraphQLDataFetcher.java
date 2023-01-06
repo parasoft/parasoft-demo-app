@@ -1,9 +1,9 @@
 package com.parasoft.demoapp.graphql;
 
-import com.parasoft.demoapp.config.WebConfig;
 import com.parasoft.demoapp.controller.ResponseResult;
 import com.parasoft.demoapp.model.industry.LocationEntity;
 import com.parasoft.demoapp.model.industry.RegionType;
+import com.parasoft.demoapp.service.RestEndpointService;
 import graphql.schema.DataFetcher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
@@ -14,13 +14,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.List;
 import java.util.Objects;
-
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.HOST;
 
 @RequiredArgsConstructor
 @Component
@@ -30,19 +27,12 @@ public class LocationGraphQLDataFetcher {
 
     private final HttpServletRequest httpRequest;
 
-    private final WebConfig webConfig;
-
-    private String locationBaseUrl;
-
-    @PostConstruct
-    private void init() {
-        locationBaseUrl = HOST + webConfig.getServerPort() + "/v1/locations";
-    }
+    private final RestEndpointService restEndpointService;
 
     public DataFetcher<LocationEntity> getLocation() {
         return environment -> {
             try {
-                UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(locationBaseUrl + "/location");
+                UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(restEndpointService.getLocationsBaseUrl() + "/location");
                 Object regionType = environment.getArgument("region");
                 if (regionType != null) {
                     builder.queryParam("region", regionType);
@@ -64,7 +54,7 @@ public class LocationGraphQLDataFetcher {
         return environment -> {
             try {
                 ResponseEntity<ResponseResult<List<RegionType>>> entity =
-                        restTemplate.exchange(locationBaseUrl + "/regions",
+                        restTemplate.exchange(restEndpointService.getLocationsBaseUrl() + "/regions",
                                 HttpMethod.GET,
                                 new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
                                 new ParameterizedTypeReference<ResponseResult<List<RegionType>>>() {});
