@@ -1,12 +1,16 @@
 package com.parasoft.demoapp.grpc;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.rpc.Code;
+import com.parasoft.demoapp.grpc.service.JsonServiceImpl;
 import com.parasoft.demoapp.grpc.util.Marshallers;
 import com.parasoft.demoapp.messages.AssetMessages;
 import com.parasoft.demoapp.service.GlobalPreferencesService;
 import com.parasoft.demoapp.service.ItemInventoryService;
 import io.grpc.*;
+import io.grpc.internal.testing.StreamRecorder;
 import io.grpc.stub.ClientCalls;
+import org.apache.zookeeper.data.Stat;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,7 +21,9 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.text.MessageFormat;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
 
@@ -30,15 +36,8 @@ public class GRPCIntegrationTest {
     @Autowired
     GlobalPreferencesService globalPreferencesService;
 
-    public static final String SERVICE_NAME = "grpc.demoApp.JsonService";
-    public static final String TARGET = "localhost:50051";
-
-    static final MethodDescriptor<Long, Integer> GET_STOCK_BY_ITEM_ID_METHOD = MethodDescriptor.newBuilder(
-            Marshallers.marshallerFor(Long.class),
-            Marshallers.marshallerFor(Integer.class))
-            .setFullMethodName(MethodDescriptor.generateFullMethodName(SERVICE_NAME, "getStockByItemId"))
-            .setType(MethodDescriptor.MethodType.UNARY)
-            .build();
+    @Autowired
+    JsonServiceImpl jsonServiceImpl;
 
 
     @Before
@@ -48,39 +47,52 @@ public class GRPCIntegrationTest {
 
     @Test
     public void testGetStockByItemId_normal() throws Throwable {
-        Long id = 1L;
-        ListenableFuture<Integer> result = createGetStockByItemIdCall(id);
+        StreamRecorder<Integer> responseObserver = StreamRecorder.create();
+        jsonServiceImpl.getStockByItemId(1L, responseObserver);
 
-        Integer stock = result.get();
-        assertNotNull(stock);
+        if (!responseObserver.awaitCompletion(5, TimeUnit.SECONDS)) {
+            fail("The call did not terminate in time");
+        }
+        assertNull(responseObserver.getError());
+
+        List<Integer> results = responseObserver.getValues();
+        assertEquals(1, results.size());
+        int response = results.get(0);
+        assertEquals(10, response);
     }
 
     @Test
-    public void testGetStockByItemId_notFound() throws InterruptedException {
+    public void testGetStockByItemId_notFound() throws Throwable {
         Long id = 0L;
-        ListenableFuture<Integer> result = createGetStockByItemIdCall(id);
-        try {
-            result.get();
-        } catch (ExecutionException e) {
-            String expectedMessage = Status.NOT_FOUND.getCode() + ": " + MessageFormat.format(AssetMessages.INVENTORY_NOT_FOUND_WITH_ITEM_ID, id);
-            assertEquals(expectedMessage, e.getCause().getMessage());
+        StreamRecorder<Integer> responseObserver = StreamRecorder.create();
+        jsonServiceImpl.getStockByItemId(0L, responseObserver);
+
+        if (!responseObserver.awaitCompletion(5, TimeUnit.SECONDS)) {
+            fail("The call did not terminate in time");
         }
+
+        Throwable error = responseObserver.getError();
+        assertNotNull(error);
+        assertEquals(getExpectedErrorMessage(Status.NOT_FOUND, MessageFormat.format(AssetMessages.INVENTORY_NOT_FOUND_WITH_ITEM_ID, id)), error.getMessage());
+
     }
 
     @Test
-    public void testGetStockByItemId_null() throws InterruptedException {
-        Long id = null;
-        ListenableFuture<Integer> result = createGetStockByItemIdCall(id);
-        try {
-            result.get();
-        } catch (ExecutionException e) {
-            assertTrue(e.getCause().getMessage().startsWith(Status.INTERNAL.getCode().toString()));
+    public void testGetStockByItemId_nullItemId() throws Throwable {
+        StreamRecorder<Integer> responseObserver = StreamRecorder.create();
+        jsonServiceImpl.getStockByItemId(null, responseObserver);
+
+        if (!responseObserver.awaitCompletion(5, TimeUnit.SECONDS)) {
+            fail("The call did not terminate in time");
         }
+
+        Throwable error = responseObserver.getError();
+        assertNotNull(error);
+        assertEquals(getExpectedErrorMessage(Status.INVALID_ARGUMENT, MessageFormat.format(AssetMessages.ITEM_ID_CANNOT_BE_NULL, null)), error.getMessage());
     }
 
-    private ListenableFuture<Integer> createGetStockByItemIdCall(Long id) {
-        ManagedChannel channel = ManagedChannelBuilder.forTarget(TARGET).usePlaintext().build();
-        ClientCall<Long, Integer> call = channel.newCall(GET_STOCK_BY_ITEM_ID_METHOD, CallOptions.DEFAULT);
-        return ClientCalls.futureUnaryCall(call, id);
+    private String getExpectedErrorMessage(Status status, String message) {
+        return status.getCode() + ": " + message;
     }
+
 }

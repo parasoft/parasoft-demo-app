@@ -124,6 +124,8 @@ dependencies {
 	testImplementation 'org.apache.kafka:kafka_2.13:3.2.3:test'
 
     testImplementation 'org.springframework.amqp:spring-rabbit-test:'
+
+    testImplementation "io.grpc:grpc-testing:${grpcVersion}"
 }
 
 test {
