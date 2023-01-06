@@ -442,22 +442,9 @@ a, a:hover, a:focus {
     margin: 0px 22px 15px;
 }
 
-#gRPC_configuration_details_modal_content {
-     width: 600px;
-}
-
-.gRPC_methods {
-    font-size: 15px;
-    margin: 20px 22px 15px;
-}
-
 .available_user_accounts_info {
     margin: auto;
-}
-
-.gRPC_configuration_details_info {
-    margin: auto;
-    width: 560px;
+    width: fit-content;
 }
 
 .available_user_accounts_info td {
@@ -465,15 +452,4 @@ a, a:hover, a:focus {
     text-align: center;
     border: 1px solid lightgrey;
     padding: 5px;
-}
-
-.gRPC_configuration_details_info td {
-    text-align: left;
-    border: 1px solid lightgrey;
-    padding: 5px;
-}
-
-.gRPC_method_name {
-    text-align: center;
-    width: 150px;
 }

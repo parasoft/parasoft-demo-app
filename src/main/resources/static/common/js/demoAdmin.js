@@ -110,44 +110,52 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
     }
 
     demo.loadGRPCConfigurationDetails = function() {
-        demo.gRPCConfigurationJsonDetails = [
-            {
-               label: $filter('translate')('GRPC_HOST'),
-               value: "localhost"
-            },{
-               label: $filter('translate')('GRPC_PORT'),
-               value: 50051
-            },{
-               label: $filter('translate')('GRPC_SERVICE_NAME'),
-               value: "grpc.demoApp.JsonService"
-            }
-        ];
+        $http({
+            method: 'GET',
+            url: '/v1/demoAdmin/gRPCProperties',
+        }).then(function(result) {
+            const data = result.data.data
+            demo.gRPCConfigurationJsonDetails = [
+                {
+                   label: $filter('translate')('GRPC_HOST'),
+                   value: location.hostname
+                },{
+                   label: $filter('translate')('GRPC_PORT'),
+                   value: data.port
+                },{
+                   label: $filter('translate')('GRPC_SERVICE_NAME'),
+                   value: "grpc.demoApp.JsonService"
+                }
+            ];
 
-        demo.gRPCConfigurationProtobufDetails = [
-            {
-               label: $filter('translate')('GRPC_HOST'),
-               value: "localhost"
-            },{
-               label: $filter('translate')('GRPC_PORT'),
-               value: 50051
-            },{
-               label: $filter('translate')('GRPC_SERVICE_NAME'),
-               value: "grpc.demoApp.ProtobufService"
-            }
-        ];
+            demo.gRPCConfigurationProtobufDetails = [
+                {
+                   label: $filter('translate')('GRPC_HOST'),
+                   value: location.hostname
+                },{
+                   label: $filter('translate')('GRPC_PORT'),
+                   value: data.port
+                },{
+                   label: $filter('translate')('GRPC_SERVICE_NAME'),
+                   value: "grpc.demoApp.ProtobufService"
+                }
+            ];
 
-        demo.gRPCMethods = [
-            {
-               label: "getStockByItemId",
-               value: $filter('translate')('GETSTOCKBYITEMID_DESCRIPTION'),
-            },{
-               label: "getItemsInStock",
-               value: $filter('translate')('GETITEMSINSTOCK_DESCRIPTION'),
-            },{
-               label: "updateItemsInStock",
-               value: $filter('translate')('UPDATEITEMSINSTOCK_DESCRIPTION'),
-            }
-        ];
+            demo.gRPCMethods = [
+                {
+                   label: "getStockByItemId",
+                   value: $filter('translate')('GETSTOCKBYITEMID_DESCRIPTION'),
+                },{
+                   label: "getItemsInStock",
+                   value: $filter('translate')('GETITEMSINSTOCK_DESCRIPTION'),
+                },{
+                   label: "updateItemsInStock",
+                   value: $filter('translate')('UPDATEITEMSINSTOCK_DESCRIPTION'),
+                }
+            ];
+        }).catch(function(result) {
+            console.error(result);
+        });
     }
 
     function getAllItems() {
