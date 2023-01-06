@@ -1,16 +1,10 @@
 package com.parasoft.demoapp.grpc;
 
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.rpc.Code;
 import com.parasoft.demoapp.grpc.service.JsonServiceImpl;
-import com.parasoft.demoapp.grpc.util.Marshallers;
 import com.parasoft.demoapp.messages.AssetMessages;
 import com.parasoft.demoapp.service.GlobalPreferencesService;
-import com.parasoft.demoapp.service.ItemInventoryService;
 import io.grpc.*;
 import io.grpc.internal.testing.StreamRecorder;
-import io.grpc.stub.ClientCalls;
-import org.apache.zookeeper.data.Stat;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,7 +16,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.text.MessageFormat;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
@@ -38,7 +31,6 @@ public class GRPCIntegrationTest {
 
     @Autowired
     JsonServiceImpl jsonServiceImpl;
-
 
     @Before
     public void setUp() {
@@ -94,5 +86,4 @@ public class GRPCIntegrationTest {
     private String getExpectedErrorMessage(Status status, String message) {
         return status.getCode() + ": " + message;
     }
-
 }
