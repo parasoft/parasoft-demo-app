@@ -29,7 +29,7 @@ public class AssetMessages extends Messages {
 	public static final String QUANTITY_CANNOT_BE_A_NEGATIVE_NUMBER_OR_ZERO = "Quantity cannot be a negative number or zero.";
 	public static final String INCLUDES_SHOPPING_CART_IN_STOCK_OF_CART_ITEM_IS_INSUFFICIENT =
 			"There is not enough inventory to fulfill your order. Edit your requisition and resubmit.";
-	public static final String IN_STOCK_OF_CART_ITEM_IS_INSUFFICIENT = "Inventory is not enough.";
+	public static final String INVENTORY_IS_NOT_ENOUGH = "Inventory is not enough.";
 	public static final String THIS_ITEM_IS_NOT_IN_THE_SHOPPING_CART = "This item is not in the shopping cart.";
 	public static final String NO_CART_ITEMS = "No cart items.";
 	public static final String THERE_IS_NO_CART_ITEM_CORRESPONDING_TO = "There is no cart item corresponding to {0}.";
