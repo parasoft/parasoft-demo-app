@@ -18,7 +18,6 @@ public abstract class JsonServiceImplBase implements BindableService {
 
     static final MethodDescriptor<Long, Integer> GET_STOCK_BY_ITEM_ID_METHOD;
     static final MethodDescriptor<Object, ItemEntity> GET_ITEMS_IN_STOCK_METHOD;
-
     static final MethodDescriptor<ItemRequest, ItemResponse> UPDATE_ITEMS_IN_STOCK;
 
     static {
@@ -45,7 +44,6 @@ public abstract class JsonServiceImplBase implements BindableService {
 
     public abstract void getStockByItemId(Long itemId, StreamObserver<Integer> streamObserver);
     public abstract void getItemsInStock(StreamObserver<ItemEntity> responseObserver);
-
     public abstract StreamObserver<ItemRequest> updateItemsInStock(StreamObserver<ItemResponse> responseObserver);
 
     @Override

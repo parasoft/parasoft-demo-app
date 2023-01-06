@@ -14,13 +14,10 @@ import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
 import com.parasoft.demoapp.exception.IncorrectOperationException;
-import com.parasoft.demoapp.exception.ItemNotFoundException;
 import com.parasoft.demoapp.grpc.message.ItemRequest;
 import com.parasoft.demoapp.grpc.message.ItemResponse;
-import com.parasoft.demoapp.model.industry.ItemEntity;
 import com.parasoft.demoapp.model.industry.ItemInventoryEntity;
 import com.parasoft.demoapp.repository.industry.ItemInventoryRepository;
-import com.parasoft.demoapp.service.ItemService;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -30,17 +27,17 @@ import java.util.List;
 @Slf4j
 @GrpcService
 public class JsonServiceImpl extends JsonServiceImplBase {
+
+    private static final Object clock = new Object();
+
     @Autowired
     private ItemInventoryService itemInventoryService;
-    
+
     @Autowired
     private ItemService itemService;
 
     @Autowired
     private ItemInventoryRepository itemInventoryRepository;
-
-    @Autowired
-    private ItemService itemService;
 
     @Override
     public void getStockByItemId(Long itemId, StreamObserver<Integer> responseObserver) {
@@ -71,7 +68,7 @@ public class JsonServiceImpl extends JsonServiceImplBase {
             log.error(e.getMessage(), e);
         }
     }
-    
+
     @Override
     public void getItemsInStock(StreamObserver<ItemEntity> responseObserver) {
         try {
@@ -104,42 +101,47 @@ public class JsonServiceImpl extends JsonServiceImplBase {
             @Override
             public void onNext(ItemRequest value) {
                 try {
-                    ParameterValidator.requireNonNull(value, AssetMessages.REQUEST_PARAMETER_CANNOT_BE_EMPTY);
-                    ParameterValidator.requireNonNull(value.getValue(), AssetMessages.IN_STOCK_CANNOT_BE_NULL);
-                    Integer newInStock = 0;
-                    ItemEntity item = itemService.getItemById(value.getId());
-                    Integer inStock = item.getInStock();
+                    synchronized (clock) {
+                        ParameterValidator.requireNonNull(value, AssetMessages.REQUEST_PARAMETER_CANNOT_BE_EMPTY);
+                        ParameterValidator.requireNonNull(value.getValue(), AssetMessages.IN_STOCK_CANNOT_BE_NULL);
+                        Integer newInStock = 0;
+                        ItemEntity item = itemService.getItemById(value.getId());
+                        Integer inStock = item.getInStock();
 
-                    if (value.getOperation() == null) {
-                        throw new IncorrectOperationException(AssetMessages.INCORRECT_OPERATION);
-                    } else if (value.getOperation() == OperationType.DEDUCTION) {
-                        newInStock = inStock - value.getValue();
+                        if (value.getOperation() == null) {
+                            throw new IncorrectOperationException(AssetMessages.INCORRECT_OPERATION);
+                        } else if (value.getOperation() == OperationType.DEDUCTION) {
+                            newInStock = inStock - value.getValue();
+                        } else if (value.getOperation() == OperationType.ADDITION) {
+                            newInStock = inStock + value.getValue();
+                        }
                         ParameterValidator.requireNonNegative(newInStock, AssetMessages.INVENTORY_IS_NOT_ENOUGH);
-                    } else if (value.getOperation() == OperationType.ADDITION) {
-                        newInStock = inStock + value.getValue();
+                        itemInventoryRepository.save(new ItemInventoryEntity(value.getId(), newInStock));
+                        responseObserver.onNext(new ItemResponse(value.getId(), item.getName(), newInStock));
                     }
-                    itemInventoryRepository.save(new ItemInventoryEntity(value.getId(), newInStock));
-                    responseObserver.onNext(new ItemResponse(value.getId(), item.getName(), newInStock));
-                }  catch (ParameterException e) {
-                    responseObserver.onError(Status.INVALID_ARGUMENT
-                            .withDescription(e.getMessage())
-                            .withCause(e)
-                            .asRuntimeException());
-                }  catch (ItemNotFoundException e) {
-                    responseObserver.onError(Status.NOT_FOUND
-                            .withDescription(e.getMessage())
-                            .withCause(e)
-                            .asRuntimeException());
-                } catch (IncorrectOperationException e) {
-                    responseObserver.onError(Status.UNIMPLEMENTED
-                            .withDescription(e.getMessage())
-                            .withCause(e)
-                            .asRuntimeException());
-                } catch (Throwable t) {
-                    responseObserver.onError(Status.INTERNAL
-                            .withDescription(t.getMessage())
-                            .withCause(t)
-                            .asRuntimeException());
+                } catch (Exception e) {
+                    if (e instanceof ParameterException) {
+                        responseObserver.onError(Status.INVALID_ARGUMENT
+                                .withDescription(e.getMessage())
+                                .withCause(e)
+                                .asRuntimeException());
+                    } else if (e instanceof ItemNotFoundException) {
+                        responseObserver.onError(Status.NOT_FOUND
+                                .withDescription(e.getMessage())
+                                .withCause(e)
+                                .asRuntimeException());
+                    } else if (e instanceof IncorrectOperationException) {
+                        responseObserver.onError(Status.UNIMPLEMENTED
+                                .withDescription(e.getMessage())
+                                .withCause(e)
+                                .asRuntimeException());
+                    } else {
+                        responseObserver.onError(Status.INTERNAL
+                                .withDescription(e.getMessage())
+                                .withCause(e)
+                                .asRuntimeException());
+                    }
+                    log.error(e.getMessage(), e);
                 }
             }
 
