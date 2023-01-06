@@ -31,27 +31,28 @@ public class JsonServiceImpl extends JsonServiceImplBase {
         try {
             Integer inStock = itemInventoryService.getInStockByItemId(itemId);
             if (inStock == null) {
-                throw new InventoryNotFoundException(MessageFormat.format(AssetMessages.INVENTORY_NOT_FOUND_WITH_ITEM_ID, itemId));
+                InventoryNotFoundException inventoryNotFoundException = new InventoryNotFoundException(
+                        MessageFormat.format(AssetMessages.INVENTORY_NOT_FOUND_WITH_ITEM_ID, itemId));
+                responseObserver.onError(Status.NOT_FOUND
+                        .withDescription(inventoryNotFoundException.getMessage())
+                        .withCause(inventoryNotFoundException)
+                        .asRuntimeException());
+                log.error(inventoryNotFoundException.getMessage(), inventoryNotFoundException);
+                return;
             }
             responseObserver.onNext(inStock);
             responseObserver.onCompleted();
+        } catch (ParameterException e) {
+            responseObserver.onError(Status.INVALID_ARGUMENT
+                    .withDescription(e.getMessage())
+                    .withCause(e)
+                    .asRuntimeException());
+            log.error(e.getMessage(), e);
         } catch (Exception e) {
-            if (e instanceof ParameterException) {
-                responseObserver.onError(Status.INVALID_ARGUMENT
-                        .withDescription(e.getMessage())
-                        .withCause(e)
-                        .asRuntimeException());
-            } else if (e instanceof InventoryNotFoundException) {
-                responseObserver.onError(Status.NOT_FOUND
-                        .withDescription(e.getMessage())
-                        .withCause(e)
-                        .asRuntimeException());
-            } else {
-                responseObserver.onError(Status.INTERNAL
-                        .withDescription(e.getMessage())
-                        .withCause(e)
-                        .asRuntimeException());
-            }
+            responseObserver.onError(Status.INTERNAL
+                    .withDescription(e.getMessage())
+                    .withCause(e)
+                    .asRuntimeException());
             log.error(e.getMessage(), e);
         }
     }
@@ -66,18 +67,17 @@ public class JsonServiceImpl extends JsonServiceImplBase {
                 }
             }
             responseObserver.onCompleted();
+        } catch (ItemNotFoundException e) {
+            responseObserver.onError(Status.NOT_FOUND
+                    .withDescription(e.getMessage())
+                    .withCause(e)
+                    .asRuntimeException());
+            log.error(e.getMessage(), e);
         } catch (Exception e) {
-            if (e instanceof ItemNotFoundException) {
-                responseObserver.onError(Status.NOT_FOUND
-                        .withDescription(e.getMessage())
-                        .withCause(e)
-                        .asRuntimeException());
-            } else {
-                responseObserver.onError(Status.INTERNAL
-                        .withDescription(e.getMessage())
-                        .withCause(e)
-                        .asRuntimeException());
-            }
+            responseObserver.onError(Status.INTERNAL
+                    .withDescription(e.getMessage())
+                    .withCause(e)
+                    .asRuntimeException());
             log.error(e.getMessage(), e);
         }
     }
