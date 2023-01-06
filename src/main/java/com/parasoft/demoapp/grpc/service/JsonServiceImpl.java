@@ -13,7 +13,6 @@ import com.parasoft.demoapp.service.ParameterValidator;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
-import com.parasoft.demoapp.exception.IncorrectOperationException;
 import com.parasoft.demoapp.grpc.message.ItemRequest;
 import com.parasoft.demoapp.grpc.message.ItemResponse;
 import com.parasoft.demoapp.model.industry.ItemInventoryEntity;
@@ -99,48 +98,47 @@ public class JsonServiceImpl extends JsonServiceImplBase {
     public StreamObserver<ItemRequest> updateItemsInStock(StreamObserver<ItemResponse> responseObserver) {
         return new StreamObserver<ItemRequest>() {
             @Override
-            public void onNext(ItemRequest value) {
+            public void onNext(ItemRequest itemRequest) {
                 try {
                     synchronized (clock) {
-                        ParameterValidator.requireNonNull(value, AssetMessages.REQUEST_PARAMETER_CANNOT_BE_EMPTY);
-                        ParameterValidator.requireNonNull(value.getValue(), AssetMessages.IN_STOCK_CANNOT_BE_NULL);
+                        ParameterValidator.requireNonNull(itemRequest, AssetMessages.REQUEST_PARAMETER_CANNOT_BE_NULL);
+                        ParameterValidator.requireNonNull(itemRequest.getValue(), AssetMessages.OPERATION_QUANTITY_CANNOT_BE_NULL);
                         Integer newInStock = 0;
-                        ItemEntity item = itemService.getItemById(value.getId());
+                        ItemEntity item = itemService.getItemById(itemRequest.getId());
                         Integer inStock = item.getInStock();
 
-                        if (value.getOperation() == null) {
-                            throw new IncorrectOperationException(AssetMessages.INCORRECT_OPERATION);
-                        } else if (value.getOperation() == OperationType.DEDUCTION) {
-                            newInStock = inStock - value.getValue();
-                        } else if (value.getOperation() == OperationType.ADDITION) {
-                            newInStock = inStock + value.getValue();
+                        if (itemRequest.getOperation() == OperationType.DEDUCTION) {
+                            newInStock = inStock - itemRequest.getValue();
+                        } else if (itemRequest.getOperation() == OperationType.ADDITION) {
+                            newInStock = inStock + itemRequest.getValue();
+                        } else {
+                            responseObserver.onError(Status.INVALID_ARGUMENT
+                                    .withDescription(AssetMessages.INCORRECT_OPERATION)
+                                    .asRuntimeException());
+                            log.error(AssetMessages.INCORRECT_OPERATION);
+                            return;
                         }
                         ParameterValidator.requireNonNegative(newInStock, AssetMessages.INVENTORY_IS_NOT_ENOUGH);
-                        itemInventoryRepository.save(new ItemInventoryEntity(value.getId(), newInStock));
-                        responseObserver.onNext(new ItemResponse(value.getId(), item.getName(), newInStock));
+                        itemInventoryRepository.save(new ItemInventoryEntity(itemRequest.getId(), newInStock));
+                        responseObserver.onNext(new ItemResponse(itemRequest.getId(), item.getName(), newInStock));
                     }
+                } catch (ParameterException e) {
+                    responseObserver.onError(Status.INVALID_ARGUMENT
+                            .withDescription(e.getMessage())
+                            .withCause(e)
+                            .asRuntimeException());
+                    log.error(e.getMessage(), e);
+                } catch (ItemNotFoundException e) {
+                    responseObserver.onError(Status.NOT_FOUND
+                            .withDescription(e.getMessage())
+                            .withCause(e)
+                            .asRuntimeException());
+                    log.error(e.getMessage(), e);
                 } catch (Exception e) {
-                    if (e instanceof ParameterException) {
-                        responseObserver.onError(Status.INVALID_ARGUMENT
-                                .withDescription(e.getMessage())
-                                .withCause(e)
-                                .asRuntimeException());
-                    } else if (e instanceof ItemNotFoundException) {
-                        responseObserver.onError(Status.NOT_FOUND
-                                .withDescription(e.getMessage())
-                                .withCause(e)
-                                .asRuntimeException());
-                    } else if (e instanceof IncorrectOperationException) {
-                        responseObserver.onError(Status.UNIMPLEMENTED
-                                .withDescription(e.getMessage())
-                                .withCause(e)
-                                .asRuntimeException());
-                    } else {
-                        responseObserver.onError(Status.INTERNAL
-                                .withDescription(e.getMessage())
-                                .withCause(e)
-                                .asRuntimeException());
-                    }
+                    responseObserver.onError(Status.INTERNAL
+                            .withDescription(e.getMessage())
+                            .withCause(e)
+                            .asRuntimeException());
                     log.error(e.getMessage(), e);
                 }
             }
