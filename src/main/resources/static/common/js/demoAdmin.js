@@ -1545,10 +1545,14 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
                 ];
             } else if(options.mqType === "KAFKA") {
                 var kafkaServer = data.kafkaConfig.bootstrapServers;
-                if (kafkaServer.includes("localhost")) {
+                if (kafkaServer.startsWith("localhost:")) {
                     kafkaServer = data.kafkaConfig.bootstrapServers.replace("localhost", location.hostname);
                 }
-                if (kafkaServer.includes("kafka")) {
+                if (kafkaServer.startsWith("127.0.0.1:")) {
+                    kafkaServer = data.kafkaConfig.bootstrapServers.replace("127.0.0.1", location.hostname);
+                }
+                // Special handling for docker started with original docker-compose.yml file
+                if (kafkaServer === "kafka:9092") {
                     kafkaServer = location.hostname + ":9093";
                 }
                 options.configurationDetails = [
@@ -1562,7 +1566,7 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
                 ];
             } else if(options.mqType === "RABBIT_MQ") {
                 var rabbitMqHost = data.rabbitMQConfig.rabbitMqHost;
-                if (rabbitMqHost === "localhost" || rabbitMqHost === "rabbitmq") {
+                if (rabbitMqHost === "localhost" || rabbitMqHost === "127.0.0.1" || rabbitMqHost === "rabbitmq") {
                     rabbitMqHost = location.hostname;
                 }
                 options.configurationDetails = [
