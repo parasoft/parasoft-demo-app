@@ -132,7 +132,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
                value: 50051
             },{
                label: $filter('translate')('GRPC_SERVICE_NAME'),
-               value: "grpc.demoApp.ProtoServer"
+               value: "grpc.demoApp.ProtobufService"
             }
         ];
 
