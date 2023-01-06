@@ -24,7 +24,7 @@ import static org.junit.Assert.*;
 @SpringBootTest
 @TestPropertySource("file:./src/test/java/com/parasoft/demoapp/application.properties")
 @DirtiesContext
-public class GRPCIntegrationTest {
+public class GrpcJsonServiceImplSpringTest {
 
     @Autowired
     GlobalPreferencesService globalPreferencesService;
