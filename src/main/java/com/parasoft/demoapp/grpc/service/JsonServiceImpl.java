@@ -12,6 +12,7 @@ import com.parasoft.demoapp.service.ItemService;
 import com.parasoft.demoapp.service.ParameterValidator;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
+import lombok.extern.slf4j.Slf4j;
 import com.parasoft.demoapp.exception.IncorrectOperationException;
 import com.parasoft.demoapp.exception.ItemNotFoundException;
 import com.parasoft.demoapp.grpc.message.ItemRequest;
@@ -26,11 +27,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.text.MessageFormat;
 import java.util.List;
 
+@Slf4j
 @GrpcService
 public class JsonServiceImpl extends JsonServiceImplBase {
     @Autowired
     private ItemInventoryService itemInventoryService;
-
+    
     @Autowired
     private ItemService itemService;
 
@@ -49,24 +51,27 @@ public class JsonServiceImpl extends JsonServiceImplBase {
             }
             responseObserver.onNext(inStock);
             responseObserver.onCompleted();
-        } catch (ParameterException e) {
-            responseObserver.onError(Status.INVALID_ARGUMENT
-                    .withDescription(e.getMessage())
-                    .withCause(e)
-                    .asRuntimeException());
-        } catch (InventoryNotFoundException e) {
-            responseObserver.onError(Status.NOT_FOUND
-                    .withDescription(e.getMessage())
-                    .withCause(e)
-                    .asRuntimeException());
         } catch (Exception e) {
-            responseObserver.onError(Status.INTERNAL
-                    .withDescription(e.getMessage())
-                    .withCause(e)
-                    .asRuntimeException());
+            if (e instanceof ParameterException) {
+                responseObserver.onError(Status.INVALID_ARGUMENT
+                        .withDescription(e.getMessage())
+                        .withCause(e)
+                        .asRuntimeException());
+            } else if (e instanceof InventoryNotFoundException) {
+                responseObserver.onError(Status.NOT_FOUND
+                        .withDescription(e.getMessage())
+                        .withCause(e)
+                        .asRuntimeException());
+            } else {
+                responseObserver.onError(Status.INTERNAL
+                        .withDescription(e.getMessage())
+                        .withCause(e)
+                        .asRuntimeException());
+            }
+            log.error(e.getMessage(), e);
         }
     }
-
+    
     @Override
     public void getItemsInStock(StreamObserver<ItemEntity> responseObserver) {
         try {
@@ -77,16 +82,19 @@ public class JsonServiceImpl extends JsonServiceImplBase {
                 }
             }
             responseObserver.onCompleted();
-        } catch (ItemNotFoundException e) {
-            responseObserver.onError(Status.NOT_FOUND
-                    .withDescription(e.getMessage())
-                    .withCause(e)
-                    .asRuntimeException());
         } catch (Exception e) {
-            responseObserver.onError(Status.INTERNAL
-                    .withDescription(e.getMessage())
-                    .withCause(e)
-                    .asRuntimeException());
+            if (e instanceof ItemNotFoundException) {
+                responseObserver.onError(Status.NOT_FOUND
+                        .withDescription(e.getMessage())
+                        .withCause(e)
+                        .asRuntimeException());
+            } else {
+                responseObserver.onError(Status.INTERNAL
+                        .withDescription(e.getMessage())
+                        .withCause(e)
+                        .asRuntimeException());
+            }
+            log.error(e.getMessage(), e);
         }
     }
 
