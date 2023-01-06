@@ -151,11 +151,9 @@ to a customized request topic name. The virtual asset deployment should be confi
 4. To test connection with Kafka server, either use **Test Connection** button in **Kafka configuration details** link or save changes in PDA Demo Administration page.
 
 ### Using external RabbitMQ server with PDA
-1. Download, install Erlang and RabbitMQ, start the RabbitMQ server  using default settings.
-> Note: <br>
-> RabbitMQ version should be compatible with Erlang version.
-> Demo Application supports the minimal RabbitMQ version is 2.0.0 and the compatible Erlang version is R13B.
-> We recommend you to see the [RabbitMQ and Erlang/OTP Compatibility Matrix](https://www.rabbitmq.com/which-erlang.html#compatibility-matrix) section on RabbitMQ official website to find compatible versions.
+1. Download, install Erlang and RabbitMQ, start the RabbitMQ server using default settings.
+> The minimum version of RabbitMQ supported in demo application is 2.0.0 (compatible Erlang version is R13B). <br/>
+> Reference for compatibility of RabbitMQ and Erlang versions: [RabbitMQ and Erlang/OTP Compatibility Matrix](https://www.rabbitmq.com/which-erlang.html#compatibility-matrix).
 2. Set RabbitMQ host, port, username, password in **application.properties** file.
 3. Start PDA and change queue type to RabbitMQ in **PARASOFT QUEUE CONFIGURATION** section of PDA Demo Administration page.
 4. To test connection with RabbitMQ server, either use **Test Connection** button in **RabbitMQ configuration details** link or save changes in PDA Demo Administration page.
