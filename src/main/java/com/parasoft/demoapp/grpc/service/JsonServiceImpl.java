@@ -27,7 +27,7 @@ import java.util.List;
 @GrpcService
 public class JsonServiceImpl extends JsonServiceImplBase {
 
-    private static final Object clock = new Object();
+    private static final Object lock = new Object();
 
     @Autowired
     private ItemInventoryService itemInventoryService;
@@ -100,10 +100,10 @@ public class JsonServiceImpl extends JsonServiceImplBase {
             @Override
             public void onNext(ItemRequest itemRequest) {
                 try {
-                    synchronized (clock) {
+                    synchronized (lock) {
                         ParameterValidator.requireNonNull(itemRequest, AssetMessages.REQUEST_PARAMETER_CANNOT_BE_NULL);
                         ParameterValidator.requireNonNull(itemRequest.getValue(), AssetMessages.OPERATION_QUANTITY_CANNOT_BE_NULL);
-                        Integer newInStock = 0;
+                        int newInStock;
                         ItemEntity item = itemService.getItemById(itemRequest.getId());
                         Integer inStock = item.getInStock();
 
