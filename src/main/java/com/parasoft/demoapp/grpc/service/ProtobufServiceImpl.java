@@ -31,13 +31,11 @@ public class ProtobufServiceImpl extends ProtobufServiceGrpc.ProtobufServiceImpl
         try {
             Integer inStock = itemInventoryService.getInStockByItemId(request.getId());
             if (inStock == null) {
-                InventoryNotFoundException inventoryNotFoundException = new InventoryNotFoundException(
-                        MessageFormat.format(AssetMessages.INVENTORY_NOT_FOUND_WITH_ITEM_ID, request.getId()));
+                String errorMsg = MessageFormat.format(AssetMessages.INVENTORY_NOT_FOUND_WITH_ITEM_ID, request.getId());
                 responseObserver.onError(Status.NOT_FOUND
-                        .withDescription(inventoryNotFoundException.getMessage())
-                        .withCause(inventoryNotFoundException)
+                        .withDescription(errorMsg)
                         .asRuntimeException());
-                log.error(inventoryNotFoundException.getMessage(), inventoryNotFoundException);
+                log.error(errorMsg);
                 return;
             }
             responseObserver.onNext(GetStockByItemIdResponse.newBuilder().setStock(inStock).build());
