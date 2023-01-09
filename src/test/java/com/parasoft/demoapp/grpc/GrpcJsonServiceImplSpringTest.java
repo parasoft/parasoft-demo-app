@@ -2,6 +2,7 @@ package com.parasoft.demoapp.grpc;
 
 import com.parasoft.demoapp.grpc.service.JsonServiceImpl;
 import com.parasoft.demoapp.messages.AssetMessages;
+import com.parasoft.demoapp.model.industry.ItemEntity;
 import com.parasoft.demoapp.service.GlobalPreferencesService;
 import io.grpc.*;
 import io.grpc.internal.testing.StreamRecorder;
@@ -81,6 +82,41 @@ public class GrpcJsonServiceImplSpringTest {
         Throwable error = responseObserver.getError();
         assertNotNull(error);
         assertEquals(getExpectedErrorMessage(Status.INVALID_ARGUMENT, AssetMessages.ITEM_ID_CANNOT_BE_NULL), error.getMessage());
+    }
+    
+    @Test
+    public void testGetItemsInStock_normal() throws Throwable {
+        Long itemId = 1L;
+        Integer itemInStock = 10;
+        StreamRecorder<ItemEntity> responseObserver = StreamRecorder.create();
+        jsonServiceImpl.getItemsInStock(responseObserver);
+        
+        if (!responseObserver.awaitCompletion(5, TimeUnit.SECONDS)) {
+            fail("The call did not terminate in time");
+        }
+        assertNull(responseObserver.getError());
+        
+        List<ItemEntity> results = responseObserver.getValues();
+        assertEquals(9, results.size());
+        ItemEntity response = results.get(0);
+        assertEquals(itemId, response.getId());
+        assertEquals("Blue Sleeping Bag", response.getName());
+        assertEquals(itemInStock, response.getInStock());
+    }
+    
+    @Test
+    public void testGetItemsInStock_itemsNotFound() throws Throwable {
+        globalPreferencesService.clearCurrentIndustryDatabase();
+        StreamRecorder<ItemEntity> responseObserver = StreamRecorder.create();
+        jsonServiceImpl.getItemsInStock(responseObserver);
+        
+        if (!responseObserver.awaitCompletion(5, TimeUnit.SECONDS)) {
+            fail("The call did not terminate in time");
+        }
+        
+        assertEquals(0, responseObserver.getValues().size());
+        assertNotNull(responseObserver.getError());
+        assertEquals(getExpectedErrorMessage(Status.NOT_FOUND, AssetMessages.NO_ITEMS), responseObserver.getError().getMessage());
     }
 
     private String getExpectedErrorMessage(Status status, String message) {
