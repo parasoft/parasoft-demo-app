@@ -93,6 +93,7 @@ public class GrpcJsonServiceImplSpringTest {
         StreamObserver<ItemRequest> requestObserver = jsonServiceImpl.updateItemsInStock(responseObserver);
 
         requestObserver.onNext(new ItemRequest(1L, OperationType.ADDITION, 1));
+        requestObserver.onNext(new ItemRequest(1L, OperationType.ADDITION, 1));
         requestObserver.onCompleted();
 
         if (!responseObserver.awaitCompletion(5, TimeUnit.SECONDS)) {
@@ -101,9 +102,11 @@ public class GrpcJsonServiceImplSpringTest {
         assertNull(responseObserver.getError());
 
         List<ItemResponse> results = responseObserver.getValues();
-        assertEquals(1, results.size());
-        ItemResponse response = results.get(0);
-        assertEquals(11, response.getStock().intValue());
+        assertEquals(2, results.size());
+        ItemResponse response1 = results.get(0);
+        ItemResponse response2 = results.get(1);
+        assertEquals(11, response1.getStock().intValue());
+        assertEquals(12, response2.getStock().intValue());
     }
 
     @Test
