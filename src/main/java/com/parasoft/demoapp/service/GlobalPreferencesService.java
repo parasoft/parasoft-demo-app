@@ -390,15 +390,13 @@ public class GlobalPreferencesService {
         ParameterValidator.requireNonNull(webServiceMode, GlobalPreferencesMessages.WEBSERVICEMODE_MUST_NOT_BE_NULL);
 
         currentPreferences.setWebServiceMode(webServiceMode);
-        if (WebServiceMode.GRAPHQL.equals(webServiceMode)){
-            String graphQLEndpoint = globalPreferencesDto.getGraphQLEndpoint();
-            if (!StringUtils.isBlank(graphQLEndpoint)) {
-                endpointService.validateUrl(graphQLEndpoint, GlobalPreferencesMessages.INVALID_GRAPHQL_URL);
-            } else {
-                graphQLEndpoint = "";
-            }
-            currentPreferences.setGraphQLEndpoint(graphQLEndpoint);
+        String graphQLEndpoint = globalPreferencesDto.getGraphQLEndpoint();
+        if (!StringUtils.isBlank(graphQLEndpoint)) {
+            endpointService.validateUrl(graphQLEndpoint, GlobalPreferencesMessages.INVALID_GRAPHQL_URL);
+        } else {
+            graphQLEndpoint = "";
         }
+        currentPreferences.setGraphQLEndpoint(graphQLEndpoint);
         // handle endpoints
         restEndpointService.removeAllEndpoints(); // remove existed endpoints
 
