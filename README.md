@@ -157,6 +157,58 @@ to a customized request topic name. The virtual asset deployment should be confi
 2. Set RabbitMQ host, port, username, password in **application.properties** file.
 3. Start PDA and change queue type to RabbitMQ in **PARASOFT QUEUE CONFIGURATION** section of PDA Demo Administration page.
 4. To test connection with RabbitMQ server, either use **Test Connection** button in **RabbitMQ configuration details** link or save changes in PDA Demo Administration page.
+
+## PDA GRPC Service
+PDA Grpc service have 3 different Grpc methods and support both Json of Protobuf.
+
+### PDA Grpc Configuration
+
+| Option                     | Value                          |
+|----------------------------|--------------------------------|
+| Host                       | `localhost`                    |
+| Port                       | `50051`                        |
+| Json  Service Name         | `grpc.demoApp.JsonService`     |
+| Proto Service Name         | `grpc.demoApp.ProtobufService` |
+
+### PDA Grpc Service Methods
+
+| Method                                        | Description                                                                                                            |
+|-----------------------------------------------|------------------------------------------------------------------------------------------------------------------------|
+| getStockByItemId(unary)                       | Unary call which sends item id and receives stock quantity                                                             |
+| getItemsInStock(server streaming)             | Server streaming method which gets information of all items in stock in stream                                         |
+| updateItemsInStock(bidirectional streaming)   | Bidirectional streaming method which takes information to update item stock and responds with updated item information |
+
+### Using Grpc service with SOATest
+
+#### For Grpc Json service
+1. To use Grpc Json service with SOATest, you need to install grpc plugin first, then create a messaging client with grpc transport.
+2. There are request body formats of Grpc Json method.
+- getItemsInStock(ItemId):
+    ````
+    1  // Long number
+    ````
+- getItemsInStock():
+    ````
+    ""
+    ````
+- updateItemsInStock(ItemRequest):
+    ````
+    {
+      "id":1, // Long Number
+      "value":1, // Int Number
+      "operation":"ADDITION" // Enum value  ADDITION or DEDUCTION
+    }
+    ````
+#### For Grpc Protobuf service
+1.To use Grpc Protobuf with SOATest, you need to add protobuf-extension.jar to SOATest first.Then you can create protobuf client to make call.\
+2.When you're making the call, make sure you select the correct request message type in protobuf client.This is the definition of Grpc protobuf method.
+
+  | Method              | Request type               |   Response type                        |
+  |---------------------|----------------------------|----------------------------------------|
+  | getStockByItemId    | GetStockByItemIdRequest    | GetStockByItemIdResponse               |
+  | getItemsInStock     | Empty                      | **stream** Item                        |
+  | updateItemsInStock  | UpdateItemsInStockRequest  | **stream** UpdateItemsInStockResponse  |
+
 ## Using Parasoft JDBC Proxy
 1. Find the **ParasoftJDBCDriver.jar** in **{SOAtest & Virtualize installation directory}/{version}/proxies**.
 2. Copy it to **{root directory of parasoft-demo-app}/lib**. (Create the folder if it does not already exist.)
