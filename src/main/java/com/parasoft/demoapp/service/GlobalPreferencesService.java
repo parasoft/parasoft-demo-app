@@ -398,7 +398,6 @@ public class GlobalPreferencesService {
                 graphQLEndpoint = "";
             }
             currentPreferences.setGraphQLEndpoint(graphQLEndpoint);
-            return;
         }
         // handle endpoints
         restEndpointService.removeAllEndpoints(); // remove existed endpoints

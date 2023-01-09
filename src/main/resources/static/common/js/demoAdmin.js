@@ -492,13 +492,9 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
     }
 
     demo.disableSaveChangesButton = function(options) {
-        if (options.webServiceMode === "GRAPHQL" && demo.endpointError_graphql) {
+        if(demo.endpointError_categories || demo.endpointError_categories || demo.endpointError_items ||
+            demo.endpointError_cart || demo.endpointError_orders || demo.endpointError_locations || demo.endpointError_graphql) {
             return true;
-        } else if(options.webServiceMode === "REST_API") {
-            if(demo.endpointError_categories || demo.endpointError_categories || demo.endpointError_items ||
-                demo.endpointError_cart || demo.endpointError_orders || demo.endpointError_locations) {
-                return true;
-            }
         }
         if (demo.invalidVirtualizeServerUrl || demo.cannotConnectToVirtualizeServerUrl ||
             demo.invalidVirtualizeServerPath || demo.invalidVirtualizeGroupId){

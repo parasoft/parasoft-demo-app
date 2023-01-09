@@ -524,6 +524,7 @@ textarea {
 
 .rest_api_web_service, .graphql_web_service {
     display: inline-block;
+    margin-top: 5px;
 }
 
 .web_services {
