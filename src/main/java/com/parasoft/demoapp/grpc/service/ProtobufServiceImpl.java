@@ -1,6 +1,5 @@
 package com.parasoft.demoapp.grpc.service;
 
-
 import com.parasoft.demoapp.exception.InventoryNotFoundException;
 import com.parasoft.demoapp.exception.ItemNotFoundException;
 import com.parasoft.demoapp.exception.ParameterException;
@@ -8,6 +7,7 @@ import com.parasoft.demoapp.messages.AssetMessages;
 import com.parasoft.demoapp.model.industry.ItemEntity;
 import com.parasoft.demoapp.service.ItemInventoryService;
 import com.parasoft.demoapp.service.ItemService;
+import grpc.demoApp.*;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
@@ -19,26 +19,26 @@ import java.util.List;
 
 @Slf4j
 @GrpcService
-public class JsonServiceImpl extends JsonServiceImplBase {
+public class ProtobufServiceImpl extends ProtobufServiceGrpc.ProtobufServiceImplBase {
     @Autowired
     private ItemInventoryService itemInventoryService;
-    
+
     @Autowired
     private ItemService itemService;
 
     @Override
-    public void getStockByItemId(Long itemId, StreamObserver<Integer> responseObserver) {
+    public void getStockByItemId(GetStockByItemIdRequest request, StreamObserver<GetStockByItemIdResponse> responseObserver) {
         try {
-            Integer inStock = itemInventoryService.getInStockByItemId(itemId);
+            Integer inStock = itemInventoryService.getInStockByItemId(request.getId());
             if (inStock == null) {
-                String errorMsg = MessageFormat.format(AssetMessages.INVENTORY_NOT_FOUND_WITH_ITEM_ID, itemId);
+                String errorMsg = MessageFormat.format(AssetMessages.INVENTORY_NOT_FOUND_WITH_ITEM_ID, request.getId());
                 responseObserver.onError(Status.NOT_FOUND
                         .withDescription(errorMsg)
                         .asRuntimeException());
                 log.error(errorMsg);
                 return;
             }
-            responseObserver.onNext(inStock);
+            responseObserver.onNext(GetStockByItemIdResponse.newBuilder().setStock(inStock).build());
             responseObserver.onCompleted();
         } catch (ParameterException e) {
             responseObserver.onError(Status.INVALID_ARGUMENT
@@ -54,14 +54,19 @@ public class JsonServiceImpl extends JsonServiceImplBase {
             log.error(e.getMessage(), e);
         }
     }
-    
+
     @Override
-    public void getItemsInStock(StreamObserver<ItemEntity> responseObserver) {
+    public void getItemsInStock(Empty request, StreamObserver<Item> responseObserver) {
         try {
             List<ItemEntity> items = itemService.getAllItems();
-            for(ItemEntity item : items) {
-                if(item.getInStock() > 0) {
-                    responseObserver.onNext(item);
+
+            for (ItemEntity item: items) {
+                if (item.getInStock() > 0) {
+                    responseObserver.onNext(Item.newBuilder()
+                            .setId(item.getId())
+                            .setName(item.getName())
+                            .setStock(item.getInStock())
+                            .build());
                 }
             }
             responseObserver.onCompleted();
