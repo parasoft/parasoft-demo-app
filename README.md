@@ -158,10 +158,10 @@ to a customized request topic name. The virtual asset deployment should be confi
 3. Start PDA and change queue type to RabbitMQ in **PARASOFT QUEUE CONFIGURATION** section of PDA Demo Administration page.
 4. To test connection with RabbitMQ server, either use **Test Connection** button in **RabbitMQ configuration details** link or save changes in PDA Demo Administration page.
 
-## PDA GRPC Service
-PDA Grpc service have 3 different Grpc methods and support both Json of Protobuf.
+## PDA gRPC Service
+PDA gRPC service have three different gRPC methods and support both Json and Protobuf.
 
-### PDA Grpc Configuration
+### PDA gRPC Configuration
 
 | Option                     | Value                          |
 |----------------------------|--------------------------------|
@@ -170,44 +170,37 @@ PDA Grpc service have 3 different Grpc methods and support both Json of Protobuf
 | Json  Service Name         | `grpc.demoApp.JsonService`     |
 | Proto Service Name         | `grpc.demoApp.ProtobufService` |
 
-### PDA Grpc Service Methods
+### PDA gRPC Service Methods
 
-| Method                                        | Description                                                                                                            |
-|-----------------------------------------------|------------------------------------------------------------------------------------------------------------------------|
-| getStockByItemId(unary)                       | Unary call which sends item id and receives stock quantity                                                             |
-| getItemsInStock(server streaming)             | Server streaming method which gets information of all items in stock in stream                                         |
-| updateItemsInStock(bidirectional streaming)   | Bidirectional streaming method which takes information to update item stock and responds with updated item information |
+| Method                | Description                                                                                                            |
+|-----------------------|------------------------------------------------------------------------------------------------------------------------|
+| getStockByItemId      | Unary call which sends item id and receives stock quantity                                                             |
+| getItemsInStock       | Server streaming method which gets information of all items in stock in stream                                         |
+| updateItemsInStock    | Bidirectional streaming method which takes information to update item stock and responds with updated item information |
+### Using gRPC service with SOAtest
 
-### Using Grpc service with SOATest
-
-#### For Grpc Json service
-1. To use Grpc Json service with SOATest, you need to install grpc plugin first, then create a messaging client with grpc transport.
-2. There are request body formats of Grpc Json method.
+#### For gRPC Json service
+1. To use gRPC Json service with SOAtest, you need to install grpc plugin in SOAtest first, then create a messaging client with grpc transport.
+2. There are request formats of gRPC Json method.
 - getItemsInStock(ItemId):
-    ````
+    ````json5
     1  // Long number
     ````
 - getItemsInStock():
-    ````
-    ""
+    ````json5
+    "" // Empty string
     ````
 - updateItemsInStock(ItemRequest):
-    ````
+    ````json5
     {
-      "id":1, // Long Number
-      "value":1, // Int Number
-      "operation":"ADDITION" // Enum value  ADDITION or DEDUCTION
+      "id": 1,    // Long Number
+      "value": 1, // Int Number
+      "operation": "ADDITION" // Enum value  ADDITION or DEDUCTION
     }
     ````
-#### For Grpc Protobuf service
-1.To use Grpc Protobuf with SOATest, you need to add protobuf-extension.jar to SOATest first.Then you can create protobuf client to make call.\
-2.When you're making the call, make sure you select the correct request message type in protobuf client.This is the definition of Grpc protobuf method.
+#### For gRPC Protobuf service
+To use gRPC Protobuf with SOAtest, you need to add [protobuf-extension.jar](src/main/resources/extension) to SOAtest first.Then you can create protobuf client to make calls.
 
-  | Method              | Request type               |   Response type                        |
-  |---------------------|----------------------------|----------------------------------------|
-  | getStockByItemId    | GetStockByItemIdRequest    | GetStockByItemIdResponse               |
-  | getItemsInStock     | Empty                      | **stream** Item                        |
-  | updateItemsInStock  | UpdateItemsInStockRequest  | **stream** UpdateItemsInStockResponse  |
 
 ## Using Parasoft JDBC Proxy
 1. Find the **ParasoftJDBCDriver.jar** in **{SOAtest & Virtualize installation directory}/{version}/proxies**.
