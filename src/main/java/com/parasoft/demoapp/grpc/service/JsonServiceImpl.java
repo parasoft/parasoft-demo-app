@@ -1,22 +1,21 @@
 package com.parasoft.demoapp.grpc.service;
 
 
-import com.parasoft.demoapp.exception.InventoryNotFoundException;
 import com.parasoft.demoapp.exception.ItemNotFoundException;
 import com.parasoft.demoapp.exception.ParameterException;
+import com.parasoft.demoapp.grpc.message.ItemRequest;
+import com.parasoft.demoapp.grpc.message.ItemResponse;
 import com.parasoft.demoapp.grpc.message.OperationType;
 import com.parasoft.demoapp.messages.AssetMessages;
 import com.parasoft.demoapp.model.industry.ItemEntity;
+import com.parasoft.demoapp.model.industry.ItemInventoryEntity;
+import com.parasoft.demoapp.repository.industry.ItemInventoryRepository;
 import com.parasoft.demoapp.service.ItemInventoryService;
 import com.parasoft.demoapp.service.ItemService;
 import com.parasoft.demoapp.service.ParameterValidator;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
-import com.parasoft.demoapp.grpc.message.ItemRequest;
-import com.parasoft.demoapp.grpc.message.ItemResponse;
-import com.parasoft.demoapp.model.industry.ItemInventoryEntity;
-import com.parasoft.demoapp.repository.industry.ItemInventoryRepository;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
 
