@@ -110,7 +110,7 @@ public class ShoppingCartService {
         }
 
         if (item.getInStock() < newQuantity) {
-            throw new ParameterException(AssetMessages.IN_STOCK_OF_CART_ITEM_IS_INSUFFICIENT);
+            throw new ParameterException(AssetMessages.INVENTORY_IS_NOT_ENOUGH);
         }
 
         cartItem.setQuantity(newQuantity);
