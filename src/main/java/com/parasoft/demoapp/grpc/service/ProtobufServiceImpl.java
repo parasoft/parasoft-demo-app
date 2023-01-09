@@ -24,7 +24,7 @@ import java.util.List;
 @GrpcService
 public class ProtobufServiceImpl extends ProtobufServiceGrpc.ProtobufServiceImplBase {
 
-    private static final Object clock = new Object();
+    private static final Object lock = new Object();
 
     @Autowired
     private ItemInventoryService itemInventoryService;
@@ -102,8 +102,8 @@ public class ProtobufServiceImpl extends ProtobufServiceGrpc.ProtobufServiceImpl
             @Override
             public void onNext(UpdateItemsInStockRequest value) {
                 try {
-                    synchronized (clock) {
-                        Integer newInStock = 0;
+                    synchronized (lock) {
+                        int newInStock = 0;
                         ItemEntity item = itemService.getItemById(value.getId());
                         Integer inStock = item.getInStock();
                         if (value.getOperation() == Operation.DEDUCTION) {
