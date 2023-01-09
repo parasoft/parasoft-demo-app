@@ -4,6 +4,7 @@ import com.parasoft.demoapp.grpc.service.JsonServiceImpl;
 import com.parasoft.demoapp.messages.AssetMessages;
 import com.parasoft.demoapp.model.industry.ItemEntity;
 import com.parasoft.demoapp.service.GlobalPreferencesService;
+import com.parasoft.demoapp.service.ItemInventoryService;
 import io.grpc.*;
 import io.grpc.internal.testing.StreamRecorder;
 import org.junit.Before;
@@ -32,6 +33,9 @@ public class GrpcJsonServiceImplSpringTest {
 
     @Autowired
     JsonServiceImpl jsonServiceImpl;
+    
+    @Autowired
+    ItemInventoryService itemInventoryService;
 
     @Before
     public void setUp() {
@@ -87,7 +91,6 @@ public class GrpcJsonServiceImplSpringTest {
     @Test
     public void testGetItemsInStock_normal() throws Throwable {
         Long itemId = 1L;
-        Integer itemInStock = 10;
         StreamRecorder<ItemEntity> responseObserver = StreamRecorder.create();
         jsonServiceImpl.getItemsInStock(responseObserver);
         
@@ -101,7 +104,24 @@ public class GrpcJsonServiceImplSpringTest {
         ItemEntity response = results.get(0);
         assertEquals(itemId, response.getId());
         assertEquals("Blue Sleeping Bag", response.getName());
-        assertEquals(itemInStock, response.getInStock());
+        assertEquals(10, response.getInStock().intValue());
+    
+        // When there is an item that is not in stock
+        itemInventoryService.saveItemInStock(itemId, 0);
+        responseObserver = StreamRecorder.create();
+        jsonServiceImpl.getItemsInStock(responseObserver);
+    
+        if (!responseObserver.awaitCompletion(5, TimeUnit.SECONDS)) {
+            fail("The call did not terminate in time");
+        }
+        
+        assertNull(responseObserver.getError());
+        results = responseObserver.getValues();
+        assertEquals(8, results.size());
+        response = results.get(0);
+        assertEquals(2L, response.getId().longValue());
+        assertEquals("Green Sleeping Bag", response.getName());
+        assertEquals(15, response.getInStock().intValue());
     }
     
     @Test
