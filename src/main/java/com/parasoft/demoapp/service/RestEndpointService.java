@@ -10,12 +10,19 @@ import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.*;
 
 @Service
 public class RestEndpointService {
 
     @Autowired
     private RestEndpointRepository restEndPointRepository;
+
+    // This is a snapshot of the REST endpoint routes(routeId and URL), it's refreshed every time routes are changed.
+    private final AtomicReference<Map<String, String>> routeRestEndpointsSnapshot = new AtomicReference<>();
 
     public List<RestEndpointEntity> getAllEndpoints() {
         return restEndPointRepository.findAll();
@@ -43,5 +50,34 @@ public class RestEndpointService {
         }
 
         return restEndPointRepository.save(restEndpointEntity);
+    }
+
+    public void refreshRouteRestEndpointsSnapshot(Map<String, String> routeRestEndpointsMap) {
+        routeRestEndpointsSnapshot.set(routeRestEndpointsMap);
+    }
+
+    public String getCategoriesBaseUrl() {
+        return getRouteRestEndpointUrl(CATEGORIES_ENDPOINT_ID);
+    }
+
+    public String getItemsBaseUrl() {
+        return getRouteRestEndpointUrl(ITEMS_ENDPOINT_ID);
+    }
+
+    public String getCartBaseUrl() {
+        return getRouteRestEndpointUrl(CART_ENDPOINT_ID);
+    }
+
+    public String getOrdersBaseUrl() {
+        return getRouteRestEndpointUrl(ORDERS_ENDPOINT_ID);
+    }
+
+    public String getLocationsBaseUrl() {
+        return getRouteRestEndpointUrl(LOCATIONS_ENDPOINT_ID);
+    }
+
+    private String getRouteRestEndpointUrl(String endpointId) {
+        Map<String, String> routeRestEndpointsMap = routeRestEndpointsSnapshot.get();
+        return routeRestEndpointsMap == null ? null : routeRestEndpointsMap.get(endpointId);
     }
 }
