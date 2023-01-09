@@ -492,7 +492,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
     }
 
     demo.disableSaveChangesButton = function(options) {
-        if(demo.endpointError_categories || demo.endpointError_categories || demo.endpointError_items ||
+        if(demo.endpointError_categories || demo.endpointError_items ||
             demo.endpointError_cart || demo.endpointError_orders || demo.endpointError_locations || demo.endpointError_graphql) {
             return true;
         }
