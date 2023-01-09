@@ -43,13 +43,11 @@ public class JsonServiceImpl extends JsonServiceImplBase {
         try {
             Integer inStock = itemInventoryService.getInStockByItemId(itemId);
             if (inStock == null) {
-                InventoryNotFoundException inventoryNotFoundException = new InventoryNotFoundException(
-                        MessageFormat.format(AssetMessages.INVENTORY_NOT_FOUND_WITH_ITEM_ID, itemId));
+                String errorMsg = MessageFormat.format(AssetMessages.INVENTORY_NOT_FOUND_WITH_ITEM_ID, itemId);
                 responseObserver.onError(Status.NOT_FOUND
-                        .withDescription(inventoryNotFoundException.getMessage())
-                        .withCause(inventoryNotFoundException)
+                        .withDescription(errorMsg)
                         .asRuntimeException());
-                log.error(inventoryNotFoundException.getMessage(), inventoryNotFoundException);
+                log.error(errorMsg);
                 return;
             }
             responseObserver.onNext(inStock);
