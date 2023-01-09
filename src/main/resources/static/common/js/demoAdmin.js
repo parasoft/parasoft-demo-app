@@ -109,46 +109,46 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
         }
     }
 
-    demo.gRPCMethods = [
-        {
-           label: "getStockByItemId",
-           value: $filter('translate')('GETSTOCKBYITEMID_DESCRIPTION'),
-        },{
-           label: "getItemsInStock",
-           value: $filter('translate')('GETITEMSINSTOCK_DESCRIPTION'),
-        },{
-           label: "updateItemsInStock",
-           value: $filter('translate')('UPDATEITEMSINSTOCK_DESCRIPTION'),
-        }
-    ];
+    demo.openGRPCConfigurationDetails = function() {
+        demo.gRPCMethods = [
+            {
+               label: "getStockByItemId",
+               value: $filter('translate')('GETSTOCKBYITEMID_DESCRIPTION')
+            },{
+               label: "getItemsInStock",
+               value: $filter('translate')('GETITEMSINSTOCK_DESCRIPTION')
+            },{
+               label: "updateItemsInStock",
+               value: $filter('translate')('UPDATEITEMSINSTOCK_DESCRIPTION')
+            }
+        ];
 
-    demo.gRPCConfigurationJsonDetails = [
-        {
-           label: $filter('translate')('GRPC_HOST'),
-           value: location.hostname
-        },{
-           label: $filter('translate')('GRPC_PORT'),
-           value: ""
-        },{
-           label: $filter('translate')('GRPC_SERVICE_NAME'),
-           value: "grpc.demoApp.JsonService"
-        }
-    ];
+        demo.gRPCConfigurationJsonDetails = [
+            {
+               label: $filter('translate')('GRPC_HOST'),
+               value: location.hostname
+            },{
+               label: $filter('translate')('GRPC_PORT'),
+               value: ""
+            },{
+               label: $filter('translate')('GRPC_SERVICE_NAME'),
+               value: "grpc.demoApp.JsonService"
+            }
+        ];
 
-    demo.gRPCConfigurationProtobufDetails = [
-        {
-           label: $filter('translate')('GRPC_HOST'),
-           value: location.hostname
-        },{
-           label: $filter('translate')('GRPC_PORT'),
-           value: ""
-        },{
-           label: $filter('translate')('GRPC_SERVICE_NAME'),
-           value: "grpc.demoApp.ProtobufService"
-        }
-    ];
+        demo.gRPCConfigurationProtobufDetails = [
+            {
+               label: $filter('translate')('GRPC_HOST'),
+               value: location.hostname
+            },{
+               label: $filter('translate')('GRPC_PORT'),
+               value: ""
+            },{
+               label: $filter('translate')('GRPC_SERVICE_NAME'),
+               value: "grpc.demoApp.ProtobufService"
+            }
+        ];
 
-    demo.loadGRPCConfigurationDetails = function() {
         $http({
             method: 'GET',
             url: '/v1/demoAdmin/gRPCProperties',
