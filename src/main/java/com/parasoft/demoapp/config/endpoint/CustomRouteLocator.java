@@ -41,7 +41,7 @@ public class CustomRouteLocator extends SimpleRouteLocator implements Refreshabl
         Map<String, String> routeRestEndpointsMap = getRoutesMap().entrySet().stream()
                 .filter(entry -> entry.getValue() != null && REST_ENDPOINT_IDS.contains(entry.getValue().getId()))
                 .collect(Collectors.toMap(entry -> entry.getValue().getId(), entry -> entry.getValue().getUrl()));
-        restEndpointService.refreshRouteRestEndpoints(routeRestEndpointsMap);
+        restEndpointService.refreshRouteRestEndpointsSnapshot(routeRestEndpointsMap);
     }
 
     @Override

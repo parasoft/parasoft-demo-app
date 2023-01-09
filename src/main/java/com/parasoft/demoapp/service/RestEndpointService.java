@@ -21,7 +21,8 @@ public class RestEndpointService {
     @Autowired
     private RestEndpointRepository restEndPointRepository;
 
-    private final AtomicReference<Map<String, String>> routeRestEndpoints = new AtomicReference<>();
+    // This is a snapshot of the REST endpoint routes(routeId and URL), it's refreshed every time routes are changed.
+    private final AtomicReference<Map<String, String>> routeRestEndpointsSnapshot = new AtomicReference<>();
 
     public List<RestEndpointEntity> getAllEndpoints() {
         return restEndPointRepository.findAll();
@@ -51,8 +52,8 @@ public class RestEndpointService {
         return restEndPointRepository.save(restEndpointEntity);
     }
 
-    public void refreshRouteRestEndpoints(Map<String, String> routeRestEndpointsMap) {
-        routeRestEndpoints.set(routeRestEndpointsMap);
+    public void refreshRouteRestEndpointsSnapshot(Map<String, String> routeRestEndpointsMap) {
+        routeRestEndpointsSnapshot.set(routeRestEndpointsMap);
     }
 
     public String getCategoriesBaseUrl() {
@@ -76,7 +77,7 @@ public class RestEndpointService {
     }
 
     private String getRouteRestEndpointUrl(String endpointId) {
-        Map<String, String> routeRestEndpointsMap = routeRestEndpoints.get();
+        Map<String, String> routeRestEndpointsMap = routeRestEndpointsSnapshot.get();
         return routeRestEndpointsMap == null ? null : routeRestEndpointsMap.get(endpointId);
     }
 }
