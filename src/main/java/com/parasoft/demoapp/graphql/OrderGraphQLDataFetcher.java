@@ -1,11 +1,12 @@
 package com.parasoft.demoapp.graphql;
 
-import com.parasoft.demoapp.config.WebConfig;
 import com.parasoft.demoapp.controller.PageInfo;
 import com.parasoft.demoapp.controller.ResponseResult;
 import com.parasoft.demoapp.dto.UnreviewedOrderNumberResponseDTO;
 import com.parasoft.demoapp.model.industry.OrderEntity;
+import com.parasoft.demoapp.service.RestEndpointService;
 import graphql.schema.DataFetcher;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -21,23 +22,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.HOST;
-
+@RequiredArgsConstructor
 @Component
 public class OrderGraphQLDataFetcher {
-
-    private final String orderBaseUrl;
 
     private final RestTemplate restTemplate;
 
     private final HttpServletRequest httpRequest;
 
-    public OrderGraphQLDataFetcher(RestTemplate restTemplate, HttpServletRequest httpRequest, WebConfig webConfig) {
-
-        this.restTemplate = restTemplate;
-        this.httpRequest = httpRequest;
-        this.orderBaseUrl = HOST + webConfig.getServerPort() +"/v1/orders";
-    }
+    private final RestEndpointService restEndpointService;
 
     public DataFetcher<OrderEntity> getOrderByOrderNumber() {
         return dataFetchingEnvironment -> {
@@ -45,7 +38,7 @@ public class OrderGraphQLDataFetcher {
                 Map<String, String> uriVariables = new HashMap<>();
                 uriVariables.put("orderNumber", dataFetchingEnvironment.getArgument("orderNumber"));
                 ResponseEntity<ResponseResult<OrderEntity>> entity  =
-                        restTemplate.exchange(orderBaseUrl + "/{orderNumber}",
+                        restTemplate.exchange(restEndpointService.getOrdersBaseUrl() + "/{orderNumber}",
                                 HttpMethod.GET,
                                 new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
                                 new ParameterizedTypeReference<ResponseResult<OrderEntity>>() {},
@@ -62,7 +55,7 @@ public class OrderGraphQLDataFetcher {
         return dataFetchingEnvironment -> {
             try {
                 ResponseEntity<ResponseResult<OrderEntity>> entity =
-                        restTemplate.exchange(orderBaseUrl,
+                        restTemplate.exchange(restEndpointService.getOrdersBaseUrl(),
                                 HttpMethod.POST,
                                 new HttpEntity<>(dataFetchingEnvironment.getArgument("orderDTO"),
                                         RestTemplateUtil.createHeaders(httpRequest)),
@@ -77,7 +70,7 @@ public class OrderGraphQLDataFetcher {
     public DataFetcher<PageInfo<OrderEntity>> getOrders() {
         return dataFetchingEnvironment -> {
             try {
-                UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(orderBaseUrl);
+                UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(restEndpointService.getOrdersBaseUrl());
                 if (dataFetchingEnvironment.containsArgument("size")) {
                     builder.queryParam("size", Integer.toString(dataFetchingEnvironment.getArgument("size")));
                 }
@@ -109,7 +102,7 @@ public class OrderGraphQLDataFetcher {
                 Map<String, String> uriVariables = new HashMap<>();
                 uriVariables.put("orderNumber", dataFetchingEnvironment.getArgument("orderNumber"));
                 ResponseEntity<ResponseResult<OrderEntity>> entity =
-                        restTemplate.exchange(orderBaseUrl + "/{orderNumber}",
+                        restTemplate.exchange(restEndpointService.getOrdersBaseUrl() + "/{orderNumber}",
                                 HttpMethod.PUT,
                                 new HttpEntity<>(dataFetchingEnvironment.getArgument("orderStatusDTO"),
                                         RestTemplateUtil.createHeaders(httpRequest)),
@@ -126,7 +119,7 @@ public class OrderGraphQLDataFetcher {
         return dataFetchingEnvironment -> {
             try {
                 ResponseEntity<ResponseResult<UnreviewedOrderNumberResponseDTO>> entity =
-                        restTemplate.exchange(orderBaseUrl + "/unreviewedNumber",
+                        restTemplate.exchange(restEndpointService.getOrdersBaseUrl() + "/unreviewedNumber",
                                 HttpMethod.GET,
                                 new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
                                 new ParameterizedTypeReference<ResponseResult<UnreviewedOrderNumberResponseDTO>>() {});

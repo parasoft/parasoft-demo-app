@@ -1,9 +1,9 @@
 package com.parasoft.demoapp.graphql;
 
-import com.parasoft.demoapp.config.WebConfig;
 import com.parasoft.demoapp.controller.PageInfo;
 import com.parasoft.demoapp.controller.ResponseResult;
 import com.parasoft.demoapp.model.industry.ItemEntity;
+import com.parasoft.demoapp.service.RestEndpointService;
 import graphql.schema.DataFetcher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
@@ -14,12 +14,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.*;
-
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.HOST;
 
 @RequiredArgsConstructor
 @Component
@@ -29,19 +26,12 @@ public class ItemGraphQLDataFetcher {
 
     private final HttpServletRequest httpRequest;
 
-    private final WebConfig webConfig;
-
-    private String itemBaseUrl;
-
-    @PostConstruct
-    private void init() {
-        itemBaseUrl = HOST + webConfig.getServerPort() + "/v1/assets/items";
-    }
+    private final RestEndpointService restEndpointService;
 
     public DataFetcher<PageInfo<ItemEntity>> getItems() {
         return dataFetchingEnvironment -> {
             try {
-                UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(itemBaseUrl);
+                UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(restEndpointService.getItemsBaseUrl());
                 if (dataFetchingEnvironment.containsArgument("categoryId")) {
                     builder.queryParam("categoryId", (Long) dataFetchingEnvironment.getArgument("categoryId"));
                 }
@@ -87,7 +77,7 @@ public class ItemGraphQLDataFetcher {
                 Map<String, Long> uriVariables = new HashMap<>();
                 uriVariables.put("itemId", dataFetchingEnvironment.getArgument("itemId"));
                 ResponseEntity<ResponseResult<ItemEntity>> entity =
-                        restTemplate.exchange(itemBaseUrl + "/{itemId}",
+                        restTemplate.exchange(restEndpointService.getItemsBaseUrl() + "/{itemId}",
                                 HttpMethod.GET,
                                 new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
                                 new ParameterizedTypeReference<ResponseResult<ItemEntity>>() {
@@ -107,7 +97,7 @@ public class ItemGraphQLDataFetcher {
                 uriVariables.put("itemId", dataFetchingEnvironment.getArgument("itemId"));
                 uriVariables.put("newInStock", dataFetchingEnvironment.getArgument("newInStock"));
                 ResponseEntity<ResponseResult<ItemEntity>> entity =
-                        restTemplate.exchange(itemBaseUrl + "/inStock/{itemId}?newInStock={newInStock}",
+                        restTemplate.exchange(restEndpointService.getItemsBaseUrl() + "/inStock/{itemId}?newInStock={newInStock}",
                                 HttpMethod.PUT,
                                 new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
                                 new ParameterizedTypeReference<ResponseResult<ItemEntity>>() {}, uriVariables);
@@ -124,7 +114,7 @@ public class ItemGraphQLDataFetcher {
                 Map<String, Object> uriVariables = new HashMap<>();
                 uriVariables.put("itemName", dataFetchingEnvironment.getArgument("itemName"));
                 ResponseEntity<ResponseResult<String>> entity =
-                        restTemplate.exchange(itemBaseUrl + "/name/{itemName}",
+                        restTemplate.exchange(restEndpointService.getItemsBaseUrl() + "/name/{itemName}",
                                 HttpMethod.DELETE,
                                 new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
                                 new ParameterizedTypeReference<ResponseResult<String>>() {}, uriVariables);
@@ -141,7 +131,7 @@ public class ItemGraphQLDataFetcher {
                 Map<String, String> uriVariables = new HashMap<>();
                 uriVariables.put("itemName", dataFetchingEnvironment.getArgument("itemName"));
                 ResponseEntity<ResponseResult<ItemEntity>> entity =
-                        restTemplate.exchange(itemBaseUrl + "/name/{itemName}",
+                        restTemplate.exchange(restEndpointService.getItemsBaseUrl() + "/name/{itemName}",
                                 HttpMethod.GET,
                                 new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
                                 new ParameterizedTypeReference<ResponseResult<ItemEntity>>() {},
@@ -157,7 +147,7 @@ public class ItemGraphQLDataFetcher {
         return dataFetchingEnvironment -> {
             try {
                 ResponseEntity<ResponseResult<ItemEntity>> entity =
-                        restTemplate.exchange(itemBaseUrl,
+                        restTemplate.exchange(restEndpointService.getItemsBaseUrl(),
                                 HttpMethod.POST,
                                 new HttpEntity<>(dataFetchingEnvironment.getArgument("itemsDTO"),
                                         RestTemplateUtil.createHeaders(httpRequest)),
@@ -175,7 +165,7 @@ public class ItemGraphQLDataFetcher {
                 Map<String, Object> uriVariables = new HashMap<>();
                 uriVariables.put("itemId", dataFetchingEnvironment.getArgument("itemId"));
                 ResponseEntity<ResponseResult<Long>> entity =
-                        restTemplate.exchange(itemBaseUrl + "/{itemId}",
+                        restTemplate.exchange(restEndpointService.getItemsBaseUrl() + "/{itemId}",
                                 HttpMethod.DELETE,
                                 new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
                                 new ParameterizedTypeReference<ResponseResult<Long>>() {},
@@ -193,7 +183,7 @@ public class ItemGraphQLDataFetcher {
                 Map<String, Object> uriVariables = new HashMap<>();
                 uriVariables.put("itemId", dataFetchingEnvironment.getArgument("itemId"));
                 ResponseEntity<ResponseResult<ItemEntity>> entity =
-                        restTemplate.exchange(itemBaseUrl + "/{itemId}",
+                        restTemplate.exchange(restEndpointService.getItemsBaseUrl() + "/{itemId}",
                                 HttpMethod.PUT,
                                 new HttpEntity<>(dataFetchingEnvironment.getArgument("itemsDTO"),
                                         RestTemplateUtil.createHeaders(httpRequest)),
