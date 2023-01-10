@@ -65,7 +65,7 @@ public class ProtobufServiceImpl extends ProtobufServiceGrpc.ProtobufServiceImpl
     }
 
     @Override
-    public void getItemsInStock(Empty request, StreamObserver<Item> responseObserver) {
+    public void getItemsInStock(GetItemsInStockRequest request, StreamObserver<Item> responseObserver) {
         try {
             List<ItemEntity> items = itemService.getAllItems();
 

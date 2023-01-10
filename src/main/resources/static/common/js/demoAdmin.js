@@ -1592,20 +1592,31 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
                     }
                 ];
             } else if(options.mqType === "KAFKA") {
+                var kafkaServer = data.kafkaConfig.bootstrapServers;
+                if (kafkaServer.startsWith("localhost:")) {
+                    kafkaServer = data.kafkaConfig.bootstrapServers.replace("localhost", location.hostname);
+                }
+                if (kafkaServer.startsWith("127.0.0.1:")) {
+                    kafkaServer = data.kafkaConfig.bootstrapServers.replace("127.0.0.1", location.hostname);
+                }
                 options.configurationDetails = [
                     {
                         label: $filter('translate')('BROKER_URL'),
-                        value: data.kafkaConfig.bootstrapServers
+                        value: kafkaServer
                     }, {
                         label: $filter('translate')('GROUP_ID'),
                         value: data.kafkaConfig.groupId
                     }
                 ];
             } else if(options.mqType === "RABBIT_MQ") {
+                var rabbitMqHost = data.rabbitMQConfig.rabbitMqHost;
+                if (rabbitMqHost === "localhost" || rabbitMqHost === "127.0.0.1") {
+                    rabbitMqHost = location.hostname;
+                }
                 options.configurationDetails = [
                      {
                          label: $filter('translate')('RABBITMQ_HOST'),
-                         value: data.rabbitMQConfig.rabbitMqHost
+                         value: rabbitMqHost
                     }, {
                          label: $filter('translate')('RABBITMQ_PORT'),
                          value: data.rabbitMQConfig.rabbitMqPort
