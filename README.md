@@ -1,7 +1,8 @@
 # Parasoft Demo Application
 The Parasoft Demo Application is an example Spring Boot project. The application is configurable and customizable, and is used to demonstrate functionality in a variety of Parasoft tools.
 
-Docker Hub repository: https://hub.docker.com/r/parasoft/demo-app
+The following instruction is for building and running the Parasoft Demo Application locally.<br/> 
+There is also a docker image available here: https://hub.docker.com/r/parasoft/demo-app
 ## Getting Started
 ### Building .war from sources
 Once you download the sources, build the project as a .war file using the Gradle wrapper.
@@ -51,7 +52,7 @@ Login with one of these users:
 - Username `approver` password `password`
 
 ## Connect to embedded HSQLDB server instance
-There are four databases (one for global and three for industries) in Parasoft Demo Application, which are **global**, **outdoor**, **defense** and **aerospace**.
+There are four databases (one for global and three for industries) in this Application, which are **global**, **outdoor**, **defense** and **aerospace**.
 
 | Database name | Description                                          |
 |---------------|------------------------------------------------------|
@@ -61,7 +62,7 @@ There are four databases (one for global and three for industries) in Parasoft D
 | aerospace     | Used to store the data about aerospace industry.     |
 
 ### Connection configuration
-Parasoft Demo Application exposes port 9001 for the user to connect to the HSQLDB database remotely.
+This application exposes port 9001 for the user to connect to the HSQLDB database remotely.
 
 - Global database
 
@@ -82,16 +83,16 @@ Parasoft Demo Application exposes port 9001 for the user to connect to the HSQLD
 | Password | `pass`                                              |
 
 ## Using Parasoft JMS Proxy and Virtual Asset with message queue
-There are two main services for order management in PDA, **order service** and **inventory service**. After an order is submitted, order service sends
+There are two main services for order management in this application, **order service** and **inventory service**. After an order is submitted, order service sends
 a request through message queue to check and decrease the inventory. After the operation is done, inventory service sends a response through message queue which includes the information of the operation result.
 
 ### Configuration
-PDA uses two default queues/topics to support messaging between **order service** and **inventory service**.
-The configuration for queues/topics can be changed or reset to default on PDA Demo Administration page.
+Two default queues/topics are used to support messaging between **order service** and **inventory service**.
+The configuration for queues/topics can be changed or reset to default on **Demo Administration** page.
 
 <img src="src/main/resources/static/common/images/mq_default_mode_diagram.png" alt="mq default mode diagram">
 
-**Configuration details for embedded ActiveMQ server**
+**Configuration details for embedded ActiveMQ server (default)**
 
 | Option                            | Value                                                    |
 |-----------------------------------|----------------------------------------------------------|
@@ -143,23 +144,23 @@ to a customized request topic name. The virtual asset deployment should be confi
 
 <img src="src/main/resources/static/common/images/Kafka_virtual_asset_mode_diagram.png" alt="Kafka virtual asset mode diagram">
 
-### Using external Kafka server with PDA
+### Using external Kafka server
 
 1. Download, install and start a Kafka server (0.10.0.0 or later) using default settings.
 2. Set Kafka broker URL and consumer group ID in **application.properties** file.
-3. Start PDA and change queue type to Kafka in **PARASOFT QUEUE CONFIGURATION** section of PDA Demo Administration page.
-4. To test connection with Kafka server, either use **Test Connection** button in **Kafka configuration details** link or save changes in PDA Demo Administration page.
+3. Start the demo application and change queue type to Kafka in **PARASOFT QUEUE CONFIGURATION** section of **Demo Administration** page.
+4. To test connection with Kafka server, either use **Test Connection** button in **Kafka configuration details** link or save changes in **Demo Administration** page.
 
-### Using external RabbitMQ server with PDA
+### Using external RabbitMQ server
 1. Download, install Erlang and RabbitMQ, start the RabbitMQ server using default settings.
 > The minimum version of RabbitMQ supported in demo application is 2.0.0 (compatible Erlang version is R13B). <br/>
 > Reference for compatibility of RabbitMQ and Erlang versions: [RabbitMQ and Erlang/OTP Compatibility Matrix](https://www.rabbitmq.com/which-erlang.html#compatibility-matrix).
 2. Set RabbitMQ host, port, username, password in **application.properties** file.
-3. Start PDA and change queue type to RabbitMQ in **PARASOFT QUEUE CONFIGURATION** section of PDA Demo Administration page.
-4. To test connection with RabbitMQ server, either use **Test Connection** button in **RabbitMQ configuration details** link or save changes in PDA Demo Administration page.
+3. Start the demo application and change queue type to RabbitMQ in **PARASOFT QUEUE CONFIGURATION** section of **Demo Administration** page.
+4. To test connection with RabbitMQ server, either use **Test Connection** button in **RabbitMQ configuration details** link or save changes in **Demo Administration** page.
 
-## Using gRPC Service in PDA
-The gRPC service in Parasoft Demo Application has three methods which support both JSON and Protobuf formats.
+## Using gRPC Service
+The gRPC service in this application has three methods which support both JSON and Protobuf formats.
 
 ### Configuration details
 
@@ -198,7 +199,7 @@ To use gRPC Protobuf service with SOAtest Protobuf clients, you need to add [pro
 2. Copy it to **{root directory of parasoft-demo-app}/lib**. (Create the folder if it does not already exist.)
 3. Open **SOAtest & Virtualize** desktop, add the **ParasoftJDBCDriver.jar** to **Parasoft > Preferences > JDBC Drivers**.
 4. Start Virtualize server in **Virtualize Server** view.
-5. Enable the **PARASOFT JDBC PROXY** in PDA **Demo Administration** page, modify started server's **URL**, **Parasoft Virtualize Server path**, and **Parasoft Virtualize group ID** if necessary.
+5. Enable the **PARASOFT JDBC PROXY** in **Demo Administration** page, modify started server's **URL**, **Parasoft Virtualize Server path**, and **Parasoft Virtualize group ID** if necessary.
 6. Go to **SOAtest & Virtualize** desktop and refresh the Server. If the **Parasoft JDBC Proxy** is enabled successfully, there will be a controller which has the same name as group ID under **JDBC Controllers**.
 7. Change the settings of the controller.
 
