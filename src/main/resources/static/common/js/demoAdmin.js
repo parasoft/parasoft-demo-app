@@ -1599,10 +1599,6 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
                 if (kafkaServer.startsWith("127.0.0.1:")) {
                     kafkaServer = data.kafkaConfig.bootstrapServers.replace("127.0.0.1", location.hostname);
                 }
-                // Special handling for docker started with original docker-compose.yml file
-                if (kafkaServer === "kafka:9092") {
-                    kafkaServer = location.hostname + ":9093";
-                }
                 options.configurationDetails = [
                     {
                         label: $filter('translate')('BROKER_URL'),
@@ -1614,7 +1610,7 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
                 ];
             } else if(options.mqType === "RABBIT_MQ") {
                 var rabbitMqHost = data.rabbitMQConfig.rabbitMqHost;
-                if (rabbitMqHost === "localhost" || rabbitMqHost === "127.0.0.1" || rabbitMqHost === "rabbitmq") {
+                if (rabbitMqHost === "localhost" || rabbitMqHost === "127.0.0.1") {
                     rabbitMqHost = location.hostname;
                 }
                 options.configurationDetails = [
