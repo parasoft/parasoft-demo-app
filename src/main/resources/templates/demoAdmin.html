@@ -104,6 +104,7 @@
                             </div>
                             <div class="section_body">
                                 <div class="web_services">
+                                    <div style="padding-bottom:2px" translate="UI_BACKEND_COMMUNICATION"></div>
                                     <div class="rest_api_web_service">
                                         <label>
                                             <input type="radio" name="webServiceMode" ng-model="options.webServiceMode" value="REST_API">
@@ -118,81 +119,77 @@
                                         </label>
                                     </div>
                                 </div>
-
-                                <div ng-show="options.webServiceMode === 'REST_API'">
-                                    <div class="form-group">
-                                        <label class="form_label" for="categories_rest_endpoint"><span translate="CATEGORIES"></span>:</label>
-                                        <div class="invalid_message" ng-show="demo.endpointError_categories" translate={{'INVALID_ENDPOINT_URL'|translate}}></div>
-                                        <div class="input-wrapper">
-                                            <input id="categories_rest_endpoint" type="text" name="categoriesRestEndpoint"
-                                                   class="form-control" placeholder="{{'ENDPOINT_URL_FOR_CATEGORIES'|translate}} {{demo.end_point_for_categories}}"
-                                                   ng-model="options.restEndpoints.categoriesRestEndpointUrl"  ng-trim="false"
-                                                   ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.categoriesRestEndpointUrl, 'categories');"/>
-                                            <button class="btn btn-default industry_button labels_reset_btn"
-                                                    ng-click="options.resetEndpoint('categories')"
-                                                    translate="RESET_ENDPOINT">
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form_label" for="items_rest_endpoint"><span translate="ITEMS"></span>:</label>
-                                        <div class="invalid_message" ng-show="demo.endpointError_items" translate={{'INVALID_ENDPOINT_URL'|translate}}></div>
-                                        <div class="input-wrapper">
-                                            <input id="items_rest_endpoint" type="text" name="itemsRestEndpoint"
-                                                   class="form-control" placeholder="{{'ENDPOINT_URL_FOR_ITEMS'|translate}} {{demo.end_point_for_items}}"
-                                                   ng-model="options.restEndpoints.itemsRestEndpointUrl"  ng-trim="false"
-                                                   ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.itemsRestEndpointUrl, 'items')"/>
-                                            <button class="btn btn-default industry_button labels_reset_btn"
-                                                    ng-click="options.resetEndpoint('items')"
-                                                    translate="RESET_ENDPOINT">
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form_label" for="cart_items_rest_endpoint"><span translate="CART_ITEMS"></span>:</label>
-                                        <div class="invalid_message" ng-show="demo.endpointError_cart" translate={{'INVALID_ENDPOINT_URL'|translate}}></div>
-                                        <div class="input-wrapper">
-                                            <input id="cart_items_rest_endpoint" type="text" name="cartItemsRestEndpoint"
-                                                   class="form-control" placeholder="{{'ENDPOINT_URL_FOR_CARTITEMS'|translate}} {{demo.end_point_for_cartItems}}"
-                                                   ng-model="options.restEndpoints.cartItemsRestEndpointUrl"  ng-trim="false"
-                                                   ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.cartItemsRestEndpointUrl, 'cart')"/>
-                                            <button class="btn btn-default labels_reset_btn"
-                                                    ng-click="options.resetEndpoint('cart')"
-                                                    translate="RESET_ENDPOINT">
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form_label" for="orders_rest_endpoint"><span translate="ORDERS"></span>:</label>
-                                        <div class="invalid_message" ng-show="demo.endpointError_orders" translate={{'INVALID_ENDPOINT_URL'|translate}}></div>
-                                        <div class="input-wrapper">
-                                            <input id="orders_rest_endpoint" type="text" name="ordersRestEndpoint"
-                                                   class="form-control" placeholder="{{'ENDPOINT_URL_FOR_ORDERS'|translate}} {{demo.end_point_for_orders}}"
-                                                   ng-model="options.restEndpoints.ordersRestEndpointUrl"  ng-trim="false"
-                                                   ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.ordersRestEndpointUrl, 'orders')"/>
-                                            <button class="btn btn-default labels_reset_btn"
-                                                    ng-click="options.resetEndpoint('orders')"
-                                                    translate="RESET_ENDPOINT">
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form_label" for="locations_rest_endpoint"><span translate="LOCATIONS"></span>:</label>
-                                        <div class="invalid_message" ng-show="demo.endpointError_locations" translate={{'INVALID_ENDPOINT_URL'|translate}}></div>
-                                        <div class="input-wrapper">
-                                            <input id="locations_rest_endpoint" type="text" name="locationsRestEndpoint"
-                                                   class="form-control" placeholder="{{'ENDPOINT_URL_FOR_LOCATIONS'|translate}} {{demo.end_point_for_locations}}"
-                                                   ng-model="options.restEndpoints.locationsRestEndpointUrl"  ng-trim="false"
-                                                   ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.locationsRestEndpointUrl, 'locations')"/>
-                                            <button class="btn btn-default labels_reset_btn"
-                                                    ng-click="options.resetEndpoint('locations')"
-                                                    translate="RESET_ENDPOINT">
-                                            </button>
-                                        </div>
+                                <div class="form-group">
+                                    <label class="form_label" for="categories_rest_endpoint"><span translate="CATEGORIES"></span>:</label>
+                                    <div class="invalid_message" ng-show="demo.endpointError_categories" translate={{'INVALID_ENDPOINT_URL'|translate}}></div>
+                                    <div class="input-wrapper">
+                                        <input id="categories_rest_endpoint" type="text" name="categoriesRestEndpoint"
+                                               class="form-control" placeholder="{{'ENDPOINT_URL_FOR_CATEGORIES'|translate}} {{demo.end_point_for_categories}}"
+                                               ng-model="options.restEndpoints.categoriesRestEndpointUrl"  ng-trim="false"
+                                               ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.categoriesRestEndpointUrl, 'categories');"/>
+                                        <button class="btn btn-default industry_button labels_reset_btn"
+                                                ng-click="options.resetEndpoint('categories')"
+                                                translate="RESET_ENDPOINT">
+                                        </button>
                                     </div>
                                 </div>
-
-                                <div class="form-group" ng-show="options.webServiceMode === 'GRAPHQL'">
+                                <div class="form-group">
+                                    <label class="form_label" for="items_rest_endpoint"><span translate="ITEMS"></span>:</label>
+                                    <div class="invalid_message" ng-show="demo.endpointError_items" translate={{'INVALID_ENDPOINT_URL'|translate}}></div>
+                                    <div class="input-wrapper">
+                                        <input id="items_rest_endpoint" type="text" name="itemsRestEndpoint"
+                                               class="form-control" placeholder="{{'ENDPOINT_URL_FOR_ITEMS'|translate}} {{demo.end_point_for_items}}"
+                                               ng-model="options.restEndpoints.itemsRestEndpointUrl"  ng-trim="false"
+                                               ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.itemsRestEndpointUrl, 'items')"/>
+                                        <button class="btn btn-default industry_button labels_reset_btn"
+                                                ng-click="options.resetEndpoint('items')"
+                                                translate="RESET_ENDPOINT">
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form_label" for="cart_items_rest_endpoint"><span translate="CART_ITEMS"></span>:</label>
+                                    <div class="invalid_message" ng-show="demo.endpointError_cart" translate={{'INVALID_ENDPOINT_URL'|translate}}></div>
+                                    <div class="input-wrapper">
+                                        <input id="cart_items_rest_endpoint" type="text" name="cartItemsRestEndpoint"
+                                               class="form-control" placeholder="{{'ENDPOINT_URL_FOR_CARTITEMS'|translate}} {{demo.end_point_for_cartItems}}"
+                                               ng-model="options.restEndpoints.cartItemsRestEndpointUrl"  ng-trim="false"
+                                               ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.cartItemsRestEndpointUrl, 'cart')"/>
+                                        <button class="btn btn-default labels_reset_btn"
+                                                ng-click="options.resetEndpoint('cart')"
+                                                translate="RESET_ENDPOINT">
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form_label" for="orders_rest_endpoint"><span translate="ORDERS"></span>:</label>
+                                    <div class="invalid_message" ng-show="demo.endpointError_orders" translate={{'INVALID_ENDPOINT_URL'|translate}}></div>
+                                    <div class="input-wrapper">
+                                        <input id="orders_rest_endpoint" type="text" name="ordersRestEndpoint"
+                                               class="form-control" placeholder="{{'ENDPOINT_URL_FOR_ORDERS'|translate}} {{demo.end_point_for_orders}}"
+                                               ng-model="options.restEndpoints.ordersRestEndpointUrl"  ng-trim="false"
+                                               ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.ordersRestEndpointUrl, 'orders')"/>
+                                        <button class="btn btn-default labels_reset_btn"
+                                                ng-click="options.resetEndpoint('orders')"
+                                                translate="RESET_ENDPOINT">
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form_label" for="locations_rest_endpoint"><span translate="LOCATIONS"></span>:</label>
+                                    <div class="invalid_message" ng-show="demo.endpointError_locations" translate={{'INVALID_ENDPOINT_URL'|translate}}></div>
+                                    <div class="input-wrapper">
+                                        <input id="locations_rest_endpoint" type="text" name="locationsRestEndpoint"
+                                               class="form-control" placeholder="{{'ENDPOINT_URL_FOR_LOCATIONS'|translate}} {{demo.end_point_for_locations}}"
+                                               ng-model="options.restEndpoints.locationsRestEndpointUrl"  ng-trim="false"
+                                               ng-change="demo.validateEndpointUrlWellForm(options.restEndpoints.locationsRestEndpointUrl, 'locations')"/>
+                                        <button class="btn btn-default labels_reset_btn"
+                                                ng-click="options.resetEndpoint('locations')"
+                                                translate="RESET_ENDPOINT">
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="form-group">
                                     <label class="form_label" for="graphql_endpoint"><span translate="ENDPOINT"></span>:</label>
                                     <div class="invalid_message" ng-show="demo.endpointError_graphql" translate={{'INVALID_ENDPOINT_URL'|translate}}></div>
                                     <div class="input-wrapper">
@@ -830,6 +827,10 @@
                         <a class="support_link industry_color_1 available_user_accounts_link" translate="AVAILABLE_USER_ACCOUNTS" data-toggle="modal"
                            data-target="#available_user_accounts_info_modal"></a>
                     </div>
+                    <div class="support_link_wrapper">
+                        <a class="support_link industry_color_1 gRPC_configuration_details_link" translate="GRPC_CONFIGURATION_DETAILS" data-toggle="modal"
+                           data-target="#gRPC_configuration_details_modal" ng-click="demo.openGRPCConfigurationDetails()"></a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -853,6 +854,55 @@
                             <tr ng-repeat="info in demo.userAccountsInfo">
                                 <td>{{info.purchaserInfo}}</td>
                                 <td>{{info.approverInfo}}</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn button-secondary modal_cancel_btn" data-dismiss="modal" translate="CLOSE"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="gRPC_configuration_details_modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+            <div class="modal-dialog">
+                <div class="modal-content industry_font" id="gRPC_configuration_details_modal_content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <div class="modal-title">
+                            <div translate="GRPC_CONFIGURATION_DETAILS"></div>
+                        </div>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="gRPC_configuration_details_description" translate="GRPC_JSON_CONFIGURATION_DETAILS_DESCRIPTION"></div>
+                        <table class="gRPC_configuration_details_table">
+                            <tbody>
+                                <tr ng-repeat="configuration in demo.gRPCConfigurationJsonDetails">
+                                    <th ng-bind="configuration.label" class="gRPC_configuration_label"></th>
+                                    <th class="gRPC_configuration_details_value gRPC_configuration_value" ng-bind="configuration.value"></th>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="gRPC_configuration_details_description" translate="GRPC_PROTOBUF_CONFIGURATION_DETAILS_DESCRIPTION"></div>
+                        <table class="gRPC_configuration_details_table">
+                            <tbody>
+                            <tr ng-repeat="configuration in demo.gRPCConfigurationProtobufDetails">
+                                <th ng-bind="configuration.label" class="gRPC_configuration_label"></th>
+                                <th class="gRPC_configuration_details_value gRPC_configuration_value" ng-bind="configuration.value"></th>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div class="gRPC_methods" translate="METHODS_AND_BRIEF_DESCRIPTION"></div>
+                        <table class="gRPC_configuration_details_info">
+                            <tr>
+                                <td><span translate="METHOD"></span></td>
+                                <td><span translate="DESCRIPTION"></span></td>
+                            </tr>
+                            <tr ng-repeat="method in demo.gRPCMethods">
+                                <td class="gRPC_method_name">{{method.label}}</td>
+                                <td>{{method.value}}</td>
                             </tr>
                         </table>
                     </div>

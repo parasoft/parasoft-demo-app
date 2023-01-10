@@ -109,6 +109,58 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
         }
     }
 
+    demo.openGRPCConfigurationDetails = function() {
+        demo.gRPCMethods = [
+            {
+               label: "getStockByItemId",
+               value: $filter('translate')('GETSTOCKBYITEMID_DESCRIPTION')
+            },{
+               label: "getItemsInStock",
+               value: $filter('translate')('GETITEMSINSTOCK_DESCRIPTION')
+            },{
+               label: "updateItemsInStock",
+               value: $filter('translate')('UPDATEITEMSINSTOCK_DESCRIPTION')
+            }
+        ];
+
+        demo.gRPCConfigurationJsonDetails = [
+            {
+               label: $filter('translate')('GRPC_HOST'),
+               value: location.hostname
+            },{
+               label: $filter('translate')('GRPC_PORT'),
+               value: ""
+            },{
+               label: $filter('translate')('GRPC_SERVICE_NAME'),
+               value: "grpc.demoApp.JsonService"
+            }
+        ];
+
+        demo.gRPCConfigurationProtobufDetails = [
+            {
+               label: $filter('translate')('GRPC_HOST'),
+               value: location.hostname
+            },{
+               label: $filter('translate')('GRPC_PORT'),
+               value: ""
+            },{
+               label: $filter('translate')('GRPC_SERVICE_NAME'),
+               value: "grpc.demoApp.ProtobufService"
+            }
+        ];
+
+        $http({
+            method: 'GET',
+            url: '/v1/demoAdmin/gRPCProperties',
+        }).then(function(result) {
+            const data = result.data.data;
+            demo.gRPCConfigurationJsonDetails[1].value = data.port;
+            demo.gRPCConfigurationProtobufDetails[1].value = data.port;
+        }).catch(function(result) {
+            console.error(result);
+        });
+    }
+
     function getAllItems() {
         let getCategoriesSuccess = (data) => {
             demo.modalCategories = data.content;
@@ -440,13 +492,9 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
     }
 
     demo.disableSaveChangesButton = function(options) {
-        if (options.webServiceMode === "GRAPHQL" && demo.endpointError_graphql) {
+        if(demo.endpointError_categories || demo.endpointError_items ||
+            demo.endpointError_cart || demo.endpointError_orders || demo.endpointError_locations || demo.endpointError_graphql) {
             return true;
-        } else if(options.webServiceMode === "REST_API") {
-            if(demo.endpointError_categories || demo.endpointError_categories || demo.endpointError_items ||
-                demo.endpointError_cart || demo.endpointError_orders || demo.endpointError_locations) {
-                return true;
-            }
         }
         if (demo.invalidVirtualizeServerUrl || demo.cannotConnectToVirtualizeServerUrl ||
             demo.invalidVirtualizeServerPath || demo.invalidVirtualizeGroupId){

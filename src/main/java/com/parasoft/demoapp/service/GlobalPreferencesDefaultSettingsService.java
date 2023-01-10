@@ -45,6 +45,9 @@ public class GlobalPreferencesDefaultSettingsService {
     public static final String LOCATIONS_ENDPOINT_PATH = "/proxy/v1/locations/**";
     public static final String LOCATIONS_ENDPOINT_REAL_PATH = "/v1/locations";
 
+    public static final Set<String> REST_ENDPOINT_IDS = new HashSet<>(Arrays.asList(
+            CATEGORIES_ENDPOINT_ID, ITEMS_ENDPOINT_ID, CART_ENDPOINT_ID, ORDERS_ENDPOINT_ID, LOCATIONS_ENDPOINT_ID));
+
     @Autowired
     private WebConfig webConfig;
 
