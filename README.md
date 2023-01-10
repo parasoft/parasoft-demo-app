@@ -162,7 +162,7 @@ to a customized request topic name. The virtual asset deployment should be confi
 ## Using gRPC Service
 The gRPC service in this application has three methods which support both JSON and Protobuf formats.
 
-### Configuration details
+### Configuration
 
 | Option                     | Value                          |
 |----------------------------|--------------------------------|
