@@ -4,7 +4,7 @@ package grpc.demoApp;
 
 service ProtobufService {
   rpc getStockByItemId(GetStockByItemIdRequest) returns(GetStockByItemIdResponse);
-  rpc getItemsInStock(Empty) returns(stream Item);
+  rpc getItemsInStock(GetItemsInStockRequest) returns(stream Item);
   rpc updateItemsInStock(stream UpdateItemsInStockRequest) returns(stream Item);
 }
 
@@ -33,4 +33,4 @@ message Item {
   int32 stock = 3;
 }
 
-message Empty {}
+message GetItemsInStockRequest {}
