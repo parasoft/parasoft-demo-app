@@ -38,6 +38,7 @@ public class AssetMessages extends Messages {
 	public static final String INCORRECT_OPERATION = "Incorrect operation";
 	public static final String REQUEST_PARAMETER_CANNOT_BE_NULL="The request parameter cannot be null.";
 	public static final String OPERATION_QUANTITY_CANNOT_BE_NULL = "The quantity for item inventory deduction or addition can not be null.";
+	public static final String INVALID_REQUEST = "Invalid request body.";
 
     public AssetMessages() {
 		super("i18n/messages");
