@@ -1,9 +1,10 @@
 package com.parasoft.demoapp.graphql;
 
-import com.parasoft.demoapp.config.WebConfig;
 import com.parasoft.demoapp.controller.ResponseResult;
 import com.parasoft.demoapp.model.industry.CartItemEntity;
+import com.parasoft.demoapp.service.RestEndpointService;
 import graphql.schema.DataFetcher;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -12,33 +13,23 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.HOST;
-
+@RequiredArgsConstructor
 @Component
 public class CartItemGraphQLDataFetcher {
-    private final String cartItemBaseUrl;
 
     private final RestTemplate restTemplate;
 
     private final HttpServletRequest httpServletRequest;
 
-    public CartItemGraphQLDataFetcher(RestTemplate restTemplate, HttpServletRequest httpServletRequest, WebConfig webConfig) {
-        this.restTemplate = restTemplate;
-        this.httpServletRequest = httpServletRequest;
-        this.cartItemBaseUrl = HOST + webConfig.getServerPort() + "/v1/cartItems";
-    }
+    private final RestEndpointService restEndpointService;
 
     public DataFetcher<List<CartItemEntity>> getCartItems() {
         return dataFetchingEnvironment -> {
             try {
                 ResponseEntity<ResponseResult<List<CartItemEntity>>> entity =
-                        restTemplate.exchange(cartItemBaseUrl,
+                        restTemplate.exchange(restEndpointService.getCartBaseUrl(),
                             HttpMethod.GET,
                             new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpServletRequest)),
                             new ParameterizedTypeReference<ResponseResult<List<CartItemEntity>>>() {});
@@ -53,7 +44,7 @@ public class CartItemGraphQLDataFetcher {
         return dataFetchingEnvironment -> {
             try {
                 ResponseEntity<ResponseResult<CartItemEntity>> entity =
-                        restTemplate.exchange(cartItemBaseUrl,
+                        restTemplate.exchange(restEndpointService.getCartBaseUrl(),
                                 HttpMethod.POST,
                                 new HttpEntity<>(dataFetchingEnvironment.getArgument("shoppingCartDTO"),
                                         RestTemplateUtil.createHeaders(httpServletRequest)),
@@ -71,7 +62,7 @@ public class CartItemGraphQLDataFetcher {
                 Map<String, Long> uriVariables = new HashMap<>();
                 uriVariables.put("itemId", dataFetchingEnvironment.getArgument("itemId"));
                 ResponseEntity<ResponseResult<CartItemEntity>> entity =
-                    restTemplate.exchange(cartItemBaseUrl + "/{itemId}",
+                    restTemplate.exchange(restEndpointService.getCartBaseUrl() + "/{itemId}",
                         HttpMethod.GET,
                         new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpServletRequest)),
                         new ParameterizedTypeReference<ResponseResult<CartItemEntity>>() {},
@@ -87,7 +78,7 @@ public class CartItemGraphQLDataFetcher {
         return environment -> {
             try {
                 ResponseEntity<ResponseResult<Long>> entity =
-                        restTemplate.exchange(cartItemBaseUrl + "/{itemId}",
+                        restTemplate.exchange(restEndpointService.getCartBaseUrl() + "/{itemId}",
                                 HttpMethod.DELETE,
                                 new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpServletRequest)),
                                 new ParameterizedTypeReference<ResponseResult<Long>>() {},
@@ -103,7 +94,7 @@ public class CartItemGraphQLDataFetcher {
         return dataFetchingEnvironment -> {
             try {
                 ResponseEntity<ResponseResult<Boolean>> entity =
-                        restTemplate.exchange(cartItemBaseUrl,
+                        restTemplate.exchange(restEndpointService.getCartBaseUrl(),
                                 HttpMethod.DELETE,
                                 new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpServletRequest)),
                                 new ParameterizedTypeReference<ResponseResult<Boolean>>() {});
@@ -120,7 +111,7 @@ public class CartItemGraphQLDataFetcher {
                 Map<String, Long> uriVariables = new HashMap<>();
                 uriVariables.put("itemId", dataFetchingEnvironment.getArgument("itemId"));
                 ResponseEntity<ResponseResult<CartItemEntity>> entity =
-                        restTemplate.exchange(cartItemBaseUrl + "/{itemId}",
+                        restTemplate.exchange(restEndpointService.getCartBaseUrl() + "/{itemId}",
                                 HttpMethod.PUT,
                                 new HttpEntity<>(dataFetchingEnvironment.getArgument("updateShoppingCartItemDTO"),
                                         RestTemplateUtil.createHeaders(httpServletRequest)),

@@ -232,7 +232,6 @@ label {
 
 .modal-dialog {
     position: relative;
-    top: 10%;
 }
 
 .warning_text {
@@ -454,11 +453,57 @@ textarea {
     margin: 0 auto;
 }
 
+.gRPC_configuration_details_table {
+    margin: 0 auto 15px;
+}
+
 .queue_configuration_details_table th{
     text-align: start;
     font-size: 15px;
     font-weight: normal;
     padding-bottom: 7px;
+}
+
+.gRPC_configuration_details_table th{
+     border: 1px solid lightgrey;
+     padding: 5px;
+     text-align: center;
+     font-size: 15px;
+     font-weight: normal;
+     padding-bottom: 7px;
+}
+
+.gRPC_configuration_label {
+     width: 130px;
+}
+
+.gRPC_configuration_value {
+    width: 230px;
+}
+
+#gRPC_configuration_details_modal_content {
+     width: 600px;
+}
+
+.gRPC_methods {
+    font-size: 15px;
+    margin: 20px 22px 15px;
+}
+
+.gRPC_configuration_details_info {
+    margin: auto;
+    width: 560px;
+}
+
+.gRPC_configuration_details_info td {
+    text-align: left;
+    border: 1px solid lightgrey;
+    padding: 5px;
+}
+
+.gRPC_method_name {
+    text-align: center;
+    width: 150px;
 }
 
 .testing_connection_kafka_service, .testing_connection_rabbitmq_service {
@@ -473,12 +518,13 @@ textarea {
     margin-top: 20px;
 }
 
-.queue_configuration_details_value {
+.queue_configuration_details_value, .gRPC_configuration_details_value {
     padding-left: 10px;
 }
 
 .rest_api_web_service, .graphql_web_service {
     display: inline-block;
+    margin-top: 5px;
 }
 
 .web_services {

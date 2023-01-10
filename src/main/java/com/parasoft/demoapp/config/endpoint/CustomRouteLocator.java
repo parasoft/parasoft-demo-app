@@ -12,6 +12,7 @@ import org.springframework.cloud.netflix.zuul.filters.ZuulProperties;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.*;
 
@@ -37,6 +38,10 @@ public class CustomRouteLocator extends SimpleRouteLocator implements Refreshabl
     @Override
     public void refresh() {
         doRefresh();
+        Map<String, String> routeRestEndpointsMap = getRoutesMap().entrySet().stream()
+                .filter(entry -> entry.getValue() != null && REST_ENDPOINT_IDS.contains(entry.getValue().getId()))
+                .collect(Collectors.toMap(entry -> entry.getValue().getId(), entry -> entry.getValue().getUrl()));
+        restEndpointService.refreshRouteRestEndpointsSnapshot(routeRestEndpointsMap);
     }
 
     @Override

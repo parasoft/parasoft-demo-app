@@ -1,9 +1,9 @@
 package com.parasoft.demoapp.graphql;
 
-import com.parasoft.demoapp.config.WebConfig;
 import com.parasoft.demoapp.controller.PageInfo;
 import com.parasoft.demoapp.controller.ResponseResult;
 import com.parasoft.demoapp.model.industry.CategoryEntity;
+import com.parasoft.demoapp.service.RestEndpointService;
 import graphql.schema.DataFetcher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
@@ -14,15 +14,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
-import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.HOST;
 
 @RequiredArgsConstructor
 @Component
@@ -32,14 +29,7 @@ public class CategoryGraphQLDataFetcher {
 
     private final HttpServletRequest httpRequest;
 
-    private final WebConfig webConfig;
-
-    private String categoryBaseUrl;
-
-    @PostConstruct
-    private void init() {
-        categoryBaseUrl = HOST + webConfig.getServerPort() +"/v1/assets/categories";
-    }
+    private final RestEndpointService restEndpointService;
 
     public DataFetcher<CategoryEntity> getCategoryById() {
         return dataFetchingEnvironment -> {
@@ -47,7 +37,7 @@ public class CategoryGraphQLDataFetcher {
                 Map<String, Long> uriVariables = new HashMap<>();
                 uriVariables.put("categoryId", dataFetchingEnvironment.getArgument("categoryId"));
                 ResponseEntity<ResponseResult<CategoryEntity>> entity =
-                    restTemplate.exchange(categoryBaseUrl + "/{categoryId}",
+                    restTemplate.exchange(restEndpointService.getCategoriesBaseUrl() + "/{categoryId}",
                         HttpMethod.GET,
                         new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
                         new ParameterizedTypeReference<ResponseResult<CategoryEntity>>() {},
@@ -65,7 +55,7 @@ public class CategoryGraphQLDataFetcher {
                 Map<String, String> uriVariables = new HashMap<>();
                 uriVariables.put("categoryName", dataFetchingEnvironment.getArgument("categoryName"));
                 ResponseEntity<ResponseResult<CategoryEntity>> entity =
-                        restTemplate.exchange(categoryBaseUrl + "/name/{categoryName}",
+                        restTemplate.exchange(restEndpointService.getCategoriesBaseUrl() + "/name/{categoryName}",
                                 HttpMethod.GET,
                                 new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
                                 new ParameterizedTypeReference<ResponseResult<CategoryEntity>>() {},
@@ -80,7 +70,7 @@ public class CategoryGraphQLDataFetcher {
     public DataFetcher<PageInfo<CategoryEntity>> getCategories() {
         return dataFetchingEnvironment -> {
             try {
-                UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(categoryBaseUrl);
+                UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(restEndpointService.getCategoriesBaseUrl());
                 if (dataFetchingEnvironment.containsArgument("searchString")) {
                     builder.queryParam("searchString", (String)dataFetchingEnvironment.getArgument("searchString"));
                 }
@@ -115,7 +105,7 @@ public class CategoryGraphQLDataFetcher {
                 Map<String, Long> uriVariables = new HashMap<>();
                 uriVariables.put("categoryId", dataFetchingEnvironment.getArgument("categoryId"));
                 ResponseEntity<ResponseResult<Integer>> entity =
-                        restTemplate.exchange(categoryBaseUrl + "/{categoryId}",
+                        restTemplate.exchange(restEndpointService.getCategoriesBaseUrl() + "/{categoryId}",
                                 HttpMethod.DELETE,
                                 new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
                                 new ParameterizedTypeReference<ResponseResult<Integer>>() {},
@@ -131,7 +121,7 @@ public class CategoryGraphQLDataFetcher {
         return environment -> {
             try {
                 ResponseEntity<ResponseResult<CategoryEntity>> entity =
-                        restTemplate.exchange(categoryBaseUrl,
+                        restTemplate.exchange(restEndpointService.getCategoriesBaseUrl(),
                                 HttpMethod.POST,
                                 new HttpEntity<>(environment.getArgument("categoryDTO"),
                                         RestTemplateUtil.createHeaders(httpRequest)),
@@ -149,7 +139,7 @@ public class CategoryGraphQLDataFetcher {
                 Map<String, Long> uriVariables = new HashMap<>();
                 uriVariables.put("categoryId", dataFetchingEnvironment.getArgument("categoryId"));
                 ResponseEntity<ResponseResult<CategoryEntity>> entity =
-                        restTemplate.exchange(  categoryBaseUrl + "/{categoryId}",
+                        restTemplate.exchange(  restEndpointService.getCategoriesBaseUrl() + "/{categoryId}",
                                 HttpMethod.PUT,
                                 new HttpEntity<>(dataFetchingEnvironment.getArgument("categoryDto"), RestTemplateUtil.createHeaders(httpRequest)),
                                 new ParameterizedTypeReference<ResponseResult<CategoryEntity>>() {},

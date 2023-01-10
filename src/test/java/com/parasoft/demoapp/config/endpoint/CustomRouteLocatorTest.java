@@ -5,18 +5,21 @@ import com.parasoft.demoapp.model.global.preferences.RestEndpointEntity;
 import com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService;
 import com.parasoft.demoapp.service.GlobalPreferencesService;
 import com.parasoft.demoapp.service.RestEndpointService;
+import lombok.RequiredArgsConstructor;
 import org.junit.Test;
+import org.mockito.ArgumentMatcher;
 import org.springframework.cloud.netflix.zuul.filters.ZuulProperties;
 import org.springframework.cloud.netflix.zuul.filters.ZuulProperties.ZuulRoute;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.*;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Test class for CustomRouteLocator
@@ -24,6 +27,42 @@ import static org.mockito.Mockito.when;
  * @see com.parasoft.demoapp.config.endpoint.CustomRouteLocator
  */
 public class CustomRouteLocatorTest {
+
+	@Test
+	public void testRefresh() throws Throwable {
+		// Given
+		String servletPath = "/";
+		ZuulProperties properties = new ZuulProperties();
+		RestEndpointService restEndpointService = mock(RestEndpointService.class);
+		GlobalPreferencesDefaultSettingsService globalPreferencesDefaultSettingsService =
+				mock(GlobalPreferencesDefaultSettingsService.class);
+		GlobalPreferencesService globalPreferencesService = mock(GlobalPreferencesService.class);
+
+		List<RestEndpointEntity> endpoints = getDefaultRestEndpoints();
+		GlobalPreferencesEntity globalPreferences = mock(GlobalPreferencesEntity.class);
+
+		when(restEndpointService.getAllEndpoints()).thenReturn(endpoints);
+		when(globalPreferences.getGraphQLEndpoint()).thenReturn("");
+		when(globalPreferencesService.getCurrentGlobalPreferences()).thenReturn(globalPreferences);
+
+		// When
+		CustomRouteLocator underTest = new CustomRouteLocator(servletPath, properties, restEndpointService,
+				globalPreferencesDefaultSettingsService, globalPreferencesService);
+
+		underTest.refresh();
+
+		// Then
+		int port = 8080;
+		Map<String, String> expectedRouteRestEndpointsMap = Stream.of(new String[][]{
+				{CATEGORIES_ENDPOINT_ID, HOST + port + CATEGORIES_ENDPOINT_REAL_PATH},
+				{ITEMS_ENDPOINT_ID, HOST + port + ITEMS_ENDPOINT_REAL_PATH},
+				{CART_ENDPOINT_ID, HOST + port + CART_ENDPOINT_REAL_PATH},
+				{ORDERS_ENDPOINT_ID, HOST + port + ORDERS_ENDPOINT_REAL_PATH},
+				{LOCATIONS_ENDPOINT_ID, HOST + port + LOCATIONS_ENDPOINT_REAL_PATH}
+		}).collect(Collectors.toMap(p -> p[0], p -> p[1]));
+		verify(restEndpointService)
+				.refreshRouteRestEndpointsSnapshot(argThat(new MapMatcher(expectedRouteRestEndpointsMap)));
+	}
 
 	/**
 	 * Test for locateRoutes()
@@ -275,5 +314,25 @@ public class CustomRouteLocatorTest {
 
 		return endpoints;
 	}
-	
+
+	@RequiredArgsConstructor
+	private static class MapMatcher implements ArgumentMatcher<Map<String, String>> {
+
+		private final Map<String, String>  left;
+
+		@Override
+		public boolean matches(Map<String, String>  right) {
+			if (left == null) {
+				return right == null;
+			}
+
+			if (left.size() != right.size()) {
+				return false;
+			}
+
+			return left.entrySet().stream()
+					.allMatch(e -> e.getValue().equals(right.get(e.getKey())));
+		}
+	}
+
 }
