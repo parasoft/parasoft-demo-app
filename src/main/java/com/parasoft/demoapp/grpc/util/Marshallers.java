@@ -1,6 +1,7 @@
 package com.parasoft.demoapp.grpc.util;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 import io.grpc.MethodDescriptor.Marshaller;
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,13 +22,12 @@ public class Marshallers {
 
             @Override
             public T parse(InputStream stream) {
-                T t = null;
                 try {
-                    t = gson.fromJson(new InputStreamReader(stream, StandardCharsets.UTF_8), clz);
-                } catch (Exception e) {
+                    return gson.fromJson(new InputStreamReader(stream, StandardCharsets.UTF_8), clz);
+                } catch (JsonParseException e) {
                     log.error(e.getMessage(), e);
+                    return null;
                 }
-                return t;
             }
         };
     }
