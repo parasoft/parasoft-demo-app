@@ -769,9 +769,9 @@ function connectAndSubscribeMQ(role, $http, $rootScope, $filter, mqConsumeCallba
         mqClient.heartbeat.incoming = 10000;
 
         var on_connect = function(x) {
-            var orderProcessMsg;
+            let orderProcessMsg;
 
-             // subscribe approver topic
+            // subscribe approver topic
             mqClient.subscribe("/topic/order.approver", function(data) {
                 var msgString = data.body;
                 var msgObject = $.parseJSON(msgString);
@@ -783,6 +783,11 @@ function connectAndSubscribeMQ(role, $http, $rootScope, $filter, mqConsumeCallba
                 if(role === ROLE_PURCHASER){    // purchaser produced this message to this topic
                     if(msgObject.requestedBy === CURRENT_USERNAME){
                         if(isCancelledStatus){
+                            if(msgObject.information.match(/Inventory item with id [0-9]+ doesn't exist./)) {
+                                orderProcessMsg = orderProcessMsg + " " + $filter('translate')('NO_SUCH_ITEMS');
+                            } else if (msgObject.information.match(/Inventory item with id [0-9]+ is out of stock./)) {
+                                orderProcessMsg = orderProcessMsg + " " + $filter('translate')('INSUFFICIENT_INVENTORY');
+                            }
                             toastr.info(orderProcessMsg, '', {timeOut: 4000});
                         }else{
                             toastr.success(orderProcessMsg, '', {timeOut: 4000});
