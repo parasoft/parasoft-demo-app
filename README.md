@@ -192,7 +192,7 @@ The gRPC service in this application has three methods which support both JSON a
     }
     ````
 #### Protobuf service
-To use gRPC Protobuf service with SOAtest Protobuf clients, you need to add [protobuf-extension.jar](src/main/resources/extension) to **Parasoft > Preferences > System Properties** in SOAtest & Virtualize desktop first. Then the message types for request body will be loaded into the Protobuf clients.
+To use gRPC Protobuf service with SOAtest Protobuf clients, you need to add [protobuf-extension.jar](./extension) to **Parasoft > Preferences > System Properties** in SOAtest & Virtualize desktop first. Then the message types for request body will be loaded into the Protobuf clients.
 
 ## Using Parasoft JDBC Proxy
 1. Find the **ParasoftJDBCDriver.jar** in **{SOAtest & Virtualize installation directory}/{version}/proxies**.
