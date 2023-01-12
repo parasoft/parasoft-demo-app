@@ -104,9 +104,9 @@ public class ProtobufServiceImpl extends ProtobufServiceGrpc.ProtobufServiceImpl
                         int newInStock = 0;
                         ItemEntity item = itemService.getItemById(value.getId());
                         Integer inStock = item.getInStock();
-                        if (value.getOperation() == Operation.DEDUCTION) {
+                        if (value.getOperation() == Operation.REMOVE) {
                             newInStock = inStock - value.getValue();
-                        } else if (value.getOperation() == Operation.ADDITION) {
+                        } else if (value.getOperation() == Operation.ADD) {
                             newInStock = inStock + value.getValue();
                         }
                         ParameterValidator.requireNonNegative(newInStock, AssetMessages.INVENTORY_IS_NOT_ENOUGH);
