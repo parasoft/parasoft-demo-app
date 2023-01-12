@@ -3,9 +3,7 @@ package com.parasoft.demoapp.grpc.service;
 
 import com.parasoft.demoapp.exception.ItemNotFoundException;
 import com.parasoft.demoapp.exception.ParameterException;
-import com.parasoft.demoapp.grpc.message.ItemRequest;
-import com.parasoft.demoapp.grpc.message.ItemResponse;
-import com.parasoft.demoapp.grpc.message.OperationType;
+import com.parasoft.demoapp.grpc.message.*;
 import com.parasoft.demoapp.messages.AssetMessages;
 import com.parasoft.demoapp.model.industry.ItemEntity;
 import com.parasoft.demoapp.model.industry.ItemInventoryEntity;
@@ -38,8 +36,9 @@ public class JsonServiceImpl extends JsonServiceImplBase {
     private ItemInventoryRepository itemInventoryRepository;
 
     @Override
-    public void getStockByItemId(Long itemId, StreamObserver<Integer> responseObserver) {
+    public void getStockByItemId(GetStockByItemIdRequest request, StreamObserver<GetStockByItemIdResponse> responseObserver) {
         try {
+            Long itemId = request.getId();
             Integer inStock = itemInventoryService.getInStockByItemId(itemId);
             if (inStock == null) {
                 String errorMsg = MessageFormat.format(AssetMessages.INVENTORY_NOT_FOUND_WITH_ITEM_ID, itemId);
@@ -49,7 +48,7 @@ public class JsonServiceImpl extends JsonServiceImplBase {
                 log.error(errorMsg);
                 return;
             }
-            responseObserver.onNext(inStock);
+            responseObserver.onNext(new GetStockByItemIdResponse(inStock));
             responseObserver.onCompleted();
         } catch (ParameterException e) {
             responseObserver.onError(Status.INVALID_ARGUMENT
