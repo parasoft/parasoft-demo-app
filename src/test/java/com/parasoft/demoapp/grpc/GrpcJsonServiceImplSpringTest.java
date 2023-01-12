@@ -1,8 +1,6 @@
 package com.parasoft.demoapp.grpc;
 
-import com.parasoft.demoapp.grpc.message.ItemRequest;
-import com.parasoft.demoapp.grpc.message.ItemResponse;
-import com.parasoft.demoapp.grpc.message.OperationType;
+import com.parasoft.demoapp.grpc.message.*;
 import com.parasoft.demoapp.grpc.service.JsonServiceImpl;
 import com.parasoft.demoapp.messages.AssetMessages;
 import com.parasoft.demoapp.model.industry.ItemEntity;
@@ -48,25 +46,25 @@ public class GrpcJsonServiceImplSpringTest {
 
     @Test
     public void testGetStockByItemId_normal() throws Throwable {
-        StreamRecorder<Integer> responseObserver = StreamRecorder.create();
-        jsonServiceImpl.getStockByItemId(1L, responseObserver);
+        StreamRecorder<GetStockByItemIdResponse> responseObserver = StreamRecorder.create();
+        jsonServiceImpl.getStockByItemId(new GetStockByItemIdRequest(1L), responseObserver);
 
         if (!responseObserver.awaitCompletion(5, TimeUnit.SECONDS)) {
             fail("The call did not terminate in time");
         }
         assertNull(responseObserver.getError());
 
-        List<Integer> results = responseObserver.getValues();
+        List<GetStockByItemIdResponse> results = responseObserver.getValues();
         assertEquals(1, results.size());
-        int response = results.get(0);
-        assertEquals(10, response);
+        GetStockByItemIdResponse response = results.get(0);
+        assertEquals(10, (int) response.getStock());
     }
 
     @Test
     public void testGetStockByItemId_notFound() throws Throwable {
         Long id = 0L;
-        StreamRecorder<Integer> responseObserver = StreamRecorder.create();
-        jsonServiceImpl.getStockByItemId(0L, responseObserver);
+        StreamRecorder<GetStockByItemIdResponse> responseObserver = StreamRecorder.create();
+        jsonServiceImpl.getStockByItemId(new GetStockByItemIdRequest(0L), responseObserver);
 
         if (!responseObserver.awaitCompletion(5, TimeUnit.SECONDS)) {
             fail("The call did not terminate in time");
@@ -80,8 +78,8 @@ public class GrpcJsonServiceImplSpringTest {
 
     @Test
     public void testGetStockByItemId_nullItemId() throws Throwable {
-        StreamRecorder<Integer> responseObserver = StreamRecorder.create();
-        jsonServiceImpl.getStockByItemId(null, responseObserver);
+        StreamRecorder<GetStockByItemIdResponse> responseObserver = StreamRecorder.create();
+        jsonServiceImpl.getStockByItemId(new GetStockByItemIdRequest(null), responseObserver);
 
         if (!responseObserver.awaitCompletion(5, TimeUnit.SECONDS)) {
             fail("The call did not terminate in time");
@@ -90,6 +88,20 @@ public class GrpcJsonServiceImplSpringTest {
         Throwable error = responseObserver.getError();
         assertNotNull(error);
         assertEquals(getExpectedErrorMessage(Status.INVALID_ARGUMENT, AssetMessages.ITEM_ID_CANNOT_BE_NULL), error.getMessage());
+    }
+
+    @Test
+    public void testGetStockByItemId_nullRequest() throws Throwable {
+        StreamRecorder<GetStockByItemIdResponse> responseObserver = StreamRecorder.create();
+        jsonServiceImpl.getStockByItemId(null, responseObserver);
+
+        if (!responseObserver.awaitCompletion(5, TimeUnit.SECONDS)) {
+            fail("The call did not terminate in time");
+        }
+
+        Throwable error = responseObserver.getError();
+        assertNotNull(error);
+        assertEquals(Status.INTERNAL.getCode().toString(), error.getMessage());
     }
     
     @Test
