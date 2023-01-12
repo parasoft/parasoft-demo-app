@@ -506,6 +506,14 @@ textarea {
     width: 150px;
 }
 
+.gRPC_form_title {
+    font-weight: bold;
+}
+
+#gRPC_form_title {
+    font-weight: bold;
+}
+
 .testing_connection_kafka_service, .testing_connection_rabbitmq_service {
     display: inline-block;
     float: right;

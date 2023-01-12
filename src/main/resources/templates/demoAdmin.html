@@ -880,7 +880,7 @@
                         <table class="gRPC_configuration_details_table">
                             <tbody>
                                 <tr ng-repeat="configuration in demo.gRPCConfigurationJsonDetails">
-                                    <th ng-bind="configuration.label" class="gRPC_configuration_label"></th>
+                                    <th ng-bind="configuration.label" class="gRPC_configuration_label" id="gRPC_form_title"></th>
                                     <th class="gRPC_configuration_details_value gRPC_configuration_value" ng-bind="configuration.value"></th>
                                 </tr>
                             </tbody>
@@ -889,7 +889,7 @@
                         <table class="gRPC_configuration_details_table">
                             <tbody>
                             <tr ng-repeat="configuration in demo.gRPCConfigurationProtobufDetails">
-                                <th ng-bind="configuration.label" class="gRPC_configuration_label"></th>
+                                <th ng-bind="configuration.label" class="gRPC_configuration_label" id="gRPC_form_title"></th>
                                 <th class="gRPC_configuration_details_value gRPC_configuration_value" ng-bind="configuration.value"></th>
                             </tr>
                             </tbody>
@@ -897,8 +897,8 @@
                         <div class="gRPC_methods" translate="METHODS_AND_BRIEF_DESCRIPTION"></div>
                         <table class="gRPC_configuration_details_info">
                             <tr>
-                                <td><span translate="METHOD"></span></td>
-                                <td><span translate="DESCRIPTION"></span></td>
+                                <td class="gRPC_form_title"><span translate="METHOD"></span></td>
+                                <td class="gRPC_form_title"><span translate="DESCRIPTION"></span></td>
                             </tr>
                             <tr ng-repeat="method in demo.gRPCMethods">
                                 <td class="gRPC_method_name">{{method.label}}</td>
