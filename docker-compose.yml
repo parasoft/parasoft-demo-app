@@ -1,7 +1,7 @@
 version: "3.9"
 
 services:
-  pda:
+  demo-app:
     image: parasoft/demo-app:${PDA_IMAGE_TAG:-latest}
     ports:
       - "8080:8080"
@@ -12,7 +12,7 @@ services:
       - "61626:61626"
     working_dir: /usr/local/tomcat/data
     volumes:
-      - "pda_data:/usr/local/tomcat/data"
+      - "demo-app_data:/usr/local/tomcat/data"
       # Uncomment if JDBC proxy is needed. Create a lib folder under current directory and copy <VIRTUALIZE_INSTALL_DIR>/proxies/ParasoftJDBCDriver.jar into it
       # - "./lib/ParasoftJDBCDriver.jar:/usr/local/tomcat/webapps/ROOT/WEB-INF/lib/ParasoftJDBCDriver.jar:ro"
       # Uncomment if application.properties needs to be customized. Create a config folder and put customized application.properties file in it.
@@ -56,7 +56,7 @@ services:
       - "15672:15672"
     volumes:
       - "rabbitmq_data:/var/lib/rabbitmq"
-    hostname: pda-rabbit
+    hostname: demo-app-rabbit
     environment:
       - RABBITMQ_DEFAULT_USER=admin
       - RABBITMQ_DEFAULT_PASS=admin
@@ -64,7 +64,7 @@ services:
       - rabbitmq
 
 volumes:
-  pda_data:
+  demo-app_data:
     driver: local
   kafka_data:
     driver: local
