@@ -496,7 +496,7 @@ textarea {
 }
 
 .gRPC_configuration_details_info td {
-    text-align: left;
+    text-align: center;
     border: 1px solid lightgrey;
     padding: 5px;
 }
@@ -504,6 +504,14 @@ textarea {
 .gRPC_method_name {
     text-align: center;
     width: 150px;
+}
+
+.gRPC_form_title {
+    font-weight: bold;
+}
+
+#gRPC_form_title {
+    font-weight: bold;
 }
 
 .testing_connection_kafka_service, .testing_connection_rabbitmq_service {
