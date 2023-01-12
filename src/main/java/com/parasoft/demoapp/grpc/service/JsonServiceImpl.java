@@ -104,9 +104,9 @@ public class JsonServiceImpl extends JsonServiceImplBase {
                         ItemEntity item = itemService.getItemById(itemRequest.getId());
                         Integer inStock = item.getInStock();
 
-                        if (itemRequest.getOperation() == OperationType.DEDUCTION) {
+                        if (itemRequest.getOperation() == OperationType.REMOVE) {
                             newInStock = inStock - itemRequest.getValue();
-                        } else if (itemRequest.getOperation() == OperationType.ADDITION) {
+                        } else if (itemRequest.getOperation() == OperationType.ADD) {
                             newInStock = inStock + itemRequest.getValue();
                         } else {
                             responseObserver.onError(Status.INVALID_ARGUMENT
