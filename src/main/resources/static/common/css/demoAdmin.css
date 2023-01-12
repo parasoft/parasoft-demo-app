@@ -496,7 +496,7 @@ textarea {
 }
 
 .gRPC_configuration_details_info td {
-    text-align: left;
+    text-align: center;
     border: 1px solid lightgrey;
     padding: 5px;
 }
