@@ -2,7 +2,7 @@
 The Parasoft Demo Application is an example Spring Boot project. The application is configurable and customizable, and is used to demonstrate functionality in a variety of Parasoft tools.
 
 The following instruction is for building and running the Parasoft Demo Application locally.<br/> 
-There is also a docker image available here: https://hub.docker.com/r/parasoft/demo-app
+There is also a docker image available here: [DockerHub](https://hub.docker.com/r/parasoft/demo-app)
 ## Getting Started
 ### Building .war from sources
 Once you download the sources, build the project as a .war file using the Gradle wrapper.
@@ -197,14 +197,18 @@ The gRPC service in this application has three methods which support both JSON a
     }
     ````
 #### Protobuf service
-To use gRPC Protobuf service with SOAtest Protobuf clients, you need to add [protobuf-extension.jar](./extension) to **Parasoft > Preferences > System Properties** in SOAtest & Virtualize desktop first. Then the message types for request body will be loaded into the Protobuf clients.
+To use gRPC Protobuf service with SOAtest Protobuf clients, you need to add [protobuf-extension.jar](./extension/protobuf-extension.jar) to **Parasoft > Preferences > System Properties** in SOAtest & Virtualize desktop first. Then the message types for request body will be loaded into the Protobuf clients.
 
 #### How to build protobuf-extension.jar
-1. Download loT/Microservices Pack: https://customerportal.parasoft.com/lightningportal/s/marketplacedetails?id=a703g000000003LAAQ .
-2. Extract "com.parasoft.soavirt.messages.protobuf-'version'-dist.zip".
-3. Download protoc compiler: https://github.com/protocolbuffers/protobuf/releases, and configure the environment variable and set the "bin" path of the protoc compiler under the "Path" of the system variable.
-4. Run ```protocol-version``` with cmd to see if it was successfully added.
-5. Use ```java -jar com.parasoft.soavirt.messages.protobuf.jar --protoDir path/to/proto/files```(Folder where [ProtobufService.proto](./src/main/proto) files are stored) to generate "protobuf-extension.jar".
+1. Download IoT/Microservices Pack from [Parasoft Marketplace](https://customerportal.parasoft.com/lightningportal/s/marketplace).
+2. Download [protoc](https://github.com/protocolbuffers/protobuf/releases) and add "bin" folder path to your system's PATH environment variable.
+```
+protoc --version // ensure that protoc is installed successfully
+```
+3. Extract jar file for *com.parasoft.soavirt.messages.protobuf* and run following command with [ProtobufService.proto](./src/main/proto/ProtobufService.proto) under the directory.
+```
+java -jar com.parasoft.soavirt.messages.protobuf.jar --protoDir path/to/proto/files
+```
 
 ## Using Parasoft JDBC Proxy
 1. Find the **ParasoftJDBCDriver.jar** in **{SOAtest & Virtualize installation directory}/{version}/proxies**.
