@@ -59,7 +59,7 @@ public class OrderService {
                     case FAIL:
                         order = updateOrderStatus(orderNumber, OrderStatus.CANCELED, operationResult.getInfo());
                         OrderMQMessageDTO msg =
-                                new OrderMQMessageDTO(orderNumber, order.getRequestedBy(), order.getStatus(), OrderMessages.THE_ORDER_IS_CANCELLED);
+                                new OrderMQMessageDTO(orderNumber, order.getRequestedBy(), order.getStatus(), order.getComments());
                         orderMQService.sendToApprover(msg);
                         break;
                     default:
