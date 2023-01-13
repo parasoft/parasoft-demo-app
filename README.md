@@ -181,18 +181,30 @@ The gRPC service in this application has three methods which support both JSON a
 ### Using gRPC service with SOAtest
 
 #### JSON service
-- getItemsInStock: expects a number of Long type as item id in request body.
+- getItemsInStock: expects a request body as below.
+    ````json5
+    {
+      "id": 1  // Long
+    }
+    ````
 - getItemsInStock: expects empty request body.
 - updateItemsInStock: expects a request body as below.
     ````json5
     {
       "id": 1,    // Long
       "value": 1, // Int
-      "operation": "ADDITION" // Enum type: ADDITION | DEDUCTION
+      "operation": "ADD" // Enum type: ADD | REMOVE
     }
     ````
 #### Protobuf service
 To use gRPC Protobuf service with SOAtest Protobuf clients, you need to add [protobuf-extension.jar](./extension) to **Parasoft > Preferences > System Properties** in SOAtest & Virtualize desktop first. Then the message types for request body will be loaded into the Protobuf clients.
+
+#### How to build protobuf-extension.jar
+1. Download loT/Microservices Pack: https://customerportal.parasoft.com/lightningportal/s/marketplacedetails?id=a703g000000003LAAQ .
+2. Extract "com.parasoft.soavirt.messages.protobuf-'version'-dist.zip".
+3. Download protoc compiler: https://github.com/protocolbuffers/protobuf/releases, and configure the environment variable and set the "bin" path of the protoc compiler under the "Path" of the system variable.
+4. Run ```protocol-version``` with cmd to see if it was successfully added.
+5. Use ```java -jar com.parasoft.soavirt.messages.protobuf.jar --protoDir path/to/proto/files```(Folder where [ProtobufService.proto](./src/main/proto) files are stored) to generate "protobuf-extension.jar".
 
 ## Using Parasoft JDBC Proxy
 1. Find the **ParasoftJDBCDriver.jar** in **{SOAtest & Virtualize installation directory}/{version}/proxies**.
