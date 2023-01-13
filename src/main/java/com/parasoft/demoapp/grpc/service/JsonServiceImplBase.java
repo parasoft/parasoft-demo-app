@@ -1,5 +1,7 @@
 package com.parasoft.demoapp.grpc.service;
 
+import com.parasoft.demoapp.grpc.message.GetStockByItemIdRequest;
+import com.parasoft.demoapp.grpc.message.GetStockByItemIdResponse;
 import com.parasoft.demoapp.grpc.util.Marshallers;
 import com.parasoft.demoapp.model.industry.ItemEntity;
 import com.parasoft.demoapp.grpc.message.ItemRequest;
@@ -16,14 +18,14 @@ public abstract class JsonServiceImplBase implements BindableService {
 
     public static final String SERVICE_NAME = "grpc.demoApp.JsonService";
 
-    static final MethodDescriptor<Long, Integer> GET_STOCK_BY_ITEM_ID_METHOD;
+    static final MethodDescriptor<GetStockByItemIdRequest, GetStockByItemIdResponse> GET_STOCK_BY_ITEM_ID_METHOD;
     static final MethodDescriptor<Object, ItemEntity> GET_ITEMS_IN_STOCK_METHOD;
     static final MethodDescriptor<ItemRequest, ItemResponse> UPDATE_ITEMS_IN_STOCK;
 
     static {
         GET_STOCK_BY_ITEM_ID_METHOD = MethodDescriptor.newBuilder(
-                Marshallers.marshallerFor(Long.class),
-                Marshallers.marshallerFor(Integer.class))
+                Marshallers.marshallerFor(GetStockByItemIdRequest.class),
+                Marshallers.marshallerFor(GetStockByItemIdResponse.class))
                     .setFullMethodName(MethodDescriptor.generateFullMethodName(SERVICE_NAME, "getStockByItemId"))
                     .setType(MethodDescriptor.MethodType.UNARY)
                     .build();
@@ -42,7 +44,7 @@ public abstract class JsonServiceImplBase implements BindableService {
                         .build();
     }
 
-    public abstract void getStockByItemId(Long itemId, StreamObserver<Integer> streamObserver);
+    public abstract void getStockByItemId(GetStockByItemIdRequest request, StreamObserver<GetStockByItemIdResponse> streamObserver);
     public abstract void getItemsInStock(StreamObserver<ItemEntity> responseObserver);
     public abstract StreamObserver<ItemRequest> updateItemsInStock(StreamObserver<ItemResponse> responseObserver);
 

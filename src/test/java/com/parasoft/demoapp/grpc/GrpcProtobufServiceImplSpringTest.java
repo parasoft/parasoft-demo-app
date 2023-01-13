@@ -151,8 +151,8 @@ public class GrpcProtobufServiceImplSpringTest {
         StreamRecorder<Item> responseObserver = StreamRecorder.create();
         StreamObserver<UpdateItemsInStockRequest> requestObserver = protobufServiceImpl.updateItemsInStock(responseObserver);
         
-        requestObserver.onNext(UpdateItemsInStockRequest.newBuilder().setId(1L).setOperation(Operation.ADDITION).setValue(1).build());
-        requestObserver.onNext(UpdateItemsInStockRequest.newBuilder().setId(1L).setOperation(Operation.ADDITION).setValue(1).build());
+        requestObserver.onNext(UpdateItemsInStockRequest.newBuilder().setId(1L).setOperation(Operation.ADD).setValue(1).build());
+        requestObserver.onNext(UpdateItemsInStockRequest.newBuilder().setId(1L).setOperation(Operation.ADD).setValue(1).build());
         requestObserver.onCompleted();
         
         if (!responseObserver.awaitCompletion(5, TimeUnit.SECONDS)) {
@@ -191,7 +191,7 @@ public class GrpcProtobufServiceImplSpringTest {
         StreamRecorder<Item> responseObserver = StreamRecorder.create();
         StreamObserver<UpdateItemsInStockRequest> requestObserver = protobufServiceImpl.updateItemsInStock(responseObserver);
     
-        requestObserver.onNext(UpdateItemsInStockRequest.newBuilder().setId(0L).setOperation(Operation.ADDITION).setValue(10).build());
+        requestObserver.onNext(UpdateItemsInStockRequest.newBuilder().setId(0L).setOperation(Operation.ADD).setValue(10).build());
         requestObserver.onCompleted();
         
         if (!responseObserver.awaitCompletion(5, TimeUnit.SECONDS)) {
@@ -208,7 +208,7 @@ public class GrpcProtobufServiceImplSpringTest {
         StreamRecorder<Item> responseObserver = StreamRecorder.create();
         StreamObserver<UpdateItemsInStockRequest> requestObserver = protobufServiceImpl.updateItemsInStock(responseObserver);
     
-        requestObserver.onNext(UpdateItemsInStockRequest.newBuilder().setId(1L).setOperation(Operation.DEDUCTION).setValue(1000).build());
+        requestObserver.onNext(UpdateItemsInStockRequest.newBuilder().setId(1L).setOperation(Operation.REMOVE).setValue(1000).build());
         requestObserver.onCompleted();
         
         if (!responseObserver.awaitCompletion(5, TimeUnit.SECONDS)) {

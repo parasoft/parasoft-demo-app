@@ -17,8 +17,8 @@ message GetStockByItemIdResponse {
 }
 
 enum Operation {
-  DEDUCTION = 0;
-  ADDITION = 1;
+  REMOVE = 0;
+  ADD = 1;
 }
 
 message UpdateItemsInStockRequest {
