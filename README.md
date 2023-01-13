@@ -181,7 +181,12 @@ The gRPC service in this application has three methods which support both JSON a
 ### Using gRPC service with SOAtest
 
 #### JSON service
-- getItemsInStock: expects a number of Long type as item id in request body.
+- getItemsInStock: expects a request body as below.
+    ````json5
+    {
+      "id": 1    // Long
+    }
+    ````
 - getItemsInStock: expects empty request body.
 - updateItemsInStock: expects a request body as below.
     ````json5
