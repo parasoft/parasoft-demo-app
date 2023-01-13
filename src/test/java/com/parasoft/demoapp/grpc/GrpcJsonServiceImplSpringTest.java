@@ -160,8 +160,8 @@ public class GrpcJsonServiceImplSpringTest {
         StreamRecorder<ItemResponse> responseObserver = StreamRecorder.create();
         StreamObserver<ItemRequest> requestObserver = jsonServiceImpl.updateItemsInStock(responseObserver);
 
-        requestObserver.onNext(new ItemRequest(1L, OperationType.ADDITION, 1));
-        requestObserver.onNext(new ItemRequest(1L, OperationType.ADDITION, 1));
+        requestObserver.onNext(new ItemRequest(1L, OperationType.ADD, 1));
+        requestObserver.onNext(new ItemRequest(1L, OperationType.ADD, 1));
         requestObserver.onCompleted();
 
         if (!responseObserver.awaitCompletion(5, TimeUnit.SECONDS)) {
@@ -199,7 +199,7 @@ public class GrpcJsonServiceImplSpringTest {
         StreamRecorder<ItemResponse> responseObserver = StreamRecorder.create();
         StreamObserver<ItemRequest> requestObserver = jsonServiceImpl.updateItemsInStock(responseObserver);
 
-        requestObserver.onNext(new ItemRequest(1L, OperationType.ADDITION, null));
+        requestObserver.onNext(new ItemRequest(1L, OperationType.ADD, null));
         requestObserver.onCompleted();
 
         if (!responseObserver.awaitCompletion(5, TimeUnit.SECONDS)) {
@@ -216,7 +216,7 @@ public class GrpcJsonServiceImplSpringTest {
         StreamRecorder<ItemResponse> responseObserver = StreamRecorder.create();
         StreamObserver<ItemRequest> requestObserver = jsonServiceImpl.updateItemsInStock(responseObserver);
 
-        requestObserver.onNext(new ItemRequest(0L, OperationType.ADDITION, 10));
+        requestObserver.onNext(new ItemRequest(0L, OperationType.ADD, 10));
         requestObserver.onCompleted();
 
         if (!responseObserver.awaitCompletion(5, TimeUnit.SECONDS)) {
@@ -250,7 +250,7 @@ public class GrpcJsonServiceImplSpringTest {
         StreamRecorder<ItemResponse> responseObserver = StreamRecorder.create();
         StreamObserver<ItemRequest> requestObserver = jsonServiceImpl.updateItemsInStock(responseObserver);
 
-        requestObserver.onNext(new ItemRequest(1L, OperationType.DEDUCTION, 1000));
+        requestObserver.onNext(new ItemRequest(1L, OperationType.REMOVE, 1000));
         requestObserver.onCompleted();
 
         if (!responseObserver.awaitCompletion(5, TimeUnit.SECONDS)) {
