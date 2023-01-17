@@ -2,15 +2,21 @@ package com.parasoft.demoapp.config.security;
 
 import com.parasoft.demoapp.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
@@ -30,7 +36,9 @@ public class SecurityConfig {
 
     @Autowired
     private CustomLogoutSuccessHandler customLogoutSuccessHandler;
-
+    
+    @Value("${spring.security.oauth2.client.provider.keycloak.jwk-set-uri}")
+    private String jwkSetUri;
 
     @Configuration
     @Order(1)
@@ -66,6 +74,8 @@ public class SecurityConfig {
                     .antMatchers("/v1/labels").authenticated()
                     .antMatchers("/v1/**", "/proxy/v1/**").permitAll()
                  .and()
+                    .oauth2Login(Customizer.withDefaults())
+                    .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
                     .httpBasic()
                         .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
                         .realmName("Parasoft Demo App")
@@ -113,13 +123,20 @@ public class SecurityConfig {
                         .logoutRequestMatcher(new AntPathRequestMatcher("/v1/logout", "GET"))
                         .logoutSuccessHandler(customLogoutSuccessHandler)
                 .and()
-                    .csrf()
-                        .disable();
+                    .oauth2Login(Customizer.withDefaults())
+                    .httpBasic(Customizer.withDefaults())
+                    .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
+
+            http.csrf().disable();
 
             http.exceptionHandling()
                     .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
                     .accessDeniedHandler(new CustomAccessDeniedHandler());
         }
     }
-
+    
+    @Bean
+    JwtDecoder jwtDecoder() {
+        return NimbusJwtDecoder.withJwkSetUri(jwkSetUri).build();
+    }
 }
