@@ -116,9 +116,9 @@ app.controller('orderHistoryController', function($rootScope, $http, $filter, gr
 
             if(history.order.status === "CANCELED") {
                 if(history.order.comments.indexOf("out of stock") !== -1) {
-                    history.order.comments = $filter('translate')('INVENTORY_ITEM_OUT_OF_STOCK');
+                    history.order.comments = $filter('translate')('NOT_ENOUGH_INVENTORY_TO_FULFILL_ORDER');
                 } else if (history.order.comments.indexOf("doesn't exist") !== -1) {
-                    history.order.comments = $filter('translate')('INVENTORY_ITEM_NOT_EXIST');
+                    history.order.comments = $filter('translate')('ORDER_CONTAINS_INVALID_ITEMS');
                 }
             }
         };

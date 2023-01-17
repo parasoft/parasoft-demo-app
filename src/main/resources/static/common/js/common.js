@@ -771,7 +771,7 @@ function connectAndSubscribeMQ(role, $http, $rootScope, $filter, mqConsumeCallba
         var on_connect = function(x) {
             var orderProcessMsg;
 
-             // subscribe approver topic
+            // subscribe approver topic
             mqClient.subscribe("/topic/order.approver", function(data) {
                 var msgString = data.body;
                 var msgObject = $.parseJSON(msgString);
@@ -783,7 +783,13 @@ function connectAndSubscribeMQ(role, $http, $rootScope, $filter, mqConsumeCallba
                 if(role === ROLE_PURCHASER){    // purchaser produced this message to this topic
                     if(msgObject.requestedBy === CURRENT_USERNAME){
                         if(isCancelledStatus){
-                            toastr.info(orderProcessMsg, '', {timeOut: 4000});
+                            let canceledReason;
+                            if(msgObject.information.match(/Inventory item with id [0-9]+ doesn't exist./)) {
+                                canceledReason = $filter('translate')('ORDER_CONTAINS_INVALID_ITEMS');
+                            } else if (msgObject.information.match(/Inventory item with id [0-9]+ is out of stock./)) {
+                                canceledReason = $filter('translate')('NOT_ENOUGH_INVENTORY_TO_FULFILL_ORDER');
+                            }
+                            toastr.info(canceledReason, orderProcessMsg, {timeOut: 4000});
                         }else{
                             toastr.success(orderProcessMsg, '', {timeOut: 4000});
                         }
