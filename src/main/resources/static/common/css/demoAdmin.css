@@ -445,12 +445,21 @@ textarea {
 }
 
 .queue_configuration_details_modal_content {
-    width: 560px;
+    width: 600px;
     top: 0;
 }
 
 .queue_configuration_details_table {
-    margin: 0 auto;
+    margin: 0 20px;
+}
+
+.additional_info_for_queue_configuration_details {
+    margin: 10px 20px;
+    color: grey;
+}
+
+.additional_info_for_queue_configuration_details .additional_info_item {
+    margin-bottom: 10px;
 }
 
 .gRPC_configuration_details_table {
