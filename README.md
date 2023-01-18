@@ -104,8 +104,6 @@ The configuration for queues/topics can be changed or reset to default on **Demo
 | Inventory service request queue   | `inventory.request`                                      |
 | Inventory service response queue  | `inventory.response`                                     |
 
-Part of the configuration can be changed in **application.properties** file.
-
 **Configuration details for external Kafka server (default)**
 
 |    Option   |             Value              |
@@ -113,13 +111,9 @@ Part of the configuration can be changed in **application.properties** file.
 | Broker URL  |       `localhost:9092`         |
 | Group ID    |       `inventory-operation`    |
 
-This configuration can be changed in **application.properties** file.
-
-> All messages from this application are sent to the partition 0 in the topic,
-> it means the consumer should listen on the partition 0 of the topic.
-
-> Since the messages will only be consumed once by consumers with the same group ID,
-> pay attention to use default Group ID in external application(like SOAtest & Virtualize).
+> For simplicity, messages produced or consumed in this application will be in partition 0 of the topic.
+> When the expected behavior is to consume the message from both inside this application and outside this application (e.g. in SOAtest & Virtualize),
+> make sure to use different group ID for the external consumer.
 
 **Configuration details for external RabbitMQ server (default)**
 
@@ -133,11 +127,12 @@ This configuration can be changed in **application.properties** file.
 | Request queue routing key  | `inventory.queue.request`  |
 | Response queue routing key | `inventory.queue.response` |
 
-Part of the configuration can be changed in **application.properties** file.
-
-> This application supports [Direct Reply-to](https://www.rabbitmq.com/direct-reply-to.html) feature, follow the steps to use it:
-> * Consume from the pseudo-queue `amq.rabbitmq.reply-to` in no-ack mode.
-> * Set the reply-to property in the request message to `amq.rabbitmq.reply-to`.
+> This application supports [Direct Reply-to](https://www.rabbitmq.com/direct-reply-to.html) feature.
+> If you want to use RPC (request/reply) pattern in SOAtest, follow the steps to use it:
+> 1. Configure the Connection and Public configurations in Transport.
+> 2. Set **Reply To**(Transport -> Basic Properties -> Reply To) filed to `amq.rabbitmq.reply-to` queue to make the response message be sent into this queue.
+> 3. Set **Queue Name**(Transport -> Consume -> Queue Name) filed to `amq.rabbitmq.reply-to` to get the response message from this queue.
+> 4. Check the response in traffic viewer after running test.
 
 ### Using JMS Proxy
 To use the queueing system with JMS proxy, you can change **Destination queue** and **Reply to queue** to customized queue names.
