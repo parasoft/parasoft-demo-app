@@ -111,8 +111,8 @@ The configuration for queues/topics can be changed or reset to default on **Demo
 | Broker URL  |       `localhost:9092`         |
 | Group ID    |       `inventory-operation`    |
 
-> For simplicity, messages produced or consumed in this application will be in partition 0 of the topic.
-> When the expected behavior is to consume the message from both inside this application and outside this application (e.g. in SOAtest & Virtualize),
+> For simplicity, messages produced or consumed in this application will be in partition 0 of the topics.
+> When the expected behavior is to consume messages from both inside and outside this application(e.g. in SOAtest & Virtualize),
 > make sure to use different group ID for the external consumer.
 
 **Configuration details for external RabbitMQ server (default)**
@@ -128,11 +128,9 @@ The configuration for queues/topics can be changed or reset to default on **Demo
 | Response queue routing key | `inventory.queue.response` |
 
 > This application supports [Direct Reply-to](https://www.rabbitmq.com/direct-reply-to.html) feature.
-> If you want to use RPC (request/reply) pattern in SOAtest, follow the steps to use it:
-> 1. Configure the Connection and Public configurations in Transport.
-> 2. Set **Reply To**(Transport -> Basic Properties -> Reply To) filed to `amq.rabbitmq.reply-to` queue to make the response message be sent into this queue.
-> 3. Set **Queue Name**(Transport -> Consume -> Queue Name) filed to `amq.rabbitmq.reply-to` to get the response message from this queue.
-> 4. Check the response in traffic viewer after running test.
+> If you want to use RPC (request/reply) pattern in SOAtest, make sure to configure the following fields with the pre-exist pseudo-queue `amq.rabbitmq.reply-to`:
+> 1. Set **Reply To** (Transport -> Basic Properties -> Reply To) to `amq.rabbitmq.reply-to`  to publish the response message to it.
+> 2. Set **Queue Name** (Transport -> Consume -> Queue Name) to `amq.rabbitmq.reply-to` to consume response message from it.
 
 ### Using JMS Proxy
 To use the queueing system with JMS proxy, you can change **Destination queue** and **Reply to queue** to customized queue names.
