@@ -134,7 +134,7 @@ The **Server Connection** in message proxy should be configured with the two def
 
 ### Using virtual asset with JMS, RabbitMQ and Kafka
 
-<img src="src/main/resources/static/common/images/Mq_and_kafka_virtual_asset_mode_diagram.png" alt="Mq and kafka virtual asset mode diagram">
+<img src="src/main/resources/static/common/images/MQ_and_kafka_virtual_asset_mode_diagram.png" alt="MQ and kafka virtual asset mode diagram">
 
 To use the  JMS and RabbitMQ with virtual asset, you can change **Inventory service request queue** to a customized destination queue name.
 The virtual asset deployment should be configured to listen to the customized destination queue and reply to the default response queue.
