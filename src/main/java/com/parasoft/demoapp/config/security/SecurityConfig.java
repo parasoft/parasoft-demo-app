@@ -74,7 +74,6 @@ public class SecurityConfig {
                     .antMatchers("/v1/labels").authenticated()
                     .antMatchers("/v1/**", "/proxy/v1/**").permitAll()
                  .and()
-                    .oauth2Login(Customizer.withDefaults())
                     .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
                     .httpBasic()
                         .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
@@ -124,10 +123,8 @@ public class SecurityConfig {
                         .logoutSuccessHandler(customLogoutSuccessHandler)
                 .and()
                     .oauth2Login(Customizer.withDefaults())
-                    .httpBasic(Customizer.withDefaults())
-                    .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
-
-            http.csrf().disable();
+                    .csrf()
+                        .disable();
 
             http.exceptionHandling()
                     .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
