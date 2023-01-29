@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:ng="http://angularjs.org" xmlns:th="http://www.thymeleaf.org" ng-app="pdaApp">
+<html xmlns:th="http://www.thymeleaf.org" ng-app="pdaApp">
 <head>
     <meta charset="UTF-8">
     <title translate="PROJECT_NAME"></title>
@@ -45,6 +45,9 @@
                             <div class="btn-field">
                                 <div class="submit-button industry_font">
                                     <button class="btn industry_font" type="submit" translate="SIGN_IN" ng-click="login.onSubmit()"></button>
+                                </div>
+                                <div>
+                                    <a href="/oauth2/authorization/keycloak">Login with OAuth 2.0 keycloak</a>
                                 </div>
                                 <div class="forgot-password industry_font industry_color_1">
                                     <a translate="FORGOT_PASSWORD" data-toggle="modal" href="#forgot-password-modal" ng-click="login.forgotPassword()"></a>
