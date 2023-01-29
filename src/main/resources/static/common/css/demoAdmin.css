@@ -462,10 +462,6 @@ textarea {
     margin-bottom: 10px;
 }
 
-.rabbit_mq_additional_info_right_arrow {
-    font-family: system-ui;
-}
-
 .gRPC_configuration_details_table {
     margin: 0 auto 15px;
 }
@@ -519,7 +515,7 @@ textarea {
     width: 150px;
 }
 
-#gRPC_form_title, .gRPC_form_title, .rabbit_mq_additional_info_bold {
+.gRPC_form_title, .gRPC_form_title.gRPC_configuration_label {
     font-weight: bold;
 }
 

@@ -892,7 +892,7 @@
                         <table class="gRPC_configuration_details_table">
                             <tbody>
                                 <tr ng-repeat="configuration in demo.gRPCConfigurationJsonDetails">
-                                    <th ng-bind="configuration.label" class="gRPC_configuration_label" id="gRPC_form_title"></th>
+                                    <th ng-bind="configuration.label" class="gRPC_form_title gRPC_configuration_label"></th>
                                     <th class="gRPC_configuration_details_value gRPC_configuration_value" ng-bind="configuration.value"></th>
                                 </tr>
                             </tbody>
@@ -901,7 +901,7 @@
                         <table class="gRPC_configuration_details_table">
                             <tbody>
                             <tr ng-repeat="configuration in demo.gRPCConfigurationProtobufDetails">
-                                <th ng-bind="configuration.label" class="gRPC_configuration_label" id="gRPC_form_title"></th>
+                                <th ng-bind="configuration.label" class="gRPC_form_title gRPC_configuration_label"></th>
                                 <th class="gRPC_configuration_details_value gRPC_configuration_value" ng-bind="configuration.value"></th>
                             </tr>
                             </tbody>
