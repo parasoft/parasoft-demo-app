@@ -44,6 +44,20 @@ When launching the app, you can specify the port to use with a command like the 
 ```
 ./gradlew bootRun -Pport=8888
 ```
+### Configuring the settings
+There are three ways for you to configure the settings. Customizable configurations are described in the following configuration table.
+1. Change the [application.properties](https://github.com/parasoft/parasoft-demo-app/blob/main/src/main/resources/application.properties) file directly in the original code.
+2. Create a custom application.properties file.
+> Entries with the same key will be overwritten.
+> When launching the app as a .war file, put it in the [The sibling directory of your .war file]/config.
+> When launching the app directly from sources, put it in the [The root directory of your project]/config.
+> For settings that you might need to modify, we have already collected into **application_default.properties** file located in root directory. You can just copy and paste.
+3. Use command line with .war file.
+> For example, when launching the app, you can specify the database port to use with a command like the following:
+> ```
+> java -jar build/libs/parasoft-demo-app-1.1.0.war --hsqldb.port=9002
+> ```
+
 ## Using the Demo Application
 Once started, you can access the application at [http://localhost:8080](http://localhost:8080).
 
@@ -66,21 +80,21 @@ This application exposes port 9001 for the user to connect to the HSQLDB databas
 
 - Global database
 
-| Option   | Value                                      |
-|----------|--------------------------------------------|
-| Driver   | `org.hsqldb.jdbcDriver`                    |
-| URL      | `jdbc:hsqldb:hsql://localhost:9001/global` |
-| Username | `SA`                                       |
-| Password | `pass`                                     |
+| Option   | Value                                      | Customizable |
+|----------|--------------------------------------------|--------------|
+| Driver   | `org.hsqldb.jdbcDriver`                    | Yes          |
+| URL      | `jdbc:hsqldb:hsql://localhost:9001/global` | Yes          |
+| Username | `SA`                                       | Yes          |
+| Password | `pass`                                     | Yes          |
 
 - Industry database
 
-| Option   | Value                                               |
-|----------|-----------------------------------------------------|
-| Driver   | `org.hsqldb.jdbcDriver`                             |
-| URL      | `jdbc:hsqldb:hsql://localhost:9001/{database name}` |
-| Username | `SA`                                                |
-| Password | `pass`                                              |
+| Option   | Value                                               | Customizable |
+|----------|-----------------------------------------------------|--------------|
+| Driver   | `org.hsqldb.jdbcDriver`                             | Yes          |
+| URL      | `jdbc:hsqldb:hsql://localhost:9001/{database name}` | Yes          |
+| Username | `SA`                                                | Yes          |
+| Password | `pass`                                              | Yes          |
 
 ## Using Parasoft JMS Proxy and Virtual Asset with message queue
 There are two main services for order management in this application, **order service** and **inventory service**. After an order is submitted, order service sends
@@ -94,22 +108,22 @@ The configuration for queues/topics can be changed or reset to default on **Demo
 
 **Configuration details for embedded ActiveMQ server (default)**
 
-| Option                            | Value                                                    |
-|-----------------------------------|----------------------------------------------------------|
-| Provider URL                      | `tcp://localhost:61626`                                  |
-| Initial context class             | `org.apache.activemq.jndi.ActiveMQInitialContextFactory` |
-| Connection factory                | `ConnectionFactory`                                      |
-| Username                          | `admin`                                                  |
-| Password                          | `admin`                                                  |
-| Inventory service request queue   | `inventory.request`                                      |
-| Inventory service response queue  | `inventory.response`                                     |
+| Option                            | Value                                                    | Customizable |
+|-----------------------------------|----------------------------------------------------------|--------------|
+| Provider URL                      | `tcp://localhost:61626`                                  | Yes          |
+| Initial context class             | `org.apache.activemq.jndi.ActiveMQInitialContextFactory` | No           |
+| Connection factory                | `ConnectionFactory`                                      | No           |
+| Username                          | `admin`                                                  | Yes          |
+| Password                          | `admin`                                                  | Yes          |
+| Inventory service request queue   | `inventory.request`                                      | No           |
+| Inventory service response queue  | `inventory.response`                                     | No           |
 
 **Configuration details for external Kafka server (default)**
 
-|    Option   |             Value              |
-|-------------|--------------------------------|
-| Broker URL  |       `localhost:9092`         |
-| Group ID    |       `inventory-operation`    |
+|    Option   |             Value              | Customizable |
+|-------------|--------------------------------|--------------|
+| Broker URL  |       `localhost:9092`         | Yes          |
+| Group ID    |       `inventory-operation`    | Yes          |
 
 > For simplicity, messages produced or consumed in this application will be in partition 0 of the topics.
 > When the expected behavior is to consume messages from both inside and outside this application(e.g. in SOAtest & Virtualize),
@@ -117,15 +131,15 @@ The configuration for queues/topics can be changed or reset to default on **Demo
 
 **Configuration details for external RabbitMQ server (default)**
 
-| Option                     | Value                      |
-|----------------------------|----------------------------|
-| Host                       | `localhost`                |
-| Port                       | `5672`                     |
-| Username                   | `guest`                    |
-| Password                   | `guest`                    |
-| Exchange                   | `inventory.direct`         |
-| Request queue routing key  | `inventory.queue.request`  |
-| Response queue routing key | `inventory.queue.response` |
+| Option                     | Value                      | Customizable |
+|----------------------------|----------------------------|--------------|
+| Host                       | `localhost`                | Yes          |
+| Port                       | `5672`                     | Yes          |
+| Username                   | `guest`                    | Yes          |
+| Password                   | `guest`                    | Yes          |
+| Exchange                   | `inventory.direct`         | No           |
+| Request queue routing key  | `inventory.queue.request`  | No           |
+| Response queue routing key | `inventory.queue.response` | No           |
 
 > This application supports [Direct Reply-to](https://www.rabbitmq.com/direct-reply-to.html) feature.
 > If you want to use RPC (request/reply) pattern in SOAtest, make sure to configure the following fields with the pre-exist pseudo-queue `amq.rabbitmq.reply-to`:
@@ -171,12 +185,12 @@ The gRPC service in this application has three methods which support both JSON a
 
 ### Configuration
 
-| Option                     | Value                          |
-|----------------------------|--------------------------------|
-| Host                       | `localhost`                    |
-| Port                       | `50051`                        |
-| Json  Service Name         | `grpc.demoApp.JsonService`     |
-| Proto Service Name         | `grpc.demoApp.ProtobufService` |
+| Option                    | Value                          | Customizable |
+|---------------------------|--------------------------------|--------------|
+| Host                      | `localhost`                    | No           |
+| Port                      | `50051`                        | Yes          |
+| Json Service Name         | `grpc.demoApp.JsonService`     | No           |
+| Proto Service Name        | `grpc.demoApp.ProtobufService` | No           |
 
 ### Methods
 
