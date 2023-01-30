@@ -2,7 +2,6 @@ package com.parasoft.demoapp.config.security;
 
 import com.parasoft.demoapp.model.global.UserEntity;
 import com.parasoft.demoapp.service.CustomUserDetailsService;
-import com.parasoft.demoapp.service.UserService;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +33,7 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 @EnableWebSecurity
@@ -57,9 +57,6 @@ public class SecurityConfig {
     @Autowired
     private CustomLogoutSuccessHandler customLogoutSuccessHandler;
 
-    @Autowired
-    private UserService userService;
-    
     @Value("${spring.security.oauth2.client.provider.keycloak.jwk-set-uri}")
     private String jwkSetUri;
 
@@ -170,26 +167,11 @@ public class SecurityConfig {
                 OidcUserInfo userInfo = oidcUser.getUserInfo();
                 OidcIdToken idToken = oidcUser.getIdToken();
 
-                Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
                 UserEntity userEntity = (UserEntity) customUserDetailsService
                         .loadUserByUsername(userInfo.getPreferredUsername());
 
-                Object realmRoleClaim = userInfo.getClaims().get(USER_REALM_ROLE_MAPPER_NAME);
-                if (realmRoleClaim instanceof List<?>) {
-                    List<String> realmRoles = CastUtils.cast(realmRoleClaim);
-                    userEntity.getAuthorities().forEach(grantedAuthority -> {
-                        realmRoles.forEach(realmRole -> {
-                            String authority = grantedAuthority.getAuthority();
-                            if (authority.contentEquals(ROLE_PREFIX + realmRole)) {
-                                GrantedAuthority mappedAuthority =
-                                        new OidcUserAuthority(authority, idToken, userInfo);
-                                mappedAuthorities.add(mappedAuthority);
-                            }
-                        });
-                    });
-                }
-
-                CustomOidcUser customOidcUser = new CustomOidcUser(mappedAuthorities, idToken, userInfo);
+                CustomOidcUser customOidcUser =
+                        new CustomOidcUser(mapAuthoritiesToOidcUserAuthorityType(userEntity, userInfo, idToken), idToken, userInfo);
                 customOidcUser.setId(userEntity.getId());
                 customOidcUser.setUsername(userEntity.getUsername());
                 customOidcUser.setRole(userEntity.getRole());
@@ -205,14 +187,10 @@ public class SecurityConfig {
 
     class CustomAuthenticationConverter implements Converter<Jwt, AbstractAuthenticationToken> {
         public AbstractAuthenticationToken convert(Jwt jwt) {
-            Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
-            UserEntity userInfo = userService.getUserByUsername((String) jwt.getClaims().get(keycloakUsernameAttribute));
-            ArrayList<String> roles = (ArrayList<String>)(jwt.getClaims().get(USER_REALM_ROLE_MAPPER_NAME));
-            for(String role : roles) {
-                GrantedAuthority grantedAuthority = new OAuth2UserAuthority(ROLE_PREFIX + role, jwt.getClaims());
-                mappedAuthorities.add(grantedAuthority);
-            }
-            return new JwtAuthenticationToken(new CustomJwt(jwt, userInfo), mappedAuthorities);
+            UserEntity userEntity = (UserEntity) customUserDetailsService
+                    .loadUserByUsername((String) jwt.getClaims().get(keycloakUsernameAttribute));
+
+            return new JwtAuthenticationToken(new CustomJwt(jwt, userEntity), mapAuthorityForOAuth2UserAuthorityType(jwt.getClaims(), userEntity));
         }
     }
 
@@ -225,5 +203,43 @@ public class SecurityConfig {
             super(jwt.getTokenValue(), jwt.getIssuedAt(), jwt.getExpiresAt(), jwt.getHeaders(), jwt.getClaims());
             this.userInfo = userInfo;
         }
+    }
+
+    private Set<GrantedAuthority> mapAuthoritiesToOidcUserAuthorityType(UserEntity userEntity, OidcUserInfo userInfo, OidcIdToken idToken) {
+        return mapAuthorities(userInfo.getClaims(), userEntity, OidcUserAuthority.class, userInfo, idToken);
+    }
+
+    private Set<GrantedAuthority> mapAuthorityForOAuth2UserAuthorityType(Map<String, Object> claims, UserEntity userEntity) {
+        return mapAuthorities(claims, userEntity, OAuth2UserAuthority.class, null, null);
+    }
+
+    private Set<GrantedAuthority> mapAuthorities(Map<String, Object> claims,
+                                                 UserEntity userEntity,
+                                                 Class<? extends GrantedAuthority> grantedAuthorityType,
+                                                 @Nullable OidcUserInfo userInfo,
+                                                 @Nullable OidcIdToken idToken) {
+        Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
+        Object realmRoleClaim = claims.get(USER_REALM_ROLE_MAPPER_NAME);
+        if (realmRoleClaim instanceof List<?>) {
+            List<String> realmRoles = CastUtils.cast(realmRoleClaim);
+            userEntity.getAuthorities().forEach(grantedAuthority -> {
+                realmRoles.forEach(realmRole -> {
+                    String authority = grantedAuthority.getAuthority();
+                    if (authority.contentEquals(ROLE_PREFIX + realmRole)) {
+                        GrantedAuthority mappedAuthority = null;
+                        if (grantedAuthorityType.equals(OidcUserAuthority.class)) {
+                            mappedAuthority = new OidcUserAuthority(authority, Objects.requireNonNull(idToken), Objects.requireNonNull(userInfo));
+                        } else if (grantedAuthorityType.equals(OAuth2UserAuthority.class)) {
+                            mappedAuthority = new OAuth2UserAuthority(ROLE_PREFIX + realmRole, claims);
+                        }
+
+                        if (mappedAuthority != null) {
+                            mappedAuthorities.add(mappedAuthority);
+                        }
+                    }
+                });
+            });
+        }
+        return mappedAuthorities;
     }
 }
