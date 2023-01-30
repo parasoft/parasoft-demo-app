@@ -45,18 +45,26 @@ When launching the app, you can specify the port to use with a command like the 
 ./gradlew bootRun -Pport=8888
 ```
 ### Configuring the settings
-There are three ways for you to configure the settings. Customizable configurations are described in the following configuration table.
-1. Change the [application.properties](https://github.com/parasoft/parasoft-demo-app/blob/main/src/main/resources/application.properties) file directly in the original code.
+There are three ways for user to configure the settings. 
+
+1. Change the [**application.properties**](https://github.com/parasoft/parasoft-demo-app/blob/main/src/main/resources/application.properties) file directly in the original code.
 2. Create a custom application.properties file.
-> Entries with the same key will be overwritten.
-> When launching the app as a .war file, put it in the [The sibling directory of your .war file]/config.
-> When launching the app directly from sources, put it in the [The root directory of your project]/config.
-> For settings that you might need to modify, we have already collected into **application_default.properties** file located in root directory. You can just copy and paste.
-3. Use command line with .war file.
-> For example, when launching the app, you can specify the database port to use with a command like the following:
-> ```
-> java -jar build/libs/parasoft-demo-app-1.1.0.war --hsqldb.port=9002
-> ```
+* When launching the app as a .war file, put it in the {The sibling directory of .war file}/config.
+* When launching the app directly from sources, put it in the {The root directory of project}/config.
+
+Entries with the same key will be overwritten.
+
+For settings that you might need to modify, we have already collected into [**application_default.properties**](https://github.com/parasoft/parasoft-demo-app/blob/main/application_default.properties) 
+file located in root directory. You can just copy and paste the content.
+
+4. Use command line with .war file.
+
+For example, when launching the app, you can specify the database port to use with a command line like the following:
+```
+java -jar build/libs/parasoft-demo-app-1.1.0.war --hsqldb.port=9002
+```
+
+> Customizable configurations are indicated in the configuration details table(Customizable column) of following sections.
 
 ## Using the Demo Application
 Once started, you can access the application at [http://localhost:8080](http://localhost:8080).
@@ -76,7 +84,7 @@ There are four databases (one for global and three for industries) in this Appli
 | aerospace     | Used to store the data about aerospace industry.     |
 
 ### Connection configuration
-This application exposes port 9001 for the user to connect to the HSQLDB database remotely.
+This application exposes port 9001(customizable) for the user to connect to the HSQLDB database remotely.
 
 - Global database
 
