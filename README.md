@@ -111,7 +111,7 @@ The configuration for queues/topics can be changed or reset to default on **Demo
 | Broker URL  |       `localhost:9092`         |
 | Group ID    |       `inventory-operation`    |
 
-> For simplicity, messages produced or consumed in this application will be in partition 0 of the topics.
+> For simplicity, messages produced or consumed in this application will be in partition 0 of the Kafka topics.
 > When the expected behavior is to consume messages from both inside and outside this application(e.g. in SOAtest & Virtualize),
 > make sure to use different group ID for the external consumer.
 
