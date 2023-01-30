@@ -1,26 +1,42 @@
 package com.parasoft.demoapp.config.security;
 
+import com.parasoft.demoapp.model.global.UserEntity;
 import com.parasoft.demoapp.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.data.util.CastUtils;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 @EnableWebSecurity
 public class SecurityConfig {
+
+    private static final String USER_REALM_ROLE_MAPPER_NAME = "pda-realm-role";
+    private static final String ROLE_PREFIX = "ROLE_";
 
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
@@ -122,13 +138,50 @@ public class SecurityConfig {
                         .logoutRequestMatcher(new AntPathRequestMatcher("/v1/logout", "GET"))
                         .logoutSuccessHandler(customLogoutSuccessHandler)
                 .and()
-                    .oauth2Login(Customizer.withDefaults())
+                    .oauth2Login(oauth2 -> oauth2
+                            .userInfoEndpoint(userInfo -> userInfo
+                                    .oidcUserService(this.oidcUserService())))
                     .csrf()
                         .disable();
 
             http.exceptionHandling()
                     .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
                     .accessDeniedHandler(new CustomAccessDeniedHandler());
+        }
+
+        private OAuth2UserService<OidcUserRequest, OidcUser> oidcUserService() {
+            final OidcUserService delegate = new OidcUserService();
+
+            return (userRequest) -> {
+                OidcUser oidcUser = delegate.loadUser(userRequest);
+                OidcUserInfo userInfo = oidcUser.getUserInfo();
+                OidcIdToken idToken = oidcUser.getIdToken();
+
+                Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
+                UserEntity userEntity = (UserEntity) customUserDetailsService
+                        .loadUserByUsername(userInfo.getPreferredUsername());
+
+                Object realmRoleClaim = userInfo.getClaims().get(USER_REALM_ROLE_MAPPER_NAME);
+                if (realmRoleClaim instanceof List<?>) {
+                    List<String> realmRoles = CastUtils.cast(realmRoleClaim);
+                    userEntity.getAuthorities().forEach(grantedAuthority -> {
+                        realmRoles.forEach(realmRole -> {
+                            String authority = grantedAuthority.getAuthority();
+                            if (authority.contentEquals(ROLE_PREFIX + realmRole)) {
+                                GrantedAuthority mappedAuthority =
+                                        new OidcUserAuthority(authority, idToken, userInfo);
+                                mappedAuthorities.add(mappedAuthority);
+                            }
+                        });
+                    });
+                }
+
+                CustomOidcUser customOidcUser = new CustomOidcUser(mappedAuthorities, idToken, userInfo);
+                customOidcUser.setId(userEntity.getId());
+                customOidcUser.setUsername(userEntity.getUsername());
+                customOidcUser.setRole(userEntity.getRole());
+                return customOidcUser;
+            };
         }
     }
     
