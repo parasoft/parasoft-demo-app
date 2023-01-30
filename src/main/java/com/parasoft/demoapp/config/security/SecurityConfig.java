@@ -139,7 +139,7 @@ public class SecurityConfig {
                         .logoutSuccessHandler(customLogoutSuccessHandler)
                 .and()
                     .oauth2Login(oauth2 -> {
-                                oauth2.loginPage("/loginPage212");
+                                oauth2.loginPage("/loginPage");
                                 oauth2.userInfoEndpoint(userInfo -> userInfo.oidcUserService(this.oidcUserService()));
                             })
                     .csrf()
