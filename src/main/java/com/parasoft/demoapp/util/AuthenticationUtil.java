@@ -1,5 +1,6 @@
 package com.parasoft.demoapp.util;
 
+import com.parasoft.demoapp.config.security.SecurityConfig;
 import com.parasoft.demoapp.model.global.UserEntity;
 import org.springframework.security.core.Authentication;
 
@@ -15,13 +16,15 @@ public class AuthenticationUtil {
             return null;
         }
 
-        UserEntity user = (UserEntity) auth.getPrincipal();
+        Object principal = auth.getPrincipal();
 
-        if(user == null){
-            return null;
+        if (principal instanceof UserEntity) {
+            return ((UserEntity) principal).getId();
+        } else if (principal instanceof SecurityConfig.CustomJwt) {
+            return ((SecurityConfig.CustomJwt) principal).getUserInfo().getId();
         }
 
-        return user.getId();
+        return null;
     }
 
     /**
@@ -34,13 +37,15 @@ public class AuthenticationUtil {
             return null;
         }
 
-        UserEntity user = (UserEntity) auth.getPrincipal();
+        Object principal = auth.getPrincipal();
 
-        if(user == null || user.getRole() == null){
-            return null;
+        if (principal instanceof UserEntity) {
+            return ((UserEntity) principal).getRole().getName();
+        } else if (principal instanceof SecurityConfig.CustomJwt) {
+            return ((SecurityConfig.CustomJwt) principal).getUserInfo().getRole().getName();
         }
 
-        return user.getRole().getName();
+        return null;
     }
 
     /**
@@ -53,12 +58,14 @@ public class AuthenticationUtil {
             return null;
         }
 
-        UserEntity user = (UserEntity) auth.getPrincipal();
+        Object principal = auth.getPrincipal();
 
-        if(user == null || user.getUsername() == null){
-            return null;
+        if (principal instanceof UserEntity) {
+            return ((UserEntity) principal).getUsername();
+        } else if (principal instanceof SecurityConfig.CustomJwt) {
+            return ((SecurityConfig.CustomJwt) principal).getUserInfo().getUsername();
         }
 
-        return user.getUsername();
+        return null;
     }
 }
