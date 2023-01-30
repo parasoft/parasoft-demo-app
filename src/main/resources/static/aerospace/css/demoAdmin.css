@@ -123,3 +123,7 @@ button.close, button.close:hover {
 .queue_configuration_details a:hover {
     color: #E7FFA1;
 }
+
+.additional_info_for_queue_configuration_details {
+    font-family: 'Orbitron-Regular', 'Orbitron Regular', 'Orbitron', sans-serif;
+}

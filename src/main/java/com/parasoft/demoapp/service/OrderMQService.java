@@ -65,7 +65,7 @@ public class OrderMQService {
             String destination = KafkaConfig.getOrderServiceSendToTopic();
             requestDestination = "Kafka topic: " + destination;
             try {
-                operationRequestKafkaTemplate.send(destination, message.getOrderNumber(), message).get(ADMIN_CLIENT_TIMEOUT_MS, TimeUnit.MILLISECONDS);
+                operationRequestKafkaTemplate.send(destination, 0, message.getOrderNumber(), message).get(ADMIN_CLIENT_TIMEOUT_MS, TimeUnit.MILLISECONDS);
             } catch (Exception e) {
                 throw new KafkaException("Can not send message to Kafka broker.", e);
             }
