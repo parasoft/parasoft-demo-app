@@ -138,9 +138,10 @@ public class SecurityConfig {
                         .logoutRequestMatcher(new AntPathRequestMatcher("/v1/logout", "GET"))
                         .logoutSuccessHandler(customLogoutSuccessHandler)
                 .and()
-                    .oauth2Login(oauth2 -> oauth2
-                            .userInfoEndpoint(userInfo -> userInfo
-                                    .oidcUserService(this.oidcUserService())))
+                    .oauth2Login(oauth2 -> {
+                                oauth2.loginPage("/loginPage");
+                                oauth2.userInfoEndpoint(userInfo -> userInfo.oidcUserService(this.oidcUserService()));
+                            })
                     .csrf()
                         .disable();
 
