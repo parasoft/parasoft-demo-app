@@ -203,7 +203,7 @@ public class SecurityConfig {
     public static class CustomJwt extends Jwt {
 
         @Getter
-        private UserEntity userInfo;
+        private final UserEntity userInfo;
 
         public CustomJwt(Jwt jwt, UserEntity userInfo) {
             super(jwt.getTokenValue(), jwt.getIssuedAt(), jwt.getExpiresAt(), jwt.getHeaders(), jwt.getClaims());
