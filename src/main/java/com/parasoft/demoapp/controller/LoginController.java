@@ -3,6 +3,7 @@ package com.parasoft.demoapp.controller;
 import com.parasoft.demoapp.service.GlobalPreferencesService;
 import com.parasoft.demoapp.util.UrlUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -15,6 +16,9 @@ public class LoginController {
 
     @Autowired
     private GlobalPreferencesService globalPreferencesService;
+
+    @Value("${spring.security.oauth2.client.provider.keycloak.issuer-uri}")
+    private String keycloakIssuerUri;
 
     @GetMapping("/loginPage")
     public String showLoginPage(Authentication authentication, ModelMap modelMap) {
@@ -34,15 +38,19 @@ public class LoginController {
         return "login";
     }
 
-    @GetMapping("/keycloak")
-    public String validateKeycloakServerUrl() throws IOException {
-        String keycloakServerUrl = "/oauth2/authorization/keycloak";
+    @GetMapping("/oauth2/login/keycloak")
+    public String validateKeycloakServerUrl(ModelMap modelMap) throws IOException {
         try {
-            UrlUtil.validateUrl("http://localhost:8080"+ keycloakServerUrl);
+            int code = UrlUtil.validateUrl(keycloakIssuerUri);
+            if (code != 200) {
+                modelMap.addAttribute("keycloakStatusCode", code);
+                return "error/keycloakError";
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            return "error/500";
+            modelMap.addAttribute("keycloakStatusCode", -1);
+            return "error/keycloakError";
         }
-        return "redirect:" + keycloakServerUrl;
+        return "redirect:/oauth2/authorization/keycloak";
     }
 }
