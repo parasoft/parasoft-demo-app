@@ -51,6 +51,50 @@ Login with one of these users:
 - Username `purchaser` password `password`
 - Username `approver` password `password`
 
+## Using Oauth2.0 Authentication
+This application supports Http Basic authentication and Oauth2.0 authentication.
+This application supports Keycloak to be as the OAuth 2.0 Provider.
+There are some extra works if user wants to use it.
+
+### Using external Keycloak server
+1. Download, install and start a Keycloak server (19.0.0 or later) with command line.
+```
+bin\kc.[sh|bat] start-dev --http-port=8081
+```
+> The default port of Keycloak server is 8080, user may need to change it if needed.
+
+2. Open Administration Console(http://localhost:8081) to verify that the service started successfully, create an initial admin user on console page.
+3. Download and store the [demo-app-realm.json](https://github.com/parasoft/parasoft-demo-app/blob/main/keycloak/demo-app-realm.json) file.
+
+>  [demo-app-realm.json]() file includes a realm(`demo-app-realm`).
+> There are some necessary information in this realm:
+> * 50 purchasers(`purchaser`, `purchaser2`,..., `purchaser50`) and 50 approvers(`approver`, `approver2`,..., `approver50`) with `password`, two realm roles(PURCHASER or APPROVER), each user has a corresponding role.
+> * A client with `demo-app-client` id and `DzOS5Y4iRmHIQH6ntTGHj78PpFEjUKLo` secret.
+> * Valid redirect URI is `*`.
+
+4. Run command line in Keycloak root directory to import predefined realm data into Keycloak.
+```
+bin/kc.[sh|bat] import --file path/to/demo-app-realm.json
+```
+5. Set value to `spring.security.oauth2.client.provider.keycloak.realm-rui` option in **application.properties** file
+to point to the Keycloak server. No need to change it if the Keycloak is on localhost and the port is 8081.
+6. Start the demo application and login with OAuth2 on login page.
+
+### Using SOAtest Oauth2.0 Authentication(Authorization Code type)
+
+User can refer to [Web Server (Authorization Code) Flow](https://docs.parasoft.com/display/SOAVIRT20222/OAuth+Authentication#OAuthAuthentication-WebServer(AuthorizationCode)Flow)
+to use SOAtest Oauth2.0 Authentication.
+
+**Configuration details for Authorization Code type (default)**
+
+| Option        | Value                                                                     |
+|---------------|---------------------------------------------------------------------------|
+| Redirect URI  | * (any URI)                                                               | 
+| Token URI     | http://localhost:8081/realms/demo-app-realm/protocol/openid-connect/token |
+| Client ID     | demo-app-client                                                           |
+| Client secret | DzOS5Y4iRmHIQH6ntTGHj78PpFEjUKLo                                          |
+| scope         | openid                                                                    |
+
 ## Connect to embedded HSQLDB server instance
 There are four databases (one for global and three for industries) in this Application, which are **global**, **outdoor**, **defense** and **aerospace**.
 
