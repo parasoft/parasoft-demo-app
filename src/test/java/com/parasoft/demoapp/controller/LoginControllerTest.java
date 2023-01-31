@@ -1,143 +1,120 @@
 package com.parasoft.demoapp.controller;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.nullable;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.doReturn;
-import static org.powermock.api.mockito.PowerMockito.spy;
-
-import javax.servlet.http.HttpSession;
-
+import com.parasoft.demoapp.exception.GlobalPreferencesMoreThanOneException;
+import com.parasoft.demoapp.exception.GlobalPreferencesNotFoundException;
 import com.parasoft.demoapp.model.global.preferences.GlobalPreferencesEntity;
+import com.parasoft.demoapp.model.global.preferences.IndustryType;
 import com.parasoft.demoapp.model.global.preferences.WebServiceMode;
+import com.parasoft.demoapp.service.GlobalPreferencesService;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.ui.ModelMap;
 
-import com.parasoft.demoapp.exception.GlobalPreferencesMoreThanOneException;
-import com.parasoft.demoapp.exception.GlobalPreferencesNotFoundException;
-import com.parasoft.demoapp.model.global.UserEntity;
-import com.parasoft.demoapp.model.global.preferences.IndustryType;
-import com.parasoft.demoapp.service.GlobalPreferencesService;
-import com.parasoft.demoapp.util.SessionUtil;
+import javax.servlet.http.HttpSession;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Parasoft Jtest UTA: tested class is LoginController
  *
  * @see LoginController
  */
-@PrepareForTest({ SessionUtil.class })
-@RunWith(PowerMockRunner.class)
 public class LoginControllerTest {
 
-	@InjectMocks
-	LoginController underTest;
+    @InjectMocks
+    LoginController underTest;
 
-	@Mock
-	GlobalPreferencesService globalPreferencesService;
+    @Mock
+    GlobalPreferencesService globalPreferencesService;
 
-	@Mock
-	GlobalPreferencesEntity globalPreferencesEntity;
+    @Mock
+    GlobalPreferencesEntity globalPreferencesEntity;
 
-	@Before
-	public void setupMocks()  throws Throwable {
-		MockitoAnnotations.initMocks(this);
-		when(globalPreferencesService.getCurrentGlobalPreferences()).thenReturn(globalPreferencesEntity);
-		when(globalPreferencesEntity.getWebServiceMode()).thenReturn(WebServiceMode.GRAPHQL);
-	}
+    @Before
+    public void setupMocks()  throws Throwable {
+        MockitoAnnotations.initMocks(this);
+        when(globalPreferencesService.getCurrentGlobalPreferences()).thenReturn(globalPreferencesEntity);
+        when(globalPreferencesEntity.getWebServiceMode()).thenReturn(WebServiceMode.GRAPHQL);
+    }
 
-	/**
-	 * Parasoft Jtest UTA: tested method is login(HttpSession)
-	 *
-	 * @see LoginController#showLoginPage(HttpSession, ModelMap)
-	 */
-	@Test
-	public void testLogin_firstVisitLoginPage() throws Throwable {
-		//Given
-		ModelMap modelMap = new ModelMap();
-		modelMap.addAttribute("industry", "defense");
-		modelMap.addAttribute("currentWebServiceMode", "GRAPHQL");
+    /**
+     * Test showLoginPage(Authentication, ModelMap)
+     *
+     * @see LoginController#showLoginPage(Authentication, ModelMap)
+     */
+    @Test
+    public void testLogin_returnLoginPage() throws Throwable {
+        //Given
+        ModelMap modelMap = new ModelMap();
+        when(globalPreferencesService.getCurrentIndustry()).thenReturn(IndustryType.DEFENSE);
 
-		when(globalPreferencesService.getCurrentIndustry()).thenReturn(IndustryType.DEFENSE);
+        // When
+        HttpSession session = mock(HttpSession.class);
+        String result = underTest.showLoginPage(null, modelMap);
 
-		// When
-		HttpSession session = mock(HttpSession.class);
-		String result = underTest.showLoginPage(session, modelMap);
+        // Then
+        assertEquals("login", result);
+    }
 
-		// Then
-		assertEquals("login", result);
-	}
+    /**
+     * Test showLoginPage(Authentication, ModelMap)
+     *
+     * @see LoginController#showLoginPage(Authentication, ModelMap)
+     */
+    @Test
+    public void testLogin_returnHomePage() throws Throwable {
 
-	/**
-	* Parasoft Jtest UTA: tested method is showLoginPage(HttpSession)
-	*
-	* @see LoginController#showLoginPage(HttpSession, ModelMap)
-	*/
-	@Test
-	public void testLogin_returnLoginPageWithoutLogout() throws Throwable {
+        //Given
+        when(globalPreferencesService.getCurrentIndustry()).thenReturn(IndustryType.DEFENSE);
 
-		//Given
-		spy(SessionUtil.class);
+        // When
+        ModelMap modelMap = new ModelMap();
+        String result = underTest.showLoginPage(new TestingAuthenticationToken(new Object(), new Object()), modelMap);
 
-		UserEntity getUserIdInSessionResult = new UserEntity();
-		doReturn(getUserIdInSessionResult).when(SessionUtil.class);
-		SessionUtil.getUserEntityInSession(nullable(HttpSession.class));
+        // Then
+        assertEquals("redirect:/", result);
+    }
 
-		when(globalPreferencesService.getCurrentIndustry()).thenReturn(IndustryType.DEFENSE);
-		HttpSession session = mock(HttpSession.class);
-		when(session.getAttribute(nullable(String.class))).thenReturn("ROLE_APPROVER");
-		
-		// When
-		ModelMap modelMap = new ModelMap();
-		String result = underTest.showLoginPage(session, modelMap);
-		
-		// Then
-		assertEquals("redirect:/", result);
-	}
+    /**
+     * Test showLoginPage(Authentication, ModelMap)
+     *
+     * @see LoginController#showLoginPage(Authentication, ModelMap)
+     */
+    @Test
+    public void testLogin_error_globalPreferencesMoreThanOneException() throws Throwable {
+        //Given
+        when(globalPreferencesService.getCurrentIndustry()).thenThrow(GlobalPreferencesMoreThanOneException.class);
 
-	/**
-	 * Test for showLoginPage(HttpSession, ModelMap)
-	 *
-	 * @see LoginController#showLoginPage(HttpSession, ModelMap)
-	 */
-	@Test
-	public void testLogin_error_globalPreferencesMoreThanOneException() throws Throwable {
-		//Given
-		when(globalPreferencesService.getCurrentIndustry()).thenThrow(GlobalPreferencesMoreThanOneException.class);
+        // When
+        ModelMap modelMap = new ModelMap();
+        String result = underTest.showLoginPage(new TestingAuthenticationToken(new Object(), new Object()), modelMap);
 
-		// When
-		HttpSession session = mock(HttpSession.class);
-		ModelMap modelMap = new ModelMap();
-		String result = underTest.showLoginPage(session, modelMap);
+        // Then
+        assertEquals("error/500", result);
+    }
 
-		// Then
-		assertEquals("error", result);
-	}
+    /**
+     * Test showLoginPage(Authentication, ModelMap)
+     *
+     * @see LoginController#showLoginPage(Authentication, ModelMap)
+     */
+    @Test
+    public void testLogin_error_globalPreferencesNotFoundException() throws Throwable {
+        //Given
+        when(globalPreferencesService.getCurrentIndustry()).thenThrow(GlobalPreferencesNotFoundException.class);
 
-	/**
-	 * Test for showLoginPage(HttpSession, ModelMap)
-	 *
-	 * @see LoginController#showLoginPage(HttpSession, ModelMap)
-	 */
-	@Test
-	public void testLogin_error_globalPreferencesNotFoundException() throws Throwable {
-		//Given
-		when(globalPreferencesService.getCurrentIndustry()).thenThrow(GlobalPreferencesNotFoundException.class);
+        // When
+        ModelMap modelMap = new ModelMap();
+        String result = underTest.showLoginPage(new TestingAuthenticationToken(new Object(), new Object()), modelMap);
 
-		// When
-		HttpSession session = mock(HttpSession.class);
-		ModelMap modelMap = new ModelMap();
-		String result = underTest.showLoginPage(session, modelMap);
-
-		// Then
-		assertEquals("error", result);
-	}
+        // Then
+        assertEquals("error/500", result);
+    }
 }

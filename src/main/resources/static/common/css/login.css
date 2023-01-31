@@ -161,7 +161,7 @@ footer {
 }
 
 .forgot-password {
-    margin-top: 10px;
+    margin-top: 6px;
     width: 100%;
     justify-content: center;
 }
@@ -184,4 +184,8 @@ footer {
 
 th {
     text-align: center;
+}
+
+.oauth2-field {
+    margin-top: 5px;
 }

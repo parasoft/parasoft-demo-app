@@ -3,7 +3,6 @@ package com.parasoft.demoapp.config.security;
 import com.parasoft.demoapp.model.global.RoleEntity;
 import com.parasoft.demoapp.model.global.RoleType;
 import com.parasoft.demoapp.model.global.UserEntity;
-import com.parasoft.demoapp.util.SessionUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -20,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Test class for CustomAuthenticationSuccessHandler
  *
- * @see com.parasoft.demoapp.config.security.CustomAuthenticationSuccessHandler
+ * @see CustomAuthenticationSuccessHandler
  */
 public class CustomAuthenticationSuccessHandlerTest {
 
@@ -41,7 +40,7 @@ public class CustomAuthenticationSuccessHandlerTest {
      * <br/>
      * Purchaser is not allowed to log in on Android device.
      *
-     * @see com.parasoft.demoapp.config.security.CustomAuthenticationSuccessHandler#onAuthenticationSuccess(HttpServletRequest, HttpServletResponse, Authentication)
+     * @see CustomAuthenticationSuccessHandler#onAuthenticationSuccess(HttpServletRequest, HttpServletResponse, Authentication)
      */
     @Test
     public void onAuthenticationSuccess_loginWithPurchaserUserOnAndroidDevice() throws IOException {
@@ -70,7 +69,7 @@ public class CustomAuthenticationSuccessHandlerTest {
      * <br/>
      * Approver is allowed to log in on Android device.
      *
-     * @see com.parasoft.demoapp.config.security.CustomAuthenticationSuccessHandler#onAuthenticationSuccess(HttpServletRequest, HttpServletResponse, Authentication)
+     * @see CustomAuthenticationSuccessHandler#onAuthenticationSuccess(HttpServletRequest, HttpServletResponse, Authentication)
      */
     @Test
     public void onAuthenticationSuccess_loginWithApproverUserOnAndroidDevice() throws IOException {
@@ -92,8 +91,6 @@ public class CustomAuthenticationSuccessHandlerTest {
         assertFalse(httpSession.isInvalid());
         assertEquals("{\"status\":1,\"message\":\"Login successfully.\"}", httpServletResponse.getContentAsString());
         assertEquals(200, httpServletResponse.getStatus());
-        assertEquals(principal.getRole().getName(), httpSession.getAttribute(SessionUtil.FULL_ROLE_NAME_KEY));
-        assertEquals("approver", httpSession.getAttribute(SessionUtil.ROLE_NAME_KEY));
     }
 
     /**
@@ -101,7 +98,7 @@ public class CustomAuthenticationSuccessHandlerTest {
      * <br/>
      * Purchaser is allowed to log in on non-Android device.
      *
-     * @see com.parasoft.demoapp.config.security.CustomAuthenticationSuccessHandler#onAuthenticationSuccess(HttpServletRequest, HttpServletResponse, Authentication)
+     * @see CustomAuthenticationSuccessHandler#onAuthenticationSuccess(HttpServletRequest, HttpServletResponse, Authentication)
      */
     @Test
     public void onAuthenticationSuccess_loginWithPurchaserUserOnNonAndroidDevice() throws IOException {
@@ -121,8 +118,6 @@ public class CustomAuthenticationSuccessHandlerTest {
         assertFalse(httpSession.isInvalid());
         assertEquals("{\"status\":1,\"message\":\"Login successfully.\"}", httpServletResponse.getContentAsString());
         assertEquals(200, httpServletResponse.getStatus());
-        assertEquals(principal.getRole().getName(), httpSession.getAttribute(SessionUtil.FULL_ROLE_NAME_KEY));
-        assertEquals("purchaser", httpSession.getAttribute(SessionUtil.ROLE_NAME_KEY));
     }
 
     /**
@@ -130,7 +125,7 @@ public class CustomAuthenticationSuccessHandlerTest {
      * <br/>
      * Approver is allowed to log in on non-Android device.
      *
-     * @see com.parasoft.demoapp.config.security.CustomAuthenticationSuccessHandler#onAuthenticationSuccess(HttpServletRequest, HttpServletResponse, Authentication)
+     * @see CustomAuthenticationSuccessHandler#onAuthenticationSuccess(HttpServletRequest, HttpServletResponse, Authentication)
      */
     @Test
     public void onAuthenticationSuccess_loginWithApproverUserOnNonAndroidDevice() throws IOException {
@@ -152,7 +147,5 @@ public class CustomAuthenticationSuccessHandlerTest {
         assertFalse(httpSession.isInvalid());
         assertEquals("{\"status\":1,\"message\":\"Login successfully.\"}", httpServletResponse.getContentAsString());
         assertEquals(200, httpServletResponse.getStatus());
-        assertEquals(principal.getRole().getName(), httpSession.getAttribute(SessionUtil.FULL_ROLE_NAME_KEY));
-        assertEquals("approver", httpSession.getAttribute(SessionUtil.ROLE_NAME_KEY));
     }
 }
