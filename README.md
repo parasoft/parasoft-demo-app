@@ -57,7 +57,7 @@ When launching the app, you can specify the port to use with a command like the 
 
     2.2 Overwrite specific properties as command line arguments.
 
-Notes: Property column in configuration tables in this readme will be the related property name in application.properties.
+> The **Property** column in configuration tables of this readme refers to the configurable property name in application.properties.
 
 ## Using the Demo Application
 Once started, you can access the application at [http://localhost:8080](http://localhost:8080).
@@ -77,7 +77,7 @@ There are four databases (one for global and three for industries) in this Appli
 | aerospace     | Used to store the data about aerospace industry.     |
 
 ### Connection configuration
-This application exposes port 9001(configurable as hsqldb.port) for the user to connect to the HSQLDB database remotely.
+This application exposes port 9001 for the user to connect to the HSQLDB database remotely. This port is configurable as **hsqldb.port** in application.properties.
 
 - Global database
 
