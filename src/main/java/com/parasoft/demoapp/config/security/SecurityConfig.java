@@ -183,7 +183,10 @@ public class SecurityConfig {
 
     @Bean
     JwtDecoder jwtDecoder() {
-        String jwkSetUri = (String) clientRegistrationRepository.findByRegistrationId("keycloak").getProviderDetails().getConfigurationMetadata()
+        String jwkSetUri = (String) clientRegistrationRepository
+                .findByRegistrationId("keycloak")
+                .getProviderDetails()
+                .getConfigurationMetadata()
                 .get("jwks_uri");
         return NimbusJwtDecoder.withJwkSetUri(jwkSetUri).build();
     }

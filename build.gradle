@@ -64,8 +64,8 @@ dependencies {
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
 
-    // To support higher version of keycloak
-    implementation 'com.nimbusds:oauth2-oidc-sdk:9.4'
+        // To support higher version of keycloak
+        implementation 'com.nimbusds:oauth2-oidc-sdk:9.4'
 
 	implementation 'org.apache.activemq:activemq-stomp'
 	// Exclude `jetty-all` dependency, but keep other necessary jetty dependencies.

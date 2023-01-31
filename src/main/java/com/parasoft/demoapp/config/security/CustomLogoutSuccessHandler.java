@@ -2,6 +2,7 @@ package com.parasoft.demoapp.config.security;
 
 import java.io.IOException;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,17 +21,20 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler{
     @Autowired
     private ClientRegistrationRepository clientRegistrationRepository;
 
-	@Override
-	public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
-			throws IOException, ServletException {
+    private OidcClientInitiatedLogoutSuccessHandler oidcLogoutSuccessHandler;
 
+    @PostConstruct
+    private void initOidcClientInitiatedLogoutSuccessHandler() {
+        this.oidcLogoutSuccessHandler = new OidcClientInitiatedLogoutSuccessHandler(this.clientRegistrationRepository);
+        this.oidcLogoutSuccessHandler.setPostLogoutRedirectUri("{baseUrl}/loginPage");
+    }
+
+    @Override
+    public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         if (authentication instanceof OAuth2AuthenticationToken) {
-            OidcClientInitiatedLogoutSuccessHandler oidcLogoutSuccessHandler = new OidcClientInitiatedLogoutSuccessHandler(this.clientRegistrationRepository);
-            oidcLogoutSuccessHandler.setPostLogoutRedirectUri("{baseUrl}/loginPage");
             oidcLogoutSuccessHandler.onLogoutSuccess(request, response, authentication);
             return;
         }
-
-		response.sendRedirect("/loginPage");
-	}
+        response.sendRedirect("/loginPage");
+    }
 }
