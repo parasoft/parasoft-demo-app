@@ -21,6 +21,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
@@ -57,8 +58,8 @@ public class SecurityConfig {
     @Autowired
     private CustomLogoutSuccessHandler customLogoutSuccessHandler;
 
-    @Value("${spring.security.oauth2.client.provider.keycloak.jwk-set-uri}")
-    private String keycloakJwkSetUri;
+    @Autowired
+    private ClientRegistrationRepository clientRegistrationRepository;
 
     @Value("${spring.security.oauth2.client.provider.keycloak.user-name-attribute}")
     private String keycloakUsernameAttribute;
@@ -182,7 +183,12 @@ public class SecurityConfig {
 
     @Bean
     JwtDecoder jwtDecoder() {
-        return NimbusJwtDecoder.withJwkSetUri(keycloakJwkSetUri).build();
+        String jwkSetUri = (String) clientRegistrationRepository
+                .findByRegistrationId("keycloak")
+                .getProviderDetails()
+                .getConfigurationMetadata()
+                .get("jwks_uri");
+        return NimbusJwtDecoder.withJwkSetUri(jwkSetUri).build();
     }
 
     class CustomAuthenticationConverter implements Converter<Jwt, AbstractAuthenticationToken> {
