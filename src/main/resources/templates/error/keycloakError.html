@@ -22,7 +22,7 @@
                 <span th:text="${keycloakRealmUri}"></span>
             </div>
             <div th:case="'-1'" translate="KEYCLOAK_SERVER_IS_NOT_AVAILABLE"></div>
-            <div th:case="'*'" translate="DEFAULT_KEYCLOAK_ERROR"></div><br/><br/>
+            <div th:case="*" translate="DEFAULT_KEYCLOAK_ERROR"></div><br/><br/>
             <a href="/" class="go_home"><span translate="BACK_TO_LOGIN_PAGE"></span></a>
         </div>
     </div>
