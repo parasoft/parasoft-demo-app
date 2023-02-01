@@ -143,4 +143,15 @@ public class PageController {
         }
         return "error/403";
     }
+
+    @GetMapping("/conflict")
+    public String showConflictPage(ModelMap modelMap, String type) {
+        try {
+            modelMap.addAttribute("conflictType", type);
+            modelMap.addAttribute("currentWebServiceMode", globalPreferencesService.getCurrentGlobalPreferences().getWebServiceMode().getValue());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "error/409";
+    }
 }
