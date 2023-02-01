@@ -45,22 +45,17 @@ When launching the app, you can specify the port to use with a command like the 
 ./gradlew bootRun -Pport=8888
 ```
 ### Configuring application-related properties
-1. When running the application from sources:
-   
-    Change the [application.properties](https://github.com/parasoft/parasoft-demo-app/blob/main/application.properties) file directly or put a customized version of the file to overwrite the properties and put it under [The root directory of your project]/config folder before running the application.
+When running the application from sources:
+- As default, configuration properties in [application.properties](https://github.com/parasoft/parasoft-demo-app/blob/main/application.properties) will be loaded. You can modify properties in that file before running the application.
+- You can also overwrite the configuration by creating a *config* folder under root directory of this project and put a customized version of application.properties file in it. A copy of application.properties which contains all configurable properties is available [here](https://github.com/parasoft/parasoft-demo-app/blob/main/application.properties).
 
-    Notes: all configurable properties are available in [the example version of application.properties](https://github.com/parasoft/parasoft-demo-app/blob/main/application.properties).
-
-2. When running the application as .war file:
-
-    2.1 Create a custom application.properties file and put it in the [The sibling directory of your .war file]/config folder.
-
-    2.2 Overwrite specific properties as command line arguments.
-    > For example, when running the application, you can specify the database port to use with a command like the following:
-    > ```
-    > java -jar build/libs/parasoft-demo-app-1.1.0.war --hsqldb.port=9002
-    > ```
-> The **Property** column in configuration tables of this readme refers to the configurable property name in application.properties.
+When running the application as .war file:
+- You can create *config* folder under same directory of your .war file and put a customized version of application.properties in it before running the .war file.
+- You can also overwrite specific properties using command line arguments:
+  ```
+  java -jar build/libs/parasoft-demo-app-1.1.0.war --hsqldb.port=9002 // database server port will be changed to 9008
+  ```
+> Notes: **Property** column in configuration tables of this readme refers to the configurable property name in application.properties.
 
 ## Using the Demo Application
 Once started, you can access the application at [http://localhost:8080](http://localhost:8080).
