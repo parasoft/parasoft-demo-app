@@ -47,16 +47,19 @@ When launching the app, you can specify the port to use with a command like the 
 ### Configuring application-related properties
 1. When running the application from sources:
    
-    Change the [application.properties](https://github.com/parasoft/parasoft-demo-app/blob/main/application.properties) file directly or put a customized version of the file to overwrite the properties and put it under config folder before running the application.
+    Change the [application.properties](https://github.com/parasoft/parasoft-demo-app/blob/main/application.properties) file directly or put a customized version of the file to overwrite the properties and put it under [The root directory of your project]/config folder before running the application.
 
-    Notes: all configurable properties are available in the example version of application.properties.
+    Notes: all configurable properties are available in [the example version of application.properties](https://github.com/parasoft/parasoft-demo-app/blob/main/application.properties).
 
 2. When running the application as .war file:
 
-    2.1 Create/Overwrite the file in config folder.
+    2.1 Create a custom application.properties file and put it in the [The sibling directory of your .war file]/config folder.
 
     2.2 Overwrite specific properties as command line arguments.
-
+    > For example, when running the application, you can specify the database port to use with a command like the following:
+    > ```
+    > java -jar build/libs/parasoft-demo-app-1.1.0.war --hsqldb.port=9002
+    > ```
 > The **Property** column in configuration tables of this readme refers to the configurable property name in application.properties.
 
 ## Using the Demo Application
