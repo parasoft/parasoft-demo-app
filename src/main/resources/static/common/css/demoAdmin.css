@@ -346,7 +346,7 @@ label {
 }
 
 #database_reset_confirm_modal .modal-dialog, #remove_confirm_modal .modal-dialog, #queue_configuration_details_modal .modal-dialog {
-    top: 25%;
+    top: 15%;
 }
 
 #remove_confirm_modal .modal-body {
@@ -445,12 +445,21 @@ textarea {
 }
 
 .queue_configuration_details_modal_content {
-    width: 560px;
+    width: 600px;
     top: 0;
 }
 
 .queue_configuration_details_table {
-    margin: 0 auto;
+    margin: 0 20px;
+}
+
+.additional_info_for_queue_configuration_details {
+    margin: 10px 20px;
+    color: grey;
+}
+
+.additional_info_for_queue_configuration_details .additional_info_item {
+    margin-bottom: 10px;
 }
 
 .gRPC_configuration_details_table {
@@ -506,11 +515,7 @@ textarea {
     width: 150px;
 }
 
-.gRPC_form_title {
-    font-weight: bold;
-}
-
-#gRPC_form_title {
+.gRPC_form_title, .gRPC_form_title.gRPC_configuration_label {
     font-weight: bold;
 }
 

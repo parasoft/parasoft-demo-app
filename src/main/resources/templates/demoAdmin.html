@@ -272,6 +272,18 @@
                                                     </tr>
                                                     </tbody>
                                                 </table>
+                                                <div>
+                                                    <div ng-if="options.mqType === 'KAFKA'" class="additional_info_for_queue_configuration_details">
+                                                        <div class="additional_info_item" translate="KAFKA_ADDITIONAL_INFO"></div>
+                                                    </div>
+                                                    <div ng-if="options.mqType === 'RABBIT_MQ'" class="additional_info_for_queue_configuration_details">
+                                                        <div class="additional_info_item" translate="RABBIT_MQ_ADDITIONAL_INFO_FOR_DIRECT_REPLY_TO"></div>
+                                                        <ol>
+                                                            <li translate="RABBIT_MQ_ADDITIONAL_INFO_FOR_DIRECT_REPLY_TO_STEP_1"></li>
+                                                            <li translate="RABBIT_MQ_ADDITIONAL_INFO_FOR_DIRECT_REPLY_TO_STEP_2"></li>
+                                                        </ol>
+                                                    </div>
+                                                </div>
                                                 <div class="test_connection_kafka_service" ng-if="options.mqType === 'KAFKA'">
                                                         <button id="test_connection_kafka_service_button" class="btn btn-default industry_button" translate="TEST_CONNECT"
                                                                   ng-disabled="demo.isTestingKafkaBrokerUrl" ng-click="demo.validateKafkaBrokerUrl()"></button>
@@ -880,7 +892,7 @@
                         <table class="gRPC_configuration_details_table">
                             <tbody>
                                 <tr ng-repeat="configuration in demo.gRPCConfigurationJsonDetails">
-                                    <th ng-bind="configuration.label" class="gRPC_configuration_label" id="gRPC_form_title"></th>
+                                    <th ng-bind="configuration.label" class="gRPC_form_title gRPC_configuration_label"></th>
                                     <th class="gRPC_configuration_details_value gRPC_configuration_value" ng-bind="configuration.value"></th>
                                 </tr>
                             </tbody>
@@ -889,7 +901,7 @@
                         <table class="gRPC_configuration_details_table">
                             <tbody>
                             <tr ng-repeat="configuration in demo.gRPCConfigurationProtobufDetails">
-                                <th ng-bind="configuration.label" class="gRPC_configuration_label" id="gRPC_form_title"></th>
+                                <th ng-bind="configuration.label" class="gRPC_form_title gRPC_configuration_label"></th>
                                 <th class="gRPC_configuration_details_value gRPC_configuration_value" ng-bind="configuration.value"></th>
                             </tr>
                             </tbody>

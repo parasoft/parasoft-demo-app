@@ -111,6 +111,10 @@ The configuration for queues/topics can be changed or reset to default on **Demo
 | Broker URL  |       `localhost:9092`         |
 | Group ID    |       `inventory-operation`    |
 
+> For simplicity, messages produced or consumed in this application will be in partition 0 of the Kafka topics.
+> When the expected behavior is to consume messages from both inside and outside this application(e.g. in SOAtest & Virtualize),
+> make sure to use different group ID for the external consumer.
+
 **Configuration details for external RabbitMQ server (default)**
 
 | Option                     | Value                      |
@@ -123,7 +127,10 @@ The configuration for queues/topics can be changed or reset to default on **Demo
 | Request queue routing key  | `inventory.queue.request`  |
 | Response queue routing key | `inventory.queue.response` |
 
-This configuration can be changed in **application.properties** file.
+> This application supports [Direct Reply-to](https://www.rabbitmq.com/direct-reply-to.html) feature.
+> If you want to use RPC (request/reply) pattern in SOAtest, make sure to configure the following fields with the pre-exist pseudo-queue `amq.rabbitmq.reply-to`:
+> 1. Set **Reply To** (Transport -> Basic Properties -> Reply To) to `amq.rabbitmq.reply-to`  to publish the response message to it.
+> 2. Set **Queue Name** (Transport -> Consume -> Queue Name) to `amq.rabbitmq.reply-to` to consume response message from it.
 
 ### Using JMS Proxy
 To use the queueing system with JMS proxy, you can change **Destination queue** and **Reply to queue** to customized queue names.
@@ -132,17 +139,15 @@ The **Server Connection** in message proxy should be configured with the two def
 
 <img src="src/main/resources/static/common/images/mq_proxy_mode_diagram.png" alt="mq proxy mode diagram">
 
-### Using virtual asset with JMS and RabbitMQ
-To use the queueing system with virtual asset, you can change **Inventory service request queue** to a customized destination queue name.
+### Using virtual asset with JMS, RabbitMQ and Kafka
+
+<img src="src/main/resources/static/common/images/MQ_and_kafka_virtual_asset_mode_diagram.png" alt="MQ and kafka virtual asset mode diagram">
+
+To use JMS or RabbitMQ with virtual asset, you can change **Inventory service request queue** to a customized destination queue name.
 The virtual asset deployment should be configured to listen to the customized destination queue and reply to the default response queue.
 
-<img src="src/main/resources/static/common/images/mq_virtual_asset_mode_diagram.png" alt="mq virtual asset mode diagram">
-
-### Using virtual asset with Kafka
 To use Kafka with virtual asset, you can change **Inventory service request topic**
 to a customized request topic name. The virtual asset deployment should be configured to listen to the customized request topic and produce messages to the default response topic.
-
-<img src="src/main/resources/static/common/images/Kafka_virtual_asset_mode_diagram.png" alt="Kafka virtual asset mode diagram">
 
 ### Using external Kafka server
 
