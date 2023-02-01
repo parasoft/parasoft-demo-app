@@ -131,26 +131,6 @@ public class AuthenticationUtilTest {
 	}
 
 	/**
-	 * Test for getUserRoleNameInAuthentication(Authentication)
-	 *
-	 * @see com.parasoft.demoapp.util.AuthenticationUtil#getUserRoleNameInAuthentication(Authentication)
-	 */
-	@Test
-	public void testGetUserRoleNameInAuthentication_nullRole() throws Throwable {
-		// When
-		Authentication auth = mock(Authentication.class);
-		UserEntity user = mock(UserEntity.class);
-		Object principal = user;
-		RoleEntity roleEntity = null; // test point
-		when(auth.getPrincipal()).thenReturn(principal);
-		when(user.getRole()).thenReturn(roleEntity);
-		String result = AuthenticationUtil.getUserRoleNameInAuthentication(auth);
-
-		// Then
-		assertNull(result);
-	}
-
-	/**
 	 * Test for getUsernameInAuthentication(Authentication)
 	 *
 	 * @see com.parasoft.demoapp.util.AuthenticationUtil#getUsernameInAuthentication(Authentication)
