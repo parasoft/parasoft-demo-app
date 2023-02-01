@@ -53,7 +53,7 @@ app.controller('loginController', function($rootScope, $location, $window, $http
 
     function loginWithOAuth2() {
         $window.localStorage.removeItem('userToken');
-        $window.location.href="/oauth2/login/keycloak";
+        $window.location.href="/oauth2/authorization/keycloak";
     }
 
     //To avoid displaying page without styles due to the slow loading of CSS files
