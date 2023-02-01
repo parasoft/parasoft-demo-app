@@ -51,39 +51,30 @@ Login with one of these users:
 - Username `purchaser` password `password`
 - Username `approver` password `password`
 
-## Using Oauth2.0 Authentication
-This application supports Http Basic authentication and Oauth2.0 authentication.
-This application supports Keycloak to be as the OAuth 2.0 Provider.
-There are some extra works if user wants to use it.
+## Using OAuth 2.0 Authentication
+This application supports both Http Basic authentication and OAuth 2.0 authentication.
+To use OAuth 2.0 authentication, you will need to set up a Keycloak server as the OAuth 2.0 provider.
 
-### Using external Keycloak server
+### Using Keycloak server
 1. Download, install and start a Keycloak server (19.0.0 or later) with command line.
-```
-bin\kc.[sh|bat] start-dev --http-port=8081
-```
-> The default port of Keycloak server is 8080, user may need to change it if needed.
+    ```
+    bin\kc.[sh|bat] start-dev --http-port=8081
+    ```
+2. Go to Keycloak admin console(e.g. http://localhost:8081) to make sure the service has started successfully. Create an initial admin user.
+3. Download [demo-app-realm.json](https://github.com/parasoft/parasoft-demo-app/blob/main/keycloak/demo-app-realm.json).
+    >  [demo-app-realm.json]() includes a realm *demo-app-realm* and necessary information to use Keycloak with demo application:
+    > * 50 purchasers and 50 approvers which have consistent credentials and roles with default data in database of demo application.
+    > * A client with `demo-app-client` as id and `DzOS5Y4iRmHIQH6ntTGHj78PpFEjUKLo` as secret.
+    > * Valid redirect URI set as `*`, which allows redirection to any URI.
 
-2. Open Administration Console(http://localhost:8081) to verify that the service started successfully, create an initial admin user on console page.
-3. Download and store the [demo-app-realm.json](https://github.com/parasoft/parasoft-demo-app/blob/main/keycloak/demo-app-realm.json) file.
+4. Run command line in root directory of Keycloak to import predefined realm data.
+    ```
+    bin/kc.[sh|bat] import --file path/to/demo-app-realm.json
+    ```
+5. If Keycloak server is not running on *localhost:8081*, make sure to change `spring.security.oauth2.client.provider.keycloak.realm-rui` property value in **application.properties** file.
+6. Start the demo application and choose to log in with OAuth 2.0.
 
->  [demo-app-realm.json]() file includes a realm(`demo-app-realm`).
-> There are some necessary information in this realm:
-> * 50 purchasers(`purchaser`, `purchaser2`,..., `purchaser50`) and 50 approvers(`approver`, `approver2`,..., `approver50`) with `password`, two realm roles(PURCHASER or APPROVER), each user has a corresponding role.
-> * A client with `demo-app-client` id and `DzOS5Y4iRmHIQH6ntTGHj78PpFEjUKLo` secret.
-> * Valid redirect URI is `*`.
-
-4. Run command line in Keycloak root directory to import predefined realm data into Keycloak.
-```
-bin/kc.[sh|bat] import --file path/to/demo-app-realm.json
-```
-5. Set value to `spring.security.oauth2.client.provider.keycloak.realm-rui` option in **application.properties** file
-to point to the Keycloak server. No need to change it if the Keycloak is on localhost and the port is 8081.
-6. Start the demo application and login with OAuth2 on login page.
-
-### Using SOAtest Oauth2.0 Authentication(Authorization Code type)
-
-User can refer to [Web Server (Authorization Code) Flow](https://docs.parasoft.com/display/SOAVIRT20222/OAuth+Authentication#OAuthAuthentication-WebServer(AuthorizationCode)Flow)
-to use SOAtest Oauth2.0 Authentication.
+### Using SOAtest OAuth 2.0 Authentication (Authorization Code type)
 
 **Configuration details for Authorization Code type (default)**
 
