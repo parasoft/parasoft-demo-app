@@ -346,7 +346,7 @@ label {
 }
 
 #database_reset_confirm_modal .modal-dialog, #remove_confirm_modal .modal-dialog, #queue_configuration_details_modal .modal-dialog {
-    top: 25%;
+    top: 15%;
 }
 
 #remove_confirm_modal .modal-body {
@@ -515,11 +515,7 @@ textarea {
     width: 150px;
 }
 
-.gRPC_form_title {
-    font-weight: bold;
-}
-
-#gRPC_form_title {
+.gRPC_form_title, .gRPC_form_title.gRPC_configuration_label {
     font-weight: bold;
 }
 

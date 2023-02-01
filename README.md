@@ -126,7 +126,7 @@ The configuration for queues/topics can be changed or reset to default on **Demo
 | Broker URL | `localhost:9092`      | spring.kafka.bootstrap-servers |
 | Group ID   | `inventory-operation` | spring.kafka.consumer.group-id |
 
-> For simplicity, messages produced or consumed in this application will be in partition 0 of the topics.
+> For simplicity, messages produced or consumed in this application will be in partition 0 of the Kafka topics.
 > When the expected behavior is to consume messages from both inside and outside this application(e.g. in SOAtest & Virtualize),
 > make sure to use different group ID for the external consumer.
 
@@ -154,17 +154,15 @@ The **Server Connection** in message proxy should be configured with the two def
 
 <img src="src/main/resources/static/common/images/mq_proxy_mode_diagram.png" alt="mq proxy mode diagram">
 
-### Using virtual asset with JMS and RabbitMQ
-To use the queueing system with virtual asset, you can change **Inventory service request queue** to a customized destination queue name.
+### Using virtual asset with JMS, RabbitMQ and Kafka
+
+<img src="src/main/resources/static/common/images/MQ_and_kafka_virtual_asset_mode_diagram.png" alt="MQ and kafka virtual asset mode diagram">
+
+To use JMS or RabbitMQ with virtual asset, you can change **Inventory service request queue** to a customized destination queue name.
 The virtual asset deployment should be configured to listen to the customized destination queue and reply to the default response queue.
 
-<img src="src/main/resources/static/common/images/mq_virtual_asset_mode_diagram.png" alt="mq virtual asset mode diagram">
-
-### Using virtual asset with Kafka
 To use Kafka with virtual asset, you can change **Inventory service request topic**
 to a customized request topic name. The virtual asset deployment should be configured to listen to the customized request topic and produce messages to the default response topic.
-
-<img src="src/main/resources/static/common/images/Kafka_virtual_asset_mode_diagram.png" alt="Kafka virtual asset mode diagram">
 
 ### Using external Kafka server
 

@@ -11,7 +11,7 @@
     color: #333333;
 }
 
-.forgot-password a, .forgot-password a:hover {
+.forgot-password a, .forgot-password a:hover, .oauth2-field a, .oauth2-field a:hover {
     color: #E7FFA1;
 }
 

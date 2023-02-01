@@ -15,6 +15,14 @@ body {
 }
 
 @font-face {
+    font-family: 'Orbitron Regular';
+    font-style: normal;
+    src: local('Orbitron Regular'), local('Orbitron-Regular'),
+        url(../../lib/fonts/Orbitron-Regular.ttf)
+        format('truetype');
+}
+
+@font-face {
     font-family: 'Orbitron Bold';
     font-style: normal;
     font-weight: 700;
