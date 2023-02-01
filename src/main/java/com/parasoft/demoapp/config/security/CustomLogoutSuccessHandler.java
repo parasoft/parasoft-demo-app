@@ -22,7 +22,7 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler{
     @Autowired
     private RestTemplate restTemplate;
 
-    @Value("${spring.security.oauth2.client.provider.keycloak.end_session_endpoint}")
+    @Value("${spring.security.oauth2.client.provider.keycloak.end-session-endpoint}")
     private String keycloakEndSessionEndpoint;
 
     @Override

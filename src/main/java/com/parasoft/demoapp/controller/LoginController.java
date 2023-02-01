@@ -17,8 +17,8 @@ public class LoginController {
     @Autowired
     private GlobalPreferencesService globalPreferencesService;
 
-    @Value("${spring.security.oauth2.client.provider.keycloak.issuer-uri}")
-    private String keycloakIssuerUri;
+    @Value("${spring.security.oauth2.client.provider.keycloak.realm-uri}")
+    private String keycloakRealmUri;
 
     @GetMapping("/loginPage")
     public String showLoginPage(Authentication authentication, ModelMap modelMap) {
@@ -39,11 +39,20 @@ public class LoginController {
     }
 
     @GetMapping("/oauth2/login/keycloak")
-    public String validateKeycloakServerUrl(ModelMap modelMap) throws IOException {
+    public String validateKeycloakServerUrl(ModelMap modelMap) {
         try {
-            int code = UrlUtil.validateUrl(keycloakIssuerUri);
+            modelMap.addAttribute("industry", globalPreferencesService.getCurrentIndustry().getValue());
+            modelMap.addAttribute("currentWebServiceMode", globalPreferencesService.getCurrentGlobalPreferences().getWebServiceMode().getValue());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "error/500";
+        }
+
+        try {
+            int code = UrlUtil.validateUrl(keycloakRealmUri);
             if (code != 200) {
                 modelMap.addAttribute("keycloakStatusCode", code);
+                modelMap.addAttribute("keycloakRealmUri", keycloakRealmUri);
                 return "error/keycloakError";
             }
         } catch (Exception e) {
