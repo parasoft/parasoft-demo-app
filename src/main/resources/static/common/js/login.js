@@ -9,6 +9,7 @@ app.controller('loginController', function($rootScope, $location, $window, $http
     var login = this;
     login.credentials = {};
     login.onSubmit = onSubmit;
+    login.loginWithOAuth2 = loginWithOAuth2;
 
     function onSubmit() {
         let loginFormData = new FormData();
@@ -49,6 +50,11 @@ app.controller('loginController', function($rootScope, $location, $window, $http
             angular.noop();
         });
     };
+
+    function loginWithOAuth2() {
+        $window.localStorage.removeItem('userToken');
+        $window.location.href="/oauth2/authorization/keycloak";
+    }
 
     //To avoid displaying page without styles due to the slow loading of CSS files
     setTimeout(function(){ $("body").css("visibility","visible") }, 500);

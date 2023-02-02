@@ -39,7 +39,7 @@ public class ItemInventoryMQServiceTest {
 
     @Mock
     KafkaTemplate operationResultKafkaTemplate;
-    
+
     @Mock
     RabbitTemplate rabbitTemplate;
 
@@ -92,9 +92,9 @@ public class ItemInventoryMQServiceTest {
         underTest.sendToInventoryResponseDestination(messageDto);
 
         //then
-        Mockito.verify(operationResultKafkaTemplate, times(1)).send(any(String.class), any(String.class), any(InventoryOperationResultMessageDTO.class));
+        Mockito.verify(operationResultKafkaTemplate, times(1)).send(any(String.class), any(Integer.class), any(String.class), any(InventoryOperationResultMessageDTO.class));
     }
-    
+
     /**
      * Test for sendToInventoryResponseDestination(InventoryOperationResultMessageDTO)
      *
@@ -105,17 +105,17 @@ public class ItemInventoryMQServiceTest {
         // Given
         MQConfig.currentMQType = RABBIT_MQ;
         doNothing().when(rabbitTemplate).convertAndSend(nullable(String.class), nullable(String.class), nullable(Object.class));
-        
+
         // When
         String requestedBy = "purchaser";
         String information = "Order 23-456-001 is submitted";
         InventoryOperationResultMessageDTO messageDto = new InventoryOperationResultMessageDTO(InventoryOperation.DECREASE, requestedBy, InventoryOperationStatus.SUCCESS, information);
         underTest.sendToInventoryResponseDestination(messageDto);
-        
+
         //then
         Mockito.verify(rabbitTemplate, times(1)).convertAndSend(anyString(), anyString(), any(InventoryOperationResultMessageDTO.class));
     }
-    
+
     /**
      * send(Destination, InventoryOperationResultMessageDTO)
      *
