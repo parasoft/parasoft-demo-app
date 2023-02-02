@@ -4,14 +4,14 @@
 }
 
 .submit-button>button {
-    width: 120px;
+    width: 245px;
     background-color: rgba(204, 136, 55, 1);
     border-radius: 20px;
     font-weight: 700;
     color: #333333;
 }
 
-.forgot-password a, .forgot-password a:hover, .oauth2-field a, .oauth2-field a:hover {
+.forgot-password a, .forgot-password a:hover {
     color: #E7FFA1;
 }
 
@@ -20,7 +20,6 @@
 }
 
 .submit-button {
-    width: 120px;
     font-weight: 700;
     color: #333333;
 }

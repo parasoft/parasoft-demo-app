@@ -16,7 +16,7 @@ footer {
 }
 
 #footer {
-    margin: 0px;
+    margin: 0;
 }
 
 .page-content-section {
@@ -26,15 +26,22 @@ footer {
 }
 
 .submit-button {
-    height: 40px;
+    height: 60px;
     font-size: 16px;
     font-weight: 800;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .submit-button>button {
     height: 40px;
     box-shadow: 1px 1px 1px rgba(0, 0, 0, 1);
     font-size: 16px;
+    box-sizing: border-box;
+    color: #4F3000;
+    margin-bottom: 10px;
 }
 
 
@@ -54,7 +61,7 @@ footer {
 }
 
 .login-background {
-    height: 0px;
+    height: 0;
 }
 
 .form-title {
@@ -78,7 +85,7 @@ footer {
 .input-label {
     width: 300px;
     height: fit-content;
-    margin: 15px auto 0px auto;
+    margin: 10px auto 0 auto;
     display: flex;
     font-size: 14px;
     line-height: 20px;
@@ -95,7 +102,7 @@ footer {
 
 .input-label>span {
     text-align: center;
-    margin: 0px;
+    margin: 0;
 }
 
 .input-field>input {
@@ -103,10 +110,6 @@ footer {
     height: 37px;
     outline: none;
     text-align: left;
-}
-
-.submit-button {
-    margin: auto;
 }
 
 .password-table {
@@ -161,7 +164,7 @@ footer {
 }
 
 .forgot-password {
-    margin-top: 6px;
+    margin-top: 16px;
     width: 100%;
     justify-content: center;
 }
@@ -184,8 +187,4 @@ footer {
 
 th {
     text-align: center;
-}
-
-.oauth2-field {
-    margin-top: 5px;
 }
