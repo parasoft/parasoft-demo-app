@@ -14,14 +14,18 @@
     <input type="hidden" id="current_web_service_mode" th:value="${currentWebServiceMode}">
     <div class="message warning industry_font" ng-controller="error_controller as error">
         <div class="error_head">
-            <h1 translate="KEYCLOAK_ERROR_TITLE"></h1>
+            <h1>
+                <span th:text="${keycloakStatusCode}"></span>
+                <span class="keycloak_error_title">-</span>
+                <span class="keycloak_error_title" translate="KEYCLOAK_ERROR_TITLE"></span>
+            </h1>
         </div>
         <div class="content" th:switch="${keycloakStatusCode}">
             <div th:case="'404'">
                 <span translate="KEYCLOAK_REALM_NOT_FOUND"></span>&nbsp;
                 <span th:text="${keycloakRealmUri}"></span>
             </div>
-            <div th:case="'-1'" translate="KEYCLOAK_SERVER_IS_NOT_AVAILABLE"></div>
+            <div th:case="'503'" translate="KEYCLOAK_SERVER_IS_NOT_AVAILABLE"></div>
             <div th:case="*" translate="DEFAULT_KEYCLOAK_ERROR"></div><br/><br/>
             <a href="/" class="go_home"><span translate="BACK_TO_LOGIN_PAGE"></span></a>
         </div>

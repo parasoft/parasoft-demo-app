@@ -39,14 +39,6 @@ public class LoginController {
     @GetMapping("/oauth2/login/keycloak")
     public String validateKeycloakServerUrl(ModelMap modelMap) {
         try {
-            modelMap.addAttribute("industry", globalPreferencesService.getCurrentIndustry().getValue());
-            modelMap.addAttribute("currentWebServiceMode", globalPreferencesService.getCurrentGlobalPreferences().getWebServiceMode().getValue());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "error/500";
-        }
-
-        try {
             int code = UrlUtil.validateUrl(keycloakRealmUri);
             if (code != 200) {
                 modelMap.addAttribute("keycloakStatusCode", code);
@@ -55,7 +47,7 @@ public class LoginController {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            modelMap.addAttribute("keycloakStatusCode", -1);
+            modelMap.addAttribute("keycloakStatusCode", 503);
             return "error/keycloakError";
         }
         return "redirect:/oauth2/authorization/keycloak";
