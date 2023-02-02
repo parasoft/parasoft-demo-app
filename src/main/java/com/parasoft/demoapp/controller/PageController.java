@@ -36,7 +36,7 @@ public class PageController {
             modelMap.addAttribute("industry", globalPreferencesService.getCurrentIndustry().getValue());
             modelMap.addAttribute("currentWebServiceMode", globalPreferencesService.getCurrentGlobalPreferences().getWebServiceMode().getValue());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             return "error/500";
         }
 
@@ -58,7 +58,7 @@ public class PageController {
             modelMap.addAttribute("industry", globalPreferencesService.getCurrentIndustry().getValue());
             modelMap.addAttribute("currentWebServiceMode", globalPreferencesService.getCurrentGlobalPreferences().getWebServiceMode().getValue());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             return "error/500";
         }
 
@@ -75,7 +75,7 @@ public class PageController {
                 return "error/404";
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             return "error/500";
         }
 
@@ -92,7 +92,7 @@ public class PageController {
                 return "error/404";
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             return "error/500";
         }
 
@@ -106,7 +106,7 @@ public class PageController {
             modelMap.addAttribute("industry", globalPreferencesService.getCurrentIndustry().getValue());
             modelMap.addAttribute("currentWebServiceMode", globalPreferencesService.getCurrentGlobalPreferences().getWebServiceMode().getValue());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             return "error/500";
         }
 
@@ -121,7 +121,7 @@ public class PageController {
             modelMap.addAttribute("currentWebServiceMode", globalPreferencesService.getCurrentGlobalPreferences().getWebServiceMode().getValue());
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             return "error/500";
         }
 
@@ -139,7 +139,7 @@ public class PageController {
         try {
             modelMap.addAttribute("currentWebServiceMode", globalPreferencesService.getCurrentGlobalPreferences().getWebServiceMode().getValue());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         return "error/403";
     }
