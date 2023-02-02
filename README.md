@@ -75,7 +75,7 @@ To use OAuth 2.0 authentication, you will need to set up a Keycloak server as th
     ```
 2. Go to Keycloak admin console(e.g. http://localhost:8081) to make sure the service has started successfully. Create an initial admin user.
 3. Download [demo-app-realm.json](https://github.com/parasoft/parasoft-demo-app/blob/main/keycloak/demo-app-realm.json).
-    >  [demo-app-realm.json]() includes a realm *demo-app-realm* and necessary information to use Keycloak with demo application:
+    >  [demo-app-realm.json](https://github.com/parasoft/parasoft-demo-app/blob/main/keycloak/demo-app-realm.json) includes a realm *demo-app-realm* and necessary information to use Keycloak with demo application:
     > * 50 purchasers and 50 approvers which have consistent credentials and roles with default data in database of demo application.
     > * A client with `demo-app-client` as id and `DzOS5Y4iRmHIQH6ntTGHj78PpFEjUKLo` as secret.
     > * Valid redirect URI set as `*`, which allows redirection to any URI.
@@ -84,20 +84,20 @@ To use OAuth 2.0 authentication, you will need to set up a Keycloak server as th
     ```
     bin/kc.[sh|bat] import --file path/to/demo-app-realm.json
     ```
-5. If Keycloak server is not running on *localhost:8081*, make sure to change `spring.security.oauth2.client.provider.keycloak.realm-rui` property value in **application.properties** file.
+5. If Keycloak server is not running on *localhost:8081*, make sure to change `spring.security.oauth2.client.provider.keycloak.realm-uri` property value in **application.properties** file.
 6. Start the demo application and choose to log in with OAuth 2.0.
 
 ### Using SOAtest OAuth 2.0 Authentication (Authorization Code type)
 
 **Configuration details for Authorization Code type (default)**
 
-| Option        | Value                                                                     |
-|---------------|---------------------------------------------------------------------------|
-| Redirect URI  | * (any URI)                                                               | 
-| Token URI     | http://localhost:8081/realms/demo-app-realm/protocol/openid-connect/token |
-| Client ID     | demo-app-client                                                           |
-| Client secret | DzOS5Y4iRmHIQH6ntTGHj78PpFEjUKLo                                          |
-| scope         | openid                                                                    |
+| Option        | Value                                                                     | Property                                                          |
+|---------------|---------------------------------------------------------------------------|-------------------------------------------------------------------|
+| Redirect URI  | * (any URI)                                                               | N.A.                                                              |
+| Token URI     | http://localhost:8081/realms/demo-app-realm/protocol/openid-connect/token | spring.security.oauth2.client.provider.keycloak.token-uri         |
+| Client ID     | demo-app-client                                                           | spring.security.oauth2.client.registration.keycloak.client-id     |
+| Client secret | DzOS5Y4iRmHIQH6ntTGHj78PpFEjUKLo                                          | spring.security.oauth2.client.registration.keycloak.client-secret |
+| scope         | openid                                                                    | spring.security.oauth2.client.registration.keycloak.scope         |
 
 ## Connect to embedded HSQLDB server instance
 There are four databases (one for global and three for industries) in this Application, which are **global**, **outdoor**, **defense** and **aerospace**.
