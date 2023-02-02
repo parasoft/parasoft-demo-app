@@ -52,3 +52,7 @@ body{
 .go_home {
     color: #2196f3;
 }
+
+.keycloak_error_title {
+    margin-left: -7px;
+}
