@@ -7,17 +7,23 @@ import com.parasoft.demoapp.util.HttpServletResponseUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class CustomOAuth2AuthenticationEntryPoint implements AuthenticationEntryPoint {
+public class CustomBearerTokenAuthenticationEntryPoint implements AuthenticationEntryPoint {
+
+    private final BearerTokenAuthenticationEntryPoint delegate = new BearerTokenAuthenticationEntryPoint();
 
     @Override
     public void commence(HttpServletRequest req, HttpServletResponse resp, AuthenticationException authException)
             throws IOException {
+
+        delegate.commence(req, resp, authException);
+
         if (authException instanceof RoleNotMatchException) {
             HttpServletResponseUtil.returnJsonResponse(resp, HttpStatus.FORBIDDEN.value(),
                     ResponseResult.STATUS_ERR, ConfigMessages.ROLE_NOT_MATCH, authException.getMessage());
