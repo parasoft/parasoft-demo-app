@@ -339,6 +339,7 @@ public class OrderControllerTest {
         UserEntity userEntity = new UserEntity();
         long userId = 1L;
         userEntity.setId(userId);
+        userEntity.setRole(new RoleEntity(RoleType.ROLE_PURCHASER.name()));
         doReturn(userEntity).when(auth).getPrincipal();
 
         // When
@@ -364,6 +365,7 @@ public class OrderControllerTest {
         UserEntity userEntity = new UserEntity();
         long userId = 1L;
         userEntity.setId(userId);
+        userEntity.setRole(new RoleEntity(RoleType.ROLE_PURCHASER.name()));
         doReturn(userEntity).when(auth).getPrincipal();
 
         Pageable pageable = Pageable.unpaged();

@@ -42,7 +42,7 @@ public class ItemInventoryMQService {
         } else if (MQConfig.currentMQType == KAFKA) {
             String destination = KafkaConfig.getOrderServiceListenToTopic();
             responseDestination = "Kafka topic: " + destination;
-            operationResultKafkaTemplate.send(destination, message.getOrderNumber(), message);
+            operationResultKafkaTemplate.send(destination, 0, message.getOrderNumber(), message);
         } else if (MQConfig.currentMQType == MqType.RABBIT_MQ) {
             responseDestination = "RabbitMQ queue: " + RabbitMQConfig.getOrderServiceListenToQueue();
             rabbitTemplate.convertAndSend(RabbitMQConfig.INVENTORY_DIRECT_EXCHANGE,

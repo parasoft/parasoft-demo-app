@@ -1,497 +1,493 @@
-/**
- * 
- */
 package com.parasoft.demoapp.controller;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
-
-import javax.servlet.http.HttpSession;
-
-import com.parasoft.demoapp.model.global.preferences.GlobalPreferencesEntity;
-import com.parasoft.demoapp.model.global.preferences.WebServiceMode;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.mock.web.MockHttpSession;
-import org.springframework.ui.ModelMap;
 
 import com.parasoft.demoapp.exception.GlobalPreferencesMoreThanOneException;
 import com.parasoft.demoapp.exception.GlobalPreferencesNotFoundException;
 import com.parasoft.demoapp.model.global.RoleType;
+import com.parasoft.demoapp.model.global.preferences.GlobalPreferencesEntity;
 import com.parasoft.demoapp.model.global.preferences.IndustryType;
+import com.parasoft.demoapp.model.global.preferences.WebServiceMode;
 import com.parasoft.demoapp.service.CategoryService;
 import com.parasoft.demoapp.service.GlobalPreferencesService;
 import com.parasoft.demoapp.service.ItemService;
-import com.parasoft.demoapp.util.SessionUtil;
+import com.parasoft.demoapp.util.AuthenticationUtil;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.ui.ModelMap;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 
 /**
  * Test class for PageController
  *
  * @see PageController
  */
+@PrepareForTest({ AuthenticationUtil.class})
+@RunWith(PowerMockRunner.class)
 public class PageControllerTest {
 
-	@InjectMocks
-	PageController underTest;
+    @InjectMocks
+    PageController underTest;
 
-	@Mock
-	GlobalPreferencesService globalPreferencesService;
+    @Mock
+    GlobalPreferencesService globalPreferencesService;
 
-	@Mock
-	CategoryService categoryService;
-	
-	@Mock
-	ItemService itemService;
+    @Mock
+    CategoryService categoryService;
 
-	@Mock
-	GlobalPreferencesEntity globalPreferencesEntity;
+    @Mock
+    ItemService itemService;
 
-	@Before
-	public void setupMocks()  throws Throwable {
-		MockitoAnnotations.initMocks(this);
-		when(globalPreferencesService.getCurrentGlobalPreferences()).thenReturn(globalPreferencesEntity);
-		when(globalPreferencesEntity.getWebServiceMode()).thenReturn(WebServiceMode.GRAPHQL);
-	}
+    @Mock
+    GlobalPreferencesEntity globalPreferencesEntity;
 
-	/**
-	 * Test for showHomePage(HttpSession, ModelMap)
-	 *
-	 * @see PageController#showHomePage(HttpSession, ModelMap)
-	 */
-	@Test
-	public void testShowHomePage_approver() throws Throwable {
-		// Given
-		String roleType = RoleType.ROLE_APPROVER.toString();
-		MockHttpSession httpSession = new MockHttpSession();
-		httpSession.setAttribute(SessionUtil.FULL_ROLE_NAME_KEY, roleType);
+    @Before
+    public void setupMocks()  throws Throwable {
+        MockitoAnnotations.initMocks(this);
+        when(globalPreferencesService.getCurrentGlobalPreferences()).thenReturn(globalPreferencesEntity);
+        when(globalPreferencesEntity.getWebServiceMode()).thenReturn(WebServiceMode.GRAPHQL);
+    }
 
-		when(globalPreferencesService.getCurrentIndustry()).thenReturn(IndustryType.DEFENSE);
-		
-		// When
-		ModelMap modelMap = new ModelMap();
-		String result = underTest.showHomePage(httpSession, modelMap);
-		String role = roleType.toLowerCase().substring(5);
-		
-		// Then
-		 assertEquals(role, result);
-	}
-	
-	/**
-	 * Test for showHomePage(HttpSession, ModelMap)
-	 *
-	 * @see PageController#showHomePage(HttpSession, ModelMap)
-	 */
-	@Test
-	public void testShowHomePage_purchaser() throws Throwable {
-		// Given
-		String roleType = RoleType.ROLE_PURCHASER.toString();
-		MockHttpSession httpSession = new MockHttpSession();
-		httpSession.setAttribute(SessionUtil.FULL_ROLE_NAME_KEY, roleType);
+    /**
+     * Test for showHomePage(Authentication, ModelMap)
+     *
+     * @see PageController#showHomePage(Authentication, ModelMap)
+     */
+    @Test
+    public void testShowHomePage_approver() throws Throwable {
+        // Given
+        String roleType = RoleType.ROLE_APPROVER.toString();
+        mockAuthenticationUtil(RoleType.ROLE_APPROVER.toString());
+        when(globalPreferencesService.getCurrentIndustry()).thenReturn(IndustryType.DEFENSE);
 
-		when(globalPreferencesService.getCurrentIndustry()).thenReturn(IndustryType.DEFENSE);
-		
-		// When
-		ModelMap modelMap = new ModelMap();
-		String result = underTest.showHomePage(httpSession, modelMap);
-		String role = roleType.toLowerCase().substring(5);
+        // When
+        ModelMap modelMap = new ModelMap();
+        String result = underTest.showHomePage(new TestingAuthenticationToken(new Object(), new Object()), modelMap);
+        String role = roleType.toLowerCase().substring(5);
 
-		// Then
-		 assertEquals(role, result);
-	}
-	
-	/**
-	 * Test for showHomePage(HttpSession, ModelMap)
-	 *
-	 * @see PageController#showHomePage(HttpSession, ModelMap)
-	 */
-	@Test
-	public void testShowHomePage_loginPage() throws Throwable {
-		// Given
-		String roleType = "";
-		MockHttpSession httpSession = new MockHttpSession();
-		httpSession.setAttribute(SessionUtil.FULL_ROLE_NAME_KEY, roleType);
+        // Then
+        assertEquals(role, result);
+    }
 
-		when(globalPreferencesService.getCurrentIndustry()).thenReturn(IndustryType.DEFENSE);
-		
-		// When
-		ModelMap modelMap = new ModelMap();
-		String result = underTest.showHomePage(httpSession, modelMap);
+    /**
+     * Test for showHomePage(Authentication, ModelMap)
+     *
+     * @see PageController#showHomePage(Authentication, ModelMap)
+     */
+    @Test
+    public void testShowHomePage_purchaser() throws Throwable {
+        // Given
+        String roleType = RoleType.ROLE_PURCHASER.toString();
+        mockAuthenticationUtil(roleType);
+        when(globalPreferencesService.getCurrentIndustry()).thenReturn(IndustryType.DEFENSE);
 
-		// Then
-		 assertEquals("redirect:/loginPage", result);
-	}
+        // When
+        ModelMap modelMap = new ModelMap();
+        String result = underTest.showHomePage(new TestingAuthenticationToken(new Object(), new Object()), modelMap);
+        String role = roleType.toLowerCase().substring(5);
 
-	/**
-	 * Test for showHomePage(HttpSession, ModelMap)
-	 *
-	 * @see PageController#showHomePage(HttpSession, ModelMap)
-	 */
-	@Test
-	public void testShowHomePage_error_globalPreferencesMoreThanOneException() throws Throwable {
-		// Given
-		String roleType = "";
-		MockHttpSession httpSession = new MockHttpSession();
-		httpSession.setAttribute(SessionUtil.FULL_ROLE_NAME_KEY, roleType);
+        // Then
+        assertEquals(role, result);
+    }
 
-		when(globalPreferencesService.getCurrentIndustry()).thenThrow(GlobalPreferencesMoreThanOneException.class);
+    /**
+     * Test for showHomePage(Authentication, ModelMap)
+     *
+     * @see PageController#showHomePage(Authentication, ModelMap)
+     */
+    @Test
+    public void testShowHomePage_unsupportedRole() throws Throwable {
+        // Given
+        String roleType = "UNSUPPORTED_ROLE";
+        mockAuthenticationUtil(roleType);
+        when(globalPreferencesService.getCurrentIndustry()).thenReturn(IndustryType.DEFENSE);
 
-		// When
-		ModelMap modelMap = new ModelMap();
-		String result = underTest.showHomePage(httpSession, modelMap);
+        // When
+        ModelMap modelMap = new ModelMap();
+        String result = underTest.showHomePage(new TestingAuthenticationToken(new Object(), new Object()), modelMap);
 
-		// Then
-		assertEquals("error/500", result);
-	}
+        // Then
+        assertEquals("error/500", result);
+    }
 
-	/**
-	 * Test for showHomePage(HttpSession, ModelMap)
-	 *
-	 * @see PageController#showHomePage(HttpSession, ModelMap)
-	 */
-	@Test
-	public void testShowHomePage_error_globalPreferencesNotFoundException() throws Throwable {
-		// Given
-		String roleType = "";
-		MockHttpSession httpSession = new MockHttpSession();
-		httpSession.setAttribute(SessionUtil.FULL_ROLE_NAME_KEY, roleType);
+    /**
+     * Test for showHomePage(Authentication, ModelMap)
+     *
+     * @see PageController#showHomePage(Authentication, ModelMap)
+     */
+    @Test
+    public void testShowHomePage_error_globalPreferencesMoreThanOneException() throws Throwable {
+        // Given
+        String roleType = RoleType.ROLE_PURCHASER.toString();
+        mockAuthenticationUtil(roleType);
+        when(globalPreferencesService.getCurrentIndustry()).thenThrow(GlobalPreferencesMoreThanOneException.class);
 
-		when(globalPreferencesService.getCurrentIndustry()).thenThrow(GlobalPreferencesNotFoundException.class);
+        // When
+        ModelMap modelMap = new ModelMap();
+        String result = underTest.showHomePage(new TestingAuthenticationToken(new Object(), new Object()), modelMap);
 
-		// When
-		ModelMap modelMap = new ModelMap();
-		String result = underTest.showHomePage(httpSession, modelMap);
+        // Then
+        assertEquals("error/500", result);
+    }
 
-		// Then
-		assertEquals("error/500", result);
-	}
+    /**
+     * Test for showHomePage(Authentication, ModelMap)
+     *
+     * @see PageController#showHomePage(Authentication, ModelMap)
+     */
+    @Test
+    public void testShowHomePage_error_globalPreferencesNotFoundException() throws Throwable {
+        // Given
+        String roleType = RoleType.ROLE_PURCHASER.toString();
+        mockAuthenticationUtil(roleType);
+        when(globalPreferencesService.getCurrentIndustry()).thenThrow(GlobalPreferencesNotFoundException.class);
 
-	/**
-	 * test for showDemoAdminPage(ModelMap)
-	 *
-	 * @see PageController#showDemoAdminPage(ModelMap)
-	 */
-	@Test
-	public void testShowDemoAdminPage_normal() throws Throwable {
-		// Given
-		when(globalPreferencesService.getCurrentIndustry()).thenReturn(IndustryType.DEFENSE);
+        // When
+        ModelMap modelMap = new ModelMap();
+        String result = underTest.showHomePage(new TestingAuthenticationToken(new Object(), new Object()), modelMap);
 
-		// When
-		ModelMap modelMap = new ModelMap();
-		String result = underTest.showDemoAdminPage(modelMap);
+        // Then
+        assertEquals("error/500", result);
+    }
 
-		// Then
-		assertEquals("demoAdmin", result);
-	}
+    private void mockAuthenticationUtil(String roleToReturn) throws Exception {
+        PowerMockito.mockStatic(AuthenticationUtil.class);
+        PowerMockito.doReturn(roleToReturn).when(AuthenticationUtil.class, "getUserRoleNameInAuthentication", any(Authentication.class));
+    }
 
-	/**
-	 * test for showDemoAdminPage(ModelMap)
-	 *
-	 * @see PageController#showDemoAdminPage(ModelMap)
-	 */
-	@Test
-	public void testShowDemoAdminPage_error_globalPreferencesMoreThanOneException() throws Throwable {
-		// Given
-		when(globalPreferencesService.getCurrentIndustry()).thenThrow(GlobalPreferencesMoreThanOneException.class);
+    /**
+     * test for showDemoAdminPage(ModelMap)
+     *
+     * @see PageController#showDemoAdminPage(ModelMap)
+     */
+    @Test
+    public void testShowDemoAdminPage_normal() throws Throwable {
+        // Given
+        when(globalPreferencesService.getCurrentIndustry()).thenReturn(IndustryType.DEFENSE);
 
-		// When
-		ModelMap modelMap = new ModelMap();
-		String result = underTest.showDemoAdminPage(modelMap);
+        // When
+        ModelMap modelMap = new ModelMap();
+        String result = underTest.showDemoAdminPage(modelMap);
 
-		// Then
-		assertEquals("error/500", result);
-	}
+        // Then
+        assertEquals("demoAdmin", result);
+    }
 
-	/**
-	 * test for showDemoAdminPage(ModelMap)
-	 *
-	 * @see PageController#showDemoAdminPage(ModelMap)
-	 */
-	@Test
-	public void testShowDemoAdminPage_error_globalPreferencesNotFoundException() throws Throwable {
-		// Given
-		when(globalPreferencesService.getCurrentIndustry()).thenThrow(GlobalPreferencesNotFoundException.class);
+    /**
+     * test for showDemoAdminPage(ModelMap)
+     *
+     * @see PageController#showDemoAdminPage(ModelMap)
+     */
+    @Test
+    public void testShowDemoAdminPage_error_globalPreferencesMoreThanOneException() throws Throwable {
+        // Given
+        when(globalPreferencesService.getCurrentIndustry()).thenThrow(GlobalPreferencesMoreThanOneException.class);
 
-		// When
-		ModelMap modelMap = new ModelMap();
-		String result = underTest.showDemoAdminPage(modelMap);
+        // When
+        ModelMap modelMap = new ModelMap();
+        String result = underTest.showDemoAdminPage(modelMap);
 
-		// Then
-		assertEquals("error/500", result);
-	}
-	
-	/**
-	 * Test for showOrderWizardPage(ModelMap)
-	 *
-	 * @see PageController#showOrderWizardPage(ModelMap)
-	 */
-	@Test
-	public void testShowOrderWizardPage_normal() throws Throwable {
-		// Given
-		when(globalPreferencesService.getCurrentIndustry()).thenReturn(IndustryType.DEFENSE);
+        // Then
+        assertEquals("error/500", result);
+    }
 
-		// When
-		ModelMap modelMap = new ModelMap();
-		String result = underTest.showOrderWizardPage(modelMap);
+    /**
+     * test for showDemoAdminPage(ModelMap)
+     *
+     * @see PageController#showDemoAdminPage(ModelMap)
+     */
+    @Test
+    public void testShowDemoAdminPage_error_globalPreferencesNotFoundException() throws Throwable {
+        // Given
+        when(globalPreferencesService.getCurrentIndustry()).thenThrow(GlobalPreferencesNotFoundException.class);
 
-		// Then
-		assertEquals("orderWizard", result);
-	}
+        // When
+        ModelMap modelMap = new ModelMap();
+        String result = underTest.showDemoAdminPage(modelMap);
 
-	/**
-	 * Test for showOrderWizardPage(ModelMap)
-	 *
-	 * @see PageController#showOrderWizardPage(ModelMap)
-	 */
-	@Test
-	public void testShowOrderWizardPage_error_globalPreferencesMoreThanOneException() throws Throwable {
-		// Given
-		when(globalPreferencesService.getCurrentIndustry()).thenThrow(GlobalPreferencesMoreThanOneException.class);
+        // Then
+        assertEquals("error/500", result);
+    }
 
-		// When
-		ModelMap modelMap = new ModelMap();
-		String result = underTest.showOrderWizardPage(modelMap);
+    /**
+     * Test for showOrderWizardPage(ModelMap)
+     *
+     * @see PageController#showOrderWizardPage(ModelMap)
+     */
+    @Test
+    public void testShowOrderWizardPage_normal() throws Throwable {
+        // Given
+        when(globalPreferencesService.getCurrentIndustry()).thenReturn(IndustryType.DEFENSE);
 
-		// Then
-		assertEquals("error/500", result);
-	}
+        // When
+        ModelMap modelMap = new ModelMap();
+        String result = underTest.showOrderWizardPage(modelMap);
 
-	/**
-	 * Test for showOrderWizardPage(ModelMap)
-	 *
-	 * @see PageController#showOrderWizardPage(ModelMap)
-	 */
-	@Test
-	public void testShowOrderWizardPage_error_globalPreferencesNotFoundException() throws Throwable {
-		// Given
-		when(globalPreferencesService.getCurrentIndustry()).thenThrow(GlobalPreferencesNotFoundException.class);
+        // Then
+        assertEquals("orderWizard", result);
+    }
 
-		// When
-		ModelMap modelMap = new ModelMap();
-		String result = underTest.showOrderWizardPage(modelMap);
+    /**
+     * Test for showOrderWizardPage(ModelMap)
+     *
+     * @see PageController#showOrderWizardPage(ModelMap)
+     */
+    @Test
+    public void testShowOrderWizardPage_error_globalPreferencesMoreThanOneException() throws Throwable {
+        // Given
+        when(globalPreferencesService.getCurrentIndustry()).thenThrow(GlobalPreferencesMoreThanOneException.class);
 
-		// Then
-		assertEquals("error/500", result);
-	}
+        // When
+        ModelMap modelMap = new ModelMap();
+        String result = underTest.showOrderWizardPage(modelMap);
 
-	
-	/**
-	 * Test for showOrdersPage(ModelMap)
-	 *
-	 * @see PageController#showOrdersPage(ModelMap)
-	 */
-	@Test
-	public void testShowOrdersPage_normal() throws Throwable {
-		// Given
-		when(globalPreferencesService.getCurrentIndustry()).thenReturn(IndustryType.DEFENSE);
+        // Then
+        assertEquals("error/500", result);
+    }
 
-		// When
-		ModelMap modelMap = new ModelMap();
-		String result = underTest.showOrdersPage(modelMap);
+    /**
+     * Test for showOrderWizardPage(ModelMap)
+     *
+     * @see PageController#showOrderWizardPage(ModelMap)
+     */
+    @Test
+    public void testShowOrderWizardPage_error_globalPreferencesNotFoundException() throws Throwable {
+        // Given
+        when(globalPreferencesService.getCurrentIndustry()).thenThrow(GlobalPreferencesNotFoundException.class);
 
-		// Then
-		assertEquals("orders", result);
-	}
+        // When
+        ModelMap modelMap = new ModelMap();
+        String result = underTest.showOrderWizardPage(modelMap);
 
-	/**
-	 * Test for showOrdersPage(ModelMap)
-	 *
-	 * @see PageController#showOrdersPage(ModelMap)
-	 */
-	@Test
-	public void testShowOrdersPage_error_globalPreferencesMoreThanOneException() throws Throwable {
-		// Given
-		when(globalPreferencesService.getCurrentIndustry()).thenThrow(GlobalPreferencesMoreThanOneException.class);
+        // Then
+        assertEquals("error/500", result);
+    }
 
-		// When
-		ModelMap modelMap = new ModelMap();
-		String result = underTest.showOrdersPage(modelMap);
 
-		// Then
-		assertEquals("error/500", result);
-	}
+    /**
+     * Test for showOrdersPage(ModelMap)
+     *
+     * @see PageController#showOrdersPage(ModelMap)
+     */
+    @Test
+    public void testShowOrdersPage_normal() throws Throwable {
+        // Given
+        when(globalPreferencesService.getCurrentIndustry()).thenReturn(IndustryType.DEFENSE);
 
-	/**
-	 * Test for showOrdersPage(ModelMap)
-	 *
-	 * @see PageController#showOrdersPage(ModelMap)
-	 */
-	@Test
-	public void testShowOrdersPage_error_globalPreferencesNotFoundException() throws Throwable {
-		// Given
-		when(globalPreferencesService.getCurrentIndustry()).thenThrow(GlobalPreferencesNotFoundException.class);
+        // When
+        ModelMap modelMap = new ModelMap();
+        String result = underTest.showOrdersPage(modelMap);
 
-		// When
-		ModelMap modelMap = new ModelMap();
-		String result = underTest.showOrdersPage(modelMap);
+        // Then
+        assertEquals("orders", result);
+    }
 
-		// Then
-		assertEquals("error/500", result);
-	}
-	
-	/**
-	 * Test for showItemDetailsPage(ModelMap, itemId)
-	 *
-	 * @see PageController#showItemDetailsPage(ModelMap, Long)
-	 */
-	@Test
-	public void testShowItemDetailsPage_normal() throws Throwable {
-		// Given
-		when(globalPreferencesService.getCurrentIndustry()).thenReturn(IndustryType.DEFENSE);
-		doReturn(true).when(itemService).existsByItemId(anyLong());
-		
-		// When
-		ModelMap modelMap = new ModelMap();
-		String result = underTest.showItemDetailsPage(modelMap, 1L);
+    /**
+     * Test for showOrdersPage(ModelMap)
+     *
+     * @see PageController#showOrdersPage(ModelMap)
+     */
+    @Test
+    public void testShowOrdersPage_error_globalPreferencesMoreThanOneException() throws Throwable {
+        // Given
+        when(globalPreferencesService.getCurrentIndustry()).thenThrow(GlobalPreferencesMoreThanOneException.class);
 
-		// Then
-		assertEquals("item", result);
-	}
+        // When
+        ModelMap modelMap = new ModelMap();
+        String result = underTest.showOrdersPage(modelMap);
 
-	/**
-	 * Test for showItemDetailsPage(ModelMap, itemId)
-	 *
-	 * @see PageController#showItemDetailsPage(ModelMap, Long)
-	 */
-	@Test
-	public void testShowItemDetailsPage_error_globalPreferencesMoreThanOneException() throws Throwable {
-		// Given
-		when(globalPreferencesService.getCurrentIndustry()).thenThrow(GlobalPreferencesMoreThanOneException.class);
+        // Then
+        assertEquals("error/500", result);
+    }
 
-		// When
-		ModelMap modelMap = new ModelMap();
-		String result = underTest.showItemDetailsPage(modelMap, 1L);
+    /**
+     * Test for showOrdersPage(ModelMap)
+     *
+     * @see PageController#showOrdersPage(ModelMap)
+     */
+    @Test
+    public void testShowOrdersPage_error_globalPreferencesNotFoundException() throws Throwable {
+        // Given
+        when(globalPreferencesService.getCurrentIndustry()).thenThrow(GlobalPreferencesNotFoundException.class);
 
-		// Then
-		assertEquals("error/500", result);
-	}
+        // When
+        ModelMap modelMap = new ModelMap();
+        String result = underTest.showOrdersPage(modelMap);
 
-	/**
-	 * Test for showItemDetailsPage(ModelMap, itemId)
-	 *
-	 * @see PageController#showItemDetailsPage(ModelMap, Long)
-	 */
-	@Test
-	public void testShowItemDetailsPage_error_globalPreferencesNotFoundException() throws Throwable {
-		// Given
-		when(globalPreferencesService.getCurrentIndustry()).thenThrow(GlobalPreferencesNotFoundException.class);
+        // Then
+        assertEquals("error/500", result);
+    }
 
-		// When
-		ModelMap modelMap = new ModelMap();
-		String result = underTest.showItemDetailsPage(modelMap, 1L);
+    /**
+     * Test for showItemDetailsPage(ModelMap, itemId)
+     *
+     * @see PageController#showItemDetailsPage(ModelMap, Long)
+     */
+    @Test
+    public void testShowItemDetailsPage_normal() throws Throwable {
+        // Given
+        when(globalPreferencesService.getCurrentIndustry()).thenReturn(IndustryType.DEFENSE);
+        doReturn(true).when(itemService).existsByItemId(anyLong());
 
-		// Then
-		assertEquals("error/500", result);
-	}
-	
-	/**
-	 * Test for showItemDetailsPage(ModelMap, itemId)
-	 *
-	 * @see PageController#showItemDetailsPage(ModelMap, Long)
-	 */
-	@Test
-	public void testShowItemDetailsPage_error_notFoundException() throws Throwable {
-		// Given
-		when(globalPreferencesService.getCurrentIndustry()).thenReturn(IndustryType.DEFENSE);
-		doReturn(false).when(itemService).existsByItemId(anyLong());
-		
-		// When
-		ModelMap modelMap = new ModelMap();
-		String result = underTest.showItemDetailsPage(modelMap, 100L);
-		
-		// Then
-		assertEquals("error/404", result);
-	}
-	
-	/**
-	 * Test for showItemsListPage(ModelMap, categoryId)
-	 *
-	 * @see PageController#showItemsListPage(ModelMap, Long)
-	 */
-	@Test
-	public void testShowItemsListPage_normal() throws Throwable {
-		// Given
-		when(globalPreferencesService.getCurrentIndustry()).thenReturn(IndustryType.DEFENSE);
-		doReturn(true).when(categoryService).existsByCategoryId(anyLong());
-		
-		// When
-		ModelMap modelMap = new ModelMap();
-		String result = underTest.showItemsListPage(modelMap, 1L);
+        // When
+        ModelMap modelMap = new ModelMap();
+        String result = underTest.showItemDetailsPage(modelMap, 1L);
 
-		// Then
-		assertEquals("category", result);
-	}
+        // Then
+        assertEquals("item", result);
+    }
 
-	/**
-	 * Test for showItemsListPage(ModelMap, categoryId)
-	 *
-	 * @see PageController#showItemsListPage(ModelMap, Long)
-	 */
-	@Test
-	public void testShowItemsListPage_error_globalPreferencesMoreThanOneException() throws Throwable {
-		// Given
-		when(globalPreferencesService.getCurrentIndustry()).thenThrow(GlobalPreferencesMoreThanOneException.class);
+    /**
+     * Test for showItemDetailsPage(ModelMap, itemId)
+     *
+     * @see PageController#showItemDetailsPage(ModelMap, Long)
+     */
+    @Test
+    public void testShowItemDetailsPage_error_globalPreferencesMoreThanOneException() throws Throwable {
+        // Given
+        when(globalPreferencesService.getCurrentIndustry()).thenThrow(GlobalPreferencesMoreThanOneException.class);
 
-		// When
-		ModelMap modelMap = new ModelMap();
-		String result = underTest.showItemsListPage(modelMap, 1L);
+        // When
+        ModelMap modelMap = new ModelMap();
+        String result = underTest.showItemDetailsPage(modelMap, 1L);
 
-		// Then
-		assertEquals("error/500", result);
-	}
+        // Then
+        assertEquals("error/500", result);
+    }
 
-	/**
-	 * Test for showItemsListPage(ModelMap, categoryId)
-	 *
-	 * @see PageController#showItemsListPage(ModelMap, Long)
-	 */
-	@Test
-	public void testShowItemsListPage_error_globalPreferencesNotFoundException() throws Throwable {
-		// Given
-		when(globalPreferencesService.getCurrentIndustry()).thenThrow(GlobalPreferencesNotFoundException.class);
+    /**
+     * Test for showItemDetailsPage(ModelMap, itemId)
+     *
+     * @see PageController#showItemDetailsPage(ModelMap, Long)
+     */
+    @Test
+    public void testShowItemDetailsPage_error_globalPreferencesNotFoundException() throws Throwable {
+        // Given
+        when(globalPreferencesService.getCurrentIndustry()).thenThrow(GlobalPreferencesNotFoundException.class);
 
-		// When
-		ModelMap modelMap = new ModelMap();
-		String result = underTest.showItemsListPage(modelMap, 1L);
+        // When
+        ModelMap modelMap = new ModelMap();
+        String result = underTest.showItemDetailsPage(modelMap, 1L);
 
-		// Then
-		assertEquals("error/500", result);
-	}
-	
-	/**
-	 * Test for showItemsListPage(ModelMap, categoryId)
-	 *
-	 * @see PageController#showItemsListPage(ModelMap, Long)
-	 */
-	@Test
-	public void testShowItemsListPage_error_notFoundException() throws Throwable {
-		// Given
-		when(globalPreferencesService.getCurrentIndustry()).thenReturn(IndustryType.DEFENSE);
-		doReturn(false).when(categoryService).existsByCategoryId(anyLong());
-		
-		// When
-		ModelMap modelMap = new ModelMap();
-		String result = underTest.showItemsListPage(modelMap, 1L);
-		
-		// Then
-		assertEquals("error/404", result);
-	}
-	
-	/**
-	 * Test for showSwaggerUIPage()
-	 *
-	 * @see PageController#showSwaggerUIPage()
-	 */
-	@Test
-	public void testShowSwaggerUIPage() throws Throwable {
-		// When
-		String result = underTest.showSwaggerUIPage();
-		
-		// Then
-		assertEquals("swaggerUIIndex", result);
-	}
+        // Then
+        assertEquals("error/500", result);
+    }
+
+    /**
+     * Test for showItemDetailsPage(ModelMap, itemId)
+     *
+     * @see PageController#showItemDetailsPage(ModelMap, Long)
+     */
+    @Test
+    public void testShowItemDetailsPage_error_notFoundException() throws Throwable {
+        // Given
+        when(globalPreferencesService.getCurrentIndustry()).thenReturn(IndustryType.DEFENSE);
+        doReturn(false).when(itemService).existsByItemId(anyLong());
+
+        // When
+        ModelMap modelMap = new ModelMap();
+        String result = underTest.showItemDetailsPage(modelMap, 100L);
+
+        // Then
+        assertEquals("error/404", result);
+    }
+
+    /**
+     * Test for showItemsListPage(ModelMap, categoryId)
+     *
+     * @see PageController#showItemsListPage(ModelMap, Long)
+     */
+    @Test
+    public void testShowItemsListPage_normal() throws Throwable {
+        // Given
+        when(globalPreferencesService.getCurrentIndustry()).thenReturn(IndustryType.DEFENSE);
+        doReturn(true).when(categoryService).existsByCategoryId(anyLong());
+
+        // When
+        ModelMap modelMap = new ModelMap();
+        String result = underTest.showItemsListPage(modelMap, 1L);
+
+        // Then
+        assertEquals("category", result);
+    }
+
+    /**
+     * Test for showItemsListPage(ModelMap, categoryId)
+     *
+     * @see PageController#showItemsListPage(ModelMap, Long)
+     */
+    @Test
+    public void testShowItemsListPage_error_globalPreferencesMoreThanOneException() throws Throwable {
+        // Given
+        when(globalPreferencesService.getCurrentIndustry()).thenThrow(GlobalPreferencesMoreThanOneException.class);
+
+        // When
+        ModelMap modelMap = new ModelMap();
+        String result = underTest.showItemsListPage(modelMap, 1L);
+
+        // Then
+        assertEquals("error/500", result);
+    }
+
+    /**
+     * Test for showItemsListPage(ModelMap, categoryId)
+     *
+     * @see PageController#showItemsListPage(ModelMap, Long)
+     */
+    @Test
+    public void testShowItemsListPage_error_globalPreferencesNotFoundException() throws Throwable {
+        // Given
+        when(globalPreferencesService.getCurrentIndustry()).thenThrow(GlobalPreferencesNotFoundException.class);
+
+        // When
+        ModelMap modelMap = new ModelMap();
+        String result = underTest.showItemsListPage(modelMap, 1L);
+
+        // Then
+        assertEquals("error/500", result);
+    }
+
+    /**
+     * Test for showItemsListPage(ModelMap, categoryId)
+     *
+     * @see PageController#showItemsListPage(ModelMap, Long)
+     */
+    @Test
+    public void testShowItemsListPage_error_notFoundException() throws Throwable {
+        // Given
+        when(globalPreferencesService.getCurrentIndustry()).thenReturn(IndustryType.DEFENSE);
+        doReturn(false).when(categoryService).existsByCategoryId(anyLong());
+
+        // When
+        ModelMap modelMap = new ModelMap();
+        String result = underTest.showItemsListPage(modelMap, 1L);
+
+        // Then
+        assertEquals("error/404", result);
+    }
+
+    /**
+     * Test for showSwaggerUIPage()
+     *
+     * @see PageController#showSwaggerUIPage()
+     */
+    @Test
+    public void testShowSwaggerUIPage() throws Throwable {
+        // When
+        String result = underTest.showSwaggerUIPage();
+
+        // Then
+        assertEquals("swaggerUIIndex", result);
+    }
 }

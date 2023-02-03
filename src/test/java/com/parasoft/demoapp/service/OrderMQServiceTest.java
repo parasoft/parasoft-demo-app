@@ -133,14 +133,13 @@ public class OrderMQServiceTest {
         MQConfig.currentMQType = MqType.KAFKA;
         KafkaConfig.setOrderServiceSendToTopic("test.topic");
         ListenableFuture<SendResult<String, InventoryOperationRequestMessageDTO>> future = mock(ListenableFuture.class);
-        doReturn(future).when(operationRequestKafkaTemplate).send(anyString(), anyString(), any(InventoryOperationRequestMessageDTO.class));
+        doReturn(future).when(operationRequestKafkaTemplate).send(anyString(), anyInt(), anyString(), any(InventoryOperationRequestMessageDTO.class));
 
         // When
         underTest.sendToInventoryRequestDestination(InventoryOperation.DECREASE, orderNumber, orderItems);
 
-
         // Then
-        Mockito.verify(operationRequestKafkaTemplate, times(1)).send(anyString(), anyString(), any(InventoryOperationRequestMessageDTO.class));
+        Mockito.verify(operationRequestKafkaTemplate, times(1)).send(anyString(), any(Integer.class), anyString(), any(InventoryOperationRequestMessageDTO.class));
     }
 
     /**
@@ -181,13 +180,13 @@ public class OrderMQServiceTest {
         MQConfig.currentMQType = MqType.KAFKA;
         KafkaConfig.setOrderServiceSendToTopic("test.topic");
         ListenableFuture<SendResult<String, InventoryOperationRequestMessageDTO>> future = mock(ListenableFuture.class);
-        doReturn(future).when(operationRequestKafkaTemplate).send(anyString(), anyString(), any(InventoryOperationRequestMessageDTO.class));
+        doReturn(future).when(operationRequestKafkaTemplate).send(anyString(), anyInt(), anyString(), any(InventoryOperationRequestMessageDTO.class));
 
         // When
         underTest.sendToInventoryRequestDestination(InventoryOperation.DECREASE, orderNumber, orderItems, "test");
 
         // Then
-        Mockito.verify(operationRequestKafkaTemplate, times(1)).send(anyString(), anyString(), any(InventoryOperationRequestMessageDTO.class));
+        Mockito.verify(operationRequestKafkaTemplate, times(1)).send(anyString(), any(Integer.class), anyString(), any(InventoryOperationRequestMessageDTO.class));
     }
 
     /**

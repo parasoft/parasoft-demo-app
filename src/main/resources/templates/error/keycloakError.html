@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:ng="http://angularjs.org" xmlns:th="http://www.thymeleaf.org" ng-app="pdaApp">
+<head>
+    <meta charset="UTF-8">
+    <title translate="PROJECT_NAME"></title>
+
+    <link rel="icon" href="/common/images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="/common/css/common.css">
+    <link rel="stylesheet" type="text/css" href="/common/css/defaultError.css">
+    <link rel="stylesheet" type="text/css" ng-href="/{{industry}}/css/common.css">
+    <link rel="stylesheet" type="text/css" ng-href="/{{industry}}/css/error.css">
+</head>
+<body>
+    <input type="hidden" id="current_web_service_mode" th:value="${currentWebServiceMode}">
+    <div class="message warning industry_font" ng-controller="error_controller as error">
+        <div class="error_head">
+            <h1>
+                <span th:text="${keycloakStatusCode}"></span>
+                <span class="keycloak_error_title">-</span>
+                <span class="keycloak_error_title" translate="KEYCLOAK_ERROR_TITLE"></span>
+            </h1>
+        </div>
+        <div class="content" th:switch="${keycloakStatusCode}">
+            <div th:case="'404'">
+                <span translate="KEYCLOAK_REALM_NOT_FOUND"></span>&nbsp;
+                <span th:text="${keycloakRealmUri}"></span>
+            </div>
+            <div th:case="'503'" translate="KEYCLOAK_SERVER_IS_NOT_AVAILABLE"></div>
+            <div th:case="*" translate="DEFAULT_KEYCLOAK_ERROR"></div><br/><br/>
+            <a href="/" class="go_home"><span translate="BACK_TO_LOGIN_PAGE"></span></a>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="/lib/jquery/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="/lib/jquery/jquery.serializejson.min.js"></script>
+    <script type="text/javascript" src="/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/lib/angularjs/angular.min.js"></script>
+    <script type="text/javascript" src="/lib/angularjs/angular-translate.min.js"></script>
+    <script type="text/javascript" src="/lib/angularjs/angular-translate-loader-url.min.js"></script>
+    <script type="text/javascript" src="/common/js/common.js"></script>
+    <script type="text/javascript" src="/common/js/errorPage.js"></script>
+</body>
+</html>

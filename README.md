@@ -44,12 +44,60 @@ When launching the app, you can specify the port to use with a command like the 
 ```
 ./gradlew bootRun -Pport=8888
 ```
+### Configuring application-related properties
+When running the application from sources:
+- As default, configuration properties in [application.properties](https://github.com/parasoft/parasoft-demo-app/blob/main/application.properties) will be loaded. You can modify properties in that file before running the application.
+- You can also overwrite the configuration by creating a *config* folder under root directory of this project and put a customized version of application.properties file in it. A copy of application.properties which contains all configurable properties is available [here](https://github.com/parasoft/parasoft-demo-app/blob/main/application.properties).
+
+When running the application as .war file:
+- You can create *config* folder under same directory of your .war file and put a customized version of application.properties in it before running the .war file.
+- You can also overwrite specific properties using command line arguments:
+  ```
+  java -jar build/libs/parasoft-demo-app-1.1.0.war --hsqldb.port=9002 // database server port will be changed to 9008
+  ```
+> Notes: **Property** column in configuration tables of this readme refers to the configurable property name in application.properties.
+
 ## Using the Demo Application
 Once started, you can access the application at [http://localhost:8080](http://localhost:8080).
 
 Login with one of these users:
 - Username `purchaser` password `password`
 - Username `approver` password `password`
+
+## Using OAuth 2.0 Authentication
+This application supports both Http Basic authentication and OAuth 2.0 authentication.
+To use OAuth 2.0 authentication, you will need to set up a Keycloak server as the OAuth 2.0 provider.
+
+### Using Keycloak server
+1. Download, install and start a Keycloak server (19.0.0 or later) with command line.
+    ```
+    bin\kc.[sh|bat] start-dev --http-port=8081
+    ```
+2. Go to Keycloak admin console(e.g. http://localhost:8081) to make sure the service has started successfully. Create an initial admin user.
+3. Download [demo-app-realm.json](https://github.com/parasoft/parasoft-demo-app/blob/main/keycloak/demo-app-realm.json).
+    >  [demo-app-realm.json](https://github.com/parasoft/parasoft-demo-app/blob/main/keycloak/demo-app-realm.json) includes a realm *demo-app-realm* and necessary information to use Keycloak with demo application:
+    > * 50 purchasers and 50 approvers which have consistent credentials and roles with default data in database of demo application.
+    > * A client with `demo-app-client` as id and `DzOS5Y4iRmHIQH6ntTGHj78PpFEjUKLo` as secret.
+    > * Valid redirect URI set as `*`, which allows redirection to any URI.
+
+4. Run command line in root directory of Keycloak to import predefined realm data.
+    ```
+    bin/kc.[sh|bat] import --file path/to/demo-app-realm.json
+    ```
+5. If Keycloak server is not running on *localhost:8081*, make sure to change `spring.security.oauth2.client.provider.keycloak.realm-uri` property value in **application.properties** file.
+6. Start the demo application and choose to log in with OAuth 2.0.
+
+### Using SOAtest OAuth 2.0 Authentication (Authorization Code type)
+
+**Configuration details for Authorization Code type (default)**
+
+| Option        | Value                                                                     | Property                                                          |
+|---------------|---------------------------------------------------------------------------|-------------------------------------------------------------------|
+| Redirect URI  | * (any URI)                                                               | N.A.                                                              |
+| Token URI     | http://localhost:8081/realms/demo-app-realm/protocol/openid-connect/token | spring.security.oauth2.client.provider.keycloak.token-uri         |
+| Client ID     | demo-app-client                                                           | spring.security.oauth2.client.registration.keycloak.client-id     |
+| Client secret | DzOS5Y4iRmHIQH6ntTGHj78PpFEjUKLo                                          | spring.security.oauth2.client.registration.keycloak.client-secret |
+| scope         | openid                                                                    | spring.security.oauth2.client.registration.keycloak.scope         |
 
 ## Connect to embedded HSQLDB server instance
 There are four databases (one for global and three for industries) in this Application, which are **global**, **outdoor**, **defense** and **aerospace**.
@@ -62,25 +110,25 @@ There are four databases (one for global and three for industries) in this Appli
 | aerospace     | Used to store the data about aerospace industry.     |
 
 ### Connection configuration
-This application exposes port 9001 for the user to connect to the HSQLDB database remotely.
+This application exposes port 9001 for the user to connect to the HSQLDB database remotely. This port is configurable as **hsqldb.port** in application.properties.
 
 - Global database
 
-| Option   | Value                                      |
-|----------|--------------------------------------------|
-| Driver   | `org.hsqldb.jdbcDriver`                    |
-| URL      | `jdbc:hsqldb:hsql://localhost:9001/global` |
-| Username | `SA`                                       |
-| Password | `pass`                                     |
+| Option   | Value                                      | Property                                          |
+|----------|--------------------------------------------|---------------------------------------------------|
+| Driver   | `org.hsqldb.jdbcDriver`                    | global.datasource.configuration.driver-class-name |
+| URL      | `jdbc:hsqldb:hsql://localhost:9001/global` | global.datasource.configuration.url               |
+| Username | `SA`                                       | global.datasource.configuration.username          |
+| Password | `pass`                                     | global.datasource.configuration.password          |
 
 - Industry database
 
-| Option   | Value                                               |
-|----------|-----------------------------------------------------|
-| Driver   | `org.hsqldb.jdbcDriver`                             |
-| URL      | `jdbc:hsqldb:hsql://localhost:9001/{database name}` |
-| Username | `SA`                                                |
-| Password | `pass`                                              |
+| Option   | Value                                               | Property                                                             |
+|----------|-----------------------------------------------------|----------------------------------------------------------------------|
+| Driver   | `org.hsqldb.jdbcDriver`                             | industry.datasource.configurations.{database name}.driver-class-name |
+| URL      | `jdbc:hsqldb:hsql://localhost:9001/{database name}` | industry.datasource.configurations.{database name}.url               |
+| Username | `SA`                                                | industry.datasource.configurations.{database name}.username          |
+| Password | `pass`                                              | industry.datasource.configurations.{database name}.password          |
 
 ## Using Parasoft JMS Proxy and Virtual Asset with message queue
 There are two main services for order management in this application, **order service** and **inventory service**. After an order is submitted, order service sends
@@ -94,36 +142,43 @@ The configuration for queues/topics can be changed or reset to default on **Demo
 
 **Configuration details for embedded ActiveMQ server (default)**
 
-| Option                            | Value                                                    |
-|-----------------------------------|----------------------------------------------------------|
-| Provider URL                      | `tcp://localhost:61626`                                  |
-| Initial context class             | `org.apache.activemq.jndi.ActiveMQInitialContextFactory` |
-| Connection factory                | `ConnectionFactory`                                      |
-| Username                          | `admin`                                                  |
-| Password                          | `admin`                                                  |
-| Inventory service request queue   | `inventory.request`                                      |
-| Inventory service response queue  | `inventory.response`                                     |
+| Option                           | Value                                                    | Property                   |
+|----------------------------------|----------------------------------------------------------|----------------------------|
+| Provider URL                     | `tcp://localhost:61626`                                  | spring.activemq.broker-url |
+| Initial context class            | `org.apache.activemq.jndi.ActiveMQInitialContextFactory` | N.A.                       |
+| Connection factory               | `ConnectionFactory`                                      | N.A.                       |
+| Username                         | `admin`                                                  | spring.activemq.user       |
+| Password                         | `admin`                                                  | spring.activemq.password   |
+| Inventory service request queue  | `inventory.request`                                      | N.A.                       |
+| Inventory service response queue | `inventory.response`                                     | N.A.                       |
 
 **Configuration details for external Kafka server (default)**
 
-|    Option   |             Value              |
-|-------------|--------------------------------|
-| Broker URL  |       `localhost:9092`         |
-| Group ID    |       `inventory-operation`    |
+| Option     | Value                 | Property                       |
+|------------|-----------------------|--------------------------------|
+| Broker URL | `localhost:9092`      | spring.kafka.bootstrap-servers |
+| Group ID   | `inventory-operation` | spring.kafka.consumer.group-id |
+
+> For simplicity, messages produced or consumed in this application will be in partition 0 of the Kafka topics.
+> When the expected behavior is to consume messages from both inside and outside this application(e.g. in SOAtest & Virtualize),
+> make sure to use different group ID for the external consumer.
 
 **Configuration details for external RabbitMQ server (default)**
 
-| Option                     | Value                      |
-|----------------------------|----------------------------|
-| Host                       | `localhost`                |
-| Port                       | `5672`                     |
-| Username                   | `guest`                    |
-| Password                   | `guest`                    |
-| Exchange                   | `inventory.direct`         |
-| Request queue routing key  | `inventory.queue.request`  |
-| Response queue routing key | `inventory.queue.response` |
+| Option                     | Value                      | Property                 |
+|----------------------------|----------------------------|--------------------------|
+| Host                       | `localhost`                | spring.rabbitmq.host     |
+| Port                       | `5672`                     | spring.rabbitmq.port     |
+| Username                   | `guest`                    | spring.rabbitmq.username |
+| Password                   | `guest`                    | spring.rabbitmq.password |
+| Exchange                   | `inventory.direct`         | N.A.                     |
+| Request queue routing key  | `inventory.queue.request`  | N.A.                     |
+| Response queue routing key | `inventory.queue.response` | N.A.                     |
 
-This configuration can be changed in **application.properties** file.
+> This application supports [Direct Reply-to](https://www.rabbitmq.com/direct-reply-to.html) feature.
+> If you want to use RPC (request/reply) pattern in SOAtest, make sure to configure the following fields with the pre-exist pseudo-queue `amq.rabbitmq.reply-to`:
+> 1. Set **Reply To** (Transport -> Basic Properties -> Reply To) to `amq.rabbitmq.reply-to`  to publish the response message to it.
+> 2. Set **Queue Name** (Transport -> Consume -> Queue Name) to `amq.rabbitmq.reply-to` to consume response message from it.
 
 ### Using JMS Proxy
 To use the queueing system with JMS proxy, you can change **Destination queue** and **Reply to queue** to customized queue names.
@@ -132,17 +187,15 @@ The **Server Connection** in message proxy should be configured with the two def
 
 <img src="src/main/resources/static/common/images/mq_proxy_mode_diagram.png" alt="mq proxy mode diagram">
 
-### Using virtual asset with JMS and RabbitMQ
-To use the queueing system with virtual asset, you can change **Inventory service request queue** to a customized destination queue name.
+### Using virtual asset with JMS, RabbitMQ and Kafka
+
+<img src="src/main/resources/static/common/images/MQ_and_kafka_virtual_asset_mode_diagram.png" alt="MQ and kafka virtual asset mode diagram">
+
+To use JMS or RabbitMQ with virtual asset, you can change **Inventory service request queue** to a customized destination queue name.
 The virtual asset deployment should be configured to listen to the customized destination queue and reply to the default response queue.
 
-<img src="src/main/resources/static/common/images/mq_virtual_asset_mode_diagram.png" alt="mq virtual asset mode diagram">
-
-### Using virtual asset with Kafka
 To use Kafka with virtual asset, you can change **Inventory service request topic**
 to a customized request topic name. The virtual asset deployment should be configured to listen to the customized request topic and produce messages to the default response topic.
-
-<img src="src/main/resources/static/common/images/Kafka_virtual_asset_mode_diagram.png" alt="Kafka virtual asset mode diagram">
 
 ### Using external Kafka server
 
@@ -164,12 +217,12 @@ The gRPC service in this application has three methods which support both JSON a
 
 ### Configuration
 
-| Option                     | Value                          |
-|----------------------------|--------------------------------|
-| Host                       | `localhost`                    |
-| Port                       | `50051`                        |
-| Json  Service Name         | `grpc.demoApp.JsonService`     |
-| Proto Service Name         | `grpc.demoApp.ProtobufService` |
+| Option             | Value                          | Property         |
+|--------------------|--------------------------------|------------------|
+| Host               | `localhost`                    | N.A.             |
+| Port               | `50051`                        | grpc.server.port |
+| Json Service Name  | `grpc.demoApp.JsonService`     | N.A.             |
+| Proto Service Name | `grpc.demoApp.ProtobufService` | N.A.             |
 
 ### Methods
 
