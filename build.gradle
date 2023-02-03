@@ -20,11 +20,10 @@ if (project.hasProperty("gitCommitHash")) {
 	buildMetadata += '.' + gitCommitHash
 }
 
-if(!project.hasProperty("port"))
-	project.ext.set("port", 8080)
-
 bootRun {
-	args += ["--server.port=${project.port}"]
+	if (project.hasProperty("port")) {
+		args += ["--server.port=${project.port}"]
+	}
 }
 
 configurations {
