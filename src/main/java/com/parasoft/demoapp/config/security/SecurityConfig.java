@@ -183,7 +183,7 @@ public class SecurityConfig {
                             .loadUserByUsername(userInfo.getPreferredUsername());
                 } catch (UsernameNotFoundException exception) {
                     // Customize the exception to passing tokens to ensure that we can remove the session in keycloak when the login fails
-                    throw new UsernameNotFoundException(idToken.getTokenValue());
+                    throw new UsernameNotFoundException(idToken == null ? idToken.getTokenValue() : null);
                 }
                 CustomOidcUser customOidcUser =
                         new CustomOidcUser(mapAuthoritiesToOidcUserAuthorityType(userEntity, userInfo, idToken), idToken, userInfo);

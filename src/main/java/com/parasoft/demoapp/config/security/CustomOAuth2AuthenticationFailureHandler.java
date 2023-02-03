@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -29,23 +28,22 @@ public class CustomOAuth2AuthenticationFailureHandler  implements Authentication
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
-                                        AuthenticationException exception) throws IOException, ServletException {
-        String currentDomainName = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+                                        AuthenticationException exception) throws IOException {
         if (exception instanceof OAuth2AuthenticationException) {
             String idTokenHint = ((OAuth2AuthenticationException) exception).getError().getDescription();
-            try {
-                restTemplate.getForObject(keycloakEndSessionEndpoint + "?id_token_hint={id_token_hint}",
-                        String.class,
-                        Collections.singletonMap("id_token_hint", idTokenHint));
-            } catch (RestClientException e) {
-                log.error("Tried to sign out the session from Keycloak but failed, Keycloak server is not available.", e);
-            }
-
-            response.sendRedirect(currentDomainName + "/conflict?type=keycloak_role");
+            signOutFromKeycloak(idTokenHint);
+            response.sendRedirect("/accessDenied?type=keycloak_role");
         }
 
         if (exception instanceof UsernameNotFoundException) {
             String idTokenHint = exception.getMessage();
+            signOutFromKeycloak(idTokenHint);
+            response.sendRedirect("/unauthorized?type=keycloak_user");
+        }
+    }
+
+    private void signOutFromKeycloak(String idTokenHint) throws IOException {
+        if (idTokenHint != null) {
             try {
                 restTemplate.getForObject(keycloakEndSessionEndpoint + "?id_token_hint={id_token_hint}",
                         String.class,
@@ -53,8 +51,6 @@ public class CustomOAuth2AuthenticationFailureHandler  implements Authentication
             } catch (RestClientException e) {
                 log.error("Tried to sign out the session from Keycloak but failed, Keycloak server is not available.", e);
             }
-
-            response.sendRedirect(currentDomainName + "/conflict?type=keycloak_user");
         }
     }
 }

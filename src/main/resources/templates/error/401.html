@@ -14,11 +14,10 @@
     <input type="hidden" id="current_web_service_mode" th:value="${currentWebServiceMode}">
     <div class="message warning industry_font" ng-controller="error_controller as error">
         <div class="error_head">
-            <h1 translate="409_ERROR_TITLE"></h1>
+            <h1 translate="401_ERROR_TITLE"></h1>
         </div>
-        <div class="content" th:switch="${conflictType}">
-            <div th:case="keycloak_role" translate="ROLE_NOT_MATCH"></div>
-            <div th:case="keycloak_user" translate="USERNAME_NOT_AVAILABLE"></div>
+        <div class="content">
+            <div translate="USERNAME_NOT_AVAILABLE"></div>
             <br/><br/>
             <a href="/" class="go_home"><span translate="BACK_TO_HOME"></span></a>
         </div>

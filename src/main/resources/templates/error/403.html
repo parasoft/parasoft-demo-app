@@ -13,12 +13,16 @@
 <body>
     <input type="hidden" id="current_web_service_mode" th:value="${currentWebServiceMode}">
     <div class="message warning industry_font" ng-controller="error_controller as error">
-        <div class="error_head">
-            <h1 translate="403_ERROR_TITLE"></h1>
-        </div>
-        <div class="content">
-            <div translate="403_ERROR_CONTENT"></div><br/><br/>
-            <a href="/" class="go_home"><span translate="BACK_TO_HOME"></span></a>
+        <div>
+            <div class="error_head">
+                <h1 translate="403_ERROR_TITLE"></h1>
+            </div>
+            <div class="content" th:switch="${errorType}">
+                <div th:case="keycloak_role" translate="ROLE_NOT_MATCH"></div>
+                <div th:case="*" translate="403_ERROR_CONTENT"></div>
+                <br/><br/>
+                <a href="/" class="go_home"><span translate="BACK_TO_HOME"></span></a>
+            </div>
         </div>
     </div>
 

@@ -135,23 +135,24 @@ public class PageController {
     }
 
     @GetMapping("/accessDenied")
-    public String showAccessDeniedPage(ModelMap modelMap) {
+    public String showAccessDeniedPage(ModelMap modelMap, String type) {
         try {
+            modelMap.addAttribute("errorType", type);
             modelMap.addAttribute("currentWebServiceMode", globalPreferencesService.getCurrentGlobalPreferences().getWebServiceMode().getValue());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         return "error/403";
     }
 
-    @GetMapping("/conflict")
-    public String showConflictPage(ModelMap modelMap, String type) {
+    @GetMapping("/unauthorized")
+    public String showUnauthorizedPage(ModelMap modelMap, String type) {
         try {
-            modelMap.addAttribute("conflictType", type);
+            modelMap.addAttribute("errorType", type);
             modelMap.addAttribute("currentWebServiceMode", globalPreferencesService.getCurrentGlobalPreferences().getWebServiceMode().getValue());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
-        return "error/409";
+        return "error/401";
     }
 }
