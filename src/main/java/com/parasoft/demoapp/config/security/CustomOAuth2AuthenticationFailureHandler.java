@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import com.parasoft.demoapp.exception.RoleNotMatchException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
@@ -29,16 +29,17 @@ public class CustomOAuth2AuthenticationFailureHandler  implements Authentication
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException exception) throws IOException {
-        if (exception instanceof OAuth2AuthenticationException) {
-            String idTokenHint = ((OAuth2AuthenticationException) exception).getError().getDescription();
-            signOutFromKeycloak(idTokenHint);
+        String idTokenHint = exception.getMessage();
+        signOutFromKeycloak(idTokenHint);
+
+        if (exception instanceof RoleNotMatchException) {
             response.sendRedirect("/accessDenied?type=keycloak_role");
+            return;
         }
 
         if (exception instanceof UsernameNotFoundException) {
-            String idTokenHint = exception.getMessage();
-            signOutFromKeycloak(idTokenHint);
             response.sendRedirect("/unauthorized?type=keycloak_user");
+            return;
         }
     }
 

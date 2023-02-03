@@ -12,7 +12,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.util.CastUtils;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,8 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.OAuth2Error;
+import com.parasoft.demoapp.exception.RoleNotMatchException;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
@@ -183,7 +181,8 @@ public class SecurityConfig {
                             .loadUserByUsername(userInfo.getPreferredUsername());
                 } catch (UsernameNotFoundException exception) {
                     // Customize the exception to passing tokens to ensure that we can remove the session in keycloak when the login fails
-                    throw new UsernameNotFoundException(idToken == null ? idToken.getTokenValue() : null);
+                    String idTokenHint = idToken != null ? idToken.getTokenValue() : null;
+                    throw new UsernameNotFoundException(idTokenHint);
                 }
                 CustomOidcUser customOidcUser =
                         new CustomOidcUser(mapAuthoritiesToOidcUserAuthorityType(userEntity, userInfo, idToken), idToken, userInfo);
@@ -244,7 +243,8 @@ public class SecurityConfig {
                         || (RoleType.ROLE_PURCHASER.name().equals(grantedRoleType) && realmRoles.contains("APPROVER"))
                         || (RoleType.ROLE_APPROVER.name().equals(grantedRoleType) && realmRoles.contains("PURCHASER"))
                 ) {
-                    throw new OAuth2AuthenticationException(new OAuth2Error(HttpStatus.FORBIDDEN.toString(), idToken.getTokenValue(), null));
+                    String idTokenHint = idToken != null ? idToken.getTokenValue() : null;
+                    throw new RoleNotMatchException(idTokenHint);
                 }
 
                 realmRoles.forEach(realmRole -> {
