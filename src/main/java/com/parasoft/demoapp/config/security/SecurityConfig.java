@@ -1,5 +1,6 @@
 package com.parasoft.demoapp.config.security;
 
+import com.parasoft.demoapp.model.global.RoleType;
 import com.parasoft.demoapp.model.global.UserEntity;
 import com.parasoft.demoapp.service.CustomUserDetailsService;
 import lombok.Getter;
@@ -18,10 +19,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import com.parasoft.demoapp.exception.RoleNotMatchException;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
@@ -53,6 +56,9 @@ public class SecurityConfig {
 
     @Autowired
     private CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
+
+    @Autowired
+    private CustomOAuth2AuthenticationFailureHandler customOAuth2AuthenticationFailureHandler;
 
     @Autowired
     private CustomLogoutSuccessHandler customLogoutSuccessHandler;
@@ -97,8 +103,9 @@ public class SecurityConfig {
                     .antMatchers("/v1/labels").authenticated()
                     .antMatchers("/v1/**", "/proxy/v1/**").permitAll()
                  .and()
-                    .oauth2ResourceServer(oauth2 -> oauth2.jwt(
-                            jwt -> jwt.jwtAuthenticationConverter(new CustomAuthenticationConverter()))
+                    .oauth2ResourceServer(oauth2 -> oauth2
+                            .jwt(jwt -> jwt.jwtAuthenticationConverter(new CustomAuthenticationConverter()))
+                            .authenticationEntryPoint(new CustomBearerTokenAuthenticationEntryPoint())
                     )
                     .httpBasic()
                         .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
@@ -150,6 +157,7 @@ public class SecurityConfig {
                     .oauth2Login(oauth2 -> {
                                 oauth2.loginPage("/loginPage");
                                 oauth2.userInfoEndpoint(userInfo -> userInfo.oidcUserService(this.oidcUserService()));
+                                oauth2.failureHandler(customOAuth2AuthenticationFailureHandler);
                             })
                     .csrf()
                         .disable();
@@ -167,9 +175,15 @@ public class SecurityConfig {
                 OidcUserInfo userInfo = oidcUser.getUserInfo();
                 OidcIdToken idToken = oidcUser.getIdToken();
 
-                UserEntity userEntity = (UserEntity) customUserDetailsService
-                        .loadUserByUsername(userInfo.getPreferredUsername());
-
+                UserEntity userEntity = null;
+                try {
+                    userEntity = (UserEntity) customUserDetailsService
+                            .loadUserByUsername(userInfo.getPreferredUsername());
+                } catch (UsernameNotFoundException exception) {
+                    // Customize the exception to passing tokens to ensure that we can remove the session in keycloak when the login fails
+                    String idTokenHint = idToken != null ? idToken.getTokenValue() : null;
+                    throw new UsernameNotFoundException(idTokenHint);
+                }
                 CustomOidcUser customOidcUser =
                         new CustomOidcUser(mapAuthoritiesToOidcUserAuthorityType(userEntity, userInfo, idToken), idToken, userInfo);
                 customOidcUser.setId(userEntity.getId());
@@ -223,6 +237,16 @@ public class SecurityConfig {
         if (realmRoleClaim instanceof List<?>) {
             List<String> realmRoles = CastUtils.cast(realmRoleClaim);
             userEntity.getAuthorities().forEach(grantedAuthority -> {
+                // Role matching related
+                String grantedRoleType = grantedAuthority.getAuthority();
+                if ((!realmRoles.contains(grantedRoleType.substring(5)))
+                        || (RoleType.ROLE_PURCHASER.name().equals(grantedRoleType) && realmRoles.contains("APPROVER"))
+                        || (RoleType.ROLE_APPROVER.name().equals(grantedRoleType) && realmRoles.contains("PURCHASER"))
+                ) {
+                    String idTokenHint = idToken != null ? idToken.getTokenValue() : null;
+                    throw new RoleNotMatchException(idTokenHint);
+                }
+
                 realmRoles.forEach(realmRole -> {
                     String authority = grantedAuthority.getAuthority();
                     if (authority.contentEquals(ROLE_PREFIX + realmRole)) {
