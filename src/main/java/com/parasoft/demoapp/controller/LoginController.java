@@ -2,6 +2,7 @@ package com.parasoft.demoapp.controller;
 
 import com.parasoft.demoapp.service.GlobalPreferencesService;
 import com.parasoft.demoapp.util.UrlUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -9,6 +10,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.net.SocketTimeoutException;
+
+@Slf4j
 @Controller
 public class LoginController {
 
@@ -25,7 +29,7 @@ public class LoginController {
             modelMap.addAttribute("industry", globalPreferencesService.getCurrentIndustry().getValue());
             modelMap.addAttribute("currentWebServiceMode", globalPreferencesService.getCurrentGlobalPreferences().getWebServiceMode().getValue());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             return "error/500";
         }
 
@@ -46,7 +50,7 @@ public class LoginController {
                 return "error/keycloakError";
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             modelMap.addAttribute("keycloakStatusCode", 503);
             return "error/keycloakError";
         }

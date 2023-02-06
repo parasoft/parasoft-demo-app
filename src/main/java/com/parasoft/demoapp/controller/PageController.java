@@ -36,7 +36,7 @@ public class PageController {
             modelMap.addAttribute("industry", globalPreferencesService.getCurrentIndustry().getValue());
             modelMap.addAttribute("currentWebServiceMode", globalPreferencesService.getCurrentGlobalPreferences().getWebServiceMode().getValue());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             return "error/500";
         }
 
@@ -58,7 +58,7 @@ public class PageController {
             modelMap.addAttribute("industry", globalPreferencesService.getCurrentIndustry().getValue());
             modelMap.addAttribute("currentWebServiceMode", globalPreferencesService.getCurrentGlobalPreferences().getWebServiceMode().getValue());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             return "error/500";
         }
 
@@ -75,7 +75,7 @@ public class PageController {
                 return "error/404";
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             return "error/500";
         }
 
@@ -92,7 +92,7 @@ public class PageController {
                 return "error/404";
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             return "error/500";
         }
 
@@ -106,7 +106,7 @@ public class PageController {
             modelMap.addAttribute("industry", globalPreferencesService.getCurrentIndustry().getValue());
             modelMap.addAttribute("currentWebServiceMode", globalPreferencesService.getCurrentGlobalPreferences().getWebServiceMode().getValue());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             return "error/500";
         }
 
@@ -121,7 +121,7 @@ public class PageController {
             modelMap.addAttribute("currentWebServiceMode", globalPreferencesService.getCurrentGlobalPreferences().getWebServiceMode().getValue());
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             return "error/500";
         }
 
@@ -135,12 +135,24 @@ public class PageController {
     }
 
     @GetMapping("/accessDenied")
-    public String showAccessDeniedPage(ModelMap modelMap) {
+    public String showAccessDeniedPage(ModelMap modelMap, String type) {
         try {
+            modelMap.addAttribute("errorType", type);
             modelMap.addAttribute("currentWebServiceMode", globalPreferencesService.getCurrentGlobalPreferences().getWebServiceMode().getValue());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         return "error/403";
+    }
+
+    @GetMapping("/unauthorized")
+    public String showUnauthorizedPage(ModelMap modelMap, String type) {
+        try {
+            modelMap.addAttribute("errorType", type);
+            modelMap.addAttribute("currentWebServiceMode", globalPreferencesService.getCurrentGlobalPreferences().getWebServiceMode().getValue());
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        return "error/401";
     }
 }
