@@ -92,16 +92,16 @@ public class SecurityConfig {
                 .authorizeRequests()
                     .antMatchers(HttpMethod.GET, "/v1/demoAdmin/**").permitAll()
                     .antMatchers("/v1/demoAdmin/**").authenticated()
-                    .antMatchers(HttpMethod.GET, "/v1/assets/**", "/proxy/v1/assets/**").permitAll()
-                    .antMatchers("/v1/assets/**", "/proxy/v1/assets/**").authenticated()
-                    .antMatchers("/v1/cartItems/**", "/proxy/v1/cartItems/**").access("hasRole('PURCHASER')")
-                    .antMatchers("/v1/locations/**", "/proxy/v1/locations/**").authenticated()
-                    .antMatchers(HttpMethod.POST, "/v1/orders/**", "/proxy/v1/orders/**").access("hasRole('PURCHASER')")
-                    .antMatchers("/v1/orders/**", "/proxy/v1/orders/**").authenticated()
+                    .antMatchers(HttpMethod.GET, "/v1/assets/**").permitAll()
+                    .antMatchers("/v1/assets/**").authenticated()
+                    .antMatchers("/v1/cartItems/**").access("hasRole('PURCHASER')")
+                    .antMatchers("/v1/locations/**").authenticated()
+                    .antMatchers(HttpMethod.POST, "/v1/orders/**").access("hasRole('PURCHASER')")
+                    .antMatchers("/v1/orders/**").authenticated()
                     .antMatchers("/v1/images").authenticated()
                     .antMatchers(HttpMethod.GET, "/v1/labels").permitAll()
                     .antMatchers("/v1/labels").authenticated()
-                    .antMatchers("/v1/**", "/proxy/v1/**").permitAll()
+                    .antMatchers("/v1/**").permitAll()
                  .and()
                     .oauth2ResourceServer(oauth2 -> oauth2
                             .jwt(jwt -> jwt.jwtAuthenticationConverter(new CustomAuthenticationConverter()))
@@ -175,7 +175,7 @@ public class SecurityConfig {
                 OidcUserInfo userInfo = oidcUser.getUserInfo();
                 OidcIdToken idToken = oidcUser.getIdToken();
 
-                UserEntity userEntity = null;
+                UserEntity userEntity;
                 try {
                     userEntity = (UserEntity) customUserDetailsService
                             .loadUserByUsername(userInfo.getPreferredUsername());
