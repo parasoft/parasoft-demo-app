@@ -7,7 +7,6 @@
 }
 
 .submit-button>button {
-    width: 245px;
     background-color: rgba(255, 153, 0, 1);
     border: 1px solid rgba(121, 73, 0, 1);
     border-radius: 1px;
@@ -16,6 +15,15 @@
 
 .forgot-password a, .forgot-password a:hover {
     color: #117563;
+}
+
+.more-sign-in-title {
+    background-color: rgba(249, 249, 227, 1);
+}
+
+.sign-in-with-oauth {
+    background-color: rgba(251, 232, 202, 1);
+    font-weight: 800;
 }
 
 .input-field>input {

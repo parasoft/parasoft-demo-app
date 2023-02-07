@@ -45,10 +45,14 @@
                             <div class="btn-field">
                                 <div class="submit-button industry_font">
                                     <button class="btn industry_font" type="submit" translate="SIGN_IN" ng-click="login.onSubmit()"></button>
-                                    <button class="btn industry_font" translate="SIGN_IN_WITH_OAUTH2" ng-click="login.loginWithOAuth2()"></button>
                                 </div>
                                 <div class="forgot-password industry_font industry_color_1">
                                     <a translate="FORGOT_PASSWORD" data-toggle="modal" href="#forgot-password-modal" ng-click="login.forgotPassword()"></a>
+                                </div>
+                                <div class="more-sign-in-container">
+                                    <hr>
+                                    <div class="more-sign-in-title" translate="MORE_SIGN_IN_TITLE">Or</div>
+                                    <button class="sign-in-with-oauth btn industry_font" translate="SIGN_IN_WITH_OAUTH2" ng-click="login.loginWithOAuth2()"></button>
                                 </div>
                             </div>
                         </form>

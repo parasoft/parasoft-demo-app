@@ -26,29 +26,23 @@ footer {
 }
 
 .submit-button {
-    height: 60px;
     font-size: 16px;
     font-weight: 800;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
 }
 
 .submit-button>button {
+    width: 140px;
     height: 40px;
     box-shadow: 1px 1px 1px rgba(0, 0, 0, 1);
     font-size: 16px;
     box-sizing: border-box;
     color: #4F3000;
-    margin-bottom: 10px;
 }
-
 
 .login-content {
     margin: 10px auto;
     position: relative;
-    top: -60px;
+    top: -50px;
 }
 
 .btn-field {
@@ -57,7 +51,7 @@ footer {
 
 .login-form-container {
     width: 455px;
-    height: 341px;
+    height: 430px;
 }
 
 .login-background {
@@ -85,7 +79,7 @@ footer {
 .input-label {
     width: 300px;
     height: fit-content;
-    margin: 10px auto 0 auto;
+    margin: 15px auto 0 auto;
     display: flex;
     font-size: 14px;
     line-height: 20px;
@@ -131,6 +125,26 @@ footer {
     font-size: 16px;
 }
 
+.more-sign-in-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.more-sign-in-title {
+    width: fit-content;
+    margin-top: -30px;
+    padding: 0 10px;
+}
+
+.sign-in-with-oauth {
+    width: 300px;
+    border-radius: 7px;
+    margin-top: 20px;
+    box-shadow: 1px 1px 1px rgb(0 0 0);
+    border-color: rgba(121, 73, 0, 1);
+}
+
 #forgot-password-modal .modal-header {
     border-bottom: none;
 }
@@ -164,7 +178,7 @@ footer {
 }
 
 .forgot-password {
-    margin-top: 16px;
+    margin-top: 6px;
     width: 100%;
     justify-content: center;
 }
@@ -187,4 +201,10 @@ footer {
 
 th {
     text-align: center;
+}
+
+hr {
+    border-color: #333;
+    margin-top: 30px;
+    width: 280px;
 }

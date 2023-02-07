@@ -1,10 +1,11 @@
 .login-form-container {
-    background-image: url(/aerospace/images/login_border.svg);
     padding-top: 4px;
+    border: 1px solid #C2EAFB;
+    border-radius: 15px;
+    background: linear-gradient(#3D3D3D, #444444, #434343, #393939, #2E2E2E);
 }
 
 .submit-button>button {
-    width: 245px;
     background-color: rgba(204, 136, 55, 1);
     border-radius: 20px;
     font-weight: 700;
@@ -26,6 +27,21 @@
 
 .input-label>span {
     padding-left: 10px;
+}
+
+.sign-in-with-oauth, .more-sign-in-title, .sign-in-with-oauth.btn:hover {
+    color: #C2EAFB;
+}
+
+.more-sign-in-title {
+    background-color: #373737;
+}
+
+.sign-in-with-oauth {
+    border-radius: 20px;
+    background-color: rgba(122, 141, 149, 1);
+    border-color: rgba(182, 221, 238, 1);
+    font-weight: 700;
 }
 
 .modal-content {
@@ -58,4 +74,8 @@
 
 .password-field {
     font-size: 25px;
+}
+
+hr {
+    border-color: #C2EAFB;
 }
