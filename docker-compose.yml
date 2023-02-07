@@ -18,7 +18,10 @@ services:
       # Uncomment if application.properties needs to be customized. Create a config folder and put customized application.properties file in it.
       # - "./config/application.properties:/usr/local/tomcat/data/config/application.properties:ro"
     environment:
-      - JAVA_OPTS=-Dspring.kafka.bootstrap-servers=kafka:9092 -Dspring.rabbitmq.host=rabbitmq -Dspring.rabbitmq.username=admin -Dspring.rabbitmq.password=admin
+      JAVA_OPTS: >-
+        -Dspring.kafka.bootstrap-servers=kafka:9092
+        -Dspring.rabbitmq.host=rabbitmq -Dspring.rabbitmq.username=admin -Dspring.rabbitmq.password=admin
+        -Dspring.security.oauth2.client.provider.keycloak.realm-uri=http://${EXTERNAL_HOSTNAME:-host.docker.internal}:${KEYCLOAK_HOST_PORT:-8081}/realms/demo-app-realm
   kafka:
     # https://github.com/bitnami/containers/blob/d559d7c399eec5f0249806fe03981291df013af6/bitnami/kafka/README.md
     image: bitnami/kafka:3.3
@@ -62,6 +65,20 @@ services:
       - RABBITMQ_DEFAULT_PASS=admin
     profiles:
       - rabbitmq
+  keycloak:
+    # https://github.com/keycloak/keycloak/blob/447364076adb84b62d0d5db38502a02774b0254d/docs/guides/src/main/server/containers.adoc
+    image: quay.io/keycloak/keycloak:20.0.3
+    ports:
+      - "${KEYCLOAK_HOST_PORT:-8081}:8080"
+    volumes:
+      - "keycloak_data:/opt/keycloak/data"
+      - "./keycloak:/opt/keycloak/data/import:ro"
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    command: [ "start-dev", "--import-realm" ]
+    profiles:
+      - keycloak
 
 volumes:
   demo-app_data:
@@ -71,4 +88,6 @@ volumes:
   zookeeper_data:
     driver: local
   rabbitmq_data:
+    driver: local
+  keycloak_data:
     driver: local
