@@ -24,6 +24,7 @@
 .sign-in-with-oauth {
     background-color: rgba(251, 232, 202, 1);
     font-weight: 800;
+    border-radius: 0;
 }
 
 .input-field>input {
