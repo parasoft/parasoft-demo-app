@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html lang="en" xmlns:ng="http://angularjs.org" xmlns:th="http://www.thymeleaf.org" ng-app="pdaApp">
 <head>
     <meta charset="UTF-8">
@@ -13,16 +13,21 @@
 <body>
     <input type="hidden" id="current_web_service_mode" th:value="${currentWebServiceMode}">
     <div class="message warning industry_font" ng-controller="error_controller as error">
-        <div>
-            <div class="error_head">
-                <h1 translate="403_ERROR_TITLE"></h1>
+        <div class="error_head">
+            <h1>
+                <span th:text="${keycloakStatusCode}"></span>
+                <span class="keycloak_error_title">-</span>
+                <span class="keycloak_error_title" translate="KEYCLOAK_ERROR_TITLE"></span>
+            </h1>
+        </div>
+        <div class="content" th:switch="${keycloakStatusCode}">
+            <div th:case="'404'">
+                <span translate="KEYCLOAK_REALM_NOT_FOUND"></span>&nbsp;
+                <span th:text="${keycloakRealmUri}"></span>
             </div>
-            <div class="content" th:switch="${errorType}">
-                <div th:case="keycloak_role" translate="ROLE_NOT_MATCH"></div>
-                <div th:case="*" translate="403_ERROR_CONTENT"></div>
-                <br/><br/>
-                <a href="/" class="go_home"><span translate="BACK_TO_HOME"></span></a>
-            </div>
+            <div th:case="'503'" translate="KEYCLOAK_SERVER_IS_NOT_AVAILABLE"></div>
+            <div th:case="*" translate="DEFAULT_KEYCLOAK_ERROR"></div><br/><br/>
+            <a href="/" class="go_home"><span translate="BACK_TO_LOGIN_PAGE"></span></a>
         </div>
     </div>
 
