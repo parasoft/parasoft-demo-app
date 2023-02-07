@@ -259,8 +259,11 @@
       "secret" : "DzOS5Y4iRmHIQH6ntTGHj78PpFEjUKLo",
 	  "redirectUris": [
         "*"
+      ],
+      "webOrigins": [
+        "*"
       ]
-	}
+    }
   ], 
   "roles": {
 	  "realm": [
