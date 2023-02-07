@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import com.parasoft.demoapp.exception.RoleNotMatchException;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
@@ -29,6 +30,16 @@ public class CustomOAuth2AuthenticationFailureHandler  implements Authentication
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException exception) throws IOException {
+
+
+        if (exception instanceof OAuth2AuthenticationException) {
+            OAuth2AuthenticationException error = (OAuth2AuthenticationException) exception;
+            if (error.getError().getErrorCode().equals("invalid_token_response")) {
+                response.sendRedirect("/keycloakClientError");
+                return;
+            }
+        }
+
         String idTokenHint = exception.getMessage();
         signOutFromKeycloak(idTokenHint);
 

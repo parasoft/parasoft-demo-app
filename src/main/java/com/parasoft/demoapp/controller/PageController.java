@@ -155,4 +155,14 @@ public class PageController {
         }
         return "error/401";
     }
+
+    @GetMapping("/keycloakClientError")
+    public String showKeycloakPage(ModelMap modelMap) {
+        try {
+            modelMap.addAttribute("currentWebServiceMode", globalPreferencesService.getCurrentGlobalPreferences().getWebServiceMode().getValue());
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        return "error/keycloakClientError";
+    }
 }
