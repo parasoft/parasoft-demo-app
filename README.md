@@ -53,7 +53,7 @@ When running the application as .war file:
 - You can create *config* folder under same directory of your .war file and put a customized version of application.properties in it before running the .war file.
 - You can also overwrite specific properties using command line arguments:
   ```
-  java -jar build/libs/parasoft-demo-app-1.1.0.war --hsqldb.port=9002 // database server port will be changed to 9008
+  java -jar build/libs/parasoft-demo-app-1.1.0.war --hsqldb.port=9002 // database server port will be changed to 9002
   ```
 > Notes: **Property** column in configuration tables of this readme refers to the configurable property name in application.properties.
 
