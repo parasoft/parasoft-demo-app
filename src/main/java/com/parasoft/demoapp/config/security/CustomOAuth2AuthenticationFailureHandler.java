@@ -34,7 +34,8 @@ public class CustomOAuth2AuthenticationFailureHandler  implements Authentication
 
         if (exception instanceof OAuth2AuthenticationException) {
             OAuth2AuthenticationException error = (OAuth2AuthenticationException) exception;
-            if (error.getError().getErrorCode().equals("invalid_token_response")) {
+            String errorCode = "invalid_token_response";
+            if (errorCode.equals(error.getError().getErrorCode())) {
                 response.sendRedirect("/keycloakClientError");
                 return;
             }
