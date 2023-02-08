@@ -80,12 +80,14 @@ To use OAuth 2.0 authentication, you will need to set up a Keycloak server as th
     > * A client with `demo-app-client` as id and `DzOS5Y4iRmHIQH6ntTGHj78PpFEjUKLo` as secret.
     > * Valid redirect URI set as `*`, which allows redirection to any URI.
 
-4. Run command line in root directory of Keycloak to import predefined realm data.
+4. Stop the Keycloak server and prepare to import the realm data.
+5. Run command line in root directory of Keycloak to import predefined realm data.
     ```
     bin/kc.[sh|bat] import --file path/to/demo-app-realm.json
     ```
-5. If Keycloak server is not running on *localhost:8081*, make sure to change `spring.security.oauth2.client.provider.keycloak.realm-uri` property value in **application.properties** file.
-6. Start the demo application and choose to log in with OAuth 2.0.
+6. Restart Keycloak server.
+7. If Keycloak server is not running on *localhost:8081*, make sure to change `spring.security.oauth2.client.provider.keycloak.realm-uri` property value in **application.properties** file.
+8. Start the demo application and choose to log in with OAuth 2.0.
 
 ### Using SOAtest OAuth 2.0 Authentication (Authorization Code type)
 
