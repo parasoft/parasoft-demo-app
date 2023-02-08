@@ -21,7 +21,8 @@ window.onload = function() {
         defaultModelsExpandDepth: -1,
         presets : [ SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset ],
         plugins : [ SwaggerUIBundle.plugins.DownloadUrl, OAuthLogoutPlugin ],
-        layout : "StandaloneLayout"
+        layout : "StandaloneLayout",
+        <script type="text/javascript" src="/lib/jquery/jquery-3.3.1.min.js"></script>
     })
 
     function OAuthLogoutPlugin() {
