@@ -3,10 +3,10 @@ package com.parasoft.demoapp.config;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.security.SecurityRequirement;
-import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.security.*;
 import org.springdoc.core.GroupedOpenApi;
 import org.springdoc.core.customizers.OpenApiCustomiser;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,17 +21,29 @@ public class OpenApiConfig {
     private static final String API_TITLE = String.format("%s REST API", MODULE_NAME);
 
     @Bean
-    public OpenAPI customOpenAPI() {
-        final String securitySchemeName = "basicAuth";
+    public OpenAPI customOpenAPI(@Value("${spring.security.oauth2.client.provider.keycloak.authorization-uri}") String authorizationUri,
+                                 @Value("${spring.security.oauth2.client.provider.keycloak.token-uri}") String tokenUri) {
+        final String basicSchemeName = "basicAuth";
+        final String oAuthSchemeName = "oAuth2AuthCode";
         return new OpenAPI()
-                .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
+                .addSecurityItem(new SecurityRequirement().addList(basicSchemeName).addList(oAuthSchemeName))
                 .components(
                         new Components()
-                                .addSecuritySchemes(securitySchemeName,
+                                .addSecuritySchemes(basicSchemeName,
                                         new SecurityScheme()
-                                                .name(securitySchemeName)
+                                                .name(basicSchemeName)
                                                 .type(SecurityScheme.Type.HTTP)
                                                 .scheme("basic")
+                                )
+                                .addSecuritySchemes(oAuthSchemeName,
+                                        new SecurityScheme()
+                                                .name(oAuthSchemeName)
+                                                .type(SecurityScheme.Type.OAUTH2)
+                                                .flows(new OAuthFlows().authorizationCode(
+                                                        new OAuthFlow().tokenUrl(tokenUri)
+                                                                .authorizationUrl(authorizationUri)
+                                                                .scopes(new Scopes().addString("openid", "for openid scope"))
+                                                ))
                                 )
                 )
                 .info(new Info().title(API_TITLE).version(API_VERSION)

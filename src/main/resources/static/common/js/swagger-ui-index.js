@@ -21,7 +21,8 @@ window.onload = function() {
         defaultModelsExpandDepth: -1,
         presets : [ SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset ],
         plugins : [ SwaggerUIBundle.plugins.DownloadUrl ],
-        layout : "StandaloneLayout"
+        layout : "StandaloneLayout",
+        oauth2RedirectUrl:"".concat(window.location.protocol,"//").concat(window.location.host,"/swagger-ui/oauth2-redirect.html")
     })
 
     window.ui = ui
