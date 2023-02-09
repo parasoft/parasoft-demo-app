@@ -12,19 +12,17 @@
 </head>
 <body>
     <input type="hidden" id="current_web_service_mode" th:value="${currentWebServiceMode}">
-    <input type="hidden" id="error_type" th:value="${errorType}">
     <div class="message warning industry_font" ng-controller="error_controller as error">
-        <div class="error_head" th:switch="${errorType}">
-            <h1 th:case="tokenError" translate="KEYCLOAK_UNAUTHORIZED_CLIENT_TITLE"></h1>
-            <h1 th:case="keycloak_user" translate="401_ERROR_TITLE"></h1>
+        <div class="error_head">
+            <h1 translate="401_ERROR_TITLE"></h1>
         </div>
         <div class="content" th:switch="${errorType}">
             <div>
-                <div th:case="tokenError" translate="KEYCLOAK_CLIENT_UNAUTHORIZED"></div>
+                <div th:case="client_error" translate="KEYCLOAK_CLIENT_UNAUTHORIZED"></div>
                 <div th:case="keycloak_user" translate="USERNAME_NOT_AVAILABLE"></div>
             </div>
             <br/><br/>
-            <a href="/" class="go_home"><span translate="BACK_TO_HOME"></span></a>
+            <a href="/loginPage" class="go_home"><span translate="BACK_TO_LOGIN_PAGE"></span></a>
         </div>
     </div>
 
