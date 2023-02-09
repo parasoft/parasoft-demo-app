@@ -116,8 +116,8 @@ To use OAuth 2.0 authentication, you will need to set up a Keycloak server as th
 | Client secret | DzOS5Y4iRmHIQH6ntTGHj78PpFEjUKLo                                          | spring.security.oauth2.client.registration.keycloak.client-secret |
 | scope         | openid                                                                    | spring.security.oauth2.client.registration.keycloak.scope         |
 
-When setting up an OAuth 2.0 Authentication in SOAtest:
-> We can use any URI as **Redirect URI** except for `http://{host.and.port.of.this.application}/login/oauth2/code/keycloak`(e.g. http://localhost:8080/login/oauth2/code/keycloak as default).
+> When setting up an OAuth 2.0 Authentication in SOAtest, we can use any URI as **Redirect URI** except for `http://{host.and.port.of.this.application}/login/oauth2/code/keycloak`
+> (e.g. http://localhost:8080/login/oauth2/code/keycloak as default).
 > Because the demo application will consume the authorization code to exchange for access token when redirecting to that URI.
 > SOAtest will not be able to use the authorization code again since it's one-time-use.
 
