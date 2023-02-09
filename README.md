@@ -69,10 +69,18 @@ This application supports both Http Basic authentication and OAuth 2.0 authentic
 To use OAuth 2.0 authentication, you will need to set up a Keycloak server as the OAuth 2.0 provider.
 
 ### Using Keycloak server
-1. Download, install and start a Keycloak server (19.0.0 or later) with command line.
+1. Download, install and start a Keycloak server (19.0.0 or later) with command line in root directory of Keycloak.
+
+    In Linux / Cygwin:
     ```
-    bin\kc.[sh|bat] start-dev --http-port=8081
+    bin/kc.sh start-dev --http-port=8081
     ```
+
+    In Windows:
+    ```
+    bin\kc.bat start-dev --http-port=8081
+    ```
+   
 2. Go to Keycloak admin console(e.g. http://localhost:8081) to make sure the service has started successfully. Create an initial admin user.
 3. Download [demo-app-realm.json](https://github.com/parasoft/parasoft-demo-app/blob/main/keycloak/demo-app-realm.json).
     >  [demo-app-realm.json](https://github.com/parasoft/parasoft-demo-app/blob/main/keycloak/demo-app-realm.json) includes a realm *demo-app-realm* and necessary information to use Keycloak with demo application:
@@ -82,8 +90,15 @@ To use OAuth 2.0 authentication, you will need to set up a Keycloak server as th
 
 4. Stop the Keycloak server and prepare to import the realm data.
 5. Run command line in root directory of Keycloak to import predefined realm data.
+   
+    In Linux / Cygwin:
     ```
-    bin/kc.[sh|bat] import --file path/to/demo-app-realm.json
+    bin/kc.sh import --file path/to/demo-app-realm.json
+    ```
+
+    In Windows:
+    ```
+    bin\kc.bat import --file path/to/demo-app-realm.json
     ```
 6. Restart Keycloak server.
 7. If Keycloak server is not running on *localhost:8081*, make sure to change `spring.security.oauth2.client.provider.keycloak.realm-uri` property value in **application.properties** file.
@@ -100,6 +115,11 @@ To use OAuth 2.0 authentication, you will need to set up a Keycloak server as th
 | Client ID     | demo-app-client                                                           | spring.security.oauth2.client.registration.keycloak.client-id     |
 | Client secret | DzOS5Y4iRmHIQH6ntTGHj78PpFEjUKLo                                          | spring.security.oauth2.client.registration.keycloak.client-secret |
 | scope         | openid                                                                    | spring.security.oauth2.client.registration.keycloak.scope         |
+
+> When setting up an OAuth 2.0 Authentication in SOAtest, we can use any URI as **Redirect URI** except for `http://{host.and.port.of.this.application}/login/oauth2/code/keycloak`
+> (e.g. http://localhost:8080/login/oauth2/code/keycloak as default).
+> Because the demo application will consume the authorization code to exchange for access token when redirecting to that URI.
+> SOAtest will not be able to use the authorization code again since it's one-time-use.
 
 ## Connect to embedded HSQLDB server instance
 There are four databases (one for global and three for industries) in this Application, which are **global**, **outdoor**, **defense** and **aerospace**.
