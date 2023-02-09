@@ -116,11 +116,10 @@ To use OAuth 2.0 authentication, you will need to set up a Keycloak server as th
 | Client secret | DzOS5Y4iRmHIQH6ntTGHj78PpFEjUKLo                                          | spring.security.oauth2.client.registration.keycloak.client-secret |
 | scope         | openid                                                                    | spring.security.oauth2.client.registration.keycloak.scope         |
 
-> **Redirect URI** can be any URI but must not be `http://{host.and.port.of.this.application}/login/oauth2/code/keycloak`
-> (e.g. http://localhost:8080/login/oauth2/code/keycloak)
-> which is provided by this application and used by default when sign in by UI.
-> This application will consume the OAuth 2.0 authorization code to get access token when Keycloak redirects to this URI. 
-> The authorization code will be invalid once it is consumed, SOAtest can not use it again.
+When setting up an OAuth 2.0 Authentication in SOAtest:
+> We can use any URI as **Redirect URI** except for `http://{host.and.port.of.this.application}/login/oauth2/code/keycloak`(e.g. http://localhost:8080/login/oauth2/code/keycloak as default).
+> Because the demo application will consume the authorization code to exchange for access token when redirecting to that URI.
+> SOAtest will not be able to use the authorization code again since it's one-time-use.
 
 ## Connect to embedded HSQLDB server instance
 There are four databases (one for global and three for industries) in this Application, which are **global**, **outdoor**, **defense** and **aerospace**.
