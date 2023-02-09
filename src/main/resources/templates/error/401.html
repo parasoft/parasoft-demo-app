@@ -16,10 +16,13 @@
         <div class="error_head">
             <h1 translate="401_ERROR_TITLE"></h1>
         </div>
-        <div class="content">
-            <div translate="USERNAME_NOT_AVAILABLE"></div>
+        <div class="content" th:switch="${errorType}">
+            <div>
+                <div th:case="client_error" translate="KEYCLOAK_CLIENT_UNAUTHORIZED"></div>
+                <div th:case="keycloak_user" translate="USERNAME_NOT_AVAILABLE"></div>
+            </div>
             <br/><br/>
-            <a href="/" class="go_home"><span translate="BACK_TO_HOME"></span></a>
+            <a href="/loginPage" class="go_home"><span translate="BACK_TO_LOGIN_PAGE"></span></a>
         </div>
     </div>
 
