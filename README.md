@@ -121,6 +121,11 @@ To use OAuth 2.0 authentication, you will need to set up a Keycloak server as th
 > Because the demo application will consume the authorization code to exchange for access token when redirecting to that URI.
 > SOAtest will not be able to use the authorization code again since it's one-time-use.
 
+> We can get the authorization endpoint URL with following steps for **Start Recording From** field when creating the login test suite:
+> 1. Open login page of this application and sign in with OAuth2.0 to open Keycloak login page.
+> 2. Copy the URL from location bar after Keycloak login page is opened, paste it to **Start Recording From** field .
+> 3. Change the **redirect_uri** parameter in URL to the value of **Redirect URI** in the table above.
+
 ## Connect to embedded HSQLDB server instance
 There are four databases (one for global and three for industries) in this Application, which are **global**, **outdoor**, **defense** and **aerospace**.
 
