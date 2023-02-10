@@ -116,16 +116,16 @@ To use OAuth 2.0 authentication, you will need to set up a Keycloak server as th
 | Client secret | DzOS5Y4iRmHIQH6ntTGHj78PpFEjUKLo                                          | spring.security.oauth2.client.registration.keycloak.client-secret |
 | scope         | openid                                                                    | spring.security.oauth2.client.registration.keycloak.scope         |
 
-> When setting up an OAuth 2.0 Authentication in SOAtest, we can use any URI as **Redirect URI** except for `http://{host.and.port.of.this.application}/login/oauth2/code/keycloak`
-> (e.g. http://localhost:8080/login/oauth2/code/keycloak as default).
-> Because the demo application will consume the authorization code to exchange for access token when redirecting to that URI.
-> SOAtest will not be able to use the authorization code again since it's one-time-use.
+> When creating the login test suite in SOAtest, we can get the authorization endpoint URL for **Start Recording From** field
+> with following steps:
+> 1. Open login page of this application and sign in with OAuth 2.0 to open Keycloak login page.
+> 2. Copy the URL from location bar in Keycloak login page and change the **redirect_uri** parameter value to any URI other than the original value.
+> 3. Paste the modified URL into **Start Recording From** field.
 
-> We can get the authorization endpoint URL with following steps for **Start Recording From** field when creating the login test suite:
-> 1. Open login page of this application and sign in with OAuth2.0 to open Keycloak login page.
-> 2. Copy the URL from location bar after Keycloak login page is opened, paste it to **Start Recording From** field .
-> 3. Change the **redirect_uri** parameter in URL to the value of **Redirect URI** in the table above.
-
+> When setting up an OAuth 2.0 Authentication in SOAtest, we can use any URI as **Redirect URI** other than the original value.<br/>
+> The URI is `http://{host.and.port.of.this.application}/login/oauth2/code/keycloak` by default (e.g. http://localhost:8080/login/oauth2/code/keycloak).<br/>
+> The demo application will consume the authorization code to exchange for access token when redirecting to the original URI.
+> In that way, SOAtest will not be able to use the authorization code again since it's one-time-use.
 ## Connect to embedded HSQLDB server instance
 There are four databases (one for global and three for industries) in this Application, which are **global**, **outdoor**, **defense** and **aerospace**.
 
