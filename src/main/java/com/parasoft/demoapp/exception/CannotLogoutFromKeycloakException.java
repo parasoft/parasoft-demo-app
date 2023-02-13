@@ -1,6 +1,6 @@
 package com.parasoft.demoapp.exception;
 
-public class CannotLogoutFromKeycloakException extends Exception{
+public class CannotLogoutFromKeycloakException extends Exception {
 
     private static final long serialVersionUID = -759649018832388077L;
 

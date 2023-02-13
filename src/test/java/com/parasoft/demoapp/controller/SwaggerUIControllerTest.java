@@ -1,6 +1,7 @@
 package com.parasoft.demoapp.controller;
 
-import com.parasoft.demoapp.dto.IdToken;
+import com.parasoft.demoapp.dto.IdTokenDTO;
+import com.parasoft.demoapp.exception.CannotLogoutFromKeycloakException;
 import com.parasoft.demoapp.service.KeycloakService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,7 +11,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 
 @RunWith(PowerMockRunner.class)
 public class SwaggerUIControllerTest {
@@ -37,23 +39,27 @@ public class SwaggerUIControllerTest {
 
     @Test
     public void swaggerOAuth2Logout_success() throws Throwable {
-        //Given
-        IdToken idToken = new IdToken();
+        // Given
+        IdTokenDTO idToken = new IdTokenDTO();
         idToken.setIdToken("idToken");
-        when(keycloakService.oauth2Logout(anyString())).thenReturn("Logout");
+        doNothing().when(keycloakService).oauth2Logout(anyString());
 
-        //When
-        underTest.swaggerOAuth2Logout(idToken);
+        // When
+        ResponseResult<Void> result = underTest.swaggerOAuth2Logout(idToken);
 
+        // Then
+        assertEquals(ResponseResult.STATUS_OK, result.getStatus().intValue());
+        assertEquals(ResponseResult.MESSAGE_OK, result.getMessage());
     }
 
-    @Test
-    public void swaggerOAuth2Logout_failed() throws Throwable {
-        //Given
-        IdToken idToken = new IdToken();
+    @Test(expected = CannotLogoutFromKeycloakException.class)
+    public void swaggerOAuth2Logout_error_cannotLogoutFromKeycloakException() throws Throwable {
+        // Given
+        IdTokenDTO idToken = new IdTokenDTO();
         idToken.setIdToken("idToken");
+        doThrow(CannotLogoutFromKeycloakException.class).when(keycloakService).oauth2Logout(anyString());
 
-        //When
+        // When
         underTest.swaggerOAuth2Logout(idToken);
     }
 }

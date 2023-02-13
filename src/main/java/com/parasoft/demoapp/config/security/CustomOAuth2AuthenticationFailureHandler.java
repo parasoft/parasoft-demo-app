@@ -2,7 +2,6 @@ package com.parasoft.demoapp.config.security;
 
 import com.parasoft.demoapp.exception.CannotLogoutFromKeycloakException;
 import com.parasoft.demoapp.service.KeycloakService;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
@@ -23,7 +22,6 @@ public class CustomOAuth2AuthenticationFailureHandler  implements Authentication
     @Autowired
     KeycloakService keycloakService;
 
-    @SneakyThrows
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException exception) throws IOException {
@@ -48,13 +46,16 @@ public class CustomOAuth2AuthenticationFailureHandler  implements Authentication
 
         if (exception instanceof UsernameNotFoundException) {
             response.sendRedirect("/unauthorized?type=keycloak_user");
-            return;
         }
     }
 
-    private void signOutFromKeycloak(String idTokenHint) throws IOException, CannotLogoutFromKeycloakException {
+    private void signOutFromKeycloak(String idTokenHint) {
         if (idTokenHint != null) {
-            keycloakService.oauth2Logout(idTokenHint);
+            try {
+                keycloakService.oauth2Logout(idTokenHint);
+            } catch (CannotLogoutFromKeycloakException e) {
+                log.error(e.getMessage(), e);
+            }
         }
     }
 }

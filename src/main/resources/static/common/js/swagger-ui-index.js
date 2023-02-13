@@ -20,7 +20,7 @@ window.onload = function () {
     deepLinking: true,
     defaultModelsExpandDepth: -1,
     presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
-    plugins: [SwaggerUIBundle.plugins.DownloadUrl, OAuthLogoutPlugin],
+    plugins: [SwaggerUIBundle.plugins.DownloadUrl, OAuth2LoginAndLogoutPlugin],
     layout: "StandaloneLayout",
     oauth2RedirectUrl: "".concat(window.location.protocol, "//").concat(window.location.host, "/swagger-ui/oauth2-redirect.html")
   });
@@ -29,7 +29,7 @@ window.onload = function () {
     scopes: "openid"
   });
 
-  function OAuthLogoutPlugin() {
+  function OAuth2LoginAndLogoutPlugin() {
 
     var lastAuthUrl = null;
     var idToken = null;
@@ -55,7 +55,7 @@ window.onload = function () {
 
             logout: (originalAction, system) => (payload) => {
               originalAction(payload);
-              if (payload[0] == 'oAuth2AuthCode') {
+              if (payload[0] === 'oAuth2AuthCode') {
                 $.ajax({
                   url: "/v1/swaggerOAuth2Logout",
                   data: JSON.stringify({"idToken": idToken}),
@@ -64,8 +64,8 @@ window.onload = function () {
                   success: function() {
                     system.authActions.showDefinitions(false);
                   },
-                  error: function() {
-                    // Do nothing
+                  error: function(e) {
+                    console.error(e);
                   }
                 })
               }

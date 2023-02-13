@@ -1,7 +1,7 @@
 package com.parasoft.demoapp.config.security;
 
+import com.parasoft.demoapp.exception.CannotLogoutFromKeycloakException;
 import com.parasoft.demoapp.service.KeycloakService;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -20,13 +20,16 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler{
     @Autowired
     KeycloakService keycloakService;
 
-    @SneakyThrows
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         if (authentication instanceof OAuth2AuthenticationToken) {
             CustomOidcUser user = (CustomOidcUser) authentication.getPrincipal();
             String idTokenValue = user.getIdToken().getTokenValue();
-            keycloakService.oauth2Logout(idTokenValue);
+            try {
+                keycloakService.oauth2Logout(idTokenValue);
+            } catch (CannotLogoutFromKeycloakException e) {
+                log.error(e.getMessage(), e);
+            }
         }
         response.sendRedirect("/loginPage");
     }

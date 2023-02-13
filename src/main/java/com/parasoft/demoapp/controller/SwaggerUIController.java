@@ -1,6 +1,6 @@
 package com.parasoft.demoapp.controller;
 
-import com.parasoft.demoapp.dto.IdToken;
+import com.parasoft.demoapp.dto.IdTokenDTO;
 import com.parasoft.demoapp.exception.CannotLogoutFromKeycloakException;
 import com.parasoft.demoapp.service.KeycloakService;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -24,7 +24,8 @@ public class SwaggerUIController {
     @Hidden
     @ResponseBody
     @PostMapping(value = {"/v1/swaggerOAuth2Logout"})
-    public void swaggerOAuth2Logout(@RequestBody IdToken idToken) throws CannotLogoutFromKeycloakException {
-        keycloakService.oauth2Logout(idToken.getIdToken());
+    public ResponseResult<Void> swaggerOAuth2Logout(@RequestBody IdTokenDTO idTokenDTO) throws CannotLogoutFromKeycloakException {
+        keycloakService.oauth2Logout(idTokenDTO.getIdToken());
+        return ResponseResult.getInstance(ResponseResult.STATUS_OK, ResponseResult.MESSAGE_OK);
     }
 }
