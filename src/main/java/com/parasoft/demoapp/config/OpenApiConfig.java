@@ -42,7 +42,6 @@ public class OpenApiConfig {
                                                 .flows(new OAuthFlows().authorizationCode(
                                                         new OAuthFlow().tokenUrl(tokenUri)
                                                                 .authorizationUrl(authorizationUri)
-                                                                .scopes(new Scopes().addString("openid", "for openid scope"))
                                                 ))
                                 )
                 )

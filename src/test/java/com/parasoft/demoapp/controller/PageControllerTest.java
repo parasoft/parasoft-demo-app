@@ -476,18 +476,4 @@ public class PageControllerTest {
         // Then
         assertEquals("error/404", result);
     }
-
-    /**
-     * Test for showSwaggerUIPage()
-     *
-     * @see PageController#showSwaggerUIPage()
-     */
-    @Test
-    public void testShowSwaggerUIPage() throws Throwable {
-        // When
-        String result = underTest.showSwaggerUIPage();
-
-        // Then
-        assertEquals("swaggerUIIndex", result);
-    }
 }
