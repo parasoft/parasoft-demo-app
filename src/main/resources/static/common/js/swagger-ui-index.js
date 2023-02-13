@@ -55,15 +55,21 @@ window.onload = function () {
 
             logout: (originalAction, system) => (payload) => {
               originalAction(payload);
-              $.ajax({
-                url: "/swaggerOAuth2Logout",
-                data: idToken,
-                type: "POST",
-                success: function() {
-                  system.authActions.showDefinitions(false);
-                },
-                error: function() {}
-              })
+              if (payload[0] == 'oAuth2AuthCode') {
+                $.ajax({
+                  url: "/v1/swaggerOAuth2Logout",
+                  data: JSON.stringify({"idToken": idToken}),
+                  type: "POST",
+                  headers: {'Content-Type': 'application/json'},
+                  success: function() {
+                    system.authActions.showDefinitions(false);
+                  },
+                  error: function() {
+                    // Do nothing
+                  }
+                })
+              }
+
             }
           }
         }

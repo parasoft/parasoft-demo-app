@@ -128,12 +128,6 @@ public class PageController {
         return "orders";
     }
 
-    @GetMapping("/swagger-ui/index.html")
-    public String showSwaggerUIPage() {
-
-        return "swaggerUIIndex";
-    }
-
     @GetMapping("/accessDenied")
     public String showAccessDeniedPage(ModelMap modelMap, String type) {
         try {
