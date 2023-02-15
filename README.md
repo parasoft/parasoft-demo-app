@@ -136,6 +136,29 @@ There are four databases (one for global and three for industries) in this Appli
 | defense       | Used to store the data about defense industry.       |
 | aerospace     | Used to store the data about aerospace industry.     |
 
+* Tables in global database
+
+| Table name             | Description                              |
+|------------------------|------------------------------------------|
+| TBL_USER               | Used to store the user data.             |
+| TBL_ROLE               | Used to store the role data.             |
+| TBL_DEMO_BUG           | Used to store the demo bug data.         |
+| TBL_ENDPOINT           | Used to store the routing endpoint data. |
+| TBL_GLOBAL_PREFERENCES | Used to store the configuration data.    |
+
+* Tables in industry database
+
+| Table name         | Description                                 |
+|--------------------|---------------------------------------------|
+| TBL_CATEGORY       | Used to store the category data.            |
+| TBL_ITEM           | Used to store the item data.                |
+| TBL_ITEM_INVENTORY | Used to store the item inventory data.      |
+| TBL_CART           | Used to store the cart data.                |
+| TBL_ORDER          | Used to store the order data.               |
+| TBL_ORDER_ITEM     | Used to store the order item data.          |
+| TBL_LOCATION       | Used to store the region and location data. |
+| TBL_LABEL          | Used to store label values on UI.           |
+
 ### Connection configuration
 This application exposes port 9001 for the user to connect to the HSQLDB database remotely. This port is configurable as **hsqldb.port** in application.properties.
 
