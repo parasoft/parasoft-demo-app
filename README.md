@@ -136,14 +136,14 @@ There are four databases (one for global and three for industries) in this Appli
 | defense       | Used to store the data about defense industry.       |
 | aerospace     | Used to store the data about aerospace industry.     |
 
-* User relevant tables in global database
+* User-relevant tables in the global database
 
 | Table name             | Description                              |
 |------------------------|------------------------------------------|
 | TBL_USER               | Used to store the user data.             |
 | TBL_ROLE               | Used to store the role data.             |
 
-* User relevant tables in industry database
+* User-relevant tables in the industry databases
 
 | Table name         | Description                                 |
 |--------------------|---------------------------------------------|
