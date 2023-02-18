@@ -15,6 +15,7 @@ public class ConfigMessages extends Messages {
 	public static final String GENERAL_API_DESCRIPTION = "general.api.description";
 	public static final String REGULAR_API_DESCRIPTION = "regular.api.description";
 	public static final String GATEWAY_API_DESCRIPTION = "gateway.api.description";
+	public static final String KEYCLOAK_SING_OUT_FAILED = "Tried to sign out the session from Keycloak but failed, Keycloak server is not available.";
 
 	public ConfigMessages() {
 		super("i18n/messages");
