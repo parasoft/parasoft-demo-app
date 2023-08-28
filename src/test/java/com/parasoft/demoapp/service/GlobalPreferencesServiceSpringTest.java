@@ -11,15 +11,10 @@ import com.parasoft.demoapp.messages.GlobalPreferencesMessages;
 import com.parasoft.demoapp.model.global.preferences.*;
 import com.parasoft.demoapp.repository.industry.*;
 import com.parasoft.demoapp.util.UrlUtil;
-import org.apache.activemq.command.ActiveMQQueue;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+import org.mockito.MockedStatic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -36,12 +31,10 @@ import java.util.List;
 import java.util.Map;
 
 import static com.parasoft.demoapp.config.ParasoftJDBCProxyConfig.PARASOFT_JDBC_PROXY_VIRTUALIZE_SERVER_URL_DEFAULT_VALUE;
-import static com.parasoft.demoapp.config.activemq.ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST;
-import static com.parasoft.demoapp.config.activemq.ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE;
 import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.*;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.*;
 
 /**
  * Test class for GlobalPreferencesService
@@ -50,10 +43,7 @@ import static org.mockito.Mockito.doNothing;
  */
 @TestPropertySource("file:./src/test/java/com/parasoft/demoapp/application.properties")
 @DirtiesContext
-@RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(SpringJUnit4ClassRunner.class)
-@PowerMockIgnore({ "com.sun.org.apache.*", "javax.xml.*", "org.xml.*", "javax.management.*", "javax.net.*" })
-@PrepareForTest(UrlUtil.class)
+@RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 public class GlobalPreferencesServiceSpringTest {
 
@@ -85,6 +75,12 @@ public class GlobalPreferencesServiceSpringTest {
 	@Autowired
 	private WebConfig webConfig;
 
+	private MockedStatic<UrlUtil> mockedUrlUtilStatic = mockStatic(UrlUtil.class);
+
+	@After
+	public void tearDown() {
+		mockedUrlUtilStatic.close();
+	}
 	/**
 	 * Test for industry change
 	 *
@@ -133,9 +129,7 @@ public class GlobalPreferencesServiceSpringTest {
 	@Test
 	@Transactional(value = "globalTransactionManager")
 	public void testUpdateGlobalPreferences_refreshEndpoint() throws Throwable {
-
-		PowerMockito.mockStatic(UrlUtil.class);
-		PowerMockito.doReturn(true).when(UrlUtil.class, "isGoodHttpForm", anyString());
+		mockUrlUtil();
 
 		// Give
 		String categoriesRestEndpointUrl = "http://localhost:8080/v1/assets/categories/";
@@ -260,6 +254,7 @@ public class GlobalPreferencesServiceSpringTest {
 	 * @see com.parasoft.demoapp.service.GlobalPreferencesService#updateGlobalPreferences(GlobalPreferencesDTO)
 	 */
 	@Test
+	@Transactional(value = "globalTransactionManager")
 	public void UpdateGlobalPreferences_refreshEndpoint_useDefaultEndpointsWhenNoRestEndpointInDatabase()
 			throws Throwable {
 		// Given
@@ -400,9 +395,7 @@ public class GlobalPreferencesServiceSpringTest {
 	@Test
 	@Transactional(value = "globalTransactionManager")
 	public void testUpdateGlobalPreferences_useParasoftJDBCProxy() throws Throwable {
-
-		PowerMockito.mockStatic(UrlUtil.class);
-		PowerMockito.doReturn(true).when(UrlUtil.class, "isGoodHttpForm", anyString());
+		mockUrlUtil();
 
 		// Give
 		boolean useParasoftJDBCProxy = true;
@@ -441,9 +434,7 @@ public class GlobalPreferencesServiceSpringTest {
 	@Test
 	@Transactional(value = "globalTransactionManager")
 	public void testUpdateGlobalPreferences_useParasoftJDBCProxy_defaultVirtualizeServerUrl() throws Throwable {
-
-		PowerMockito.mockStatic(UrlUtil.class);
-		PowerMockito.doReturn(true).when(UrlUtil.class, "isGoodHttpForm", anyString());
+		mockUrlUtil();
 
 		// Give
 		boolean useParasoftJDBCProxy = true;
@@ -528,8 +519,7 @@ public class GlobalPreferencesServiceSpringTest {
     @Test
     @Transactional(value = "globalTransactionManager")
     public void testUpdateGlobalPreferences_updateGraphQLEndpoint() throws Throwable {
-        PowerMockito.mockStatic(UrlUtil.class);
-        PowerMockito.doReturn(true).when(UrlUtil.class, "isGoodHttpForm", anyString());
+		mockUrlUtil();
 
         // Give
         String graphQLEndPointUrl = "http://localhost:8080/graphql";
@@ -577,10 +567,10 @@ public class GlobalPreferencesServiceSpringTest {
      * @see com.parasoft.demoapp.service.GlobalPreferencesService#updateGlobalPreferences(GlobalPreferencesDTO)
      */
     @Test
+	@Transactional(value = "globalTransactionManager")
     public void UpdateGlobalPreferences_updateGraphQLEndpoint_emptyEndpoint()
             throws Throwable {
-        PowerMockito.mockStatic(UrlUtil.class);
-        PowerMockito.doReturn(true).when(UrlUtil.class, "isGoodHttpForm", anyString());
+		mockUrlUtil();
 
         // Give
         String graphQLEndPointUrl = "";
@@ -623,4 +613,8 @@ public class GlobalPreferencesServiceSpringTest {
         assertTrue(graphQLRoute.isCustomSensitiveHeaders());
         assertTrue(graphQLRoute.isPrefixStripped());
     }
+
+	private void mockUrlUtil() {
+		mockedUrlUtilStatic.when(() -> UrlUtil.isGoodHttpForm(anyString())).thenReturn(true);
+	}
 }
