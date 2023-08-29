@@ -19,13 +19,7 @@ import java.util.regex.Pattern;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.*;
 
 import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
 import com.parasoft.demoapp.messages.GlobalPreferencesMessages;
@@ -39,8 +33,6 @@ import com.parasoft.demoapp.model.industry.LabelEntity;
  *
  * @see com.parasoft.demoapp.service.LocalizationService
  */
-@PrepareForTest({ LocalizationService.class, Properties.class })
-@RunWith(PowerMockRunner.class)
 public class LocalizationServiceTest {
 	@InjectMocks
 	LocalizationService underTest;
@@ -149,9 +141,9 @@ public class LocalizationServiceTest {
 		// Given
 		IndustryRoutingDataSource.currentIndustry = IndustryType.AEROSPACE;
 		LocalizationLanguageType language = LocalizationLanguageType.ZH;
-		Properties properties = PowerMockito.mock(Properties.class);
-		PowerMockito.whenNew(Properties.class).withAnyArguments().thenReturn(properties);
-		doThrow(IOException.class).when(properties).load(any(InputStream.class));
+		MockedConstruction<Properties> mockedPropertiesConstruction = Mockito.mockConstruction(Properties.class, (mock, context) -> {
+            doThrow(IOException.class).when(mock).load(any(InputStream.class));
+		});
 
 		// When
 		String message = "";
@@ -162,6 +154,7 @@ public class LocalizationServiceTest {
 			message = e.getMessage();
 		}
 
+		mockedPropertiesConstruction.close();
 		assertEquals(LocalizationMessages.FAILED_TO_LOAD_PROPERTIES_FILE, message);
 	}
 
@@ -174,9 +167,9 @@ public class LocalizationServiceTest {
 	public void testGetLocalization_parameterException() throws Throwable {
 		// Given
 		IndustryRoutingDataSource.currentIndustry = IndustryType.AEROSPACE;
-		Properties properties = PowerMockito.mock(Properties.class);
-		PowerMockito.whenNew(Properties.class).withAnyArguments().thenReturn(properties);
-		doThrow(IOException.class).when(properties).load(any(InputStream.class));
+		MockedConstruction<Properties> mockedPropertiesConstruction = Mockito.mockConstruction(Properties.class, (mock, context) -> {
+			doThrow(IOException.class).when(mock).load(any(InputStream.class));
+		});
 
 		// When
 		String message = "";
@@ -188,6 +181,7 @@ public class LocalizationServiceTest {
 			message = e.getMessage();
 		}
 
+		mockedPropertiesConstruction.close();
 		assertEquals(GlobalPreferencesMessages.LOCALIZATION_LANGUAGE_TYPE_CANNOT_BE_NULL, message);
 	}
 
