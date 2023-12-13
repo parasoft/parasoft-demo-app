@@ -10,21 +10,15 @@ import com.parasoft.demoapp.service.CategoryService;
 import com.parasoft.demoapp.service.GlobalPreferencesService;
 import com.parasoft.demoapp.service.ItemService;
 import com.parasoft.demoapp.util.AuthenticationUtil;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.*;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.ui.ModelMap;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
@@ -33,8 +27,6 @@ import static org.mockito.Mockito.*;
  *
  * @see PageController
  */
-@PrepareForTest({ AuthenticationUtil.class})
-@RunWith(PowerMockRunner.class)
 public class PageControllerTest {
 
     @InjectMocks
@@ -52,11 +44,18 @@ public class PageControllerTest {
     @Mock
     GlobalPreferencesEntity globalPreferencesEntity;
 
+    private MockedStatic<AuthenticationUtil> mockedAuthenticationUtilStatic = mockStatic(AuthenticationUtil.class);
+
     @Before
     public void setupMocks()  throws Throwable {
         MockitoAnnotations.initMocks(this);
         when(globalPreferencesService.getCurrentGlobalPreferences()).thenReturn(globalPreferencesEntity);
         when(globalPreferencesEntity.getWebServiceMode()).thenReturn(WebServiceMode.GRAPHQL);
+    }
+
+    @After
+    public void tearDown() {
+        mockedAuthenticationUtilStatic.close();
     }
 
     /**
@@ -162,8 +161,7 @@ public class PageControllerTest {
     }
 
     private void mockAuthenticationUtil(String roleToReturn) throws Exception {
-        PowerMockito.mockStatic(AuthenticationUtil.class);
-        PowerMockito.doReturn(roleToReturn).when(AuthenticationUtil.class, "getUserRoleNameInAuthentication", any(Authentication.class));
+        mockedAuthenticationUtilStatic.when(() -> AuthenticationUtil.getUserRoleNameInAuthentication(any(Authentication.class))).thenReturn(roleToReturn);
     }
 
     /**

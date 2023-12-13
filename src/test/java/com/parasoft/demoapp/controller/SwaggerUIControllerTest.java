@@ -3,18 +3,16 @@ package com.parasoft.demoapp.controller;
 import com.parasoft.demoapp.dto.IdTokenDTO;
 import com.parasoft.demoapp.exception.CannotLogoutFromKeycloakException;
 import com.parasoft.demoapp.service.KeycloakService;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.MockitoAnnotations;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.*;
 
-@RunWith(PowerMockRunner.class)
 public class SwaggerUIControllerTest {
 
     @InjectMocks
@@ -22,6 +20,11 @@ public class SwaggerUIControllerTest {
 
     @Mock
     KeycloakService keycloakService;
+
+    @Before
+    public void setupMocks()  throws Throwable {
+        MockitoAnnotations.initMocks(this);
+    }
 
     /**
      * Test for showSwaggerUIPage()
