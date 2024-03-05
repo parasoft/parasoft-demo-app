@@ -11,6 +11,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 @Data
 @NoArgsConstructor
 @Schema
@@ -21,12 +24,15 @@ public class GlobalPreferencesDTO {
     @Hidden
     private String soapEndPoint;
 
+    @NotNull
     private IndustryType industryType;
 
+    @NotNull
     private WebServiceMode webServiceMode;
 
     private String graphQLEndpoint;
 
+    @NotNull
     private Boolean advertisingEnabled;
 
     private DemoBugsType[] demoBugs;
@@ -54,9 +60,12 @@ public class GlobalPreferencesDTO {
                           "Only the following characters can be used for the group id: 0-9, a-z, A-Z, - and _ .")
     private String parasoftVirtualizeGroupId;
 
+    @NotNull
     private MqType mqType;
 
+    @NotBlank
     private String orderServiceSendTo;
 
+    @NotBlank
     private String orderServiceListenOn;
 }
