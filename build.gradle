@@ -156,6 +156,22 @@ springBoot {
 	}
 }
 
+// Change the annotationProcessorGeneratedSourcesDirectory to make project compatible with UTA
+def annotationProcessorGeneratedSourcesDirectory_main = file("$projectDir/src/main/java/annotationProcessor")
+def annotationProcessorGeneratedSourcesDirectory_test = file("$projectDir/src/test/java/annotationProcessor")
+tasks.withType(JavaCompile).configureEach {
+	if (name == 'compileJava') {
+		options.annotationProcessorGeneratedSourcesDirectory = annotationProcessorGeneratedSourcesDirectory_main
+	} else if (name == 'compileTestJava') {
+		options.annotationProcessorGeneratedSourcesDirectory = annotationProcessorGeneratedSourcesDirectory_test
+	}
+}
+tasks.register('additionalClean', Delete) {
+	delete annotationProcessorGeneratedSourcesDirectory_main
+	delete annotationProcessorGeneratedSourcesDirectory_test
+}
+clean.dependsOn(additionalClean)
+
 bootWar {
 	manifest {
 		attributes(

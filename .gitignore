@@ -37,4 +37,6 @@ application.pid
 /pda-db/
 /pda-files/
 /src/main/resources/META-INF/
+/src/main/java/annotationProcessor/
+/src/test/java/annotationProcessor/
 /lib/*.jar
