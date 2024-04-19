@@ -1,11 +1,9 @@
 package com.parasoft.demoapp.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.parasoft.demoapp.grpc.GRPCConfig;
 import com.parasoft.demoapp.config.kafka.KafkaConfig;
 import com.parasoft.demoapp.config.rabbitmq.RabbitMQConfig;
 import com.parasoft.demoapp.defaultdata.global.GlobalUsersCreator;
-import com.parasoft.demoapp.dto.GRPCPropertiesResponseDTO;
 import com.parasoft.demoapp.dto.MQPropertiesResponseDTO;
 import com.parasoft.demoapp.messages.ConfigMessages;
 import com.parasoft.demoapp.messages.GlobalPreferencesMessages;
@@ -56,8 +54,6 @@ public class GlobalPreferencesControllerSpringTest {
     @Autowired
     RabbitMQConfig rabbitMQConfig;
 
-    @Autowired
-    GRPCConfig gRPConfig;
 
     @Test
     public void test_getMQProperties_normal() throws Exception {
@@ -90,50 +86,6 @@ public class GlobalPreferencesControllerSpringTest {
         assertNotNull(mockMvc);
 
         String baseUrl = "/v1/demoAdmin/mqProperties";
-        MvcResult mvcResult =
-                mockMvc.perform(get(baseUrl).with(httpBasic(GlobalUsersCreator.USERNAME_PURCHASER,"invalidPass")))
-                        .andExpect(status().isUnauthorized())
-                        .andReturn();
-        MockHttpServletResponse response  = mvcResult.getResponse();
-        ResponseResult result =
-                objectMapper.readValue(response.getContentAsString(), ResponseResult.class);
-
-        assertNotNull(result);
-        assertEquals(ResponseResult.STATUS_ERR, result.getStatus());
-        assertEquals(ConfigMessages.USER_IS_NOT_AUTHORIZED, result.getMessage());
-        assertEquals(result.getData(), "Bad credentials");
-    }
-
-    @Test
-    public void test_getGRPCProperties_normal() throws Exception {
-        assertNotNull(mockMvc);
-
-        String baseUrl = "/v1/demoAdmin/gRPCProperties";
-        MvcResult mvcResult =
-                mockMvc.perform(get(baseUrl))
-                        .andExpect(status().isOk())
-                        .andReturn();
-        MockHttpServletResponse response  = mvcResult.getResponse();
-        ResponseResult result =
-                objectMapper.readValue(response.getContentAsString(), ResponseResult.class);
-
-        assertNotNull(result);
-        assertEquals(ResponseResult.STATUS_OK, result.getStatus());
-        assertEquals(ResponseResult.MESSAGE_OK, result.getMessage());
-
-        GRPCPropertiesResponseDTO gRPCPropertiesResponse =
-                objectMapper.convertValue(result.getData(), GRPCPropertiesResponseDTO.class);
-        GRPCPropertiesResponseDTO gRPCProperties = new GRPCPropertiesResponseDTO(gRPConfig.getPort());
-
-        assertNotNull(gRPCPropertiesResponse);
-        assertEquals(gRPCProperties.getPort(),gRPCPropertiesResponse.getPort());
-    }
-
-    @Test
-    public void test_getGRPCProperties_incorrectAuthentication() throws Exception {
-        assertNotNull(mockMvc);
-
-        String baseUrl = "/v1/demoAdmin/gRPCProperties";
         MvcResult mvcResult =
                 mockMvc.perform(get(baseUrl).with(httpBasic(GlobalUsersCreator.USERNAME_PURCHASER,"invalidPass")))
                         .andExpect(status().isUnauthorized())

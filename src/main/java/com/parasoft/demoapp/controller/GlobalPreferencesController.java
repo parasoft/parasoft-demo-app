@@ -1,6 +1,5 @@
 package com.parasoft.demoapp.controller;
 
-import com.parasoft.demoapp.grpc.GRPCConfig;
 import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
 import com.parasoft.demoapp.dto.*;
 import com.parasoft.demoapp.exception.*;
@@ -37,8 +36,6 @@ public class GlobalPreferencesController {
 	@Autowired
 	private GlobalPreferencesMQService globalPreferencesMQService;
 
-	@Autowired
-	private GRPCConfig gRPConfig;
 
 	//@Hidden
 	@Operation(description = "Update current preferences.")
@@ -177,19 +174,6 @@ public class GlobalPreferencesController {
 		ResponseResult<MQPropertiesResponseDTO> response =
 				ResponseResult.getInstance(ResponseResult.STATUS_OK, ResponseResult.MESSAGE_OK);
 		response.setData(globalPreferencesService.getMQProperties());
-		return response;
-	}
-
-	@Operation(description = "Obtain gRPC properties.")
-	@ApiResponse(responseCode = "200", description = "gRPC properties were returned.")
-	@GetMapping("/v1/demoAdmin/gRPCProperties")
-	@ResponseBody
-	public ResponseResult<GRPCPropertiesResponseDTO> getGRPCProperties() {
-
-		ResponseResult<GRPCPropertiesResponseDTO> response =
-				ResponseResult.getInstance(ResponseResult.STATUS_OK, ResponseResult.MESSAGE_OK);
-		GRPCPropertiesResponseDTO grpcPropertiesResponseDTO = new GRPCPropertiesResponseDTO(gRPConfig.getPort());
-		response.setData(grpcPropertiesResponseDTO);
 		return response;
 	}
 
