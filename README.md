@@ -16,6 +16,8 @@ In Windows:
 gradlew.bat bootWar
 ```
 The file parasoft-demo-app-1.1.0.war can be found in build/libs after building.
+
+Notes: If you want to use _gradle_ to build the project, version 6.3~7.6.4 is required.
 ### Running
 You can run the application either:
 - Directly from sources:
