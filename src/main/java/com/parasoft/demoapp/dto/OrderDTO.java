@@ -18,6 +18,7 @@ public class OrderDTO {
     private RegionType region;
     @NotBlank
     private String location;
+    @NotNull
     private ShippingEntity shipping;
     @NotBlank
     private String eventId;
