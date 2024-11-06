@@ -16,6 +16,8 @@ In Windows:
 gradlew.bat bootWar
 ```
 The file parasoft-demo-app-1.1.0.war can be found in build/libs after building.
+
+Notes: If you want to use _gradle_ to build the project, version 6.3~7.6.4 is required.
 ### Running
 You can run the application either:
 - Directly from sources:
@@ -40,6 +42,8 @@ java -jar build/libs/parasoft-demo-app-1.1.0.war --server.port=8888
 If you want to import the project into your IDE, be sure to do the following:
 1. Import the project as a Gradle project. You may need to synchronize or refresh the project after importing.
 2. Install a Lombok plugin for your IDE since the project uses Lombok.
+3. Run the `build/classes` Gradle task to ensure the successful compilation of the project. The `build/classes` task generates auto-generated code for technologies used in the project, such as gRPC. It needs to be executed after running the `build/clean` task.
+
 #### Changing server port
 When launching the app, you can specify the port to use with a command like the following:
 ```
