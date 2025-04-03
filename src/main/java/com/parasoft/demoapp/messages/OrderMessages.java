@@ -4,6 +4,7 @@ public class OrderMessages extends Messages {
 
 	public static final String LOCATION_NOT_FOUND = "Location not found.";
 	public static final String LOCATION_CANNOT_BE_BLANK = "Location should not be blank(null, '' or '  ').";
+	public static final String SHIPPING_CANNOT_BE_BLANK = "Shipping should not be blank(null, '' or '  ').";
 	public static final String RECEIVER_ID_CANNOT_BE_BLANK = "Receiver ID should not be blank(null, '' or '  ').";
 	public static final String EVENT_ID_CANNOT_BE_BLANK = "Event ID should not be blank(null, '' or '  ').";
 	public static final String EVENT_NUMBER_CANNOT_BE_BLANK = "Event number should not be blank(null, '' or '  ').";
