@@ -78,7 +78,7 @@
                             <div class="deploy_inf industry_font">
                                 <span translate="LOCATION_OPTIONS" class="retract_format"></span><span>:</span>
                             </div>
-                            <select id="region_select" class="form-control industry_font deploy_input retract_format" name="selectedArea"
+                            <select id="region_select" class="form-control industry_font deploy_input retract_format" name="shippingInfo.selectedArea"
                                     ng-model="selectedArea" ng-change="changeArea()"
                                     ng-options="area | translate for area in regions">
                                 <option value="">-</option>
@@ -86,8 +86,18 @@
                             <div class="deploy_inf industry_font">
                                 <span class="retract_format" translate="RECEIVER_NAME"></span><span>:</span>
                             </div>
-                            <input id="platoon_id_input" type="text" class="industry_font form-control deploy_input" name="positionId"
-                                   ng-model="positionId" ng-change="checkAreaInfo()">
+                            <input id="platoon_id_input" type="text" class="industry_font form-control deploy_input" name="shippingInfo.positionId"
+                                   ng-model="shippingService.positionId" ng-change="checkAreaInfo()">
+                            <div class="deploy_inf industry_font">
+                                <span translate="SHIPPING"></span><span>:</span>
+                            </div>
+                            <select id="shipping_service_select"
+                                    name="shippingInfo.shippingType"
+                                    class="form-control industry_font deploy_input"
+                                    ng-model="shippingService.shippingType"
+                                    ng-change="checkAreaInfo()"
+                                    ng-options="shippingType | translate for shippingType in shippingTypes">
+                            </select>
                             <div id="location">
                                 <div id="get_location" class="common_industry industry_font" ng-click="showPosition()">
                                     <button class="btn wizard_btn retract_format" type="button" translate="GET_LOCATION"
@@ -184,11 +194,19 @@
                                             <span>: </span>
                                         </div>
                                         <div class="order_info_format order_info_content_format order_content"
-                                             ng-bind="positionId == null ? '-' : positionId"></div>
+                                             ng-bind="shippingService.positionId == null ? '-' : shippingService.positionId"></div>
                                     </div>
                                     <div class="review_info">
                                         <div class="order_info_format summary_title3">
-                                            <span translate="GPS_COORDINATES" class="retract_format"></span>
+                                            <span translate="SHIPPING"></span>
+                                            <span>: </span>
+                                        </div>
+                                        <div class="order_info_format order_info_content_format order_content"
+                                             ng-bind="shippingService.shippingType | translate"></div>
+                                    </div>
+                                    <div class="review_info">
+                                        <div class="order_info_format summary_title4">
+                                            <span translate="GPS_COORDINATES"></span>
                                             <span>: </span>
                                         </div>
                                         <div class="order_info_format order_info_content_format order_content" ng-bind="locationInfo"></div>

@@ -1,5 +1,6 @@
 package com.parasoft.demoapp.model.industry;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.*;
 import org.hibernate.annotations.Cascade;
 
@@ -10,7 +11,7 @@ import java.util.List;
 @Getter
 @Entity
 @Table(name = "tbl_order")
-@NoArgsConstructor
+@NoArgsConstructor(onConstructor_ = @JsonCreator)
 @EqualsAndHashCode
 @ToString
 public class OrderEntity {
@@ -67,6 +68,10 @@ public class OrderEntity {
     private String location;
 
     @Setter
+    @Column(name = "shipping")
+    private String shippingType;
+
+    @Setter
     @Column(name = "order_image")
     private String orderImage;
 
@@ -94,12 +99,13 @@ public class OrderEntity {
     @Column(name = "comments")
     private String comments;
 
-    public OrderEntity(String requestedBy, RegionType region, String location, String receiverId,
-    		String eventId, String eventNumber) {
+    public OrderEntity(String requestedBy, RegionType region, String location, ShippingEntity shipping, String eventId,
+                       String eventNumber) {
         this.requestedBy = requestedBy;
         this.region = region;
         this.location = location;
-        this.receiverId = receiverId;
+        this.shippingType = shipping.getShippingType();
+        this.receiverId = shipping.getReceiverId();
         this.eventId = eventId;
         this.eventNumber = eventNumber;
     }
@@ -117,6 +123,7 @@ public class OrderEntity {
         newOrder.orderItems = this.orderItems;
         newOrder.region = this.region;
         newOrder.location = this.location;
+        newOrder.shippingType = this.shippingType;
         newOrder.orderImage = this.orderImage;
         newOrder.receiverId = this.receiverId;
         newOrder.eventId = this.eventId;

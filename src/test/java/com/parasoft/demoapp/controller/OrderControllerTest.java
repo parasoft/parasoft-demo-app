@@ -41,6 +41,7 @@ import com.parasoft.demoapp.model.global.UserEntity;
 import com.parasoft.demoapp.model.industry.OrderEntity;
 import com.parasoft.demoapp.model.industry.OrderStatus;
 import com.parasoft.demoapp.model.industry.RegionType;
+import com.parasoft.demoapp.model.industry.ShippingEntity;
 import com.parasoft.demoapp.service.DemoBugService;
 import com.parasoft.demoapp.service.GlobalPreferencesService;
 import com.parasoft.demoapp.service.OrderMQService;
@@ -89,15 +90,18 @@ public class OrderControllerTest {
         userEntity.setUsername(requestedBy);
         doReturn(userEntity).when(auth).getPrincipal();
 
+        ShippingEntity shippingEntity = new ShippingEntity();
+        shippingEntity.setShippingType("Standard (1 - 2 weeks)");
+        shippingEntity.setReceiverId("345-6789-21");
         OrderDTO orderDto = new OrderDTO();
         orderDto.setRegion(RegionType.JAPAN);
         orderDto.setLocation("JAPAN 82.8628° S, 135.0000° E");
-        orderDto.setReceiverId("345-6789-21");
+        orderDto.setShipping(shippingEntity);
         orderDto.setEventId("45833-ORG-7834");
         orderDto.setEventNumber("55-444-33-22");
         OrderEntity order = mock(OrderEntity.class);
 
-        doReturn(order).when(orderService).addNewOrderSynchronized(anyLong(), anyString(), (RegionType) any(), anyString(), anyString(),
+        doReturn(order).when(orderService).addNewOrderSynchronized(anyLong(), anyString(), (RegionType) any(), anyString(), anyString(), anyString(),
                 anyString(), anyString());
 
         // When
@@ -127,8 +131,9 @@ public class OrderControllerTest {
         doReturn(userEntity).when(auth).getPrincipal();
 
         OrderDTO orderDto = mock(OrderDTO.class);
-        when(orderService.addNewOrderSynchronized(anyLong(), anyString(), (RegionType) any(), any(), any(), any(), any()))
+        when(orderService.addNewOrderSynchronized(anyLong(), anyString(), (RegionType) any(), any(), any(), any(), any(), any()))
                 .thenThrow(ParameterException.class);
+        when(orderDto.getShipping()).thenReturn(new ShippingEntity());
 
         // When
         ResponseResult<OrderEntity> result = underTest.addNewOrder(auth, orderDto);
@@ -152,8 +157,9 @@ public class OrderControllerTest {
         doReturn(userEntity).when(auth).getPrincipal();
 
         OrderDTO orderDto = mock(OrderDTO.class);
-        doThrow(ItemNotFoundException.class).when(orderService).addNewOrderSynchronized(anyLong(), anyString(), (RegionType) any(), any(), any(),
+        doThrow(ItemNotFoundException.class).when(orderService).addNewOrderSynchronized(anyLong(), anyString(), (RegionType) any(), any(), any(), any(),
                 any(), any());
+        when(orderDto.getShipping()).thenReturn(new ShippingEntity());
 
         // When
         underTest.addNewOrder(auth, orderDto);
@@ -176,8 +182,9 @@ public class OrderControllerTest {
         doReturn(userEntity).when(auth).getPrincipal();
 
         OrderDTO orderDto = mock(OrderDTO.class);
-        doThrow(CartItemNotFoundException.class).when(orderService).addNewOrderSynchronized(anyLong(), anyString(), (RegionType) any(), any(),
+        doThrow(CartItemNotFoundException.class).when(orderService).addNewOrderSynchronized(anyLong(), anyString(), (RegionType) any(), any(), any(),
                 any(), any(), any());
+        when(orderDto.getShipping()).thenReturn(new ShippingEntity());
 
         // When
         underTest.addNewOrder(auth, orderDto);

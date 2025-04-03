@@ -23,6 +23,7 @@ query GetOrders($page: Int, $size: Int, $sort: [String]){
             region
             location
             orderImage
+            shippingType
             receiverId
             eventId
             eventNumber
