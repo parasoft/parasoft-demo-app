@@ -80,10 +80,10 @@ public class OrderEntityTest {
         assertEquals(originalOrder, newOrder);
 
         if(invokedByJtest) {
-            assertEquals(21, originalOrder.getClass().getDeclaredFields().length,
+            assertEquals(22, originalOrder.getClass().getDeclaredFields().length,
                     "Some additional files are not cloned, please confirm it is wanted or alter this test.");
         }else {
-            assertEquals(17, originalOrder.getClass().getDeclaredFields().length,
+            assertEquals(18, originalOrder.getClass().getDeclaredFields().length,
                     "Some additional files are not cloned, please confirm it is wanted or alter this test.");
         }
     }

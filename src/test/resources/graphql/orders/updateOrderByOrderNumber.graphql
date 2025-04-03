@@ -18,6 +18,7 @@ mutation updateOrder($orderNumber: String!, $orderStatusDTO: OrderStatusDTO! ){
         region,
         location,
         orderImage,
+        shippingType,
         receiverId,
         eventId,
         eventNumber,

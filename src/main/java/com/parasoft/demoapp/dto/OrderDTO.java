@@ -1,6 +1,7 @@
 package com.parasoft.demoapp.dto;
 
 import com.parasoft.demoapp.model.industry.RegionType;
+import com.parasoft.demoapp.model.industry.ShippingEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,8 +18,8 @@ public class OrderDTO {
     private RegionType region;
     @NotBlank
     private String location;
-    @NotBlank
-    private String receiverId;
+    @NotNull
+    private ShippingEntity shipping;
     @NotBlank
     private String eventId;
     @NotBlank

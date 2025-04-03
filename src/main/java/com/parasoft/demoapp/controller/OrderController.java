@@ -62,7 +62,7 @@ public class OrderController {
         Long currentUserId = AuthenticationUtil.getUserIdInAuthentication(auth);
         String currentUserName = AuthenticationUtil.getUsernameInAuthentication(auth);
         OrderEntity order = orderService.addNewOrderSynchronized(currentUserId, currentUserName, orderDto.getRegion(), orderDto.getLocation(),
-                orderDto.getReceiverId(), orderDto.getEventId(), orderDto.getEventNumber());
+                orderDto.getShipping().getShippingType(), orderDto.getShipping().getReceiverId(), orderDto.getEventId(), orderDto.getEventNumber());
         response.setData(order);
 
         return response;
@@ -155,7 +155,7 @@ public class OrderController {
     public ResponseResult<PageInfo<OrderEntity>> showAllOrders(Authentication auth,
                                                                @ParameterObject
                                                                @PageableDefault(sort = "orderNumber", direction = Sort.Direction.DESC, size = Integer.MAX_VALUE)
-                                                               Pageable pageable)
+                                                                       Pageable pageable)
             throws ParameterException, GlobalPreferencesMoreThanOneException,
             GlobalPreferencesNotFoundException, DemoBugsIntroduceFailedException {
 

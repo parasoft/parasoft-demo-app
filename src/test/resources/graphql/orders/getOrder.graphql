@@ -18,6 +18,7 @@ query getOrder($orderNumber: String!) {
         region,
         location,
         orderImage,
+        shippingType,
         receiverId,
         eventId,
         eventNumber,

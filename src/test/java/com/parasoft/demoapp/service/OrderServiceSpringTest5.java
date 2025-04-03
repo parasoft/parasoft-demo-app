@@ -91,11 +91,12 @@ public class OrderServiceSpringTest5 {
             // When
             RegionType region = RegionType.LOCATION_1;
             String location = "JAPAN 82.8628° S, 135.0000° E";
+            String shippingType = "Standard (1 - 2 weeks)";
             String receiverId = "345-6789-21";
             String eventId = "45833-ORG-7834";
             String eventNumber = "55-444-33-22";
             // after add a new order, the in stock of item is 10.
-            order = underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
+            order = underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
             OrderUtilForTest.waitChangeForOrderStatus(order.getOrderNumber(), orderRepository, OrderStatus.SUBMITTED, 5);
 
             String orderNumber = order.getOrderNumber();
@@ -121,5 +122,4 @@ public class OrderServiceSpringTest5 {
             orderRepository.deleteAll();
         }
     }
-
 }

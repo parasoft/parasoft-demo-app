@@ -174,9 +174,9 @@ public class OrderServiceTest {
     }
 
     /**
-     * Test for addNewOrder(Long, String, RegionType, String, String, String, String)
+     * Test for addNewOrder(Long, String, RegionType, String, String, String, String, String)
      *
-     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String)
+     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String)
      */
     @Test
     public void testAddNewOrder_normal() throws Throwable {
@@ -202,13 +202,16 @@ public class OrderServiceTest {
         CartItemEntity cartItem = new CartItemEntity(userId, item, inStock);
         cartItems.add(cartItem);
 
+        ShippingEntity shipping = new ShippingEntity();
+        shipping.setShippingType("Standard (1 - 2 weeks)");
+        shipping.setReceiverId("345-6789-21");
+
         String location = "JAPAN 82.8628° S, 135.0000° E";
-        String receiverId = "345-6789-21";
         String eventId = "45833-ORG-7834";
         String eventNumber = "55-444-33-22";
         Date submissionDate = new Date();
 
-        OrderEntity saveResult = new OrderEntity(requestedBy, region, location, receiverId, eventId, eventNumber);
+        OrderEntity saveResult = new OrderEntity(requestedBy, region, location, shipping, eventId, eventNumber);
         saveResult.setId(orderId);
         saveResult.setStatus(OrderStatus.SUBMITTED);
         saveResult.setOrderItems(orderItems);
@@ -228,7 +231,7 @@ public class OrderServiceTest {
         when(orderRepository.save((OrderEntity) any())).thenReturn(saveResult);
 
         // When
-        OrderEntity result = underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
+        OrderEntity result = underTest.addNewOrder(userId, requestedBy, region, location, shipping.getShippingType(), shipping.getReceiverId(), eventId, eventNumber);
 
         // Then
         assertNotNull(result);
@@ -237,7 +240,8 @@ public class OrderServiceTest {
         assertEquals(OrderStatus.SUBMITTED.getPriority(), result.getStatus().getPriority());
         assertEquals(1, result.getOrderItems().size());
         assertEquals(RegionType.JAPAN, result.getRegion());
-        assertEquals(receiverId, result.getReceiverId());
+        assertEquals(shipping.getShippingType(), result.getShippingType());
+        assertEquals(shipping.getReceiverId(), result.getReceiverId());
         assertEquals(location, result.getLocation());
         assertEquals(eventId, result.getEventId());
         assertEquals(imagePath, result.getOrderImage());
@@ -248,9 +252,9 @@ public class OrderServiceTest {
     }
 
     /**
-     * Test for addNewOrder(Long, String, RegionType, String, String, String, String)
+     * Test for addNewOrder(Long, String, RegionType, String, String, String, String, String)
      *
-     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String)
+     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String)
      */
     @Test
     public void testAddNewOrder_exception_regionTypeNotFound() throws Throwable {
@@ -259,6 +263,7 @@ public class OrderServiceTest {
         String requestedBy = "testUser";
         RegionType region = RegionType.JAPAN;
         String location = "JAPAN 82.8628° S, 135.0000° E";
+        String shippingType = "Standard (1 - 2 weeks)";
         String receiverId = "345-6789-21";
         String eventId = "45833-ORG-7834";
         String eventNumber = "55-444-33-22";
@@ -268,7 +273,7 @@ public class OrderServiceTest {
         // When
         String message = "";
         try {
-            underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
+            underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
         } catch (Exception e) {
             message = e.getMessage();
         }
@@ -279,9 +284,9 @@ public class OrderServiceTest {
     }
 
     /**
-     * Test for addNewOrder(Long, String, RegionType, String, String, String, String)
+     * Test for addNewOrder(Long, String, RegionType, String, String, String, String, String)
      *
-     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String)
+     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String)
      */
     @Test
     public void testAddNewOrder_exception_noCartItemsInCart() throws Throwable {
@@ -290,6 +295,7 @@ public class OrderServiceTest {
         String requestedBy = "testUser";
         RegionType region = RegionType.JAPAN;
         String location = "JAPAN 82.8628° S, 135.0000° E";
+        String shippingType = "Standard (1 - 2 weeks)";
         String receiverId = "345-6789-21";
         String eventId = "45833-ORG-7834";
         String eventNumber = "55-444-33-22";
@@ -302,7 +308,7 @@ public class OrderServiceTest {
         // When
         String message = "";
         try {
-            underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
+            underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
         } catch (Exception e) {
             message = e.getMessage();
         }
@@ -313,9 +319,9 @@ public class OrderServiceTest {
     }
 
     /**
-     * Test for addNewOrder(Long, String, RegionType, String, String, String, String) with NullUserIdException
+     * Test for addNewOrder(Long, String, RegionType, String, String, String, String, String) with NullUserIdException
      *
-     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String)
+     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String)
      */
     @Test
     public void testAddNewOrder_exception_nullUserIdException() {
@@ -324,6 +330,7 @@ public class OrderServiceTest {
         String requestedBy = "";
         RegionType region = RegionType.JAPAN;
         String location = "JAPAN 82.8628° S, 135.0000° E";
+        String shippingType = "Standard (1 - 2 weeks)";
         String receiverId = "345-6789-21";
         String eventId = "45833-ORG-7834";
         String eventNumber = "55-444-33-22";
@@ -331,7 +338,7 @@ public class OrderServiceTest {
         // When
         String message = "";
         try {
-            underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
+            underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
         } catch (Exception e) {
             message = e.getMessage();
         }
@@ -342,9 +349,9 @@ public class OrderServiceTest {
     }
 
     /**
-     * Test for addNewOrder(Long, String, RegionType, String, String, String, String) with NullUserNameException
+     * Test for addNewOrder(Long, String, RegionType, String, String, String, String, String) with NullUserNameException
      *
-     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String)
+     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String)
      */
     @Test
     public void testAddNewOrder_exception_nullUserNameException() {
@@ -353,6 +360,7 @@ public class OrderServiceTest {
         String requestedBy = null;
         RegionType region = RegionType.JAPAN;
         String location = "JAPAN 82.8628° S, 135.0000° E";
+        String shippingType = "Standard (1 - 2 weeks)";
         String receiverId = "345-6789-21";
         String eventId = "45833-ORG-7834";
         String eventNumber = "55-444-33-22";
@@ -360,7 +368,7 @@ public class OrderServiceTest {
         // When
         String message = "";
         try {
-            underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
+            underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
         } catch (Exception e) {
             message = e.getMessage();
         }
@@ -371,9 +379,9 @@ public class OrderServiceTest {
     }
 
     /**
-     * Test for addNewOrder(Long, String, RegionType, String, String, String, String) with NullRegionException
+     * Test for addNewOrder(Long, String, RegionType, String, String, String, String, String) with NullRegionException
      *
-     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String)
+     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String)
      */
     @Test
     public void testAddNewOrder_exception_nullRegionException() throws Exception {
@@ -382,6 +390,7 @@ public class OrderServiceTest {
         String requestedBy = "testUser";
         RegionType region = null;
         String location = "JAPAN 82.8628° S, 135.0000° E";
+        String shippingType = "Standard (1 - 2 weeks)";
         String receiverId = "345-6789-21";
         String eventId = "45833-ORG-7834";
         String eventNumber = "55-444-33-22";
@@ -389,7 +398,7 @@ public class OrderServiceTest {
         // When
         String message = "";
         try {
-            underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
+            underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
         } catch (Exception e) {
             message = e.getMessage();
         }
@@ -400,9 +409,67 @@ public class OrderServiceTest {
     }
 
     /**
-     * Test for addNewOrder(Long, String, RegionType, String, String, String, String) with BlankReceiverIdException
+     * Test for addNewOrder(Long, String, RegionType, String, String, String, String, String) with BlankShippingException
      *
-     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String)
+     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String)
+     */
+    @Test
+    public void testAddNewOrder_exception_nullShippingException() throws Exception {
+        // Given
+        Long userId = 1L;
+        String requestedBy = "testUser";
+        RegionType region = RegionType.JAPAN;
+        String location = "JAPAN 82.8628° S, 135.0000° E";
+        String shippingType = null;
+        String receiverId = "345-6789-21";
+        String eventId = "45833-ORG-7834";
+        String eventNumber = "55-444-33-22";
+
+        // When
+        String message = "";
+        try {
+            underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
+        } catch (Exception e) {
+            message = e.getMessage();
+        }
+
+        // Then
+        Assertions.assertEquals(OrderMessages.SHIPPING_CANNOT_BE_BLANK, message);
+    }
+
+    /**
+     * Test for addNewOrder(Long, String, RegionType, String, String, String, String, String) with BlankShippingException
+     *
+     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String)
+     */
+    @Test
+    public void testAddNewOrder_exception_blankShippingException() throws Exception {
+        // Given
+        Long userId = 1L;
+        String requestedBy = "testUser";
+        RegionType region = RegionType.JAPAN;
+        String location = "JAPAN 82.8628° S, 135.0000° E";
+        String shippingType = "";
+        String receiverId = "345-6789-21";
+        String eventId = "45833-ORG-7834";
+        String eventNumber = "55-444-33-22";
+
+        // When
+        String message = "";
+        try {
+            underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
+        } catch (Exception e) {
+            message = e.getMessage();
+        }
+
+        // Then
+        Assertions.assertEquals(OrderMessages.SHIPPING_CANNOT_BE_BLANK, message);
+    }
+
+    /**
+     * Test for addNewOrder(Long, String, RegionType, String, String, String, String, String) with BlankReceiverIdException
+     *
+     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String)
      */
     @Test
     public void testAddNewOrder_exception_nullReceiverIdException() throws Exception {
@@ -411,6 +478,7 @@ public class OrderServiceTest {
         String requestedBy = "testUser";
         RegionType region = RegionType.JAPAN;
         String location = "JAPAN 82.8628° S, 135.0000° E";
+        String shippingType = "Standard (1 - 2 weeks)";
         String receiverId = null;
         String eventId = "45833-ORG-7834";
         String eventNumber = "55-444-33-22";
@@ -418,7 +486,7 @@ public class OrderServiceTest {
         // When
         String message = "";
         try {
-            underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
+            underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
         } catch (Exception e) {
             message = e.getMessage();
         }
@@ -430,9 +498,9 @@ public class OrderServiceTest {
     }
 
     /**
-     * Test for addNewOrder(Long, String, RegionType, String, String, String, String) with BlankReceiverIdException
+     * Test for addNewOrder(Long, String, RegionType, String, String, String, String, String) with BlankReceiverIdException
      *
-     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String)
+     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String)
      */
     @Test
     public void testAddNewOrder_exception_blankReceiverIdException() throws Exception {
@@ -441,6 +509,7 @@ public class OrderServiceTest {
         String requestedBy = "testUser";
         RegionType region = RegionType.JAPAN;
         String location = "JAPAN 82.8628° S, 135.0000° E";
+        String shippingType = "Standard (1 - 2 weeks)";
         String receiverId = "";
         String eventId = "45833-ORG-7834";
         String eventNumber = "55-444-33-22";
@@ -448,7 +517,7 @@ public class OrderServiceTest {
         // When
         String message = "";
         try {
-            underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
+            underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
         } catch (Exception e) {
             message = e.getMessage();
         }
@@ -460,9 +529,9 @@ public class OrderServiceTest {
     }
 
     /**
-     * Test for addNewOrder(Long, String, RegionType, String, String, String, String) with BlankEventIdException
+     * Test for addNewOrder(Long, String, RegionType, String, String, String, String, String) with BlankEventIdException
      *
-     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String)
+     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String)
      */
     @Test
     public void testAddNewOrder_exception_nullEventIdException() throws Exception {
@@ -471,6 +540,7 @@ public class OrderServiceTest {
         String requestedBy = "testUser";
         RegionType region = RegionType.JAPAN;
         String location = "JAPAN 82.8628° S, 135.0000° E";
+        String shippingType = "Standard (1 - 2 weeks)";
         String receiverId = "345-6789-21";
         String eventId = null;
         String eventNumber = "55-444-33-22";
@@ -478,7 +548,7 @@ public class OrderServiceTest {
         // When
         String message = "";
         try {
-            underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
+            underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
         } catch (Exception e) {
             message = e.getMessage();
         }
@@ -490,9 +560,9 @@ public class OrderServiceTest {
     }
 
     /**
-     * Test for addNewOrder(Long, String, RegionType, String, String, String, String) with BlankEventIdException
+     * Test for addNewOrder(Long, String, RegionType, String, String, String, String, String) with BlankEventIdException
      *
-     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String)
+     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String)
      */
     @Test
     public void testAddNewOrder_exception_blankEventIdException() throws Exception {
@@ -501,6 +571,7 @@ public class OrderServiceTest {
         String requestedBy = "testUser";
         RegionType region = RegionType.JAPAN;
         String location = "JAPAN 82.8628° S, 135.0000° E";
+        String shippingType = "Standard (1 - 2 weeks)";
         String receiverId = "345-6789-21";
         String eventId = "";
         String eventNumber = "55-444-33-22";
@@ -508,7 +579,7 @@ public class OrderServiceTest {
         // When
         String message = "";
         try {
-            underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
+            underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
         } catch (Exception e) {
             message = e.getMessage();
         }
@@ -520,9 +591,9 @@ public class OrderServiceTest {
     }
 
     /**
-     * Test for addNewOrder(Long, String, RegionType, String, String, String, String) with BlankEventNumberException
+     * Test for addNewOrder(Long, String, RegionType, String, String, String, String, String) with BlankEventNumberException
      *
-     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String)
+     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String)
      */
     @Test
     public void testAddNewOrder_exception_nullEventNumberException() throws Exception {
@@ -531,6 +602,7 @@ public class OrderServiceTest {
         String requestedBy = "testUser";
         RegionType region = RegionType.JAPAN;
         String location = "JAPAN 82.8628° S, 135.0000° E";
+        String shippingType = "Standard (1 - 2 weeks)";
         String receiverId = "345-6789-21";
         String eventId = "45833-ORG-7834";
         String eventNumber = null;
@@ -538,7 +610,7 @@ public class OrderServiceTest {
         // When
         String message = "";
         try {
-            underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
+            underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
         } catch (Exception e) {
             message = e.getMessage();
         }
@@ -550,9 +622,9 @@ public class OrderServiceTest {
     }
 
     /**
-     * Test for addNewOrder(Long, String, RegionType, String, String, String, String) with BlankEventNumberException
+     * Test for addNewOrder(Long, String, RegionType, String, String, String, String, String, String) with BlankEventNumberException
      *
-     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String)
+     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String)
      */
     @Test
     public void testAddNewOrder_exception_blankEventNumberException() throws Exception {
@@ -561,6 +633,7 @@ public class OrderServiceTest {
         String requestedBy = "testUser";
         RegionType region = RegionType.JAPAN;
         String location = "JAPAN 82.8628° S, 135.0000° E";
+        String shippingType = "Standard (1 - 2 weeks)";
         String receiverId = "345-6789-21";
         String eventId = "45833-ORG-7834";
         String eventNumber = "";
@@ -568,7 +641,7 @@ public class OrderServiceTest {
         // When
         String message = "";
         try {
-            underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
+            underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
         } catch (Exception e) {
             message = e.getMessage();
         }
@@ -580,9 +653,9 @@ public class OrderServiceTest {
     }
 
     /**
-     * Test for OrderService#addNewOrder(Long, String, RegionType, String, String, String, String) with BlankLocationException
+     * Test for OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String) with BlankLocationException
      *
-     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String)
+     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String)
      */
     @Test
     public void testAddNewOrder_exception_nullLocationException() {
@@ -591,6 +664,7 @@ public class OrderServiceTest {
         String requestedBy = "testUser";
         RegionType region = RegionType.JAPAN;
         String location = null;
+        String shippingType = "Standard (1 - 2 weeks)";
         String receiverId = "345-6789-21";
         String eventId = "45833-ORG-7834";
         String eventNumber = "23-456-010";
@@ -598,7 +672,7 @@ public class OrderServiceTest {
         // When
         String message = "";
         try {
-            underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
+            underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
         } catch (Exception e) {
             message = e.getMessage();
         }
@@ -610,9 +684,9 @@ public class OrderServiceTest {
     }
 
     /**
-     * Test for OrderService#addNewOrder(Long, String, RegionType, String, String, String, String) with BlankLocationException
+     * Test for OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String) with BlankLocationException
      *
-     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String)
+     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String)
      */
     @Test
     public void testAddNewOrder_exception_blankLocationException() {
@@ -621,6 +695,7 @@ public class OrderServiceTest {
         String requestedBy = "testUser";
         RegionType region = RegionType.JAPAN;
         String location = "";
+        String shippingType = "Standard (1 - 2 weeks)";
         String receiverId = "345-6789-21";
         String eventId = "45833-ORG-7834";
         String eventNumber = "23-456-010";
@@ -628,7 +703,7 @@ public class OrderServiceTest {
         // When
         String message = "";
         try {
-            underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
+            underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
         } catch (Exception e) {
             message = e.getMessage();
         }
@@ -1400,12 +1475,14 @@ public class OrderServiceTest {
         CartItemEntity cartItem = mock(CartItemEntity.class);
         List<CartItemEntity> cartItems = new ArrayList<>();
         cartItems.add(cartItem);
+        ShippingEntity shipping = new ShippingEntity();
+        shipping.setShippingType("Standard (1 - 2 weeks)");
+        shipping.setReceiverId("345-6789-21");
         RegionType region = RegionType.JAPAN;
         String location = "JAPAN 82.8628° S, 135.0000° E";
-        String receiverId = "345-6789-21";
         String eventId = "45833-ORG-7834";
         String eventNumber = "55-444-33-22";
-        OrderEntity order = new OrderEntity(requestedBy, region, location, receiverId, eventId, eventNumber);
+        OrderEntity order = new OrderEntity(requestedBy, region, location, shipping, eventId, eventNumber);
         order.setId(orderId);
         return order;
     }

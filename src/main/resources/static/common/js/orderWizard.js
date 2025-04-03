@@ -18,6 +18,18 @@ app.controller('orderWizardController', function($scope, $rootScope, $http, $fil
     $scope.isAssignCampaignInfoNotReady = true;
     $scope.getPositionInfo = false;
 
+    $scope.shippingTypes = {
+        shippingService1: 'STANDARD_SHIPPING',
+        shippingService2: 'RUSH_SHIPPING',
+        shippingService3: 'NEXT_DAY_SHIPPING'
+    };
+
+    $scope.shippingService = {
+        // Set shippingType1 as the initial value for better demo about Selenium
+        shippingType: $scope.shippingTypes.shippingService1,
+        positionId: undefined
+    };
+
     // Set time out for avoiding to get the key when using $filter('translate') filter.
     setTimeout(function(){
         //Get regions
@@ -170,7 +182,10 @@ app.controller('orderWizardController', function($scope, $rootScope, $http, $fil
         let params = {
             "region": $scope.region,
             "location": $scope.locationInfo,
-            "receiverId": $scope.platoonId,
+            "shipping": {
+                shippingType: $scope.shippingService.shippingType,
+                receiverId: $scope.shippingService.positionId
+            },
             "eventId": $scope.campaignID,
             "eventNumber": $scope.campaignNumber
         };
@@ -230,7 +245,8 @@ app.controller('orderWizardController', function($scope, $rootScope, $http, $fil
         }
 
         //Control for get location button
-        if($scope.selectedArea !== null && $scope.selectedArea !== '' && $scope.positionId !== undefined && $scope.positionId !== ''){
+        if($scope.selectedArea !== null && $scope.selectedArea !== '' && $scope.shippingService.positionId !== undefined && $scope.shippingService.positionId !== ''
+           && $scope.shippingService.shippingType !== undefined && $scope.shippingService.shippingType !== null && $scope.shippingService.shippingType !== ''){
             $scope.getLocationButton = false;
         }else{
             $scope.getLocationButton = true;
@@ -240,14 +256,14 @@ app.controller('orderWizardController', function($scope, $rootScope, $http, $fil
     //Whether the area info is not be null when change the value of the id (Platoon ID)
     $scope.checkAreaInfo = function(){
         //Control for process button
-        if($scope.selectedArea && $scope.positionId && $scope.getPositionInfo){
+        if($scope.selectedArea && $scope.positionId && $scope.getPositionInfo && $scope.shippingService.shippingType){
             $scope.isAreaInfoNotReady = false;
         }else{
             $scope.isAreaInfoNotReady = true;
         }
 
         //Control for get location button
-        if($scope.selectedArea && $scope.positionId){
+        if($scope.selectedArea && $scope.shippingService.positionId && $scope.shippingService.shippingType){
             $scope.getLocationButton = false;
         }else{
             $scope.getLocationButton = true;

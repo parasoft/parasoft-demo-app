@@ -108,6 +108,7 @@ public class MQIntegrationTest {
                 purchaser.getUsername(),
                 RegionType.LOCATION_1,
                 "29.90° E, 54.41° N",
+                "Standard (1 - 2 weeks)",
                 "receiverId",
                 "eventId",
                 "eventNumber");

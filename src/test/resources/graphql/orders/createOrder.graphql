@@ -18,6 +18,7 @@ mutation order($orderDTO: OrderDTO!) {
         region
         location
         orderImage
+        shippingType
         receiverId
         eventId
         eventNumber
