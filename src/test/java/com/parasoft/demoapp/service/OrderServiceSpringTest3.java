@@ -7,6 +7,7 @@ import java.util.concurrent.Executors;
 
 import com.parasoft.demoapp.model.industry.OrderStatus;
 import com.parasoft.demoapp.utilfortest.OrderUtilForTest;
+import com.parasoft.demoapp.model.industry.ShippingEntity;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,9 +54,9 @@ public class OrderServiceSpringTest3 {
     ItemInventoryService itemInventoryService;
 
     /**
-     * Test for addNewOrderSynchronized(Long, String, RegionType, String, String, String, String) under concurrency condition.
+     * Test for addNewOrderSynchronized(Long, String, RegionType, String, String, String, String, String) under concurrency condition.
      *
-     * @see OrderService#addNewOrderSynchronized(Long, String, RegionType, String, String, String, String)
+     * @see OrderService#addNewOrderSynchronized(Long, String, RegionType, String, String, String, String, String)
      */
     @Test
     public void testAddNewOrderSynchronized_concurrency() throws Throwable {
@@ -75,15 +76,17 @@ public class OrderServiceSpringTest3 {
             // When
             RegionType region = RegionType.LOCATION_1;
             String location = "JAPAN 82.8628° S, 135.0000° E";
-            String receiverId = "345-6789-21";
             String eventId = "45833-ORG-7834";
             String eventNumber = "55-444-33-22";
+            ShippingEntity shipping = new ShippingEntity();
+            shipping.setReceiverId("345-6789-21");
+            shipping.setShippingType("Standard (1 - 2 weeks)");
 
             ExecutorService es = Executors.newCachedThreadPool();
 
             // use 3 threads to simulate the concurrency situation, submit orders repeatedly in the same time.
             for (int i = 0; i < 3; i++) {
-                es.submit(new AddNewOrderRunnable(underTest, userId, requestedBy, region, location, receiverId, eventId, eventNumber));
+                es.submit(new AddNewOrderRunnable(underTest, userId, requestedBy, region, location, shipping, eventId, eventNumber));
             }
 
             Thread.sleep(2000);
@@ -107,19 +110,21 @@ public class OrderServiceSpringTest3 {
         private final String requestedBy;
         private final RegionType region;
         private final String location;
+        private final String shippingType;
         private final String receiverId;
         private final String eventId;
         private final String eventNumber;
 
         public AddNewOrderRunnable(OrderService orderService, Long userId, String requestedBy, RegionType region, String location,
-                                   String receiverId, String eventId, String eventNumber) {
+                                   ShippingEntity shipping, String eventId, String eventNumber) {
 
             this.orderService = orderService;
             this.userId = userId;
             this.requestedBy = requestedBy;
             this.region = region;
             this.location = location;
-            this.receiverId = receiverId;
+            this.shippingType = shipping.getShippingType();
+            this.receiverId = shipping.getReceiverId();
             this.eventId = eventId;
             this.eventNumber = eventNumber;
         }
@@ -127,11 +132,10 @@ public class OrderServiceSpringTest3 {
         @Override
         public void run() {
             try {
-                orderService.addNewOrderSynchronized(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
+                orderService.addNewOrderSynchronized(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-
     }
 }

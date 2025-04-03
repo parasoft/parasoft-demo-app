@@ -89,14 +89,14 @@ public class OrderService {
 
     @Transactional(value = "industryTransactionManager", rollbackFor = {CartItemNotFoundException.class})
     public synchronized OrderEntity addNewOrderSynchronized(Long userId, String username, RegionType region, String location,
-                                                            String receiverId, String eventId, String eventNumber)
+                                                            String shipping, String receiverId, String eventId, String eventNumber)
             throws ParameterException, ItemNotFoundException, CartItemNotFoundException {
 
-        return  addNewOrder(userId, username, region, location, receiverId, eventId, eventNumber);
+        return  addNewOrder(userId, username, region, location, shipping, receiverId, eventId, eventNumber);
     }
 
     @Transactional(value = "industryTransactionManager", rollbackFor = {CartItemNotFoundException.class})
-    public OrderEntity addNewOrder(Long userId, String username, RegionType region, String location, String receiverId, String eventId,
+    public OrderEntity addNewOrder(Long userId, String username, RegionType region, String location, String shipping, String receiverId, String eventId,
                                    String eventNumber)
             throws ParameterException, ItemNotFoundException, CartItemNotFoundException {
 
@@ -104,6 +104,7 @@ public class OrderService {
         ParameterValidator.requireNonNull(username, OrderMessages.USERNAME_CANNOT_BE_NULL);
         ParameterValidator.requireNonNull(region, OrderMessages.REGION_CANNOT_BE_NULL);
         ParameterValidator.requireNonBlank(location, OrderMessages.LOCATION_CANNOT_BE_BLANK);
+        ParameterValidator.requireNonBlank(shipping, OrderMessages.SHIPPING_CANNOT_BE_BLANK);
         ParameterValidator.requireNonBlank(receiverId, OrderMessages.RECEIVER_ID_CANNOT_BE_BLANK);
         ParameterValidator.requireNonBlank(eventId, OrderMessages.EVENT_ID_CANNOT_BE_BLANK);
         ParameterValidator.requireNonBlank(eventNumber, OrderMessages.EVENT_NUMBER_CANNOT_BE_BLANK);
@@ -120,6 +121,7 @@ public class OrderService {
         order.setStatus(OrderStatus.SUBMITTED);
         order.setRegion(region);
         order.setLocation(location);
+        order.setShippingType(shipping);
         order.setOrderImage(locationEntity.getLocationImage());
         order.setReceiverId(receiverId);
         order.setEventId(eventId);

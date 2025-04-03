@@ -181,7 +181,8 @@ public class OrderGraphQLDataFetcherTest {
                                 order.getRequestedBy().equals(purchaser.getUsername()) &&
                                 order.getRegion() == orderDTO.getRegion() &&
                                 Objects.equals(order.getLocation(), orderDTO.getLocation()) &&
-                                Objects.equals(order.getReceiverId(), orderDTO.getReceiverId()) &&
+                                Objects.equals(order.getReceiverId(), orderDTO.getShipping().getReceiverId()) &&
+                                Objects.equals(order.getShippingType(), orderDTO.getShipping().getShippingType()) &&
                                 Objects.equals(order.getEventId(), orderDTO.getEventId()) &&
                                 Objects.equals(order.getEventNumber(), orderDTO.getEventNumber()) &&
                                 order.getOrderItems().size() == 1 &&
@@ -218,7 +219,7 @@ public class OrderGraphQLDataFetcherTest {
     @Test
     public void test_createOrder_emptyReceiverId() throws IOException {
         OrderDTO orderDTO = createOrderDTOInstance();
-        orderDTO.setReceiverId("");
+        orderDTO.getShipping().setReceiverId("");
         ObjectNode orderDtoObjectNode = objectMapper.createObjectNode().putPOJO("orderDTO", orderDTO);
 
         GraphQLResponse response = graphQLTestTemplate
@@ -226,6 +227,19 @@ public class OrderGraphQLDataFetcherTest {
                 .perform(CREATE_ORDER_GRAPHQL_RESOURCE, orderDtoObjectNode);
 
         assertError_createOrder(response, HttpStatus.BAD_REQUEST, OrderMessages.RECEIVER_ID_CANNOT_BE_BLANK);
+    }
+
+    @Test
+    public void test_createOrder_emptyShippingType() throws IOException {
+        OrderDTO orderDTO = createOrderDTOInstance();
+        orderDTO.getShipping().setShippingType("");
+        ObjectNode orderDtoObjectNode = objectMapper.createObjectNode().putPOJO("orderDTO", orderDTO);
+
+        GraphQLResponse response = graphQLTestTemplate
+                .withBasicAuth(purchaser.getUsername(), purchaser.getPassword())
+                .perform(CREATE_ORDER_GRAPHQL_RESOURCE, orderDtoObjectNode);
+
+        assertError_createOrder(response, HttpStatus.BAD_REQUEST, OrderMessages.SHIPPING_CANNOT_BE_BLANK);
     }
 
     @Test
@@ -582,7 +596,7 @@ public class OrderGraphQLDataFetcherTest {
         OrderDTO orderDTO = createOrderDTOInstance();
         shoppingCartService.addCartItemInShoppingCart(userId, 1L, 1);
         OrderEntity orderEntity = orderService.addNewOrder(userId, username, orderDTO.getRegion(), orderDTO.getLocation(),
-                orderDTO.getReceiverId(), orderDTO.getEventId(), orderDTO.getEventNumber());
+                orderDTO.getShipping().getShippingType(), orderDTO.getShipping().getReceiverId(), orderDTO.getEventId(), orderDTO.getEventNumber());
         OrderUtilForTest.waitChangeForOrderStatus(orderEntity.getOrderNumber(), orderRepository, OrderStatus.SUBMITTED, 5);
 
         return orderEntity.getOrderNumber();
@@ -601,10 +615,12 @@ public class OrderGraphQLDataFetcherTest {
 
     private OrderDTO createOrderDTOInstance() {
         String location = "location info";
-        String receiverId = "receiverId info";
         String eventId = "eventId info";
         String eventNumber = "eventNumber info";
-        return new OrderDTO(RegionType.LOCATION_1, location, receiverId, eventId, eventNumber);
+        ShippingEntity shipping = new ShippingEntity();
+        shipping.setShippingType("Next day");
+        shipping.setReceiverId("receiverId info");
+        return new OrderDTO(RegionType.LOCATION_1, location, shipping, eventId, eventNumber);
     }
 
     private void assertError_createOrder(GraphQLResponse response, HttpStatus expectedHttpStatus, String expectedErrorMessage) {

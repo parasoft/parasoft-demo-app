@@ -53,9 +53,9 @@ public class OrderServiceSpringTest {
     ItemInventoryService itemInventoryService;
 
     /**
-     * Test for addNewOrder(Long, String, RegionType, String, String, String, String)
+     * Test for addNewOrder(Long, String, RegionType, String, String, String, String, String)
      *
-     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String)
+     * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String, String)
      */
     @Test
     public void testAddNewOrder() throws Throwable {
@@ -72,10 +72,11 @@ public class OrderServiceSpringTest {
             // When
             RegionType region = RegionType.LOCATION_1;
             String location = "JAPAN 82.8628° S, 135.0000° E";
+            String shippingType = "Standard (1 - 2 weeks)";
             String receiverId = "345-6789-21";
             String eventId = "45833-ORG-7834";
             String eventNumber = "55-444-33-22";
-            OrderEntity result = underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
+            OrderEntity result = underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
 
             // Then
             assertNotNull(result);
@@ -84,6 +85,7 @@ public class OrderServiceSpringTest {
             assertEquals(OrderStatus.SUBMITTED.getStatus(), result.getStatus().getStatus());
             assertEquals(1, result.getOrderItems().size());
             assertEquals(RegionType.LOCATION_1, result.getRegion());
+            assertEquals(shippingType, result.getShippingType());
             assertEquals(receiverId, result.getReceiverId());
             assertEquals(location, result.getLocation());
             assertEquals(eventId, result.getEventId());
@@ -120,10 +122,11 @@ public class OrderServiceSpringTest {
             // When
             RegionType region = RegionType.LOCATION_1;
             String location = "JAPAN 82.8628° S, 135.0000° E";
+            String shippingType = "Standard (1 - 2 weeks)";
             String receiverId = "345-6789-21";
             String eventId = "45833-ORG-7834";
             String eventNumber = "55-444-33-22";
-            order = underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
+            order = underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
             OrderUtilForTest.waitChangeForOrderStatus(order.getOrderNumber(), orderRepository, OrderStatus.SUBMITTED, 5);
 
             String orderNumber = order.getOrderNumber();
@@ -145,7 +148,7 @@ public class OrderServiceSpringTest {
 
             // When
             shoppingCartService.addCartItemInShoppingCart(userId, item.getId(), 10);
-            order = underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
+            order = underTest.addNewOrder(userId, requestedBy, region, shippingType, location, receiverId, eventId, eventNumber);
             OrderUtilForTest.waitChangeForOrderStatus(order.getOrderNumber(), orderRepository, OrderStatus.SUBMITTED, 5);
             orderNumber = order.getOrderNumber();
             newStatus = OrderStatus.APPROVED;
@@ -196,10 +199,11 @@ public class OrderServiceSpringTest {
         shoppingCartService.addCartItemInShoppingCart(userId, item.getId(), 20);
         RegionType region = RegionType.LOCATION_1;
         String location = "JAPAN 82.8628° S, 135.0000° E";
+        String shippingType = "Standard (1 - 2 weeks)";
         String receiverId = "345-6789-21";
         String eventId = "45833-ORG-7834";
         String eventNumber = "55-444-33-22";
-        order = underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
+        order = underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
         OrderUtilForTest.waitChangeForOrderStatus(order.getOrderNumber(), orderRepository, OrderStatus.SUBMITTED, 5);
         String orderNumber = order.getOrderNumber();
         String comments = "";
@@ -458,10 +462,11 @@ public class OrderServiceSpringTest {
         shoppingCartService.addCartItemInShoppingCart(userId, item.getId(), 20);
         RegionType region = RegionType.LOCATION_1;
         String location = "JAPAN 82.8628° S, 135.0000° E";
+        String shippingType = "Standard (1 - 2 weeks)";
         String receiverId = "345-6789-21";
         String eventId = "45833-ORG-7834";
         String eventNumber = "55-444-33-22";
-        order = underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
+        order = underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
         OrderUtilForTest.waitChangeForOrderStatus(order.getOrderNumber(), orderRepository, OrderStatus.SUBMITTED, 5);
         String orderNumber = order.getOrderNumber();
         String comments = "";
@@ -632,10 +637,11 @@ public class OrderServiceSpringTest {
         shoppingCartService.addCartItemInShoppingCart(userId, item.getId(), 20);
         RegionType region = RegionType.LOCATION_1;
         String location = "JAPAN 82.8628° S, 135.0000° E";
+        String shippingType = "Standard (1 - 2 weeks)";
         String receiverId = "345-6789-21";
         String eventId = "45833-ORG-7834";
         String eventNumber = "55-444-33-22";
-        order = underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
+        order = underTest.addNewOrder(userId, requestedBy, region, location, shippingType, receiverId, eventId, eventNumber);
         OrderUtilForTest.waitChangeForOrderStatus(order.getOrderNumber(), orderRepository, OrderStatus.SUBMITTED, 5);
         String orderNumber = order.getOrderNumber();
         String comments = "";
