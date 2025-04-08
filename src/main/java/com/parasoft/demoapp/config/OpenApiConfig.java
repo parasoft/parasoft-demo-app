@@ -1,20 +1,32 @@
 package com.parasoft.demoapp.config;
 
+import com.parasoft.demoapp.exception.GlobalPreferencesMoreThanOneException;
+import com.parasoft.demoapp.exception.GlobalPreferencesNotFoundException;
+import com.parasoft.demoapp.model.global.preferences.IndustryType;
+import com.parasoft.demoapp.model.industry.RegionType;
+import com.parasoft.demoapp.service.GlobalPreferencesService;
+import io.swagger.v3.core.converter.AnnotatedType;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.security.*;
 import org.springdoc.core.GroupedOpenApi;
+import org.springdoc.core.SpringDocConfigProperties;
 import org.springdoc.core.customizers.OpenApiCustomiser;
+import org.springdoc.core.customizers.PropertyCustomizer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.parasoft.demoapp.messages.ConfigMessages;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Configuration
 public class OpenApiConfig {
-	private ConfigMessages configMessages = new ConfigMessages();
+	private final ConfigMessages configMessages = new ConfigMessages();
 
     private static final String MODULE_NAME = "Parasoft Demo App";
     private static final String API_VERSION = "1.0.0";
@@ -84,4 +96,58 @@ public class OpenApiConfig {
                 .build();
     }
 
+    @Bean
+    public SchemaPropertyCustomizer schemaPropertyCustomizer(GlobalPreferencesService globalPreferencesService, SpringDocConfigProperties springDocConfigProperties) {
+        return new SchemaPropertyCustomizer(globalPreferencesService, springDocConfigProperties);
+    }
+
+    public static class SchemaPropertyCustomizer implements PropertyCustomizer {
+        private final GlobalPreferencesService globalPreferencesService;
+        private final SpringDocConfigProperties springDocConfigProperties;
+
+        public SchemaPropertyCustomizer(GlobalPreferencesService globalPreferencesService, SpringDocConfigProperties springDocConfigProperties) {
+            this.globalPreferencesService = globalPreferencesService;
+            this.springDocConfigProperties = springDocConfigProperties;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public Schema<?> customize(Schema schema, AnnotatedType type) {
+            springDocConfigProperties.getCache().setDisabled(false); // Enable cache to avoid reloading the schema
+
+            if (isRegionType(type)) {
+                IndustryType currentIndustry;
+                try {
+                    currentIndustry = globalPreferencesService.getCurrentIndustry();
+                } catch (GlobalPreferencesNotFoundException | GlobalPreferencesMoreThanOneException e) {
+                    // Will not reach here if project is started up successfully
+                    throw new RuntimeException(e);
+                }
+                List<String> regionsForCurrentIndustry = new ArrayList<>();
+                List<String> regionsForOtherIndustries = new ArrayList<>();
+                for(RegionType regionType : RegionType.values()) {
+                    if(regionType.getIndustryType() == currentIndustry) {
+                        regionsForCurrentIndustry.add(regionType.name());
+                    } else {
+                        regionsForOtherIndustries.add(regionType.name());
+                    }
+                }
+                List<String> reorderedRegions = new ArrayList<>(regionsForCurrentIndustry);
+                reorderedRegions.addAll(regionsForOtherIndustries);
+                schema.setEnum(reorderedRegions);
+            }
+            return schema;
+        }
+
+        private boolean isRegionType(AnnotatedType type) {
+            return type != null &&
+                   type.getType() != null &&
+                   type.getType().getTypeName() != null &&
+                   type.getType().getTypeName().equals("[simple type, class " + RegionType.class.getCanonicalName() + "]");
+        }
+
+        public void onIndustryChange() {
+            springDocConfigProperties.getCache().setDisabled(true); // Disable cache to force reloading the schema
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package com.parasoft.demoapp.service;
 
+import com.parasoft.demoapp.config.OpenApiConfig;
 import com.parasoft.demoapp.config.ImplementedIndustries;
 import com.parasoft.demoapp.config.MQConfig;
 import com.parasoft.demoapp.config.activemq.ActiveMQConfig;
@@ -41,6 +42,8 @@ import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsServi
 
 @Service
 public class GlobalPreferencesService {
+    @Autowired
+    private OpenApiConfig.SchemaPropertyCustomizer schemaPropertyCustomizer;
 
     @Autowired
     private GlobalPreferencesRepository globalPreferencesRepository;
@@ -483,6 +486,7 @@ public class GlobalPreferencesService {
 
     private void switchIndustry(GlobalPreferencesEntity currentPreferences) {
     	IndustryRoutingDataSource.currentIndustry = currentPreferences.getIndustryType();
+        schemaPropertyCustomizer.onIndustryChange();
     }
 
     public IndustryType getDefaultIndustry() {
