@@ -1,5 +1,6 @@
 package com.parasoft.demoapp.service;
 
+import com.parasoft.demoapp.config.OpenApiConfig;
 import com.parasoft.demoapp.config.WebConfig;
 import com.parasoft.demoapp.config.activemq.ActiveMQConfig;
 import com.parasoft.demoapp.config.activemq.ActiveMQInventoryRequestQueueListener;
@@ -45,6 +46,9 @@ public class GlobalPreferencesServiceTest {
 	@Spy
 	@InjectMocks
 	GlobalPreferencesService underTest;
+
+	@Mock
+	OpenApiConfig.SchemaPropertyCustomizer schemaPropertyCustomizer;
 
 	@Mock
 	GlobalPreferencesRepository globalPreferencesRepository;
