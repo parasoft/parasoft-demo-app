@@ -46,7 +46,7 @@ app.controller('approverHomePageController', function($rootScope, $http, $filter
         } else {
             $http({
                 method: 'GET',
-                url: '/proxy/v1/orders/'+orderNum,
+                url: '/pda/api/proxy/v1/orders/'+orderNum,
             }).then(function(result) {
                 success(result.data.data);
             }).catch(function(result) {
@@ -128,7 +128,7 @@ app.controller('approverHomePageController', function($rootScope, $http, $filter
         } else {
             $http({
                 method: 'PUT',
-                url: '/proxy/v1/orders/'+orderNumber,
+                url: '/pda/api/proxy/v1/orders/'+orderNumber,
                 data: orderStatusData,
                 headers: { 'Content-Type': 'application/json' }
             }).then(function(result) {
@@ -210,7 +210,7 @@ app.controller('approverHomePageController', function($rootScope, $http, $filter
         } else {
             $http({
                 method: 'PUT',
-                url: '/proxy/v1/orders/'+orderNumber,
+                url: '/pda/api/proxy/v1/orders/'+orderNumber,
                 data: orderStatusData,
                 headers: { 'Content-Type': 'application/json' }
             }).then(function(result) {
@@ -308,7 +308,7 @@ app.controller('approverHomePageController', function($rootScope, $http, $filter
         } else {
             $http({
                 method: 'GET',
-                url: '/proxy/v1/orders',
+                url: '/pda/api/proxy/v1/orders',
                 params: {'sort':'orderNumber,desc'}
             }).then(function(result) {
                 success(result.data.data);

@@ -4,12 +4,12 @@ window.onload = function () {
 
   if (searchTxt === '?type=gateway') {
     urls = [{
-      url: "/pda/api-docs/v1-proxy",
+      url: "/pda/api/v1-proxy",
       name: "v1-proxy"
     }];
   } else if (searchTxt === '?type=demoApp') {
     urls = [{
-      url: "/pda/api-docs/v1",
+      url: "/pda/api/v1",
       name: "v1"
     }];
   }

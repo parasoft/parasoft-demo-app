@@ -36,7 +36,7 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
         } else {
             $http({
                 method: 'GET',
-                url: '/proxy/v1/locations/regions',
+                url: '/pda/api/proxy/v1/locations/regions',
             }).then(function(result) {
                 getAllRegionTypesSuccess(result.data.data);
             }).catch(function(result) {
@@ -86,7 +86,7 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
         } else {
             $http({
                 method: 'GET',
-                url: '/proxy/v1/assets/items',
+                url: '/pda/api/proxy/v1/assets/items',
                 params: getItemsParams,
             }).then(function(result) {
                 getItemsSuccessfully(result.data.data);
@@ -110,7 +110,7 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
         } else {
             $http({
                 method: 'GET',
-                url: '/proxy/v1/assets/categories/' + categoryId,
+                url: '/pda/api/proxy/v1/assets/categories/' + categoryId,
             }).then(function (result) {
                 success(result.data.data);
             }).catch(function (result) {
@@ -157,7 +157,7 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
         } else {
             $http({
                 method: 'GET',
-                url: '/proxy/v1/cartItems/' + itemId
+                url: '/pda/api/proxy/v1/cartItems/' + itemId
             }).then(function(result) {
                 getCartItemByIdSuccess(result.data.data);
             }).catch(function(result) {
@@ -198,7 +198,7 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
         } else {
             $http({
                 method: 'POST',
-                url: '/proxy/v1/cartItems',
+                url: '/pda/api/proxy/v1/cartItems',
                 data: params,
                 headers: {'Content-Type': 'application/json'}
             }).then(function(result) {
@@ -275,7 +275,7 @@ app.controller('categoryController', function($rootScope, $http, $location, $fil
         } else {
             $http({
                 method: 'GET',
-                url: '/proxy/v1/assets/items',
+                url: '/pda/api/proxy/v1/assets/items',
                 params: params,
             }).then(function(result) {
                 searchSucceeded(result.data.data);

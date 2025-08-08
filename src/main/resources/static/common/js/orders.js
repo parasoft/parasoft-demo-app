@@ -84,7 +84,7 @@ app.controller('orderHistoryController', function($rootScope, $http, $filter, gr
                 } else {
                     $http({
                         method: 'PUT',
-                        url: '/proxy/v1/orders/'+history.order.orderNumber,
+                        url: '/pda/api/proxy/v1/orders/'+history.order.orderNumber,
                         data: orderStatusData,
                         headers: { 'Content-Type': 'application/json' }
                     }).then(function(result) {
@@ -141,7 +141,7 @@ app.controller('orderHistoryController', function($rootScope, $http, $filter, gr
         } else {
             $http({
                 method: 'GET',
-                url: '/proxy/v1/orders/'+orderNumber
+                url: '/pda/api/proxy/v1/orders/'+orderNumber
             }).then(function(result) {
                 success(result.data.data);
             }).catch(function(result) {
@@ -238,7 +238,7 @@ app.controller('orderHistoryController', function($rootScope, $http, $filter, gr
         } else {
             $http({
                 method: 'GET',
-                url: '/proxy/v1/orders',
+                url: '/pda/api/proxy/v1/orders',
                 params: {'sort':'orderNumber,desc'}
             }).then(function(result) {
                 success(result.data.data);

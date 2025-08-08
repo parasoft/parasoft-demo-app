@@ -8,11 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -67,13 +72,28 @@ public class WebConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
+
+		registry.addInterceptor(new HandlerInterceptor() {
+			@Override
+			public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws ServletException, IOException {
+				String path = request.getRequestURI();
+				if (path.startsWith("/pda/api/v1/")) {
+					String newPath = path.replaceFirst("/pda/api", "");
+					request.getRequestDispatcher(newPath).forward(request, response);
+					return false;
+				}
+				return true;
+			}
+		}).order(Ordered.HIGHEST_PRECEDENCE);
+
 		registry.addInterceptor(parasoftJDBCProxyValidateInterceptor)
 				.addPathPatterns("/v1/assets/categories/**",
 								 "/v1/assets/items/**",
 								 "/v1/cartItems/**",
 								 "/v1/orders/**",
 								 "/v1/locations/**",
-								 "/v1/parasoftJDBCProxy/status");
+								 "/v1/parasoftJDBCProxy/status"
+				);
 	}
 
 	public String getUploadedImagesStorePath() {

@@ -284,7 +284,7 @@ function initRequisitionBarController(app){
             } else {
                 $http({
                     method: 'DELETE',
-                    url: '/proxy/v1/cartItems/'+itemId,
+                    url: '/pda/api/proxy/v1/cartItems/'+itemId,
                 }).then(function(result) {
                     success(result);
                 }).catch(function(result) {
@@ -310,7 +310,7 @@ function initRequisitionBarController(app){
                 } else {
                     $http({
                         method: 'GET',
-                        url: '/proxy/v1/assets/items/' + itemId,
+                        url: '/pda/api/proxy/v1/assets/items/' + itemId,
                     }).then(function(result) {
                         success(result.data.data);
                     }).catch(function(result) {
@@ -364,7 +364,7 @@ function initRequisitionBarController(app){
             } else {
                 $http({
                     method: 'GET',
-                    url: '/proxy/v1/cartItems',
+                    url: '/pda/api/proxy/v1/cartItems',
                 }).then(function(result) {
                     success(result.data.data);
                 }).catch(function(result) {
@@ -413,7 +413,7 @@ function initRequisitionBarController(app){
             } else {
                 $http({
                     method: 'PUT',
-                    url: '/proxy/v1/cartItems/' + requireItemId,
+                    url: '/pda/api/proxy/v1/cartItems/' + requireItemId,
                     data: {"itemQty": requireItemQty}
                 }).then(function (result) {
                     success(result.data.data);
@@ -640,7 +640,7 @@ function loadShoppingCartData($rootScope,$http,$filter,graphQLService){
         } else {
             $http({
                 method: 'GET',
-                url: '/proxy/v1/cartItems',
+                url: '/pda/api/proxy/v1/cartItems',
             }).then(function(result) {
                 success(result.data.data);
             }).catch(function(result) {
@@ -673,7 +673,7 @@ function loadShoppingCartItemQuantity($rootScope,$http,$filter,graphQLService) {
         } else {
             $http({
                 method: 'GET',
-                url: '/proxy/v1/cartItems',
+                url: '/pda/api/proxy/v1/cartItems',
             }).then(function(result) {
                 success(result.data.data);
             }).catch(function(result) {
@@ -742,7 +742,7 @@ function getUnreviewedAmount($http,$rootScope,$filter,graphQLService){
         } else {
             $http({
                 method: 'GET',
-                url: '/proxy/v1/orders/unreviewedNumber'
+                url: '/pda/api/proxy/v1/orders/unreviewedNumber'
             }).then(function(result) {
                 getUnreviewedAmountSuccess(result.data.data)
             }).catch(function(result) {

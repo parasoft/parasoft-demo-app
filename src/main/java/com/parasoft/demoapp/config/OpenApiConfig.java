@@ -11,6 +11,7 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.security.*;
+import io.swagger.v3.oas.models.servers.Server;
 import org.springdoc.core.GroupedOpenApi;
 import org.springdoc.core.SpringDocConfigProperties;
 import org.springdoc.core.customizers.OpenApiCustomiser;
@@ -38,6 +39,9 @@ public class OpenApiConfig {
         final String basicSchemeName = "basicAuth";
         final String oAuthSchemeName = "oAuth2AuthCode";
         return new OpenAPI()
+                .servers(List.of(
+                        new Server().url("/pda/api")
+                ))
                 .addSecurityItem(new SecurityRequirement().addList(basicSchemeName).addList(oAuthSchemeName))
                 .components(
                         new Components()

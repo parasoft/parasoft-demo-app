@@ -16,7 +16,7 @@ angular
             let makeCall = function(requestBody, success, error) {
                 $http({
                     method: 'POST',
-                    url: '/proxy/graphql',
+                    url: '/pda/api/proxy/graphql',
                     headers: {
                         'Content-Type': 'application/json',
                     },

@@ -36,7 +36,7 @@ app.controller('homepageController', function($rootScope, $http, $filter, graphQ
         } else {
             $http({
                 method: 'GET',
-                url: '/proxy/v1/assets/categories',
+                url: '/pda/api/proxy/v1/assets/categories',
             }).then(function(result) {
                 success(result.data.data);
             }).catch(function(result) {

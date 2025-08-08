@@ -186,7 +186,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
             } else {
                 $http({
                     method: 'GET',
-                    url: '/proxy/v1/assets/categories',
+                    url: '/pda/api/proxy/v1/assets/categories',
                 }).then(function(result) {
                     getCategoriesSuccess(result.data.data);
                 }).catch(function(result) {
@@ -208,7 +208,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
         } else {
             $http({
                 method: 'GET',
-                url: '/proxy/v1/assets/items',
+                url: '/pda/api/proxy/v1/assets/items',
             }).then(function(response) {
                 getItemsSuccess(response.data.data);
             }).catch(function (response) {
@@ -231,7 +231,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
         } else {
             $http({
                 method: 'GET',
-                url: '/proxy/v1/assets/categories',
+                url: '/pda/api/proxy/v1/assets/categories',
             }).then(function(result) {
                 success(result.data.data);
             }).catch(function(result) {
@@ -253,7 +253,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
         } else {
             $http({
                 method: 'GET',
-                url: '/proxy/v1/locations/regions',
+                url: '/pda/api/proxy/v1/locations/regions',
             }).then(function(result) {
                 getAllRegionsSuccess(result.data.data);
             }).catch(function(result) {
@@ -876,7 +876,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
             } else {
                 $http({
                     method: 'POST',
-                    url: '/proxy/v1/assets/items/',
+                    url: '/pda/api/proxy/v1/assets/items/',
                     data: params,
                     headers : {'Content-Type': 'application/json'}
                 }).then(function(response) {
@@ -907,7 +907,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
             } else {
                 $http({
                     method: 'PUT',
-                    url: '/proxy/v1/assets/items/' + itemId,
+                    url: '/pda/api/proxy/v1/assets/items/' + itemId,
                     data: updateItemFormData,
                     headers : {'Content-Type': 'application/json'}
                 }).then(function(response) {
@@ -1029,7 +1029,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
     } else {
         $http({
             method: 'DELETE',
-            url: '/proxy/v1/assets/items/'+item.id,
+            url: '/pda/api/proxy/v1/assets/items/'+item.id,
         }).then(function(result) {
             success(result);
         }, function error(result) {
@@ -1219,7 +1219,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
             } else {
                 $http({
                     method: 'POST',
-                    url: '/proxy/v1/assets/categories/',
+                    url: '/pda/api/proxy/v1/assets/categories/',
                     data: formData,
                     headers : {'Content-Type': 'application/json'}
                 }).then(function(response) {
@@ -1250,7 +1250,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
             } else {
                 $http({
                     method: 'PUT',
-                    url: '/proxy/v1/assets/categories/' + categoryId,
+                    url: '/pda/api/proxy/v1/assets/categories/' + categoryId,
                     data: updateCategoryFormData,
                     headers: {'Content-Type': 'application/json'}
                 }).then(function (response) {
@@ -1376,7 +1376,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
         } else {
             $http({
                 method: 'DELETE',
-                url: '/proxy/v1/assets/categories/'+category.id,
+                url: '/pda/api/proxy/v1/assets/categories/'+category.id,
             }).then(function(result) {
                success(result.data.data);
            }).catch(function(result) {

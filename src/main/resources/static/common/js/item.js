@@ -45,7 +45,7 @@ app.controller('itemDetailController', function($rootScope, $http, $location, $f
             } else {
                 $http({
                     method: 'GET',
-                    url: '/proxy/v1/assets/categories/' + data.categoryId,
+                    url: '/pda/api/proxy/v1/assets/categories/' + data.categoryId,
                 }).then(function (result) {
                     success(result.data.data);
                 }).catch(function (result) {
@@ -67,7 +67,7 @@ app.controller('itemDetailController', function($rootScope, $http, $location, $f
         } else {
             $http({
                 method: 'GET',
-                url: '/proxy/v1/assets/items/' + itemId,
+                url: '/pda/api/proxy/v1/assets/items/' + itemId,
             }).then(function(result) {
                 success(result.data.data);
             }).catch(function(result) {
@@ -105,7 +105,7 @@ app.controller('itemDetailController', function($rootScope, $http, $location, $f
     } else {
         $http({
             method: 'GET',
-            url: '/proxy/v1/cartItems/' + itemId
+            url: '/pda/api/proxy/v1/cartItems/' + itemId
         }).then(function(result) {
             getCartItemByIdSuccess(result.data.data);
         }).catch(function(result) {
@@ -184,7 +184,7 @@ app.controller('itemDetailController', function($rootScope, $http, $location, $f
         } else {
             $http({
                 method: 'POST',
-                url: '/proxy/v1/cartItems',
+                url: '/pda/api/proxy/v1/cartItems',
                 data: params,
                 headers: {'Content-Type': 'application/json'}
             }).then(function(result) {

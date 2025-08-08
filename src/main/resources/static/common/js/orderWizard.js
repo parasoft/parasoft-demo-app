@@ -33,7 +33,7 @@ app.controller('orderWizardController', function($scope, $rootScope, $http, $fil
         } else {
             $http({
                 method: 'GET',
-                url: '/proxy/v1/locations/regions',
+                url: '/pda/api/proxy/v1/locations/regions',
             }).then(function(result) {
                 getAllRegionTypesSuccess(result.data.data);
             }).catch(function(result) {
@@ -98,7 +98,7 @@ app.controller('orderWizardController', function($scope, $rootScope, $http, $fil
             } else {
                 $http({
                     method: 'GET',
-                    url: '/proxy/v1/cartItems',
+                    url: '/pda/api/proxy/v1/cartItems',
                 }).then(function(result) {
                     success(result.data.data);
                 }).catch(function(result) {
@@ -183,7 +183,7 @@ app.controller('orderWizardController', function($scope, $rootScope, $http, $fil
         } else {
             $http({
                 method: 'POST',
-                url: '/proxy/v1/orders',
+                url: '/pda/api/proxy/v1/orders',
                 data: params,
                 headers: {'Content-Type': 'application/json'}
             }).then(function (result) {
@@ -219,7 +219,7 @@ app.controller('orderWizardController', function($scope, $rootScope, $http, $fil
             } else {
                 $http({
                     method: 'GET',
-                    url: '/proxy/v1/locations/location',
+                    url: '/pda/api/proxy/v1/locations/location',
                     params: params
                 }).then(function(result) {
                     success(result.data.data);

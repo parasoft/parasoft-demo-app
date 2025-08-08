@@ -20,30 +20,31 @@ import static com.parasoft.demoapp.config.ParasoftJDBCProxyConfig.*;
 public class GlobalPreferencesDefaultSettingsService {
 
     public static final String HOST = "http://localhost:";
+    public static final String BASE_PATH = "/pda/api";
 
     public static final String GRAPHQL_ENDPOINT_ID = "graphql";
     public static final String GRAPHQL_ENDPOINT_PATH = "/proxy/graphql/**";
     public static final String GRAPHQL_ENDPOINT_REAL_PATH = "/graphql";
 
     public static final String CATEGORIES_ENDPOINT_ID = "categories";
-    public static final String CATEGORIES_ENDPOINT_PATH = "/proxy/v1/assets/categories/**";
-    public static final String CATEGORIES_ENDPOINT_REAL_PATH = "/v1/assets/categories";
+    public static final String CATEGORIES_ENDPOINT_PATH = BASE_PATH + "/proxy/v1/assets/categories/**";
+    public static final String CATEGORIES_ENDPOINT_REAL_PATH = BASE_PATH + "/v1/assets/categories";
 
     public static final String ITEMS_ENDPOINT_ID = "items";
-    public static final String ITEMS_ENDPOINT_PATH = "/proxy/v1/assets/items/**";
-    public static final String ITEMS_ENDPOINT_REAL_PATH = "/v1/assets/items";
+    public static final String ITEMS_ENDPOINT_PATH = BASE_PATH + "/proxy/v1/assets/items/**";
+    public static final String ITEMS_ENDPOINT_REAL_PATH = BASE_PATH + "/v1/assets/items";
 
     public static final String CART_ENDPOINT_ID = "cart";
-    public static final String CART_ENDPOINT_PATH = "/proxy/v1/cartItems/**";
-    public static final String CART_ENDPOINT_REAL_PATH = "/v1/cartItems";
+    public static final String CART_ENDPOINT_PATH = BASE_PATH + "/proxy/v1/cartItems/**";
+    public static final String CART_ENDPOINT_REAL_PATH = BASE_PATH + "/v1/cartItems";
 
     public static final String ORDERS_ENDPOINT_ID = "orders";
-    public static final String ORDERS_ENDPOINT_PATH = "/proxy/v1/orders/**";
-    public static final String ORDERS_ENDPOINT_REAL_PATH = "/v1/orders";
+    public static final String ORDERS_ENDPOINT_PATH = BASE_PATH + "/proxy/v1/orders/**";
+    public static final String ORDERS_ENDPOINT_REAL_PATH = BASE_PATH + "/v1/orders";
 
     public static final String LOCATIONS_ENDPOINT_ID = "locations";
-    public static final String LOCATIONS_ENDPOINT_PATH = "/proxy/v1/locations/**";
-    public static final String LOCATIONS_ENDPOINT_REAL_PATH = "/v1/locations";
+    public static final String LOCATIONS_ENDPOINT_PATH = BASE_PATH + "/proxy/v1/locations/**";
+    public static final String LOCATIONS_ENDPOINT_REAL_PATH = BASE_PATH + "/v1/locations";
 
     public static final Set<String> REST_ENDPOINT_IDS = new HashSet<>(Arrays.asList(
             CATEGORIES_ENDPOINT_ID, ITEMS_ENDPOINT_ID, CART_ENDPOINT_ID, ORDERS_ENDPOINT_ID, LOCATIONS_ENDPOINT_ID));
