@@ -20,7 +20,8 @@ import static com.parasoft.demoapp.config.ParasoftJDBCProxyConfig.*;
 public class GlobalPreferencesDefaultSettingsService {
 
     public static final String HOST = "http://localhost:";
-
+    public static final String PDA_API_ENDPOINT_ID = "pda-api";
+    public static final String PDA_API_ENDPOINT_PATH = "/pda/api/**";
     public static final String GRAPHQL_ENDPOINT_ID = "graphql";
     public static final String GRAPHQL_ENDPOINT_PATH = "/proxy/graphql/**";
     public static final String GRAPHQL_ENDPOINT_REAL_PATH = "/graphql";
