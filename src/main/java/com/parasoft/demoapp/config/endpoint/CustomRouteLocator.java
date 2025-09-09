@@ -1,5 +1,6 @@
 package com.parasoft.demoapp.config.endpoint;
 
+import com.parasoft.demoapp.config.WebConfig;
 import com.parasoft.demoapp.model.global.preferences.RestEndpointEntity;
 import com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService;
 import com.parasoft.demoapp.service.GlobalPreferencesService;
@@ -25,14 +26,17 @@ public class CustomRouteLocator extends SimpleRouteLocator implements Refreshabl
 
     private final GlobalPreferencesService globalPreferencesService;
 
+    private final WebConfig webConfig;
+
     public CustomRouteLocator(String servletPath, ZuulProperties properties, RestEndpointService restEndpointService,
                               GlobalPreferencesDefaultSettingsService defaultGlobalPreferencesSettingsService,
-                              GlobalPreferencesService globalPreferencesService) {
+                              GlobalPreferencesService globalPreferencesService, WebConfig webConfig) {
 
         super(servletPath, properties);
         this.restEndpointService = restEndpointService;
         this.defaultGlobalPreferencesSettingsService = defaultGlobalPreferencesSettingsService;
         this.globalPreferencesService = globalPreferencesService;
+        this.webConfig = webConfig;
     }
 
     @Override
@@ -73,10 +77,15 @@ public class CustomRouteLocator extends SimpleRouteLocator implements Refreshabl
 
     @SneakyThrows
     private Map<String, ZuulProperties.ZuulRoute> getPersistentRoutes() {
+        Map<String, ZuulProperties.ZuulRoute> routes = new LinkedHashMap<>();
+
+        // Handle pda api endpoint, this is fixed and internal endpoint, user can not change it.
+        routes.put(PDA_API_ENDPOINT_PATH, new ZuulProperties.ZuulRoute(PDA_API_ENDPOINT_ID, PDA_API_ENDPOINT_PATH, null, HOST + webConfig.getServerPort(),
+                true, false, new HashSet<>()));
+
         // RestEndpointEntity is a copy of ZuulProperties.ZuulRoute, they are saved in database
         List<RestEndpointEntity> results = restEndpointService.getAllEndpoints();
 
-        Map<String, ZuulProperties.ZuulRoute> routes = new LinkedHashMap<>();
         for (RestEndpointEntity result : results) {
             if(StringUtils.isEmpty(result.getPath())) {
                 continue;
