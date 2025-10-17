@@ -36,7 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @GraphQLTest
-public class LocationGraphQLDataFetcherTest {
+public class LocationGraphQLControllerTest {
 
     private static final String LOCATION_GRAPHQL_RESOURCE = "graphql/locations/getLocation.graphql";
     private static final String LOCATION_DATA_JSON_PATH = DATA_PATH + ".getLocation";

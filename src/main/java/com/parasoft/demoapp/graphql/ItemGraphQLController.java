@@ -11,6 +11,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -19,8 +20,8 @@ import java.net.URI;
 import java.util.*;
 
 @RequiredArgsConstructor
-@Component
-public class ItemGraphQLDataFetcher {
+@Controller
+public class ItemGraphQLController {
 
     private final RestTemplate restTemplate;
 

@@ -1,0 +1,204 @@
+scalar DateTime
+scalar Long
+
+type Query {
+    # category
+    getCategoryById(categoryId: Long!): Category
+    getCategoryByName(categoryName: String!): Category
+    getCategories(searchString: String, page: Int, size: Int, sort: [String]): CategoryPageInfo
+    # location
+    getLocation(region: RegionType!): Location
+    getAllRegionTypesOfCurrentIndustry: [RegionType]
+    # order
+    getOrderByOrderNumber(orderNumber: String!): Order
+    getOrders(page: Int, size: Int, sort: [String]): OrderPageInfo
+    getUnreviewedNumber: UnreviewedNumberResponse
+    #item
+    getItems(categoryId: Long, regions: [RegionType], searchString: String, page: Int, size: Int, sort: [String]): ItemPageInfo
+    getItemByItemId(itemId: Long!): Item
+    getItemByName(itemName: String!): Item
+    # cartItem
+    getCartItems: [CartItem]
+    getCartItemByItemId(itemId: Long!): CartItem
+}
+type Mutation {
+    # category
+    addCategory(categoryDTO: CategoryDTO!): Category
+    deleteCategoryById(categoryId: Long!): Int
+    updateCategory(categoryId: Long!, categoryDto: CategoryDTO!): Category
+    # order
+    createOrder(orderDTO: OrderDTO!): Order
+    updateOrderByOrderNumber(orderNumber: String!, orderStatusDTO: OrderStatusDTO!): Order
+    #item
+    updateItemInStockByItemId(itemId: Long!, newInStock: Int!): Item
+    deleteItemByName(itemName: String!): String
+    addNewItem(itemsDTO: ItemsDTO!): Item
+    deleteItemByItemId(itemId: Long!): Long
+    updateItemByItemId(itemId: Long!, itemsDTO: ItemsDTO!): Item
+    # cartItem
+    addItemInCart(shoppingCartDTO: ShoppingCartDTO!): CartItem
+    removeCartItem(itemId: Long!): Long
+    removeAllCartItems: Boolean
+    updateItemInCart(itemId: Long!, updateShoppingCartItemDTO: UpdateShoppingCartItemDTO!): CartItem
+}
+
+# category
+type Category {
+    id: Long
+    name: String
+    description: String
+    image: String
+}
+type CategoryPageInfo {
+    totalElements: Long
+    totalPages: Int
+    size: Int
+    number: Int
+    numberOfElements: Int
+    sort: String
+    content: [Category]
+}
+input CategoryDTO {
+    name: String!
+    description: String!
+    imagePath: String
+}
+# location
+type Location {
+    id: Long
+    locationInfo: String
+    locationImage: String
+}
+enum RegionType {
+    UNITED_STATES
+    UNITED_KINGDOM
+    GERMANY
+    FRANCE
+    JAPAN
+    SOUTH_KOREA
+    SPAIN
+    AUSTRALIA
+    MERCURY
+    VENUS
+    EARTH
+    MARS
+    JUPITER
+    SATURN
+    URANUS
+    NEPTUNE
+    LOCATION_1
+    LOCATION_2
+    LOCATION_3
+    LOCATION_4
+    LOCATION_5
+    LOCATION_6
+    LOCATION_7
+    LOCATION_8
+}
+# order
+type Order {
+    id: Long
+    orderNumber: String
+    requestedBy: String
+    status: String
+    reviewedByAPV: Boolean
+    reviewedByPRCH: Boolean
+    respondedBy: String
+    orderItems: [OrderItem]
+    region: String
+    location: String
+    orderImage: String
+    receiverId: String
+    eventId: String
+    eventNumber: String
+    submissionDate: DateTime
+    approverReplyDate: DateTime
+    comments: String
+}
+type OrderItem {
+    id: Long
+    name: String
+    description: String
+    image: String
+    itemId: Long
+    quantity: Int
+}
+input OrderDTO {
+    region: RegionType!
+    location: String!
+    receiverId: String!
+    eventId: String!
+    eventNumber: String!
+}
+type OrderPageInfo {
+    totalElements: Long
+    totalPages: Int
+    size: Int
+    number: Int
+    numberOfElements: Int
+    sort: String
+    content: [Order]
+}
+input OrderStatusDTO {
+    status: OrderStatus
+    comments: String
+    reviewedByPRCH: Boolean
+    reviewedByAPV: Boolean
+}
+enum OrderStatus {
+    SUBMITTED
+    PROCESSED
+    CANCELED
+    APPROVED
+    DECLINED
+}
+type UnreviewedNumberResponse{
+    unreviewedByApprover: Int
+    unreviewedByPurchaser: Int
+}
+#item
+type Item {
+    id: Long
+    name: String
+    description: String
+    inStock: Int
+    image: String
+    region: RegionType
+    lastAccessedDate: DateTime
+    categoryId: Long
+}
+type ItemPageInfo {
+    totalElements: Long
+    totalPages: Int
+    size: Int
+    number: Int
+    numberOfElements: Int
+    sort: String
+    content: [Item]
+}
+input ItemsDTO {
+    name: String!
+    description: String!
+    categoryId: Long!
+    inStock: Int!
+    imagePath: String
+    region: RegionType!
+}
+#cartItems
+type CartItem {
+    id: Long
+    userId: Long
+    itemId: Long
+    name: String
+    description: String
+    image: String
+    realInStock: Int
+    quantity: Int
+}
+input ShoppingCartDTO {
+    itemId: Long!
+    itemQty: Int!
+}
+input UpdateShoppingCartItemDTO {
+    itemQty: Int!
+}

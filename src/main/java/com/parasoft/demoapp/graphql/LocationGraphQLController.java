@@ -10,7 +10,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Objects;
 
 @RequiredArgsConstructor
-@Component
-public class LocationGraphQLDataFetcher {
+@Controller
+public class LocationGraphQLController {
 
     private final RestTemplate restTemplate;
 

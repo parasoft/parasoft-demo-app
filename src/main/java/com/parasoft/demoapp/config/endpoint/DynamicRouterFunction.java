@@ -42,6 +42,7 @@ import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsServi
 import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.PDA_API_ENDPOINT_PATH;
 import static org.springframework.cloud.gateway.server.mvc.filter.BeforeFilterFunctions.rewritePath;
 import static org.springframework.cloud.gateway.server.mvc.filter.BeforeFilterFunctions.uri;
+import static org.springframework.cloud.gateway.server.mvc.filter.CircuitBreakerFilterFunctions.circuitBreaker;
 import static org.springframework.cloud.gateway.server.mvc.handler.HandlerFunctions.http;
 import static org.springframework.cloud.gateway.server.mvc.predicate.GatewayRequestPredicates.path;
 
@@ -126,9 +127,8 @@ public class DynamicRouterFunction implements RouterFunction<ServerResponse> {
                     String prefixPath = restEndpointEntity.getPath().substring(0, restEndpointEntity.getPath().indexOf("/**"));
 
                     return GatewayRouterFunctions.route(restEndpointEntity.getRouteId())
-                            .route(path(restEndpointEntity.getPath()), http())
-                            .before(uri(baseUrl))
-                            .before(rewritePath(prefixPath+"(?<segment>.*)", subPath + "${segment}"))
+                            .route(path(restEndpointEntity.getPath()), http(baseUrl))
+                            .before(rewritePath(prefixPath + "(?<segment>.*?)/*$", subPath + "${segment}"))
                             .build();
                 })
                 .reduce(RouterFunction::and).get();

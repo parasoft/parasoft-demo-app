@@ -5,6 +5,7 @@ import com.parasoft.demoapp.dto.InventoryOperationResultMessageDTO;
 import com.parasoft.demoapp.service.OrderMQService;
 import com.parasoft.demoapp.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.config.JmsListenerEndpointRegistry;
 import org.springframework.jms.connection.CachingConnectionFactory;
@@ -18,6 +19,7 @@ import jakarta.jms.Message;
 
 @Slf4j
 @Component
+@DependsOn("brokerService")
 public class ActiveMQInventoryResponseQueueListener extends ActiveMQRefreshableMessageListener {
     private final OrderService orderService;
     private final OrderMQService orderMQService;

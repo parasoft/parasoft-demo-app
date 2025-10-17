@@ -37,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @GraphQLTest
-public class CartItemGraphQLDataFetcherTest {
+public class CartItemGraphQLControllerTest {
     private static final String GET_CART_ITEMS_GRAPHQL_RESOURCE = "graphql/cartItems/getCartItems.graphql";
     private static final String GET_CART_ITEMS_DATA_JSON_PATH = DATA_PATH + ".getCartItems";
     private static final String ADD_ITEM_IN_CART_GRAPHQL_RESOURCE = "graphql/cartItems/addItemInCart.graphql";
