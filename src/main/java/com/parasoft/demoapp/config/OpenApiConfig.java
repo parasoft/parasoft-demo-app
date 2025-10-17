@@ -12,15 +12,15 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.security.*;
 import io.swagger.v3.oas.models.servers.Server;
-import org.springdoc.core.GroupedOpenApi;
-import org.springdoc.core.SpringDocConfigProperties;
-import org.springdoc.core.customizers.OpenApiCustomiser;
 import org.springdoc.core.customizers.PropertyCustomizer;
+import org.springdoc.core.models.GroupedOpenApi;
+import org.springdoc.core.properties.SpringDocConfigProperties;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.parasoft.demoapp.messages.ConfigMessages;
+import org.springframework.context.annotation.Lazy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,15 +68,10 @@ public class OpenApiConfig {
         return GroupedOpenApi.builder()
                 .pathsToMatch("/v1/**")
                 .group("v1")
-                .addOpenApiCustomiser(new OpenApiCustomiser() {
-
-					@Override
-					public void customise(OpenAPI openApi) {
+                .addOpenApiCustomizer(openApi -> {
 						openApi.info(new Info().title(API_TITLE).version(API_VERSION)
 								.description(configMessages.getString(ConfigMessages.REGULAR_API_DESCRIPTION)))
                                 .servers(List.of(new Server().url("/pda/api")));
-					}
-                	
                 })
                 .build();
     }
@@ -86,21 +81,16 @@ public class OpenApiConfig {
         return GroupedOpenApi.builder()
                 .pathsToMatch("/proxy/v1/**")
                 .group("v1-proxy")
-                .addOpenApiCustomiser(new OpenApiCustomiser() {
-
-					@Override
-					public void customise(OpenAPI openApi) {
-						openApi.info(new Info().title(API_TITLE).version(API_VERSION)
-								.description(configMessages.getString(ConfigMessages.GATEWAY_API_DESCRIPTION)))
-                                .servers(List.of(new Server().url("/pda/api")));
-					}
-                	
+                .addOpenApiCustomizer(openApi -> {
+                    openApi.info(new Info().title(API_TITLE).version(API_VERSION)
+                            .description(configMessages.getString(ConfigMessages.GATEWAY_API_DESCRIPTION)))
+                            .servers(List.of(new Server().url("/pda/api")));
                 })
                 .build();
     }
 
     @Bean
-    public SchemaPropertyCustomizer schemaPropertyCustomizer(GlobalPreferencesService globalPreferencesService, SpringDocConfigProperties springDocConfigProperties) {
+    public SchemaPropertyCustomizer schemaPropertyCustomizer(@Lazy GlobalPreferencesService globalPreferencesService, SpringDocConfigProperties springDocConfigProperties) {
         return new SchemaPropertyCustomizer(globalPreferencesService, springDocConfigProperties);
     }
 

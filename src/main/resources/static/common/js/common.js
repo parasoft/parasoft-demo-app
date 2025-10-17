@@ -954,7 +954,7 @@ function doDisplayLoadError(result,$rootScope,$filter,$http,showToastr,errorType
         return;
     }
 
-    if(dataString.indexOf("com.netflix.zuul.exception.zuulException") > -1){
+    if(dataString.indexOf("org.springframework.web.client.ResourceAccessException") > -1){
         handleRestpointErrorMessage($rootScope,$http,$filter,errorType,url,showToastr,true);
         return;
     }

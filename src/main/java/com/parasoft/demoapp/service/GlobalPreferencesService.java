@@ -29,6 +29,7 @@ import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.ListTopicsOptions;
 import org.springframework.amqp.rabbit.connection.Connection;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,15 +44,18 @@ import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsServi
 @Service
 public class GlobalPreferencesService {
     @Autowired
+    @Lazy
     private OpenApiConfig.SchemaPropertyCustomizer schemaPropertyCustomizer;
 
     @Autowired
     private GlobalPreferencesRepository globalPreferencesRepository;
 
     @Autowired
+    @Lazy
     private DemoBugService demoBugService;
 
     @Autowired
+    @Lazy
     private ResetEntrance resetEntrance;
 
     @Autowired
@@ -67,6 +71,7 @@ public class GlobalPreferencesService {
     private ImageService imageService;
 
     @Autowired
+    @Lazy
     private ParasoftJDBCProxyService parasoftJDBCProxyService;
 
     @Autowired

@@ -10,13 +10,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.data.util.CastUtils;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -34,12 +33,13 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.SecurityFilterChain;
 
 import javax.annotation.Nullable;
 import java.util.*;
 
 @EnableWebSecurity
+@Configuration
 public class SecurityConfig {
 
     private static final String USER_REALM_ROLE_MAPPER_NAME = "pda-realm-role";
@@ -69,129 +69,122 @@ public class SecurityConfig {
     @Value("${spring.security.oauth2.client.provider.keycloak.user-name-attribute}")
     private String keycloakUsernameAttribute;
 
-    @Configuration
+    @Bean
     @Order(1)
-    public class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
+    public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
 
-        @Override
-        protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-            auth.userDetailsService(customUserDetailsService)
-                    .passwordEncoder(passwordEncoder);
-        }
-
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-            http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.NEVER);
-
-            // Some considerations on the REST API URL pattern:
-            // Change the URL of REST API to "/api/**" pattern, so it can support multiple version of the API,
-            // like "/api/v1/**" and "/api/v2/**".
-            // And we can configure REST API security with a single `antMatcher("/api/**")`
-            http
-                .regexMatcher("/v1/(?!(login$|logout$)).*") // Include all '/v1/**' urls except '/v1/login' and '/v1/logout'.
-                .authorizeRequests()
-                    .antMatchers(HttpMethod.GET, "/v1/demoAdmin/**").permitAll()
-                    .antMatchers("/v1/demoAdmin/**").authenticated()
-                    .antMatchers(HttpMethod.GET, "/v1/assets/**").permitAll()
-                    .antMatchers("/v1/assets/**").authenticated()
-                    .antMatchers("/v1/cartItems/**").access("hasRole('PURCHASER')")
-                    .antMatchers("/v1/locations/**").authenticated()
-                    .antMatchers(HttpMethod.POST, "/v1/orders/**").access("hasRole('PURCHASER')")
-                    .antMatchers("/v1/orders/**").authenticated()
-                    .antMatchers("/v1/images").authenticated()
-                    .antMatchers(HttpMethod.GET, "/v1/labels").permitAll()
-                    .antMatchers("/v1/labels").authenticated()
-                    .antMatchers("/v1/**").permitAll()
-                 .and()
-                    .oauth2ResourceServer(oauth2 -> oauth2
-                            .jwt(jwt -> jwt.jwtAuthenticationConverter(new CustomAuthenticationConverter()))
-                            .authenticationEntryPoint(new CustomBearerTokenAuthenticationEntryPoint())
-                    )
-                    .httpBasic()
-                        .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
-                        .realmName("Parasoft Demo App")
-                 .and()
-                    .csrf()
-                        .disable();
-
-            http.exceptionHandling()
+        // Some considerations on the REST API URL pattern:
+        // Change the URL of REST API to "/api/**" pattern, so it can support multiple version of the API,
+        // like "/api/v1/**" and "/api/v2/**".
+        // And we can configure REST API security with a single `antMatcher("/api/**")`
+        http
+            .securityMatcher("/v1/(?!(login$|logout$)).*") // Include all '/v1/**' urls except '/v1/login' and '/v1/logout'
+            .sessionManagement(session -> session
+                    .sessionCreationPolicy(SessionCreationPolicy.NEVER)
+            )
+            .authorizeHttpRequests(authorize -> authorize
+                    .requestMatchers(HttpMethod.GET, "/v1/demoAdmin/**").permitAll()
+                    .requestMatchers("/v1/demoAdmin/**").authenticated()
+                    .requestMatchers(HttpMethod.GET, "/v1/assets/**").permitAll()
+                    .requestMatchers("/v1/assets/**").authenticated()
+                    .requestMatchers("/v1/cartItems/**").hasRole("PURCHASER")
+                    .requestMatchers("/v1/locations/**").authenticated()
+                    .requestMatchers(HttpMethod.POST, "/v1/orders/**").hasRole("PURCHASER")
+                    .requestMatchers("/v1/orders/**").authenticated()
+                    .requestMatchers("/v1/images").authenticated()
+                    .requestMatchers(HttpMethod.GET, "/v1/labels").permitAll()
+                    .requestMatchers("/v1/labels").authenticated()
+                    .requestMatchers("/v1/**").permitAll()
+            )
+            .oauth2ResourceServer(oauth2 -> oauth2
+                    .jwt(jwt -> jwt.jwtAuthenticationConverter(new CustomAuthenticationConverter()))
+                    .authenticationEntryPoint(new CustomBearerTokenAuthenticationEntryPoint())
+            )
+            .httpBasic(httpBasic -> httpBasic
                     .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
-                    .accessDeniedHandler((new CustomAccessDeniedHandler()));
-        }
+                    .realmName("Parasoft Demo App")
+            )
+            .csrf(csrf -> csrf.disable())
+            .exceptionHandling(ex -> ex
+                    .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+                    .accessDeniedHandler(new CustomAccessDeniedHandler()));
+
+        return http.build();
     }
 
-    @Configuration
-    public class FormLoginWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
-
-        @Override
-        protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-            auth.userDetailsService(customUserDetailsService)
-                    .passwordEncoder(passwordEncoder);
-        }
-
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-            http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
-
-            http
-                .authorizeRequests()
-                    .antMatchers("/").authenticated()
-                    .antMatchers("/demoAdmin").authenticated()
-                    .antMatchers("/categories/**").access("hasRole('PURCHASER')")
-                    .antMatchers("/items/**").access("hasRole('PURCHASER')")
-                    .antMatchers("/orderWizard").access("hasRole('PURCHASER')")
-                    .antMatchers("/orders").access("hasRole('PURCHASER')")
-                    .antMatchers("/actuator/routes/**").authenticated()
-                    .antMatchers("/**").permitAll()
-                .and()
-                    .formLogin()
-                        .loginPage("/loginPage")
-                        .loginProcessingUrl("/v1/login")
-                        .failureHandler(customAuthenticationFailureHandler)
-                        .successHandler(customAuthenticationSuccessHandler)
-                .and()
-                    .logout()
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/v1/logout", "GET"))
-                        .logoutSuccessHandler(customLogoutSuccessHandler)
-                .and()
-                    .oauth2Login(oauth2 -> {
-                                oauth2.loginPage("/loginPage");
-                                oauth2.userInfoEndpoint(userInfo -> userInfo.oidcUserService(this.oidcUserService()));
-                                oauth2.failureHandler(customOAuth2AuthenticationFailureHandler);
-                            })
-                    .csrf()
-                        .disable();
-
-            http.exceptionHandling()
+    @Bean
+    public SecurityFilterChain formLoginSecurityFilterChain(HttpSecurity http) throws Exception  {
+        http
+            .sessionManagement(session -> session
+                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+            )
+            .authorizeHttpRequests(authorize -> authorize
+                    .requestMatchers("/").authenticated()
+                    .requestMatchers("/demoAdmin").authenticated()
+                    .requestMatchers("/categories/**").hasRole("PURCHASER")
+                    .requestMatchers("/items/**").hasRole("PURCHASER")
+                    .requestMatchers("/orderWizard").hasRole("PURCHASER")
+                    .requestMatchers("/orders").hasRole("PURCHASER")
+                    .requestMatchers("/actuator/routes/**").authenticated()
+                    .requestMatchers("/**").permitAll()
+            )
+            .formLogin(form -> form
+                    .loginPage("/loginPage")
+                    .loginProcessingUrl("/v1/login")
+                    .failureHandler(customAuthenticationFailureHandler)
+                    .successHandler(customAuthenticationSuccessHandler)
+            )
+            .logout(logout -> logout
+                    .logoutRequestMatcher(request -> request.getRequestURI().equals("/v1/logout") && "GET".equalsIgnoreCase(request.getMethod()))
+                    .logoutSuccessHandler(customLogoutSuccessHandler)
+            )
+            .oauth2Login(oauth2 -> oauth2
+                    .loginPage("/loginPage")
+                    .userInfoEndpoint(userInfo -> userInfo.oidcUserService(oidcUserService()))
+                    .failureHandler(customOAuth2AuthenticationFailureHandler)
+            )
+            .csrf(csrf -> csrf.disable())
+            .exceptionHandling(ex -> ex
                     .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
-                    .accessDeniedHandler(new CustomAccessDeniedHandler());
-        }
+                    .accessDeniedHandler(new CustomAccessDeniedHandler()));
 
-        private OAuth2UserService<OidcUserRequest, OidcUser> oidcUserService() {
-            final OidcUserService delegate = new OidcUserService();
+        return http.build();
+    }
 
-            return (userRequest) -> {
-                OidcUser oidcUser = delegate.loadUser(userRequest);
-                OidcUserInfo userInfo = oidcUser.getUserInfo();
-                OidcIdToken idToken = oidcUser.getIdToken();
+    @Bean
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+        AuthenticationManagerBuilder authenticationManagerBuilder =
+                http.getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder
+                .userDetailsService(customUserDetailsService)
+                .passwordEncoder(passwordEncoder);
+        return authenticationManagerBuilder.build();
+    }
 
-                UserEntity userEntity;
-                try {
-                    userEntity = (UserEntity) customUserDetailsService
-                            .loadUserByUsername(userInfo.getPreferredUsername());
-                } catch (UsernameNotFoundException exception) {
-                    // Customize the exception to passing tokens to ensure that we can remove the session in keycloak when the login fails
-                    String idTokenHint = idToken != null ? idToken.getTokenValue() : null;
-                    throw new UsernameNotFoundException(idTokenHint, exception);
-                }
-                CustomOidcUser customOidcUser =
-                        new CustomOidcUser(mapAuthoritiesToOidcUserAuthorityType(userEntity, userInfo, idToken), idToken, userInfo);
-                customOidcUser.setId(userEntity.getId());
-                customOidcUser.setUsername(userEntity.getUsername());
-                customOidcUser.setRole(userEntity.getRole());
-                return customOidcUser;
-            };
-        }
+    private OAuth2UserService<OidcUserRequest, OidcUser> oidcUserService() {
+        final OidcUserService delegate = new OidcUserService();
+
+        return (userRequest) -> {
+            OidcUser oidcUser = delegate.loadUser(userRequest);
+            OidcUserInfo userInfo = oidcUser.getUserInfo();
+            OidcIdToken idToken = oidcUser.getIdToken();
+
+            UserEntity userEntity;
+            try {
+                userEntity = (UserEntity) customUserDetailsService
+                        .loadUserByUsername(userInfo.getPreferredUsername());
+            } catch (UsernameNotFoundException exception) {
+                // Customize the exception to passing tokens to ensure that we can remove the session in keycloak when the login fails
+                String idTokenHint = idToken != null ? idToken.getTokenValue() : null;
+                throw new UsernameNotFoundException(idTokenHint, exception);
+            }
+            CustomOidcUser customOidcUser =
+                    new CustomOidcUser(mapAuthoritiesToOidcUserAuthorityType(userEntity, userInfo, idToken), idToken, userInfo);
+            customOidcUser.setId(userEntity.getId());
+            customOidcUser.setUsername(userEntity.getUsername());
+            customOidcUser.setRole(userEntity.getRole());
+            return customOidcUser;
+        };
     }
 
     @Bean
@@ -234,8 +227,8 @@ public class SecurityConfig {
                                                  @Nullable OidcIdToken idToken) {
         Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
         Object realmRoleClaim = claims.get(USER_REALM_ROLE_MAPPER_NAME);
-        if (realmRoleClaim instanceof List<?>) {
-            List<String> realmRoles = CastUtils.cast(realmRoleClaim);
+        if (realmRoleClaim instanceof List<?> list && list.stream().allMatch(String.class::isInstance)) {
+            List<String> realmRoles = (List<String>) list;
             userEntity.getAuthorities().forEach(grantedAuthority -> {
                 // Role matching related
                 String grantedRoleType = grantedAuthority.getAuthority();

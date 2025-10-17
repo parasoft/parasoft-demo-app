@@ -3,7 +3,7 @@ package com.parasoft.demoapp.model.industry;
 import com.parasoft.demoapp.model.global.LocalizationLanguageType;
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Getter
 @Entity

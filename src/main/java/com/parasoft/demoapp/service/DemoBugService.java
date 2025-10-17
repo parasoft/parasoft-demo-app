@@ -6,6 +6,7 @@ import java.util.*;
 import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -35,6 +36,7 @@ public class DemoBugService {
     private DemoBugRepository demoBugRepository;
 
     @Autowired
+    @Lazy
     private GlobalPreferencesService globalPreferencesService;
 
     @Autowired

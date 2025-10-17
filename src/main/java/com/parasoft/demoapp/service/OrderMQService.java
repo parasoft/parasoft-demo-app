@@ -17,7 +17,7 @@ import org.springframework.kafka.KafkaException;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
-import javax.jms.Destination;
+import jakarta.jms.Destination;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 

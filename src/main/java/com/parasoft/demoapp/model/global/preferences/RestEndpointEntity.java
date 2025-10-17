@@ -1,22 +1,12 @@
 package com.parasoft.demoapp.model.global.preferences;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.springframework.cloud.netflix.zuul.filters.ZuulProperties;
 
-import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
-
-/**
- * A copy of {@link ZuulProperties.ZuulRoute}.<br/>
- *
- * We can't save {@link ZuulProperties.ZuulRoute},
- * so we save {@RestEndpointEntity} into database, when they are needed, transfer them to {@link ZuulProperties.ZuulRoute}
- */
 @Data
 @Entity
 @NoArgsConstructor
@@ -89,11 +79,5 @@ public class RestEndpointEntity {
         this.routeId = routeId;
         this.path = path;
         this.url = url;
-    }
-
-    public ZuulProperties.ZuulRoute toRealZuulRoute(){
-        Set<String> sensitiveHeaders = new HashSet<>();
-        return new ZuulProperties.ZuulRoute(
-                this.routeId, this.path, this.serviceId, this.url, this.stripPrefix, this.retryable, sensitiveHeaders);
     }
 }

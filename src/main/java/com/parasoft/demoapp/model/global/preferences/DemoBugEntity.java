@@ -3,7 +3,7 @@ package com.parasoft.demoapp.model.global.preferences;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Getter

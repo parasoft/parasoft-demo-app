@@ -3,7 +3,7 @@ package com.parasoft.demoapp.controller;
 import com.parasoft.demoapp.exception.ParameterException;
 import com.parasoft.demoapp.exception.UnsupportedOperationInCurrentIndustryException;
 
-import org.springdoc.api.annotations.ParameterObject;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;

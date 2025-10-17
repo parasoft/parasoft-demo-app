@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -32,6 +33,7 @@ public class WebConfig implements WebMvcConfigurer {
 	private int serverPort;
 
 	@Autowired
+	@Lazy
 	private ParasoftJDBCProxyValidateInterceptor parasoftJDBCProxyValidateInterceptor;
 
 	private String uploadedImagesStorePathLocation;

@@ -3,7 +3,7 @@ package com.parasoft.demoapp.util;
 import com.google.gson.Gson;
 import com.parasoft.demoapp.controller.ResponseResult;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 

@@ -14,7 +14,7 @@ import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import javax.jms.Destination;
+import jakarta.jms.Destination;
 
 import static com.parasoft.demoapp.model.global.preferences.MqType.ACTIVE_MQ;
 import static com.parasoft.demoapp.model.global.preferences.MqType.KAFKA;
