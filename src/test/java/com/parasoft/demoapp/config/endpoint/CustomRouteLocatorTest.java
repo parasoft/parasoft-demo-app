@@ -1,6 +1,5 @@
 package com.parasoft.demoapp.config.endpoint;
 
-import com.parasoft.demoapp.config.WebConfig;
 import com.parasoft.demoapp.model.global.preferences.GlobalPreferencesEntity;
 import com.parasoft.demoapp.model.global.preferences.RestEndpointEntity;
 import com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService;
@@ -38,7 +37,6 @@ public class CustomRouteLocatorTest {
 		GlobalPreferencesDefaultSettingsService globalPreferencesDefaultSettingsService =
 				mock(GlobalPreferencesDefaultSettingsService.class);
 		GlobalPreferencesService globalPreferencesService = mock(GlobalPreferencesService.class);
-		WebConfig webConfig = mock(WebConfig.class);
 
 		List<RestEndpointEntity> endpoints = getDefaultRestEndpoints();
 		GlobalPreferencesEntity globalPreferences = mock(GlobalPreferencesEntity.class);
@@ -49,7 +47,7 @@ public class CustomRouteLocatorTest {
 
 		// When
 		CustomRouteLocator underTest = new CustomRouteLocator(servletPath, properties, restEndpointService,
-				globalPreferencesDefaultSettingsService, globalPreferencesService, webConfig);
+				globalPreferencesDefaultSettingsService, globalPreferencesService);
 
 		underTest.refresh();
 
@@ -84,7 +82,6 @@ public class CustomRouteLocatorTest {
 		GlobalPreferencesDefaultSettingsService globalPreferencesDefaultSettingsService =
 				mock(GlobalPreferencesDefaultSettingsService.class);
 		GlobalPreferencesService globalPreferencesService = mock(GlobalPreferencesService.class);
-		WebConfig webConfig = mock(WebConfig.class);
 
 		String routeId = "routeId";
 		String path = "/v1/assets/**";
@@ -99,13 +96,13 @@ public class CustomRouteLocatorTest {
 
 		// When
 		CustomRouteLocator underTest = new CustomRouteLocator(servletPath, properties, restEndpointService,
-				globalPreferencesDefaultSettingsService, globalPreferencesService, webConfig);
+				globalPreferencesDefaultSettingsService, globalPreferencesService);
 
 		Map<String, ZuulRoute> result = underTest.locateRoutes();
 
 		// Then
 		assertNotNull(result);
-		assertEquals(8, result.size());
+		assertEquals(7, result.size());
 		assertTrue(result.containsKey(path));
 	}
 	
@@ -129,7 +126,6 @@ public class CustomRouteLocatorTest {
 		GlobalPreferencesDefaultSettingsService globalPreferencesDefaultSettingsService =
 				mock(GlobalPreferencesDefaultSettingsService.class);
 		GlobalPreferencesService globalPreferencesService = mock(GlobalPreferencesService.class);
-		WebConfig webConfig = mock(WebConfig.class);
 
 		RestEndpointEntity endpoint = new RestEndpointEntity(routeId, path, url, globalPreferences);
 		endpoints.add(endpoint);
@@ -140,12 +136,12 @@ public class CustomRouteLocatorTest {
 		
 		// When
 		CustomRouteLocator underTest = new CustomRouteLocator(servletPath, properties, restEndpointService,
-				globalPreferencesDefaultSettingsService, globalPreferencesService, webConfig);
+				globalPreferencesDefaultSettingsService, globalPreferencesService);
 		Map<String, ZuulRoute> result = underTest.locateRoutes();
 
 		// Then
 		assertNotNull(result);
-		assertEquals(8, result.size());
+		assertEquals(7, result.size());
 		assertTrue(result.containsKey("/" + path));
 	}
 	
@@ -169,7 +165,6 @@ public class CustomRouteLocatorTest {
 		GlobalPreferencesDefaultSettingsService globalPreferencesDefaultSettingsService =
 				mock(GlobalPreferencesDefaultSettingsService.class);
 		GlobalPreferencesService globalPreferencesService = mock(GlobalPreferencesService.class);
-		WebConfig webConfig = mock(WebConfig.class);
 
 		RestEndpointEntity endpoint = new RestEndpointEntity(routeId, path, url, globalPreferences);
 		endpoints.add(endpoint);
@@ -180,12 +175,12 @@ public class CustomRouteLocatorTest {
 		
 		// When
 		CustomRouteLocator underTest = new CustomRouteLocator(servletPath, properties, restEndpointService,
-				globalPreferencesDefaultSettingsService, globalPreferencesService, webConfig);
+				globalPreferencesDefaultSettingsService, globalPreferencesService);
 		Map<String, ZuulRoute> result = underTest.locateRoutes();
 
 		// Then
 		assertNotNull(result);
-		assertEquals(7, result.size());
+		assertEquals(6, result.size());
 	}
 	
 	/**
@@ -208,7 +203,6 @@ public class CustomRouteLocatorTest {
 		GlobalPreferencesDefaultSettingsService globalPreferencesDefaultSettingsService =
 				mock(GlobalPreferencesDefaultSettingsService.class);
 		GlobalPreferencesService globalPreferencesService = mock(GlobalPreferencesService.class);
-		WebConfig webConfig = mock(WebConfig.class);
 
 		RestEndpointEntity endpoint = new RestEndpointEntity(routeId, path, url, globalPreferences);
 		endpoints.add(endpoint);
@@ -219,12 +213,12 @@ public class CustomRouteLocatorTest {
 		
 		// When
 		CustomRouteLocator underTest = new CustomRouteLocator(servletPath, properties, restEndpointService,
-				globalPreferencesDefaultSettingsService, globalPreferencesService, webConfig);
+				globalPreferencesDefaultSettingsService, globalPreferencesService);
 		Map<String, ZuulRoute> result = underTest.locateRoutes();
 
 		// Then
 		assertNotNull(result);
-		assertEquals(7, result.size());
+		assertEquals(6, result.size());
 	}
 	
 	/**
@@ -247,7 +241,6 @@ public class CustomRouteLocatorTest {
 		GlobalPreferencesDefaultSettingsService globalPreferencesDefaultSettingsService =
 				mock(GlobalPreferencesDefaultSettingsService.class);
 		GlobalPreferencesService globalPreferencesService = mock(GlobalPreferencesService.class);
-		WebConfig webConfig = mock(WebConfig.class);
 
 		RestEndpointEntity endpoint = new RestEndpointEntity(routeId, path, url, globalPreferences);
 		endpoints.add(endpoint);
@@ -258,12 +251,12 @@ public class CustomRouteLocatorTest {
 		
 		// When
 		CustomRouteLocator underTest = new CustomRouteLocator(servletPath, properties, restEndpointService,
-				globalPreferencesDefaultSettingsService, globalPreferencesService, webConfig);
+				globalPreferencesDefaultSettingsService, globalPreferencesService);
 		Map<String, ZuulRoute> result = underTest.locateRoutes();
 
 		// Then
 		assertNotNull(result);
-		assertEquals(7, result.size());
+		assertEquals(6, result.size());
 	}
 	
 	/**
@@ -286,7 +279,6 @@ public class CustomRouteLocatorTest {
 		GlobalPreferencesDefaultSettingsService globalPreferencesDefaultSettingsService =
 				mock(GlobalPreferencesDefaultSettingsService.class);
 		GlobalPreferencesService globalPreferencesService = mock(GlobalPreferencesService.class);
-		WebConfig webConfig = mock(WebConfig.class);
 
 		RestEndpointEntity endpoint = new RestEndpointEntity(routeId, path, url, globalPreferences);
 		endpoints.add(endpoint);
@@ -297,12 +289,12 @@ public class CustomRouteLocatorTest {
 		
 		// When
 		CustomRouteLocator underTest = new CustomRouteLocator(servletPath, properties, restEndpointService,
-				globalPreferencesDefaultSettingsService, globalPreferencesService, webConfig);
+				globalPreferencesDefaultSettingsService, globalPreferencesService);
 		Map<String, ZuulRoute> result = underTest.locateRoutes();
 
 		// Then
 		assertNotNull(result);
-		assertEquals(7, result.size());
+		assertEquals(6, result.size());
 	}
 
 	private List<RestEndpointEntity> getDefaultRestEndpoints(){

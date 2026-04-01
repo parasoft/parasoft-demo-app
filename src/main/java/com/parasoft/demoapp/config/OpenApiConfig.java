@@ -11,7 +11,6 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.security.*;
-import io.swagger.v3.oas.models.servers.Server;
 import org.springdoc.core.GroupedOpenApi;
 import org.springdoc.core.SpringDocConfigProperties;
 import org.springdoc.core.customizers.OpenApiCustomiser;
@@ -73,8 +72,7 @@ public class OpenApiConfig {
 					@Override
 					public void customise(OpenAPI openApi) {
 						openApi.info(new Info().title(API_TITLE).version(API_VERSION)
-								.description(configMessages.getString(ConfigMessages.REGULAR_API_DESCRIPTION)))
-                                .servers(List.of(new Server().url("/pda/api")));
+								.description(configMessages.getString(ConfigMessages.REGULAR_API_DESCRIPTION)));
 					}
                 	
                 })
@@ -91,8 +89,7 @@ public class OpenApiConfig {
 					@Override
 					public void customise(OpenAPI openApi) {
 						openApi.info(new Info().title(API_TITLE).version(API_VERSION)
-								.description(configMessages.getString(ConfigMessages.GATEWAY_API_DESCRIPTION)))
-                                .servers(List.of(new Server().url("/pda/api")));
+								.description(configMessages.getString(ConfigMessages.GATEWAY_API_DESCRIPTION)));
 					}
                 	
                 })

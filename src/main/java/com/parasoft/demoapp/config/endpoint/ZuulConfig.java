@@ -1,6 +1,5 @@
 package com.parasoft.demoapp.config.endpoint;
 
-import com.parasoft.demoapp.config.WebConfig;
 import com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService;
 import com.parasoft.demoapp.service.GlobalPreferencesService;
 import com.parasoft.demoapp.service.RestEndpointService;
@@ -18,9 +17,9 @@ public class ZuulConfig {
     @DependsOn("defaultDataInitialization")
     public CustomRouteLocator routeLocator(RestEndpointService restEndpointService,
                                            GlobalPreferencesDefaultSettingsService defaultGlobalPreferencesSettingsService,
-                                           GlobalPreferencesService globalPreferencesService, WebConfig webConfig) {
+                                           GlobalPreferencesService globalPreferencesService) {
 
         return new CustomRouteLocator("/", new ZuulProperties(), restEndpointService,
-                                        defaultGlobalPreferencesSettingsService, globalPreferencesService, webConfig);
+                                        defaultGlobalPreferencesSettingsService, globalPreferencesService);
     }
 }
