@@ -11,6 +11,7 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.security.*;
+import io.swagger.v3.oas.models.servers.Server;
 import org.springdoc.core.GroupedOpenApi;
 import org.springdoc.core.SpringDocConfigProperties;
 import org.springdoc.core.customizers.OpenApiCustomiser;
@@ -22,6 +23,7 @@ import org.springframework.context.annotation.Configuration;
 import com.parasoft.demoapp.messages.ConfigMessages;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Configuration
@@ -38,6 +40,7 @@ public class OpenApiConfig {
         final String basicSchemeName = "basicAuth";
         final String oAuthSchemeName = "oAuth2AuthCode";
         return new OpenAPI()
+                .servers(Collections.singletonList(new Server().url("/")))
                 .addSecurityItem(new SecurityRequirement().addList(basicSchemeName).addList(oAuthSchemeName))
                 .components(
                         new Components()
@@ -73,6 +76,7 @@ public class OpenApiConfig {
 					public void customise(OpenAPI openApi) {
 						openApi.info(new Info().title(API_TITLE).version(API_VERSION)
 								.description(configMessages.getString(ConfigMessages.REGULAR_API_DESCRIPTION)));
+						openApi.servers(Collections.singletonList(new Server().url("/")));
 					}
                 	
                 })
@@ -90,6 +94,7 @@ public class OpenApiConfig {
 					public void customise(OpenAPI openApi) {
 						openApi.info(new Info().title(API_TITLE).version(API_VERSION)
 								.description(configMessages.getString(ConfigMessages.GATEWAY_API_DESCRIPTION)));
+						openApi.servers(Collections.singletonList(new Server().url("/")));
 					}
                 	
                 })
