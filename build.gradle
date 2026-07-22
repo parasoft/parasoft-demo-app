@@ -116,7 +116,7 @@ dependencies {
 	testImplementation 'org.mockito:mockito-junit-jupiter:4.4.0'
 	testImplementation 'org.mockito:mockito-inline:4.4.0'
 	testImplementation 'org.objenesis:objenesis:3.2'
-	testImplementation 'org.opentest4j:opentest4j:1.2.0'
+	testImplementation 'org.opentest4j:opentest4j:1.3.0'
 	testImplementation 'org.javassist:javassist:3.24.0-GA'
 
 	testImplementation 'org.springframework.kafka:spring-kafka-test:2.9.1'
