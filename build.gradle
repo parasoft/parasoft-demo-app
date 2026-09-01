@@ -39,7 +39,7 @@ repositories {
 	mavenCentral()
 }
 
-def grpcVersion = '1.49.0' // GRPC_VERSION
+def grpcVersion = '1.84.0' // GRPC_VERSION
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-activemq'
@@ -194,7 +194,7 @@ protobuf {
 	}
 	plugins {
 		grpc {
-			artifact = 'io.grpc:protoc-gen-grpc-java:1.49.0'
+			artifact = 'io.grpc:protoc-gen-grpc-java:1.84.0'
 		}
 	}
 	generateProtoTasks {
