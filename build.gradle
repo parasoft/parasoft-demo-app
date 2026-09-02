@@ -98,7 +98,7 @@ dependencies {
 	// Jtest
 	testImplementation 'org.apiguardian:apiguardian-api:1.1.2'
 	testImplementation 'net.bytebuddy:byte-buddy:1.12.8'
-	testImplementation 'net.bytebuddy:byte-buddy-agent:1.12.8'
+	testImplementation 'net.bytebuddy:byte-buddy-agent:1.18.12'
 	testImplementation 'org.hamcrest:hamcrest:2.2'
 	testImplementation 'junit:junit:4.13.2'
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
