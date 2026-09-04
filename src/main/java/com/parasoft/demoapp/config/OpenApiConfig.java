@@ -128,18 +128,11 @@ public class OpenApiConfig {
                     // Will not reach here if project is started up successfully
                     throw new RuntimeException(e);
                 }
-                List<String> regionsForCurrentIndustry = new ArrayList<>();
-                List<String> regionsForOtherIndustries = new ArrayList<>();
-                for(RegionType regionType : RegionType.values()) {
-                    if(regionType.getIndustryType() == currentIndustry) {
-                        regionsForCurrentIndustry.add(regionType.name());
-                    } else {
-                        regionsForOtherIndustries.add(regionType.name());
-                    }
+                List<String> regionNames = new ArrayList<>();
+                for (RegionType regionType : RegionType.getRegionsByIndustryType(currentIndustry)) {
+                    regionNames.add(regionType.name());
                 }
-                List<String> reorderedRegions = new ArrayList<>(regionsForCurrentIndustry);
-                reorderedRegions.addAll(regionsForOtherIndustries);
-                schema.setEnum(reorderedRegions);
+                schema.setEnum(regionNames);
             }
             return schema;
         }
