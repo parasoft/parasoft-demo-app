@@ -2,6 +2,7 @@ package com.parasoft.demoapp.config;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -14,15 +15,22 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.springdoc.core.SpringDocConfigProperties;
+import org.springdoc.core.customizers.ParameterCustomizer;
+import org.springframework.core.MethodParameter;
+import org.springframework.data.domain.Pageable;
 
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.parasoft.demoapp.controller.ItemController;
+import com.parasoft.demoapp.controller.LocationController;
 import com.parasoft.demoapp.model.global.preferences.IndustryType;
 import com.parasoft.demoapp.model.industry.RegionType;
 import com.parasoft.demoapp.service.GlobalPreferencesService;
 
 import io.swagger.v3.core.converter.AnnotatedType;
+import io.swagger.v3.oas.models.media.ArraySchema;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
+import io.swagger.v3.oas.models.parameters.Parameter;
 
 @RunWith(Parameterized.class)
 public class OpenApiConfigTest {
@@ -70,5 +78,37 @@ public class OpenApiConfigTest {
 
         assertEquals(expectedRegions, schema.getEnum());
         assertFalse(schema.getEnum().contains(unsupportedRegion));
+    }
+
+    @Test
+    public void customizeParameter_whenLocationRegionParameterIsUsed_returnsOnlySupportedLocations() throws Exception {
+        when(globalPreferencesService.getCurrentIndustry()).thenReturn(activeIndustry);
+        Parameter parameter = new Parameter().schema(new StringSchema());
+        MethodParameter methodParameter = new MethodParameter(
+                LocationController.class.getMethod("getLocation", RegionType.class), 0);
+
+        parameterCustomizer().customize(parameter, methodParameter);
+
+        assertEquals(expectedRegions, parameter.getSchema().getEnum());
+        assertFalse(parameter.getSchema().getEnum().contains(unsupportedRegion));
+    }
+
+    @Test
+    public void customizeParameter_whenItemRegionsParameterIsUsed_returnsOnlySupportedLocations() throws Exception {
+        when(globalPreferencesService.getCurrentIndustry()).thenReturn(activeIndustry);
+        Parameter parameter = new Parameter().schema(new ArraySchema().items(new StringSchema()));
+        MethodParameter methodParameter = new MethodParameter(ItemController.class.getMethod("getItems", Long.class,
+                RegionType[].class, String.class, Pageable.class), 1);
+
+        parameterCustomizer().customize(parameter, methodParameter);
+
+        assertEquals(expectedRegions, parameter.getSchema().getItems().getEnum());
+        assertFalse(parameter.getSchema().getItems().getEnum().contains(unsupportedRegion));
+    }
+
+    private ParameterCustomizer parameterCustomizer() {
+        assertTrue("The schema customizer must also customize endpoint parameters",
+                ParameterCustomizer.class.isAssignableFrom(underTest.getClass()));
+        return (ParameterCustomizer) underTest;
     }
 }

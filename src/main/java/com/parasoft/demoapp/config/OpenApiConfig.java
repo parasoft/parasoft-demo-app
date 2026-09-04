@@ -10,15 +10,18 @@ import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.parameters.Parameter;
 import io.swagger.v3.oas.models.security.*;
 import io.swagger.v3.oas.models.servers.Server;
 import org.springdoc.core.GroupedOpenApi;
 import org.springdoc.core.SpringDocConfigProperties;
 import org.springdoc.core.customizers.OpenApiCustomiser;
+import org.springdoc.core.customizers.ParameterCustomizer;
 import org.springdoc.core.customizers.PropertyCustomizer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.MethodParameter;
 
 import com.parasoft.demoapp.messages.ConfigMessages;
 
@@ -106,7 +109,7 @@ public class OpenApiConfig {
         return new SchemaPropertyCustomizer(globalPreferencesService, springDocConfigProperties);
     }
 
-    public static class SchemaPropertyCustomizer implements PropertyCustomizer {
+    public static class SchemaPropertyCustomizer implements PropertyCustomizer, ParameterCustomizer {
         private final GlobalPreferencesService globalPreferencesService;
         private final SpringDocConfigProperties springDocConfigProperties;
 
@@ -121,20 +124,36 @@ public class OpenApiConfig {
             springDocConfigProperties.getCache().setDisabled(false); // Enable cache to avoid reloading the schema
 
             if (isRegionType(type)) {
-                IndustryType currentIndustry;
-                try {
-                    currentIndustry = globalPreferencesService.getCurrentIndustry();
-                } catch (GlobalPreferencesNotFoundException | GlobalPreferencesMoreThanOneException e) {
-                    // Will not reach here if project is started up successfully
-                    throw new RuntimeException(e);
-                }
-                List<String> regionNames = new ArrayList<>();
-                for (RegionType regionType : RegionType.getRegionsByIndustryType(currentIndustry)) {
-                    regionNames.add(regionType.name());
-                }
-                schema.setEnum(regionNames);
+                schema.setEnum(getRegionNames());
             }
             return schema;
+        }
+
+        @Override
+        public Parameter customize(Parameter parameter, MethodParameter methodParameter) {
+            if (methodParameter.getParameterType() == RegionType.class) {
+                parameter.getSchema().setEnum(getRegionNames());
+            } else if (methodParameter.getParameterType().isArray()
+                    && methodParameter.getParameterType().getComponentType() == RegionType.class) {
+                parameter.getSchema().getItems().setEnum(getRegionNames());
+            }
+            return parameter;
+        }
+
+        private List<String> getRegionNames() {
+            IndustryType currentIndustry;
+            try {
+                currentIndustry = globalPreferencesService.getCurrentIndustry();
+            } catch (GlobalPreferencesNotFoundException | GlobalPreferencesMoreThanOneException e) {
+                // Will not reach here if project is started up successfully
+                throw new RuntimeException(e);
+            }
+
+            List<String> regionNames = new ArrayList<>();
+            for (RegionType regionType : RegionType.getRegionsByIndustryType(currentIndustry)) {
+                regionNames.add(regionType.name());
+            }
+            return regionNames;
         }
 
         private boolean isRegionType(AnnotatedType type) {
