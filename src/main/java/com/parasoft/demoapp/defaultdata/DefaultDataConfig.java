@@ -1,6 +1,7 @@
 package com.parasoft.demoapp.defaultdata;
 
 import com.parasoft.demoapp.repository.global.DatabaseInitResultRepository;
+import com.parasoft.demoapp.graphql.GraphQLProvider;
 import com.parasoft.demoapp.service.GlobalPreferencesService;
 import com.parasoft.demoapp.service.ParasoftJDBCProxyService;
 import org.springframework.context.annotation.Bean;
@@ -19,9 +20,10 @@ public class DefaultDataConfig {
                                                             List<AbstractTablesCreator> tablesCreators,
                                                             List<AbstractDataCreator> dataCreators,
                                                             GlobalPreferencesService globalPreferencesService,
-                                                            ParasoftJDBCProxyService parasoftJDBCProxyService){
+                                                            ParasoftJDBCProxyService parasoftJDBCProxyService,
+                                                            GraphQLProvider graphQLProvider){
 
         return new InitializationEntrance(databaseInitResultRepository, tablesCreators, dataCreators,
-                                          globalPreferencesService, parasoftJDBCProxyService);
+                                          globalPreferencesService, parasoftJDBCProxyService, graphQLProvider);
     }
 }

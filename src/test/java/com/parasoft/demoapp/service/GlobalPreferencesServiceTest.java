@@ -14,6 +14,7 @@ import com.parasoft.demoapp.config.rabbitmq.RabbitMQInventoryRequestQueueListene
 import com.parasoft.demoapp.config.rabbitmq.RabbitMQInventoryResponseQueueListener;
 import com.parasoft.demoapp.dto.GlobalPreferencesDTO;
 import com.parasoft.demoapp.exception.*;
+import com.parasoft.demoapp.graphql.GraphQLProvider;
 import com.parasoft.demoapp.messages.GlobalPreferencesMessages;
 import com.parasoft.demoapp.model.global.preferences.*;
 import com.parasoft.demoapp.repository.global.GlobalPreferencesRepository;
@@ -49,6 +50,9 @@ public class GlobalPreferencesServiceTest {
 
 	@Mock
 	OpenApiConfig.SchemaPropertyCustomizer schemaPropertyCustomizer;
+
+	@Mock
+	GraphQLProvider graphQLProvider;
 
 	@Mock
 	GlobalPreferencesRepository globalPreferencesRepository;
@@ -561,6 +565,7 @@ public class GlobalPreferencesServiceTest {
         assertEquals(globalPreferences.getOrderServiceRabbitMqResponseQueue(), result.getOrderServiceRabbitMqResponseQueue());
 		assertEquals("request.topic", result.getOrderServiceKafkaRequestTopic());
 		assertEquals("response.topic", result.getOrderServiceKafkaResponseTopic());
+		verify(graphQLProvider).onIndustryChange(IndustryType.AEROSPACE);
 	}
 
     /**

@@ -1,5 +1,8 @@
 package com.parasoft.demoapp.graphql;
 
+import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
+import com.parasoft.demoapp.model.global.preferences.IndustryType;
+import com.parasoft.demoapp.model.industry.RegionType;
 import graphql.GraphQL;
 import graphql.execution.AsyncExecutionStrategy;
 import graphql.execution.AsyncSerialExecutionStrategy;
@@ -18,15 +21,25 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
 @Component
 public class GraphQLProvider {
-    private GraphQL graphQL;
+    // The SDL and executable schema must change together when the active skin changes.
+    private final AtomicReference<GraphQLSchemaSnapshot> schemaSnapshot = new AtomicReference<>();
+
+    private static final String REGION_TYPE_VALUES_PLACEHOLDER = "__REGION_TYPE_VALUES__";
+
+    private static final String REGION_TYPE_VALUE_INDENT = "    ";
 
     @Value("classpath:static/schema.graphqls")
     protected Resource graphqlSchemaResource;
+
+    private String schemaTemplate;
 
     private final CategoryGraphQLDataFetcher categoryDataFetcher;
 
@@ -40,14 +53,39 @@ public class GraphQLProvider {
 
     @PostConstruct
     public void init() throws IOException {
-        GraphQLSchema graphQLSchema = buildSchema(graphqlSchemaResource.getInputStream());
-        this.graphQL = GraphQL.newGraphQL(graphQLSchema)
+        try (InputStream schemaInput = graphqlSchemaResource.getInputStream()) {
+            schemaTemplate = new String(schemaInput.readAllBytes(), StandardCharsets.UTF_8);
+        }
+        onIndustryChange(IndustryRoutingDataSource.currentIndustry);
+    }
+
+    public void onIndustryChange(IndustryType industryType) {
+        String schemaDefinition = renderSchemaDefinition(industryType);
+        GraphQLSchema graphQLSchema = buildSchema(schemaDefinition);
+        GraphQL graphQL = GraphQL.newGraphQL(graphQLSchema)
                 .queryExecutionStrategy(new AsyncExecutionStrategy(new CustomDataFetcherExceptionHandler()))
                 .mutationExecutionStrategy(new AsyncSerialExecutionStrategy(new CustomDataFetcherExceptionHandler()))
                 .build();
+        schemaSnapshot.set(new GraphQLSchemaSnapshot(graphQL, schemaDefinition));
+        log.info("Refreshed GraphQL schema for industry {}", industryType);
     }
 
-    private GraphQLSchema buildSchema(InputStream sdl) {
+    public GraphQL getGraphQL() {
+        return schemaSnapshot.get().graphQL;
+    }
+
+    public String getSchemaDefinition() {
+        return schemaSnapshot.get().schemaDefinition;
+    }
+
+    private String renderSchemaDefinition(IndustryType industryType) {
+        String regionTypes = RegionType.getRegionsByIndustryType(industryType).stream()
+                .map(RegionType::name)
+                .collect(Collectors.joining("\n" + REGION_TYPE_VALUE_INDENT));
+        return schemaTemplate.replace(REGION_TYPE_VALUES_PLACEHOLDER, regionTypes);
+    }
+
+    private GraphQLSchema buildSchema(String sdl) {
         TypeDefinitionRegistry typeRegistry = new SchemaParser().parse(sdl);
         RuntimeWiring runtimeWiring = buildWiring();
         SchemaGenerator schemaGenerator = new SchemaGenerator();
@@ -117,6 +155,16 @@ public class GraphQLProvider {
 
     @Bean
     public GraphQL graphQL() {
-        return graphQL;
+        return getGraphQL();
+    }
+
+    private static class GraphQLSchemaSnapshot {
+        private final GraphQL graphQL;
+        private final String schemaDefinition;
+
+        private GraphQLSchemaSnapshot(GraphQL graphQL, String schemaDefinition) {
+            this.graphQL = graphQL;
+            this.schemaDefinition = schemaDefinition;
+        }
     }
 }
