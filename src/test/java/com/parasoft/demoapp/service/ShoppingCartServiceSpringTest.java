@@ -4,9 +4,15 @@
 package com.parasoft.demoapp.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,50 +67,48 @@ public class ShoppingCartServiceSpringTest {
 		CategoryEntity category = null;
 		ItemEntity item = null;
 		Long userId = userService.getUserByUsername(GlobalUsersCreator.USERNAME_PURCHASER).getId();
+		ExecutorService executorService = Executors.newFixedThreadPool(30);
+		CountDownLatch tasksReady = new CountDownLatch(30);
+		CountDownLatch startTasks = new CountDownLatch(1);
+		List<Future<Void>> tasks = new ArrayList<>();
 		try {
 			category = categoryService.addNewCategory("name", "description", "imagePath");
 			item = itemService.addNewItem("name", "description", category.getId(), 30, "imagePath", RegionType.LOCATION_1);
 
 			// When
 			Integer quantity = 1;
-			ExecutorService es = Executors.newCachedThreadPool();
-
 			for(int i = 0; i < 30; i++) {
-				es.submit(new AddCartItemInShoppingCartRunnable(userId, item.getId(), quantity));
+				tasks.add(executorService.submit(() -> {
+					tasksReady.countDown();
+					if (!startTasks.await(30, TimeUnit.SECONDS)) {
+						throw new IllegalStateException("Timed out waiting to start cart updates.");
+					}
+					service.addCartItemInShoppingCart(userId, item.getId(), quantity);
+					return null;
+				}));
 			}
 
-			Thread.sleep(5000);
+			assertTrue("Timed out waiting for concurrent cart updates to be ready.",
+					tasksReady.await(30, TimeUnit.SECONDS));
+			startTasks.countDown();
+			for (Future<Void> task : tasks) {
+				task.get(30, TimeUnit.SECONDS);
+			}
 
 			CartItemEntity cartItemEntity = service.getCartItemByUserIdAndItemId(userId, item.getId());
 
 			// then
 			assertEquals((Integer)30, cartItemEntity.getQuantity());
-		}catch(Exception e){
-			e.printStackTrace();
 		}finally {
-			service.removeCartItemByUserIdAndItemId(userId, item.getId());
-			itemService.removeItemById(item.getId());
-			categoryService.removeCategory(category.getId());
-		}
-	}
-
-	private class AddCartItemInShoppingCartRunnable implements Runnable{
-		private final Integer quantity;
-		private final Long userId;
-		private final Long itemId;
-
-		public AddCartItemInShoppingCartRunnable(Long userId, Long itemId, Integer quantity) {
-			this.quantity = quantity;
-			this.userId = userId;
-			this.itemId = itemId;
-		}
-
-		@Override
-		public void run() {
-			try {
-				service.addCartItemInShoppingCart(userId, itemId, quantity);
-			} catch (Exception e) {
-				e.printStackTrace();
+			startTasks.countDown();
+			executorService.shutdownNow();
+			executorService.awaitTermination(30, TimeUnit.SECONDS);
+			if (item != null) {
+				service.removeCartItemByUserIdAndItemId(userId, item.getId());
+				itemService.removeItemById(item.getId());
+			}
+			if (category != null) {
+				categoryService.removeCategory(category.getId());
 			}
 		}
 	}
