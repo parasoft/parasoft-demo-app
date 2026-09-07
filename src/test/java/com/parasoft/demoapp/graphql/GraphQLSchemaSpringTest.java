@@ -3,6 +3,8 @@ package com.parasoft.demoapp.graphql;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.parasoft.demoapp.model.global.preferences.IndustryType;
+import graphql.language.EnumTypeDefinition;
+import graphql.schema.idl.SchemaParser;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -87,17 +90,12 @@ public class GraphQLSchemaSpringTest {
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
-        String enumBody = schema.substring(schema.indexOf("enum RegionType {") + "enum RegionType {".length(),
-                schema.indexOf("}\n# order", schema.indexOf("enum RegionType {")));
-
-        List<String> values = new ArrayList<>();
-        for (String line : enumBody.split("\\R")) {
-            String value = line.trim();
-            if (!value.isEmpty() && !value.startsWith("#")) {
-                values.add(value);
-            }
-        }
-        return values;
+        EnumTypeDefinition regionTypeDefinition = new SchemaParser().parse(schema)
+                .getType("RegionType", EnumTypeDefinition.class)
+                .orElseThrow(() -> new AssertionError("/schema.graphqls does not define RegionType."));
+        return regionTypeDefinition.getEnumValueDefinitions().stream()
+                .map(value -> value.getName())
+                .collect(Collectors.toList());
     }
 
     private List<String> regionTypeValuesFromIntrospection() throws Exception {

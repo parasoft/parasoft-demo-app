@@ -71,11 +71,19 @@ public class GraphQLProvider {
     }
 
     public GraphQL getGraphQL() {
-        return schemaSnapshot.get().graphQL;
+        return getSchemaSnapshot().graphQL;
     }
 
     public String getSchemaDefinition() {
-        return schemaSnapshot.get().schemaDefinition;
+        return getSchemaSnapshot().schemaDefinition;
+    }
+
+    private GraphQLSchemaSnapshot getSchemaSnapshot() {
+        GraphQLSchemaSnapshot snapshot = schemaSnapshot.get();
+        if (snapshot == null) {
+            throw new IllegalStateException("GraphQL schema has not been initialized yet.");
+        }
+        return snapshot;
     }
 
     private String renderSchemaDefinition(IndustryType industryType) {
