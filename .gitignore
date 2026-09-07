@@ -38,4 +38,3 @@ application.pid
 /pda-files/
 /src/main/resources/META-INF/
 /lib/*.jar
-/docs/superpowers/
