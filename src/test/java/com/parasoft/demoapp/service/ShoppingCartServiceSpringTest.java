@@ -74,6 +74,7 @@ public class ShoppingCartServiceSpringTest {
 		try {
 			category = categoryService.addNewCategory("name", "description", "imagePath");
 			item = itemService.addNewItem("name", "description", category.getId(), 30, "imagePath", RegionType.LOCATION_1);
+			final Long itemId = item.getId();
 
 			// When
 			Integer quantity = 1;
@@ -83,7 +84,7 @@ public class ShoppingCartServiceSpringTest {
 					if (!startTasks.await(30, TimeUnit.SECONDS)) {
 						throw new IllegalStateException("Timed out waiting to start cart updates.");
 					}
-					service.addCartItemInShoppingCart(userId, item.getId(), quantity);
+					service.addCartItemInShoppingCart(userId, itemId, quantity);
 					return null;
 				}));
 			}
