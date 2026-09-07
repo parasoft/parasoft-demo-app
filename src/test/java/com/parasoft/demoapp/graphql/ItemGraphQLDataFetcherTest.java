@@ -449,7 +449,7 @@ public class ItemGraphQLDataFetcherTest {
                 .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
                 .perform(ADD_NEW_ITEM_GRAPHQL_RESOURCE, variables);
 
-        assertError_addNewItem(response, HttpStatus.BAD_REQUEST, AssetMessages.INCORRECT_REGION_IN_CURRENT_INDUSTRY);
+        GraphQLTestUtil.assertInvalidRegionTypeValue(response, RegionType.MERCURY);
     }
 
     @Test
@@ -641,7 +641,7 @@ public class ItemGraphQLDataFetcherTest {
                 .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
                 .perform(UPDATE_ITEM_BY_ITEM_ID_GRAPHQL_RESOURCE, variables);
 
-        assertError_updateItemByItemId(response, HttpStatus.BAD_REQUEST, AssetMessages.INCORRECT_REGION_IN_CURRENT_INDUSTRY);
+        GraphQLTestUtil.assertInvalidRegionTypeValue(response, regionType);
     }
 
     @Test

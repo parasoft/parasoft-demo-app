@@ -99,7 +99,7 @@ public class LocationGraphQLDataFetcherTest {
                 .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
                 .perform(LOCATION_GRAPHQL_RESOURCE, variables);
 
-        assertError_getLocation(response, HttpStatus.NOT_FOUND, OrderMessages.LOCATION_NOT_FOUND);
+        GraphQLTestUtil.assertInvalidRegionTypeValue(response, EARTH);
     }
 
     @Test

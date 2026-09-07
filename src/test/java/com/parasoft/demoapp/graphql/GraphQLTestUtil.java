@@ -2,10 +2,12 @@ package com.parasoft.demoapp.graphql;
 
 import com.graphql.spring.boot.test.GraphQLResponse;
 import com.graphql.spring.boot.test.GraphQLTestError;
+import com.parasoft.demoapp.model.industry.RegionType;
 import com.parasoft.demoapp.service.GlobalPreferencesService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+
+import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,5 +29,17 @@ public class GraphQLTestUtil {
                 })
                 .and()
                 .assertThatField(jsonPathToBeNull).isNull();
+    }
+
+    public static void assertInvalidRegionTypeValue(GraphQLResponse response, RegionType regionType) throws IOException {
+        assertThat(response).isNotNull();
+        assertThat(response.isOk()).isTrue();
+        response.assertThatErrorsField().isNotNull()
+                .asListOf(GraphQLTestError.class)
+                .hasOnlyOneElementSatisfying(error -> assertThat(error.getMessage())
+                        .contains("Invalid input for Enum 'RegionType'")
+                        .contains(regionType.name()))
+                .and();
+        assertThat(response.readTree().has("data")).isFalse();
     }
 }
