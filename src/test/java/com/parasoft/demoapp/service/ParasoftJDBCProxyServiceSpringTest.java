@@ -7,6 +7,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 
+import org.junit.After;
+import org.junit.Assume;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.util.ClassUtils;
 
 import com.parasoft.demoapp.config.ParasoftJDBCProxyConfig;
 import com.parasoft.demoapp.config.datasource.IndustryDataSourceConfig;
@@ -30,6 +34,14 @@ import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
 @DirtiesContext
 public class ParasoftJDBCProxyServiceSpringTest {
 
+	private static final String PARASOFT_JDBC_PROXY_DRIVER_CLASS = "com.parasoft.xtest.jdbc.virt.driver.JDBCProxyDriver";
+
+	private boolean originalUseParasoftJDBCProxy;
+	private boolean originalVirtualizeServerUrlConnected;
+	private String originalVirtualizeServerUrl;
+	private String originalVirtualizeServerPath;
+	private String originalVirtualizeGroupId;
+
 	// Component under test
 	@Autowired
 	ParasoftJDBCProxyService service;
@@ -39,6 +51,28 @@ public class ParasoftJDBCProxyServiceSpringTest {
 
 	@Autowired
 	private IndustryRoutingDataSource industryRoutingDataSource;
+
+	@Before
+	public void requireParasoftJDBCProxyDriver() {
+		originalUseParasoftJDBCProxy = IndustryRoutingDataSource.useParasoftJDBCProxy;
+		originalVirtualizeServerUrlConnected = IndustryRoutingDataSource.isParasoftVirtualizeServerUrlConnected;
+		originalVirtualizeServerUrl = IndustryRoutingDataSource.parasoftVirtualizeServerUrl;
+		originalVirtualizeServerPath = IndustryRoutingDataSource.parasoftVirtualizeServerPath;
+		originalVirtualizeGroupId = IndustryRoutingDataSource.parasoftVirtualizeGroupId;
+
+		// The proxy driver is an optional, user-installed dependency and is not bundled with PDA.
+		Assume.assumeTrue("Parasoft JDBC proxy driver is required for this integration test.",
+				ClassUtils.isPresent(PARASOFT_JDBC_PROXY_DRIVER_CLASS, getClass().getClassLoader()));
+	}
+
+	@After
+	public void restoreParasoftJDBCProxyState() {
+		IndustryRoutingDataSource.useParasoftJDBCProxy = originalUseParasoftJDBCProxy;
+		IndustryRoutingDataSource.isParasoftVirtualizeServerUrlConnected = originalVirtualizeServerUrlConnected;
+		IndustryRoutingDataSource.parasoftVirtualizeServerUrl = originalVirtualizeServerUrl;
+		IndustryRoutingDataSource.parasoftVirtualizeServerPath = originalVirtualizeServerPath;
+		IndustryRoutingDataSource.parasoftVirtualizeGroupId = originalVirtualizeGroupId;
+	}
 
 	/**
 	 * Test for refreshParasoftJDBCProxyDataSource()
