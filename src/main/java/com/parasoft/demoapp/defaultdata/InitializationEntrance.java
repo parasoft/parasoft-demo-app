@@ -3,6 +3,7 @@ package com.parasoft.demoapp.defaultdata;
 import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
 import com.parasoft.demoapp.exception.ParameterException;
 import com.parasoft.demoapp.exception.VirtualizeServerUrlException;
+import com.parasoft.demoapp.graphql.GraphQLProvider;
 import com.parasoft.demoapp.messages.DatabaseOperationMessages;
 import com.parasoft.demoapp.model.global.DatabaseInitResultEntity;
 import com.parasoft.demoapp.model.global.preferences.GlobalPreferencesEntity;
@@ -34,19 +35,23 @@ public class InitializationEntrance {
 
     private ParasoftJDBCProxyService parasoftJDBCProxyService;
 
+    private GraphQLProvider graphQLProvider;
+
     private DatabaseOperationMessages databaseOperationMessages = new DatabaseOperationMessages();
 
     public InitializationEntrance(DatabaseInitResultRepository databaseInitResultRepository,
                                   List<AbstractTablesCreator> tablesCreators,
                                   List<AbstractDataCreator> dataCreators,
                                   GlobalPreferencesService globalPreferencesService,
-                                  ParasoftJDBCProxyService parasoftJDBCProxyService) {
+                                  ParasoftJDBCProxyService parasoftJDBCProxyService,
+                                  GraphQLProvider graphQLProvider) {
 
         this.databaseInitResultRepository = databaseInitResultRepository;
         this.tablesCreators = tablesCreators;
         this.dataCreators = dataCreators;
         this.globalPreferencesService = globalPreferencesService;
         this.parasoftJDBCProxyService = parasoftJDBCProxyService;
+        this.graphQLProvider = graphQLProvider;
     }
 
     /**
@@ -90,6 +95,7 @@ public class InitializationEntrance {
 
         GlobalPreferencesEntity globalPreferences = globalPreferencesService.getCurrentGlobalPreferences();
         IndustryRoutingDataSource.currentIndustry = globalPreferences.getIndustryType();
+        graphQLProvider.onIndustryChange(globalPreferences.getIndustryType());
 
         Boolean useParasoftJDBCProxy = globalPreferences.getUseParasoftJDBCProxy();
         String parasoftVirtualizeServerUrl = globalPreferences.getParasoftVirtualizeServerUrl();

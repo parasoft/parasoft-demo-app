@@ -199,7 +199,7 @@ public class OrderGraphQLDataFetcherTest {
                 .withBasicAuth(purchaser.getUsername(), purchaser.getPassword())
                 .perform(CREATE_ORDER_GRAPHQL_RESOURCE, orderDtoObjectNode);
 
-        assertError_createOrder(response, HttpStatus.BAD_REQUEST, MessageFormat.format(OrderMessages.LOCATION_NOT_FOUND_FOR_REGION, RegionType.UNITED_STATES.toString()));
+        GraphQLTestUtil.assertInvalidRegionTypeValue(response, RegionType.UNITED_STATES);
     }
 
     @Test

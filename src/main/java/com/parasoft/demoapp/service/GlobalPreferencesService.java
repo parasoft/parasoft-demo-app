@@ -18,6 +18,7 @@ import com.parasoft.demoapp.defaultdata.ResetEntrance;
 import com.parasoft.demoapp.dto.GlobalPreferencesDTO;
 import com.parasoft.demoapp.dto.MQPropertiesResponseDTO;
 import com.parasoft.demoapp.exception.*;
+import com.parasoft.demoapp.graphql.GraphQLProvider;
 import com.parasoft.demoapp.messages.GlobalPreferencesMessages;
 import com.parasoft.demoapp.model.global.preferences.*;
 import com.parasoft.demoapp.repository.global.GlobalPreferencesRepository;
@@ -44,6 +45,9 @@ import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsServi
 public class GlobalPreferencesService {
     @Autowired
     private OpenApiConfig.SchemaPropertyCustomizer schemaPropertyCustomizer;
+
+    @Autowired
+    private GraphQLProvider graphQLProvider;
 
     @Autowired
     private GlobalPreferencesRepository globalPreferencesRepository;
@@ -487,6 +491,7 @@ public class GlobalPreferencesService {
     private void switchIndustry(GlobalPreferencesEntity currentPreferences) {
     	IndustryRoutingDataSource.currentIndustry = currentPreferences.getIndustryType();
         schemaPropertyCustomizer.onIndustryChange();
+        graphQLProvider.onIndustryChange(currentPreferences.getIndustryType());
     }
 
     public IndustryType getDefaultIndustry() {
