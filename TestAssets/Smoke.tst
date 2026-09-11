@@ -260,7 +260,6 @@ suite:
                 $type: AllCompositor
                 types:
                 - $type: ElementType
-                  minOccurs: 0
                   localName: industryType
                   bodyType:
                     $type: ComplexType
@@ -289,7 +288,6 @@ suite:
                     compositorObj:
                       $type: SequenceCompositor
                 - $type: ElementType
-                  minOccurs: 0
                   localName: webServiceMode
                   bodyType:
                     $type: ComplexType
@@ -300,7 +298,7 @@ suite:
                       fixed: enum
                       contentType:
                         $type: StringType
-                        _id: 2
+                        _ref: 1
                       required: true
                     content: true
                     contentObj:
@@ -318,7 +316,7 @@ suite:
                   localName: graphQLEndpoint
                   bodyType:
                     $type: ComplexType
-                    _id: 3
+                    _id: 2
                     attributes:
                     - ns: ""
                       name: type
@@ -326,23 +324,22 @@ suite:
                       fixed: string
                       contentType:
                         $type: StringType
-                        _ref: 2
+                        _ref: 1
                       required: true
                     content: true
                     contentObj:
                       $type: StringType
-                      _ref: 2
+                      _ref: 1
                     namespace: urn:parasoft:json
                     name: string
                     compositor: true
                     compositorObj:
                       $type: SequenceCompositor
                 - $type: ElementType
-                  minOccurs: 0
                   localName: advertisingEnabled
                   bodyType:
                     $type: ComplexType
-                    _id: 4
+                    _id: 3
                     attributes:
                     - ns: ""
                       name: type
@@ -350,7 +347,7 @@ suite:
                       fixed: boolean
                       contentType:
                         $type: StringType
-                        _ref: 2
+                        _ref: 1
                       required: true
                     content: true
                     contentObj:
@@ -372,7 +369,7 @@ suite:
                       fixed: array
                       contentType:
                         $type: StringType
-                        _ref: 2
+                        _ref: 1
                       required: true
                     name: /components/schemas/GlobalPreferencesDTO/properties/demoBugs
                     compositor: true
@@ -392,7 +389,7 @@ suite:
                             fixed: enum
                             contentType:
                               $type: StringType
-                              _ref: 2
+                              _ref: 1
                             required: true
                           content: true
                           contentObj:
@@ -412,57 +409,56 @@ suite:
                   localName: categoriesRestEndpoint
                   bodyType:
                     $type: ComplexType
-                    _ref: 3
+                    _ref: 2
                 - $type: ElementType
                   minOccurs: 0
                   localName: itemsRestEndpoint
                   bodyType:
                     $type: ComplexType
-                    _ref: 3
+                    _ref: 2
                 - $type: ElementType
                   minOccurs: 0
                   localName: cartItemsRestEndpoint
                   bodyType:
                     $type: ComplexType
-                    _ref: 3
+                    _ref: 2
                 - $type: ElementType
                   minOccurs: 0
                   localName: ordersRestEndpoint
                   bodyType:
                     $type: ComplexType
-                    _ref: 3
+                    _ref: 2
                 - $type: ElementType
                   minOccurs: 0
                   localName: locationsRestEndpoint
                   bodyType:
                     $type: ComplexType
-                    _ref: 3
+                    _ref: 2
                 - $type: ElementType
                   minOccurs: 0
                   localName: useParasoftJDBCProxy
                   bodyType:
                     $type: ComplexType
-                    _ref: 4
+                    _ref: 3
                 - $type: ElementType
                   minOccurs: 0
                   localName: parasoftVirtualizeServerUrl
                   bodyType:
                     $type: ComplexType
-                    _ref: 3
+                    _ref: 2
                 - $type: ElementType
                   minOccurs: 0
                   localName: parasoftVirtualizeServerPath
                   bodyType:
                     $type: ComplexType
-                    _ref: 3
+                    _ref: 2
                 - $type: ElementType
                   minOccurs: 0
                   localName: parasoftVirtualizeGroupId
                   bodyType:
                     $type: ComplexType
-                    _ref: 3
+                    _ref: 2
                 - $type: ElementType
-                  minOccurs: 0
                   localName: mqType
                   bodyType:
                     $type: ComplexType
@@ -473,7 +469,7 @@ suite:
                       fixed: enum
                       contentType:
                         $type: StringType
-                        _ref: 2
+                        _ref: 1
                       required: true
                     content: true
                     contentObj:
@@ -481,23 +477,22 @@ suite:
                       values:
                       - '"ACTIVE_MQ"'
                       - '"KAFKA"'
+                      - '"RABBIT_MQ"'
                       baseType: anonymous
                     name: /components/schemas/GlobalPreferencesDTO/properties/mqType
                     compositor: true
                     compositorObj:
                       $type: SequenceCompositor
                 - $type: ElementType
-                  minOccurs: 0
                   localName: orderServiceSendTo
                   bodyType:
                     $type: ComplexType
-                    _ref: 3
+                    _ref: 2
                 - $type: ElementType
-                  minOccurs: 0
                   localName: orderServiceListenOn
                   bodyType:
                     $type: ComplexType
-                    _ref: 3
+                    _ref: 2
           replacedColumn: ""
           values:
           - $type: ComplexValue
@@ -523,7 +518,6 @@ suite:
                     values:
                     - $type: ComplexValue
                       replacedColumn: ""
-                      allowArrayExclude: true
                       attributes:
                       - replacedColumn: ""
                         value:
@@ -549,7 +543,6 @@ suite:
                     values:
                     - $type: ComplexValue
                       replacedColumn: ""
-                      allowArrayExclude: true
                       attributes:
                       - replacedColumn: ""
                         value:
@@ -575,7 +568,6 @@ suite:
                     values:
                     - $type: ComplexValue
                       replacedColumn: ""
-                      allowArrayExclude: true
                       attributes:
                       - replacedColumn: ""
                         value:
@@ -800,7 +792,6 @@ suite:
                     values:
                     - $type: ComplexValue
                       replacedColumn: ""
-                      allowArrayExclude: true
                       attributes:
                       - replacedColumn: ""
                         value:
@@ -824,7 +815,6 @@ suite:
                     values:
                     - $type: ComplexValue
                       replacedColumn: ""
-                      allowArrayExclude: true
                       attributes:
                       - replacedColumn: ""
                         value:
@@ -849,7 +839,6 @@ suite:
                     values:
                     - $type: ComplexValue
                       replacedColumn: ""
-                      allowArrayExclude: true
                       attributes:
                       - replacedColumn: ""
                         value:
@@ -1943,11 +1932,11 @@ suite:
                         fixed: string
                         contentType:
                           $type: StringType
-                          _ref: 1
                         required: true
                       content: true
                       contentObj:
                         $type: StringType
+                        _ref: 1
                       namespace: urn:parasoft:json
                       name: string
                       compositor: true
@@ -2110,29 +2099,13 @@ suite:
             writeType: true
             type:
               $type: ElementType
-              defaultValue: UNITED_STATES
+              defaultValue: LOCATION_1
               minOccurs: 0
               maxOccurs: -1
               localName: regions
               bodyType:
                 $type: EnumType
                 values:
-                - UNITED_STATES
-                - UNITED_KINGDOM
-                - GERMANY
-                - FRANCE
-                - JAPAN
-                - SOUTH_KOREA
-                - SPAIN
-                - AUSTRALIA
-                - MERCURY
-                - VENUS
-                - EARTH
-                - MARS
-                - JUPITER
-                - SATURN
-                - URANUS
-                - NEPTUNE
                 - LOCATION_1
                 - LOCATION_2
                 - LOCATION_3
@@ -2472,78 +2445,196 @@ suite:
                 refs:
                 - dataSourceName: ""
                 last: false
-            - "scalar DateTime\r\nscalar Long\r\n\r\ntype Query {\r\n    # category\r\
-              \n    getCategoryById(categoryId: Long!): Category\r\n    getCategoryByName(categoryName:\
-              \ String!): Category\r\n    getCategories(searchString: String, page:\
-              \ Int, size: Int, sort: [String]): CategoryPageInfo\r\n    # location\r\
-              \n    getLocation(region: RegionType!): Location\r\n    getAllRegionTypesOfCurrentIndustry:\
-              \ [RegionType]\r\n    # order\r\n    getOrderByOrderNumber(orderNumber:\
-              \ String!): Order\r\n    getOrders(page: Int, size: Int, sort: [String]):\
-              \ OrderPageInfo\r\n    getUnreviewedNumber: UnreviewedNumberResponse\r\
-              \n    #item\r\n    getItems(categoryId: Long, regions: [RegionType],\
-              \ searchString: String, page: Int, size: Int, sort: [String]): ItemPageInfo\r\
-              \n    getItemByItemId(itemId: Long!): Item\r\n    getItemByName(itemName:\
-              \ String!): Item\r\n    # cartItem\r\n    getCartItems: [CartItem]\r\
-              \n    getCartItemByItemId(itemId: Long!): CartItem\r\n}\r\ntype Mutation\
-              \ {\r\n    # category\r\n    addCategory(categoryDTO: CategoryDTO!):\
-              \ Category\r\n    deleteCategoryById(categoryId: Long!): Int\r\n   \
-              \ updateCategory(categoryId: Long!, categoryDto: CategoryDTO!): Category\r\
-              \n    # order\r\n    createOrder(orderDTO: OrderDTO!): Order\r\n   \
-              \ updateOrderByOrderNumber(orderNumber: String!, orderStatusDTO: OrderStatusDTO!):\
-              \ Order\r\n    #item\r\n    updateItemInStockByItemId(itemId: Long!,\
-              \ newInStock: Int!): Item\r\n    deleteItemByName(itemName: String!):\
-              \ String\r\n    addNewItem(itemsDTO: ItemsDTO!): Item\r\n    deleteItemByItemId(itemId:\
-              \ Long!): Long\r\n    updateItemByItemId(itemId: Long!, itemsDTO: ItemsDTO!):\
-              \ Item\r\n    # cartItem\r\n    addItemInCart(shoppingCartDTO: ShoppingCartDTO!):\
-              \ CartItem\r\n    removeCartItem(itemId: Long!): Long\r\n    removeAllCartItems:\
-              \ Boolean\r\n    updateItemInCart(itemId: Long!, updateShoppingCartItemDTO:\
-              \ UpdateShoppingCartItemDTO!): CartItem\r\n}\r\n\r\n# category\r\ntype\
-              \ Category {\r\n    id: Long\r\n    name: String\r\n    description:\
-              \ String\r\n    image: String\r\n}\r\ntype CategoryPageInfo {\r\n  \
-              \  totalElements: Long\r\n    totalPages: Int\r\n    size: Int\r\n \
-              \   number: Int\r\n    numberOfElements: Int\r\n    sort: String\r\n\
-              \    content: [Category]\r\n}\r\ninput CategoryDTO {\r\n    name: String!\r\
-              \n    description: String!\r\n    imagePath: String\r\n}\r\n# location\r\
-              \ntype Location {\r\n    id: Long\r\n    locationInfo: String\r\n  \
-              \  locationImage: String\r\n}\r\nenum RegionType {\r\n    UNITED_STATES\r\
-              \n    UNITED_KINGDOM\r\n    GERMANY\r\n    FRANCE\r\n    JAPAN\r\n \
-              \   SOUTH_KOREA\r\n    SPAIN\r\n    AUSTRALIA\r\n    MERCURY\r\n   \
-              \ VENUS\r\n    EARTH\r\n    MARS\r\n    JUPITER\r\n    SATURN\r\n  \
-              \  URANUS\r\n    NEPTUNE\r\n    LOCATION_1\r\n    LOCATION_2\r\n   \
-              \ LOCATION_3\r\n    LOCATION_4\r\n    LOCATION_5\r\n    LOCATION_6\r\
-              \n    LOCATION_7\r\n    LOCATION_8\r\n}\r\n# order\r\ntype Order {\r\
-              \n    id: Long\r\n    orderNumber: String\r\n    requestedBy: String\r\
-              \n    status: String\r\n    reviewedByAPV: Boolean\r\n    reviewedByPRCH:\
-              \ Boolean\r\n    respondedBy: String\r\n    orderItems: [OrderItem]\r\
-              \n    region: String\r\n    location: String\r\n    orderImage: String\r\
-              \n    receiverId: String\r\n    eventId: String\r\n    eventNumber:\
-              \ String\r\n    submissionDate: DateTime\r\n    approverReplyDate: DateTime\r\
-              \n    comments: String\r\n}\r\ntype OrderItem {\r\n    id: Long\r\n\
-              \    name: String\r\n    description: String\r\n    image: String\r\n\
-              \    itemId: Long\r\n    quantity: Int\r\n}\r\ninput OrderDTO {\r\n\
-              \    region: RegionType!\r\n    location: String!\r\n    receiverId:\
-              \ String!\r\n    eventId: String!\r\n    eventNumber: String!\r\n}\r\
-              \ntype OrderPageInfo {\r\n    totalElements: Long\r\n    totalPages:\
-              \ Int\r\n    size: Int\r\n    number: Int\r\n    numberOfElements: Int\r\
-              \n    sort: String\r\n    content: [Order]\r\n}\r\ninput OrderStatusDTO\
-              \ {\r\n    status: OrderStatus\r\n    comments: String\r\n    reviewedByPRCH:\
-              \ Boolean\r\n    reviewedByAPV: Boolean\r\n}\r\nenum OrderStatus {\r\
-              \n    SUBMITTED\r\n    PROCESSED\r\n    CANCELED\r\n    APPROVED\r\n\
-              \    DECLINED\r\n}\r\ntype UnreviewedNumberResponse{\r\n    unreviewedByApprover:\
-              \ Int\r\n    unreviewedByPurchaser: Int\r\n}\r\n#item\r\ntype Item {\r\
-              \n    id: Long\r\n    name: String\r\n    description: String\r\n  \
-              \  inStock: Int\r\n    image: String\r\n    region: RegionType\r\n \
-              \   lastAccessedDate: DateTime\r\n    categoryId: Long\r\n}\r\ntype\
-              \ ItemPageInfo {\r\n    totalElements: Long\r\n    totalPages: Int\r\
-              \n    size: Int\r\n    number: Int\r\n    numberOfElements: Int\r\n\
-              \    sort: String\r\n    content: [Item]\r\n}\r\ninput ItemsDTO {\r\n\
-              \    name: String!\r\n    description: String!\r\n    categoryId: Long!\r\
-              \n    inStock: Int!\r\n    imagePath: String\r\n    region: RegionType!\r\
-              \n}\r\n#cartItems\r\ntype CartItem {\r\n    id: Long\r\n    userId:\
-              \ Long\r\n    itemId: Long\r\n    name: String\r\n    description: String\r\
-              \n    image: String\r\n    realInStock: Int\r\n    quantity: Int\r\n\
-              }\r\ninput ShoppingCartDTO {\r\n    itemId: Long!\r\n    itemQty: Int!\r\
-              \n}\r\ninput UpdateShoppingCartItemDTO {\r\n    itemQty: Int!\r\n}"
+            - |
+              scalar DateTime
+              scalar Long
+
+              type Query {
+                  # category
+                  getCategoryById(categoryId: Long!): Category
+                  getCategoryByName(categoryName: String!): Category
+                  getCategories(searchString: String, page: Int, size: Int, sort: [String]): CategoryPageInfo
+                  # location
+                  getLocation(region: RegionType!): Location
+                  getAllRegionTypesOfCurrentIndustry: [RegionType]
+                  # order
+                  getOrderByOrderNumber(orderNumber: String!): Order
+                  getOrders(page: Int, size: Int, sort: [String]): OrderPageInfo
+                  getUnreviewedNumber: UnreviewedNumberResponse
+                  #item
+                  getItems(categoryId: Long, regions: [RegionType], searchString: String, page: Int, size: Int, sort: [String]): ItemPageInfo
+                  getItemByItemId(itemId: Long!): Item
+                  getItemByName(itemName: String!): Item
+                  # cartItem
+                  getCartItems: [CartItem]
+                  getCartItemByItemId(itemId: Long!): CartItem
+              }
+              type Mutation {
+                  # category
+                  addCategory(categoryDTO: CategoryDTO!): Category
+                  deleteCategoryById(categoryId: Long!): Int
+                  updateCategory(categoryId: Long!, categoryDto: CategoryDTO!): Category
+                  # order
+                  createOrder(orderDTO: OrderDTO!): Order
+                  updateOrderByOrderNumber(orderNumber: String!, orderStatusDTO: OrderStatusDTO!): Order
+                  #item
+                  updateItemInStockByItemId(itemId: Long!, newInStock: Int!): Item
+                  deleteItemByName(itemName: String!): String
+                  addNewItem(itemsDTO: ItemsDTO!): Item
+                  deleteItemByItemId(itemId: Long!): Long
+                  updateItemByItemId(itemId: Long!, itemsDTO: ItemsDTO!): Item
+                  # cartItem
+                  addItemInCart(shoppingCartDTO: ShoppingCartDTO!): CartItem
+                  removeCartItem(itemId: Long!): Long
+                  removeAllCartItems: Boolean
+                  updateItemInCart(itemId: Long!, updateShoppingCartItemDTO: UpdateShoppingCartItemDTO!): CartItem
+              }
+
+              # category
+              type Category {
+                  id: Long
+                  name: String
+                  description: String
+                  image: String
+              }
+              type CategoryPageInfo {
+                  totalElements: Long
+                  totalPages: Int
+                  size: Int
+                  number: Int
+                  numberOfElements: Int
+                  sort: String
+                  content: [Category]
+              }
+              input CategoryDTO {
+                  name: String!
+                  description: String!
+                  imagePath: String
+              }
+              # location
+              type Location {
+                  id: Long
+                  locationInfo: String
+                  locationImage: String
+              }
+              enum RegionType {
+                  # Values are generated from the active skin by GraphQLProvider.
+                  LOCATION_1
+                  LOCATION_2
+                  LOCATION_3
+                  LOCATION_4
+                  LOCATION_5
+                  LOCATION_6
+                  LOCATION_7
+                  LOCATION_8
+              }
+              # order
+              type Order {
+                  id: Long
+                  orderNumber: String
+                  requestedBy: String
+                  status: String
+                  reviewedByAPV: Boolean
+                  reviewedByPRCH: Boolean
+                  respondedBy: String
+                  orderItems: [OrderItem]
+                  region: String
+                  location: String
+                  orderImage: String
+                  receiverId: String
+                  eventId: String
+                  eventNumber: String
+                  submissionDate: DateTime
+                  approverReplyDate: DateTime
+                  comments: String
+              }
+              type OrderItem {
+                  id: Long
+                  name: String
+                  description: String
+                  image: String
+                  itemId: Long
+                  quantity: Int
+              }
+              input OrderDTO {
+                  region: RegionType!
+                  location: String!
+                  receiverId: String!
+                  eventId: String!
+                  eventNumber: String!
+              }
+              type OrderPageInfo {
+                  totalElements: Long
+                  totalPages: Int
+                  size: Int
+                  number: Int
+                  numberOfElements: Int
+                  sort: String
+                  content: [Order]
+              }
+              input OrderStatusDTO {
+                  status: OrderStatus
+                  comments: String
+                  reviewedByPRCH: Boolean
+                  reviewedByAPV: Boolean
+              }
+              enum OrderStatus {
+                  SUBMITTED
+                  PROCESSED
+                  CANCELED
+                  APPROVED
+                  DECLINED
+              }
+              type UnreviewedNumberResponse{
+                  unreviewedByApprover: Int
+                  unreviewedByPurchaser: Int
+              }
+              #item
+              type Item {
+                  id: Long
+                  name: String
+                  description: String
+                  inStock: Int
+                  image: String
+                  region: RegionType
+                  lastAccessedDate: DateTime
+                  categoryId: Long
+              }
+              type ItemPageInfo {
+                  totalElements: Long
+                  totalPages: Int
+                  size: Int
+                  number: Int
+                  numberOfElements: Int
+                  sort: String
+                  content: [Item]
+              }
+              input ItemsDTO {
+                  name: String!
+                  description: String!
+                  categoryId: Long!
+                  inStock: Int!
+                  imagePath: String
+                  region: RegionType!
+              }
+              #cartItems
+              type CartItem {
+                  id: Long
+                  userId: Long
+                  itemId: Long
+                  name: String
+                  description: String
+                  image: String
+                  realInStock: Int
+                  quantity: Int
+              }
+              input ShoppingCartDTO {
+                  itemId: Long!
+                  itemQty: Int!
+              }
+              input UpdateShoppingCartItemDTO {
+                  itemQty: Int!
+              }
           mode: 1
         formJson:
           value:
@@ -2787,7 +2878,7 @@ suite:
                               name: type
                               contentType:
                                 $type: StringType
-                                _id: 3
+                                _ref: 2
                               required: true
                             name: anonymous
                             compositor: true
@@ -2833,7 +2924,7 @@ suite:
                                     name: "on"
                                     contentType:
                                       $type: StringType
-                                      _ref: 2
+                                      _id: 3
                                   name: anonymous
                                   compositor: true
                                   compositorObj:
@@ -2870,7 +2961,7 @@ suite:
                                                 name: ref
                                                 contentType:
                                                   $type: StringType
-                                                  _id: 5
+                                                  _ref: 3
                                                 required: true
                                               name: anonymous
                                               compositor: true
@@ -2897,6 +2988,125 @@ suite:
                       attributes:
                       - _ref: 1
                       name: MutationType
+                      compositor: true
+                      compositorObj:
+                        $type: SequenceCompositor
+                        types:
+                        - $type: ElementType
+                          minOccurs: 0
+                          maxOccurs: -1
+                          localName: Variable
+                          bodyType:
+                            $type: ComplexType
+                            attributes:
+                            - _ref: 1
+                            - ns: ""
+                              name: type
+                              contentType:
+                                $type: StringType
+                                _ref: 2
+                              required: true
+                            name: anonymous
+                            compositor: true
+                            compositorObj:
+                              $type: SequenceCompositor
+                              types:
+                              - $type: ElementType
+                                minOccurs: 0
+                                localName: Directives
+                                bodyType:
+                                  $type: ComplexType
+                                  name: anonymous
+                                  compositor: true
+                                  compositorObj:
+                                    $type: AllCompositor
+                        - $type: ElementType
+                          minOccurs: 0
+                          localName: Directives
+                          bodyType:
+                            $type: ComplexType
+                            name: anonymous
+                            compositor: true
+                            compositorObj:
+                              $type: AllCompositor
+                        - $type: ElementType
+                          minOccurs: 0
+                          localName: SelectionSet
+                          bodyType:
+                            $type: ComplexType
+                            name: anonymous
+                            compositor: true
+                            compositorObj:
+                              $type: AllCompositor
+                              types:
+                              - $type: ElementType
+                                minOccurs: 0
+                                maxOccurs: -1
+                                localName: InlineFragment
+                                bodyType:
+                                  $type: ComplexType
+                                  attributes:
+                                  - ns: ""
+                                    name: "on"
+                                    contentType:
+                                      $type: StringType
+                                  name: anonymous
+                                  compositor: true
+                                  compositorObj:
+                                    $type: SequenceCompositor
+                                    types:
+                                    - $type: ElementType
+                                      minOccurs: 0
+                                      localName: Directives
+                                      bodyType:
+                                        $type: ComplexType
+                                        name: anonymous
+                                        compositor: true
+                                        compositorObj:
+                                          $type: AllCompositor
+                                    - $type: ElementType
+                                      minOccurs: 0
+                                      localName: SelectionSet
+                                      bodyType:
+                                        $type: ComplexType
+                                        name: anonymous
+                                        compositor: true
+                                        compositorObj:
+                                          $type: AllCompositor
+                                          types:
+                                          - $type: ElementType
+                                            minOccurs: 0
+                                            maxOccurs: -1
+                                            localName: FragmentSpread
+                                            bodyType:
+                                              $type: ComplexType
+                                              attributes:
+                                              - _ref: 4
+                                              name: anonymous
+                                              compositor: true
+                                              compositorObj:
+                                                $type: AllCompositor
+                              - $type: ElementType
+                                minOccurs: 0
+                                maxOccurs: -1
+                                localName: FragmentSpread
+                                bodyType:
+                                  $type: ComplexType
+                                  attributes:
+                                  - _ref: 4
+                                  name: anonymous
+                                  compositor: true
+                                  compositorObj:
+                                    $type: AllCompositor
+                  - $type: ElementType
+                    minOccurs: 0
+                    maxOccurs: -1
+                    localName: Subscription
+                    bodyType:
+                      $type: ComplexType
+                      attributes:
+                      - _ref: 1
+                      name: SubscriptionType
                       compositor: true
                       compositorObj:
                         $type: SequenceCompositor
@@ -3011,126 +3221,6 @@ suite:
                   - $type: ElementType
                     minOccurs: 0
                     maxOccurs: -1
-                    localName: Subscription
-                    bodyType:
-                      $type: ComplexType
-                      attributes:
-                      - _ref: 1
-                      name: SubscriptionType
-                      compositor: true
-                      compositorObj:
-                        $type: SequenceCompositor
-                        types:
-                        - $type: ElementType
-                          minOccurs: 0
-                          maxOccurs: -1
-                          localName: Variable
-                          bodyType:
-                            $type: ComplexType
-                            attributes:
-                            - _ref: 1
-                            - ns: ""
-                              name: type
-                              contentType:
-                                $type: StringType
-                                _ref: 5
-                              required: true
-                            name: anonymous
-                            compositor: true
-                            compositorObj:
-                              $type: SequenceCompositor
-                              types:
-                              - $type: ElementType
-                                minOccurs: 0
-                                localName: Directives
-                                bodyType:
-                                  $type: ComplexType
-                                  name: anonymous
-                                  compositor: true
-                                  compositorObj:
-                                    $type: AllCompositor
-                        - $type: ElementType
-                          minOccurs: 0
-                          localName: Directives
-                          bodyType:
-                            $type: ComplexType
-                            name: anonymous
-                            compositor: true
-                            compositorObj:
-                              $type: AllCompositor
-                        - $type: ElementType
-                          minOccurs: 0
-                          localName: SelectionSet
-                          bodyType:
-                            $type: ComplexType
-                            name: anonymous
-                            compositor: true
-                            compositorObj:
-                              $type: AllCompositor
-                              types:
-                              - $type: ElementType
-                                minOccurs: 0
-                                maxOccurs: -1
-                                localName: InlineFragment
-                                bodyType:
-                                  $type: ComplexType
-                                  attributes:
-                                  - ns: ""
-                                    name: "on"
-                                    contentType:
-                                      $type: StringType
-                                      _ref: 3
-                                  name: anonymous
-                                  compositor: true
-                                  compositorObj:
-                                    $type: SequenceCompositor
-                                    types:
-                                    - $type: ElementType
-                                      minOccurs: 0
-                                      localName: Directives
-                                      bodyType:
-                                        $type: ComplexType
-                                        name: anonymous
-                                        compositor: true
-                                        compositorObj:
-                                          $type: AllCompositor
-                                    - $type: ElementType
-                                      minOccurs: 0
-                                      localName: SelectionSet
-                                      bodyType:
-                                        $type: ComplexType
-                                        name: anonymous
-                                        compositor: true
-                                        compositorObj:
-                                          $type: AllCompositor
-                                          types:
-                                          - $type: ElementType
-                                            minOccurs: 0
-                                            maxOccurs: -1
-                                            localName: FragmentSpread
-                                            bodyType:
-                                              $type: ComplexType
-                                              attributes:
-                                              - _ref: 4
-                                              name: anonymous
-                                              compositor: true
-                                              compositorObj:
-                                                $type: AllCompositor
-                              - $type: ElementType
-                                minOccurs: 0
-                                maxOccurs: -1
-                                localName: FragmentSpread
-                                bodyType:
-                                  $type: ComplexType
-                                  attributes:
-                                  - _ref: 4
-                                  name: anonymous
-                                  compositor: true
-                                  compositorObj:
-                                    $type: AllCompositor
-                  - $type: ElementType
-                    minOccurs: 0
-                    maxOccurs: -1
                     localName: FragmentDefinition
                     bodyType:
                       $type: ComplexType
@@ -3140,7 +3230,7 @@ suite:
                         name: "on"
                         contentType:
                           $type: StringType
-                          _ref: 2
+                          _id: 5
                         required: true
                       name: FragmentDefinitionType
                       compositor: true
@@ -3177,6 +3267,7 @@ suite:
                                     name: "on"
                                     contentType:
                                       $type: StringType
+                                      _ref: 5
                                   name: anonymous
                                   compositor: true
                                   compositorObj:
@@ -3465,7 +3556,7 @@ suite:
                                 fixed: Boolean!
                                 contentType:
                                   $type: StringType
-                                  _ref: 2
+                                  _id: 4
                                 required: true
                               name: Boolean!
                               compositor: true
@@ -3477,7 +3568,7 @@ suite:
                                   localName: default
                                   bodyType:
                                     $type: ComplexType
-                                    _id: 4
+                                    _id: 5
                                     attributes:
                                     - ns: ""
                                       name: type
@@ -3485,7 +3576,7 @@ suite:
                                       fixed: Boolean
                                       contentType:
                                         $type: StringType
-                                        _id: 5
+                                        _ref: 2
                                       required: true
                                     content: true
                                     contentObj:
@@ -3500,7 +3591,7 @@ suite:
                                 fixed: ID
                                 contentType:
                                   $type: StringType
-                                  _ref: 5
+                                  _ref: 2
                                 required: true
                               name: ID
                               compositor: true
@@ -3521,12 +3612,12 @@ suite:
                                       fixed: String
                                       contentType:
                                         $type: StringType
-                                        _ref: 2
+                                        _id: 8
                                       required: true
                                     content: true
                                     contentObj:
                                       $type: StringType
-                                      _id: 8
+                                      _ref: 4
                                     name: ID
                             - _id: 9
                               attributes:
@@ -3537,7 +3628,7 @@ suite:
                                 fixed: String
                                 contentType:
                                   $type: StringType
-                                  _id: 10
+                                  _ref: 8
                                 required: true
                               name: String
                               compositor: true
@@ -3550,7 +3641,7 @@ suite:
                                   localName: default
                                   bodyType:
                                     $type: ComplexType
-                                    _id: 11
+                                    _id: 10
                                     attributes:
                                     - ns: ""
                                       name: type
@@ -3558,12 +3649,12 @@ suite:
                                       fixed: String
                                       contentType:
                                         $type: StringType
-                                        _ref: 8
+                                        _ref: 4
                                       required: true
                                     content: true
                                     contentObj:
                                       $type: StringType
-                                      _ref: 5
+                                      _ref: 2
                                     name: String
                             isDerived: true
                             isAbstract: true
@@ -3572,7 +3663,7 @@ suite:
                             compositorObj:
                               $type: SequenceCompositor
                         - $type: ElementType
-                          _id: 12
+                          _id: 11
                           localName: SelectionSet
                           bodyType:
                             $type: ComplexType
@@ -3603,7 +3694,7 @@ suite:
                                           $type: AllCompositor
                                           types:
                                           - $type: ElementType
-                                            _id: 13
+                                            _id: 12
                                             minOccurs: 0
                                             localName: include
                                             bodyType:
@@ -3618,7 +3709,7 @@ suite:
                                                   - localName: if
                                                     bodyType:
                                                       $type: ComplexType
-                                                      _id: 14
+                                                      _id: 13
                                                       attributes:
                                                       - ns: ""
                                                         name: type
@@ -3626,19 +3717,18 @@ suite:
                                                         fixed: VarRef
                                                         contentType:
                                                           $type: StringType
-                                                          _ref: 2
                                                         required: true
                                                       content: true
                                                       contentObj:
                                                         $type: StringType
-                                                        _ref: 10
+                                                        _ref: 8
                                                       name: VarRef
                                                   localName: if
                                                   bodyType:
                                                     $type: ComplexType
-                                                    _ref: 4
+                                                    _ref: 5
                                           - $type: ElementType
-                                            _id: 15
+                                            _id: 14
                                             minOccurs: 0
                                             localName: skip
                                             bodyType:
@@ -3653,13 +3743,13 @@ suite:
                                                   - localName: if
                                                     bodyType:
                                                       $type: ComplexType
-                                                      _ref: 14
+                                                      _ref: 13
                                                   localName: if
                                                   bodyType:
                                                     $type: ComplexType
-                                                    _ref: 4
+                                                    _ref: 5
                                     - $type: ElementType
-                                      _ref: 12
+                                      _ref: 11
                               - $type: ElementType
                                 minOccurs: 0
                                 maxOccurs: -1
@@ -3667,12 +3757,12 @@ suite:
                                 bodyType:
                                   $type: ComplexType
                                   attributes:
-                                  - _id: 16
+                                  - _id: 15
                                     ns: ""
                                     name: ref
                                     contentType:
                                       $type: StringType
-                                      _ref: 8
+                                      _ref: 4
                                     required: true
                                   name: anonymous
                                   compositor: true
@@ -3680,21 +3770,21 @@ suite:
                                     $type: AllCompositor
                                     types:
                                     - $type: ElementType
-                                      _ref: 13
+                                      _ref: 12
                                     - $type: ElementType
-                                      _ref: 15
+                                      _ref: 14
                               - $type: ElementType
                                 minOccurs: 0
                                 localName: getCategoryById
                                 bodyType:
                                   $type: ComplexType
                                   attributes:
-                                  - _id: 17
+                                  - _id: 16
                                     ns: ""
                                     name: alias
                                     contentType:
                                       $type: StringType
-                                      _ref: 5
+                                      _ref: 2
                                   name: anonymous
                                   compositor: true
                                   compositorObj:
@@ -3716,7 +3806,7 @@ suite:
                                               localName: categoryId
                                               bodyType:
                                                 $type: ComplexType
-                                                _ref: 14
+                                                _ref: 13
                                             minOccurs: 0
                                             nillable: true
                                             localName: categoryId
@@ -3734,11 +3824,11 @@ suite:
                                           $type: AllCompositor
                                           types:
                                           - $type: ElementType
-                                            _ref: 13
+                                            _ref: 12
                                           - $type: ElementType
-                                            _ref: 15
+                                            _ref: 14
                                     - $type: ElementType
-                                      _id: 18
+                                      _id: 17
                                       localName: SelectionSet
                                       bodyType:
                                         $type: ComplexType
@@ -3769,11 +3859,11 @@ suite:
                                                       $type: AllCompositor
                                                       types:
                                                       - $type: ElementType
-                                                        _ref: 13
+                                                        _ref: 12
                                                       - $type: ElementType
-                                                        _ref: 15
+                                                        _ref: 14
                                                 - $type: ElementType
-                                                  _ref: 18
+                                                  _ref: 17
                                           - $type: ElementType
                                             minOccurs: 0
                                             maxOccurs: -1
@@ -3781,23 +3871,23 @@ suite:
                                             bodyType:
                                               $type: ComplexType
                                               attributes:
-                                              - _ref: 16
+                                              - _ref: 15
                                               name: anonymous
                                               compositor: true
                                               compositorObj:
                                                 $type: AllCompositor
                                                 types:
                                                 - $type: ElementType
-                                                  _ref: 13
+                                                  _ref: 12
                                                 - $type: ElementType
-                                                  _ref: 15
+                                                  _ref: 14
                                           - $type: ElementType
                                             minOccurs: 0
                                             localName: status
                                             bodyType:
                                               $type: ComplexType
                                               attributes:
-                                              - _ref: 17
+                                              - _ref: 16
                                               name: anonymous
                                               compositor: true
                                               compositorObj:
@@ -3814,16 +3904,16 @@ suite:
                                                       $type: AllCompositor
                                                       types:
                                                       - $type: ElementType
-                                                        _ref: 13
+                                                        _ref: 12
                                                       - $type: ElementType
-                                                        _ref: 15
+                                                        _ref: 14
                                           - $type: ElementType
                                             minOccurs: 0
                                             localName: message
                                             bodyType:
                                               $type: ComplexType
                                               attributes:
-                                              - _ref: 17
+                                              - _ref: 16
                                               name: anonymous
                                               compositor: true
                                               compositorObj:
@@ -3840,16 +3930,16 @@ suite:
                                                       $type: AllCompositor
                                                       types:
                                                       - $type: ElementType
-                                                        _ref: 13
+                                                        _ref: 12
                                                       - $type: ElementType
-                                                        _ref: 15
+                                                        _ref: 14
                                           - $type: ElementType
                                             minOccurs: 0
                                             localName: data
                                             bodyType:
                                               $type: ComplexType
                                               attributes:
-                                              - _ref: 17
+                                              - _ref: 16
                                               name: anonymous
                                               compositor: true
                                               compositorObj:
@@ -3866,11 +3956,11 @@ suite:
                                                       $type: AllCompositor
                                                       types:
                                                       - $type: ElementType
-                                                        _ref: 13
+                                                        _ref: 12
                                                       - $type: ElementType
-                                                        _ref: 15
+                                                        _ref: 14
                                                 - $type: ElementType
-                                                  _id: 19
+                                                  _id: 18
                                                   localName: SelectionSet
                                                   bodyType:
                                                     $type: ComplexType
@@ -3901,11 +3991,11 @@ suite:
                                                                   $type: AllCompositor
                                                                   types:
                                                                   - $type: ElementType
-                                                                    _ref: 13
+                                                                    _ref: 12
                                                                   - $type: ElementType
-                                                                    _ref: 15
+                                                                    _ref: 14
                                                             - $type: ElementType
-                                                              _ref: 19
+                                                              _ref: 18
                                                       - $type: ElementType
                                                         minOccurs: 0
                                                         maxOccurs: -1
@@ -3913,23 +4003,23 @@ suite:
                                                         bodyType:
                                                           $type: ComplexType
                                                           attributes:
-                                                          - _ref: 16
+                                                          - _ref: 15
                                                           name: anonymous
                                                           compositor: true
                                                           compositorObj:
                                                             $type: AllCompositor
                                                             types:
                                                             - $type: ElementType
-                                                              _ref: 13
+                                                              _ref: 12
                                                             - $type: ElementType
-                                                              _ref: 15
+                                                              _ref: 14
                                                       - $type: ElementType
                                                         minOccurs: 0
                                                         localName: id
                                                         bodyType:
                                                           $type: ComplexType
                                                           attributes:
-                                                          - _ref: 17
+                                                          - _ref: 16
                                                           name: anonymous
                                                           compositor: true
                                                           compositorObj:
@@ -3946,16 +4036,16 @@ suite:
                                                                   $type: AllCompositor
                                                                   types:
                                                                   - $type: ElementType
-                                                                    _ref: 13
+                                                                    _ref: 12
                                                                   - $type: ElementType
-                                                                    _ref: 15
+                                                                    _ref: 14
                                                       - $type: ElementType
                                                         minOccurs: 0
                                                         localName: name
                                                         bodyType:
                                                           $type: ComplexType
                                                           attributes:
-                                                          - _ref: 17
+                                                          - _ref: 16
                                                           name: anonymous
                                                           compositor: true
                                                           compositorObj:
@@ -3972,16 +4062,16 @@ suite:
                                                                   $type: AllCompositor
                                                                   types:
                                                                   - $type: ElementType
-                                                                    _ref: 13
+                                                                    _ref: 12
                                                                   - $type: ElementType
-                                                                    _ref: 15
+                                                                    _ref: 14
                                                       - $type: ElementType
                                                         minOccurs: 0
                                                         localName: description
                                                         bodyType:
                                                           $type: ComplexType
                                                           attributes:
-                                                          - _ref: 17
+                                                          - _ref: 16
                                                           name: anonymous
                                                           compositor: true
                                                           compositorObj:
@@ -3998,16 +4088,16 @@ suite:
                                                                   $type: AllCompositor
                                                                   types:
                                                                   - $type: ElementType
-                                                                    _ref: 13
+                                                                    _ref: 12
                                                                   - $type: ElementType
-                                                                    _ref: 15
+                                                                    _ref: 14
                                                       - $type: ElementType
                                                         minOccurs: 0
                                                         localName: image
                                                         bodyType:
                                                           $type: ComplexType
                                                           attributes:
-                                                          - _ref: 17
+                                                          - _ref: 16
                                                           name: anonymous
                                                           compositor: true
                                                           compositorObj:
@@ -4024,16 +4114,16 @@ suite:
                                                                   $type: AllCompositor
                                                                   types:
                                                                   - $type: ElementType
-                                                                    _ref: 13
+                                                                    _ref: 12
                                                                   - $type: ElementType
-                                                                    _ref: 15
+                                                                    _ref: 14
                               - $type: ElementType
                                 minOccurs: 0
                                 localName: getCategoryByName
                                 bodyType:
                                   $type: ComplexType
                                   attributes:
-                                  - _ref: 17
+                                  - _ref: 16
                                   name: anonymous
                                   compositor: true
                                   compositorObj:
@@ -4055,13 +4145,13 @@ suite:
                                               localName: categoryName
                                               bodyType:
                                                 $type: ComplexType
-                                                _ref: 14
+                                                _ref: 13
                                             minOccurs: 0
                                             nillable: true
                                             localName: categoryName
                                             bodyType:
                                               $type: ComplexType
-                                              _ref: 11
+                                              _ref: 10
                                     - $type: ElementType
                                       minOccurs: 0
                                       localName: Directives
@@ -4073,18 +4163,18 @@ suite:
                                           $type: AllCompositor
                                           types:
                                           - $type: ElementType
-                                            _ref: 13
+                                            _ref: 12
                                           - $type: ElementType
-                                            _ref: 15
+                                            _ref: 14
                                     - $type: ElementType
-                                      _ref: 19
+                                      _ref: 18
                               - $type: ElementType
                                 minOccurs: 0
                                 localName: getCategories
                                 bodyType:
                                   $type: ComplexType
                                   attributes:
-                                  - _ref: 17
+                                  - _ref: 16
                                   name: anonymous
                                   compositor: true
                                   compositorObj:
@@ -4101,11 +4191,11 @@ suite:
                                           $type: AllCompositor
                                           types:
                                           - $type: ElementType
-                                            _ref: 13
+                                            _ref: 12
                                           - $type: ElementType
-                                            _ref: 15
+                                            _ref: 14
                                     - $type: ElementType
-                                      _id: 20
+                                      _id: 19
                                       localName: SelectionSet
                                       bodyType:
                                         $type: ComplexType
@@ -4136,11 +4226,11 @@ suite:
                                                       $type: AllCompositor
                                                       types:
                                                       - $type: ElementType
-                                                        _ref: 13
+                                                        _ref: 12
                                                       - $type: ElementType
-                                                        _ref: 15
+                                                        _ref: 14
                                                 - $type: ElementType
-                                                  _ref: 20
+                                                  _ref: 19
                                           - $type: ElementType
                                             minOccurs: 0
                                             maxOccurs: -1
@@ -4148,23 +4238,23 @@ suite:
                                             bodyType:
                                               $type: ComplexType
                                               attributes:
-                                              - _ref: 16
+                                              - _ref: 15
                                               name: anonymous
                                               compositor: true
                                               compositorObj:
                                                 $type: AllCompositor
                                                 types:
                                                 - $type: ElementType
-                                                  _ref: 13
+                                                  _ref: 12
                                                 - $type: ElementType
-                                                  _ref: 15
+                                                  _ref: 14
                                           - $type: ElementType
                                             minOccurs: 0
                                             localName: totalElements
                                             bodyType:
                                               $type: ComplexType
                                               attributes:
-                                              - _ref: 17
+                                              - _ref: 16
                                               name: anonymous
                                               compositor: true
                                               compositorObj:
@@ -4181,16 +4271,16 @@ suite:
                                                       $type: AllCompositor
                                                       types:
                                                       - $type: ElementType
-                                                        _ref: 13
+                                                        _ref: 12
                                                       - $type: ElementType
-                                                        _ref: 15
+                                                        _ref: 14
                                           - $type: ElementType
                                             minOccurs: 0
                                             localName: totalPages
                                             bodyType:
                                               $type: ComplexType
                                               attributes:
-                                              - _ref: 17
+                                              - _ref: 16
                                               name: anonymous
                                               compositor: true
                                               compositorObj:
@@ -4207,16 +4297,16 @@ suite:
                                                       $type: AllCompositor
                                                       types:
                                                       - $type: ElementType
-                                                        _ref: 13
+                                                        _ref: 12
                                                       - $type: ElementType
-                                                        _ref: 15
+                                                        _ref: 14
                                           - $type: ElementType
                                             minOccurs: 0
                                             localName: size
                                             bodyType:
                                               $type: ComplexType
                                               attributes:
-                                              - _ref: 17
+                                              - _ref: 16
                                               name: anonymous
                                               compositor: true
                                               compositorObj:
@@ -4233,16 +4323,16 @@ suite:
                                                       $type: AllCompositor
                                                       types:
                                                       - $type: ElementType
-                                                        _ref: 13
+                                                        _ref: 12
                                                       - $type: ElementType
-                                                        _ref: 15
+                                                        _ref: 14
                                           - $type: ElementType
                                             minOccurs: 0
                                             localName: number
                                             bodyType:
                                               $type: ComplexType
                                               attributes:
-                                              - _ref: 17
+                                              - _ref: 16
                                               name: anonymous
                                               compositor: true
                                               compositorObj:
@@ -4259,16 +4349,16 @@ suite:
                                                       $type: AllCompositor
                                                       types:
                                                       - $type: ElementType
-                                                        _ref: 13
+                                                        _ref: 12
                                                       - $type: ElementType
-                                                        _ref: 15
+                                                        _ref: 14
                                           - $type: ElementType
                                             minOccurs: 0
                                             localName: numberOfElements
                                             bodyType:
                                               $type: ComplexType
                                               attributes:
-                                              - _ref: 17
+                                              - _ref: 16
                                               name: anonymous
                                               compositor: true
                                               compositorObj:
@@ -4285,16 +4375,16 @@ suite:
                                                       $type: AllCompositor
                                                       types:
                                                       - $type: ElementType
-                                                        _ref: 13
+                                                        _ref: 12
                                                       - $type: ElementType
-                                                        _ref: 15
+                                                        _ref: 14
                                           - $type: ElementType
                                             minOccurs: 0
                                             localName: sort
                                             bodyType:
                                               $type: ComplexType
                                               attributes:
-                                              - _ref: 17
+                                              - _ref: 16
                                               name: anonymous
                                               compositor: true
                                               compositorObj:
@@ -4311,16 +4401,16 @@ suite:
                                                       $type: AllCompositor
                                                       types:
                                                       - $type: ElementType
-                                                        _ref: 13
+                                                        _ref: 12
                                                       - $type: ElementType
-                                                        _ref: 15
+                                                        _ref: 14
                                           - $type: ElementType
                                             minOccurs: 0
                                             localName: content
                                             bodyType:
                                               $type: ComplexType
                                               attributes:
-                                              - _ref: 17
+                                              - _ref: 16
                                               name: anonymous
                                               compositor: true
                                               compositorObj:
@@ -4337,11 +4427,11 @@ suite:
                                                       $type: AllCompositor
                                                       types:
                                                       - $type: ElementType
-                                                        _ref: 13
+                                                        _ref: 12
                                                       - $type: ElementType
-                                                        _ref: 15
+                                                        _ref: 14
                                                 - $type: ElementType
-                                                  _ref: 19
+                                                  _ref: 18
                   - $type: ElementType
                     minOccurs: 0
                     maxOccurs: -1
@@ -4371,7 +4461,7 @@ suite:
                                 fixed: CategoryDTO
                                 contentType:
                                   $type: StringType
-                                  _ref: 2
+                                  _id: 20
                                 required: true
                               name: CategoryDTO
                               compositor: true
@@ -4392,7 +4482,7 @@ suite:
                                       fixed: Object
                                       contentType:
                                         $type: StringType
-                                        _id: 22
+                                        _ref: 20
                                       required: true
                                     name: CategoryDTO
                                     compositor: true
@@ -4405,39 +4495,39 @@ suite:
                                           localName: name
                                           bodyType:
                                             $type: ComplexType
-                                            _ref: 14
+                                            _ref: 13
                                         minOccurs: 0
                                         nillable: true
                                         localName: name
                                         bodyType:
                                           $type: ComplexType
-                                          _ref: 11
+                                          _ref: 10
                                       - $type: ElementType
                                         concretes:
                                         - nillable: true
                                           localName: description
                                           bodyType:
                                             $type: ComplexType
-                                            _ref: 14
+                                            _ref: 13
                                         minOccurs: 0
                                         nillable: true
                                         localName: description
                                         bodyType:
                                           $type: ComplexType
-                                          _ref: 11
+                                          _ref: 10
                                       - $type: ElementType
                                         concretes:
                                         - nillable: true
                                           localName: imagePath
                                           bodyType:
                                             $type: ComplexType
-                                            _ref: 14
+                                            _ref: 13
                                         minOccurs: 0
                                         nillable: true
                                         localName: imagePath
                                         bodyType:
                                           $type: ComplexType
-                                          _ref: 11
+                                          _ref: 10
                             - _ref: 6
                             - _ref: 9
                             isDerived: true
@@ -4447,7 +4537,7 @@ suite:
                             compositorObj:
                               $type: SequenceCompositor
                         - $type: ElementType
-                          _id: 23
+                          _id: 22
                           localName: SelectionSet
                           bodyType:
                             $type: ComplexType
@@ -4478,11 +4568,11 @@ suite:
                                           $type: AllCompositor
                                           types:
                                           - $type: ElementType
-                                            _ref: 13
+                                            _ref: 12
                                           - $type: ElementType
-                                            _ref: 15
+                                            _ref: 14
                                     - $type: ElementType
-                                      _ref: 23
+                                      _ref: 22
                               - $type: ElementType
                                 minOccurs: 0
                                 maxOccurs: -1
@@ -4490,23 +4580,23 @@ suite:
                                 bodyType:
                                   $type: ComplexType
                                   attributes:
-                                  - _ref: 16
+                                  - _ref: 15
                                   name: anonymous
                                   compositor: true
                                   compositorObj:
                                     $type: AllCompositor
                                     types:
                                     - $type: ElementType
-                                      _ref: 13
+                                      _ref: 12
                                     - $type: ElementType
-                                      _ref: 15
+                                      _ref: 14
                               - $type: ElementType
                                 minOccurs: 0
                                 localName: updateCategory
                                 bodyType:
                                   $type: ComplexType
                                   attributes:
-                                  - _ref: 17
+                                  - _ref: 16
                                   name: anonymous
                                   compositor: true
                                   compositorObj:
@@ -4528,7 +4618,7 @@ suite:
                                               localName: categoryId
                                               bodyType:
                                                 $type: ComplexType
-                                                _ref: 14
+                                                _ref: 13
                                             minOccurs: 0
                                             nillable: true
                                             localName: categoryId
@@ -4541,7 +4631,7 @@ suite:
                                               localName: categoryDto
                                               bodyType:
                                                 $type: ComplexType
-                                                _ref: 14
+                                                _ref: 13
                                             minOccurs: 0
                                             nillable: true
                                             localName: categoryDto
@@ -4559,11 +4649,11 @@ suite:
                                           $type: AllCompositor
                                           types:
                                           - $type: ElementType
-                                            _ref: 13
+                                            _ref: 12
                                           - $type: ElementType
-                                            _ref: 15
+                                            _ref: 14
                                     - $type: ElementType
-                                      _ref: 19
+                                      _ref: 18
                   - $type: ElementType
                     minOccurs: 0
                     maxOccurs: -1
@@ -4578,44 +4668,10 @@ suite:
                           fixed: Category
                           contentType:
                             $type: StringType
-                            _ref: 22
+                            _ref: 20
                           required: true
                         - _ref: 1
                         name: Category
-                        compositor: true
-                        compositorObj:
-                          $type: SequenceCompositor
-                          types:
-                          - $type: ElementType
-                            _ref: 19
-                      - attributes:
-                        - ns: ""
-                          name: "on"
-                          defaultValue: CategoryPageInfo
-                          fixed: CategoryPageInfo
-                          contentType:
-                            $type: StringType
-                            _ref: 22
-                          required: true
-                        - _ref: 1
-                        name: CategoryPageInfo
-                        compositor: true
-                        compositorObj:
-                          $type: SequenceCompositor
-                          types:
-                          - $type: ElementType
-                            _ref: 20
-                      - attributes:
-                        - ns: ""
-                          name: "on"
-                          defaultValue: CategoryResult
-                          fixed: CategoryResult
-                          contentType:
-                            $type: StringType
-                            _ref: 22
-                          required: true
-                        - _ref: 1
-                        name: CategoryResult
                         compositor: true
                         compositorObj:
                           $type: SequenceCompositor
@@ -4625,11 +4681,45 @@ suite:
                       - attributes:
                         - ns: ""
                           name: "on"
+                          defaultValue: CategoryPageInfo
+                          fixed: CategoryPageInfo
+                          contentType:
+                            $type: StringType
+                            _ref: 20
+                          required: true
+                        - _ref: 1
+                        name: CategoryPageInfo
+                        compositor: true
+                        compositorObj:
+                          $type: SequenceCompositor
+                          types:
+                          - $type: ElementType
+                            _ref: 19
+                      - attributes:
+                        - ns: ""
+                          name: "on"
+                          defaultValue: CategoryResult
+                          fixed: CategoryResult
+                          contentType:
+                            $type: StringType
+                            _ref: 20
+                          required: true
+                        - _ref: 1
+                        name: CategoryResult
+                        compositor: true
+                        compositorObj:
+                          $type: SequenceCompositor
+                          types:
+                          - $type: ElementType
+                            _ref: 17
+                      - attributes:
+                        - ns: ""
+                          name: "on"
                           defaultValue: Mutation
                           fixed: Mutation
                           contentType:
                             $type: StringType
-                            _ref: 22
+                            _ref: 20
                           required: true
                         - _ref: 1
                         name: Mutation
@@ -4638,7 +4728,7 @@ suite:
                           $type: SequenceCompositor
                           types:
                           - $type: ElementType
-                            _ref: 23
+                            _ref: 22
                       - attributes:
                         - ns: ""
                           name: "on"
@@ -4646,7 +4736,7 @@ suite:
                           fixed: Query
                           contentType:
                             $type: StringType
-                            _ref: 22
+                            _ref: 20
                           required: true
                         - _ref: 1
                         name: Query
@@ -4655,7 +4745,7 @@ suite:
                           $type: SequenceCompositor
                           types:
                           - $type: ElementType
-                            _ref: 12
+                            _ref: 11
                       isDerived: true
                       isAbstract: true
                       name: anonymous
@@ -6073,10 +6163,60 @@ suite:
               configs:
               - $type: CustomTransportConfigurationImpl
                 ConfigClassName: com.parasoft.soavirt.transport.websocket.WebSocketTransport
+                values:
+                  customValueMap:
+                  - connectionId
+                  - $type: MultiValueCustomValue
+                  - connectionTimeout
+                  - $type: MultiValueCustomValue
+                  - frame_type
+                  - $type: MultiValueCustomValue
+                  - httpHeader1
+                  - $type: MultiValueCustomValue
+                  - httpHeader10
+                  - $type: MultiValueCustomValue
+                  - httpHeader2
+                  - $type: MultiValueCustomValue
+                  - httpHeader3
+                  - $type: MultiValueCustomValue
+                  - httpHeader4
+                  - $type: MultiValueCustomValue
+                  - httpHeader5
+                  - $type: MultiValueCustomValue
+                  - httpHeader6
+                  - $type: MultiValueCustomValue
+                  - httpHeader7
+                  - $type: MultiValueCustomValue
+                  - httpHeader8
+                  - $type: MultiValueCustomValue
+                  - httpHeader9
+                  - $type: MultiValueCustomValue
+                  - log_level
+                  - $type: MultiValueCustomValue
+                  - mode
+                  - $type: MultiValueCustomValue
+                  - readTimeout
+                  - $type: MultiValueCustomValue
+                  - responseFormat
+                  - $type: MultiValueCustomValue
+                  - uri
+                  - $type: MultiValueCustomValue
+                  - xpath
+                  - $type: MultiValueCustomValue
                 className: com.parasoft.soavirt.transport.websocket.WebSocketTransport
                 name: WebSocket
               - $type: CustomTransportConfigurationImpl
                 ConfigClassName: com.parasoft.soavirt.transport.someip.SomeIpTransport
+                values:
+                  customValueMap:
+                  - application_name
+                  - $type: MultiValueCustomValue
+                  - ecu_name
+                  - $type: MultiValueCustomValue
+                  - log_level
+                  - $type: MultiValueCustomValue
+                  - operation
+                  - $type: MultiValueCustomValue
                 className: com.parasoft.soavirt.transport.someip.SomeIpTransport
                 name: SOME/IP
               - $type: CustomTransportConfigurationImpl
