@@ -85,7 +85,7 @@ dependencies {
 
 	implementation 'org.springdoc:springdoc-openapi-webmvc-core:1.6.13'
 	implementation 'org.springdoc:springdoc-openapi-ui:1.6.13'
-	implementation 'org.springdoc:springdoc-openapi-data-rest:1.6.13'
+	implementation 'org.springdoc:springdoc-openapi-data-rest:1.8.0'
 
 	//gRPC
 	implementation 'net.devh:grpc-spring-boot-starter:2.13.1.RELEASE'
