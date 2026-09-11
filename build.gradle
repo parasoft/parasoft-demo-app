@@ -88,7 +88,7 @@ dependencies {
 	implementation 'org.springdoc:springdoc-openapi-data-rest:1.6.13'
 
 	//gRPC
-	implementation 'net.devh:grpc-spring-boot-starter:2.13.1.RELEASE'
+	implementation 'net.devh:grpc-spring-boot-starter:2.15.0.RELEASE'
 	implementation "io.grpc:grpc-protobuf:${grpcVersion}"
 	implementation "io.grpc:grpc-stub:${grpcVersion}"
 
