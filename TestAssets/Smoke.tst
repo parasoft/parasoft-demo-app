@@ -86,7 +86,7 @@ suite:
       serviceInfo:
         serviceDescriptor:
           $type: StandardServiceDescriptor
-          location: http://localhost:8080/pda/api-docs/v1
+          location: http://localhost:8080/api-docs/v1
       jsonBuilder:
         hasValue: true
         value:
@@ -863,7 +863,7 @@ suite:
       serviceInfo:
         serviceDescriptor:
           $type: StandardServiceDescriptor
-          location: http://localhost:8080/pda/api-docs/v1
+          location: http://localhost:8080/api-docs/v1
       jsonBuilder:
         hasValue: true
         value:
@@ -1078,7 +1078,7 @@ suite:
       serviceInfo:
         serviceDescriptor:
           $type: StandardServiceDescriptor
-          location: http://localhost:8080/pda/api-docs/v1
+          location: http://localhost:8080/api-docs/v1
       jsonBuilder:
         hasValue: true
         value:
@@ -1984,7 +1984,7 @@ suite:
         serviceInfo:
           serviceDescriptor:
             $type: StandardServiceDescriptor
-            location: http://localhost:8080/pda/api-docs/v1
+            location: http://localhost:8080/api-docs/v1
         jsonBuilder:
           hasValue: true
           value:
@@ -2259,7 +2259,7 @@ suite:
         serviceInfo:
           serviceDescriptor:
             $type: StandardServiceDescriptor
-            location: http://localhost:8080/pda/api-docs/v1
+            location: http://localhost:8080/api-docs/v1
         jsonBuilder:
           hasValue: true
           value:
@@ -5304,7 +5304,7 @@ suite:
         serviceInfo:
           serviceDescriptor:
             $type: StandardServiceDescriptor
-            location: http://localhost:8080/pda/api-docs/v1
+            location: http://localhost:8080/api-docs/v1
         jsonBuilder:
           hasValue: true
           value:
@@ -6368,7 +6368,7 @@ suite:
         serviceInfo:
           serviceDescriptor:
             $type: StandardServiceDescriptor
-            location: http://localhost:8080/pda/api-docs/v1
+            location: http://localhost:8080/api-docs/v1
         jsonBuilder:
           hasValue: true
           value:
@@ -6620,7 +6620,7 @@ suite:
         serviceInfo:
           serviceDescriptor:
             $type: StandardServiceDescriptor
-            location: http://localhost:8080/pda/api-docs/v1
+            location: http://localhost:8080/api-docs/v1
         jsonBuilder:
           hasValue: true
           value:
