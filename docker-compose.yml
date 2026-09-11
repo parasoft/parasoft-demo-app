@@ -67,7 +67,7 @@ services:
       - rabbitmq
   keycloak:
     # https://github.com/keycloak/keycloak/blob/447364076adb84b62d0d5db38502a02774b0254d/docs/guides/src/main/server/containers.adoc
-    image: quay.io/keycloak/keycloak:20.0.3
+    image: quay.io/keycloak/keycloak:26.7.3
     ports:
       - "${KEYCLOAK_HOST_PORT:-8081}:8080"
     volumes:
