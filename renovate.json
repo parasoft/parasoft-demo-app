@@ -1,3 +1,56 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json"
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "packageRules": [
+    {
+      "description": "Keep Spring Boot on the Java 11 compatible 2.x line",
+      "matchPackageNames": ["org.springframework.boot"],
+      "allowedVersions": "<3.0.0"
+    },
+    {
+      "description": "Keep Spring Cloud on the Hoxton release train",
+      "matchPackageNames": ["org.springframework.cloud:spring-cloud-dependencies"],
+      "allowedVersions": "/^Hoxton\\./"
+    },
+    {
+      "description": "Keep Spring Kafka on the Java 11 compatible 2.x line",
+      "matchPackageNames": [
+        "org.springframework.kafka:spring-kafka",
+        "org.springframework.kafka:spring-kafka-test"
+      ],
+      "allowedVersions": "<3.0.0"
+    },
+    {
+      "description": "Keep JUnit on the Java 11 compatible 5.x line",
+      "matchPackageNames": [
+        "junit:junit",
+        "org.junit.jupiter:**",
+        "org.junit.platform:**",
+        "org.junit.vintage:**"
+      ],
+      "allowedVersions": "<6.0.0"
+    },
+    {
+      "description": "Keep the gRPC Spring Boot starter on the Java 11 compatible 2.x line",
+      "matchPackageNames": ["net.devh:grpc-spring-boot-starter"],
+      "allowedVersions": "<3.0.0"
+    },
+    {
+      "description": "Keep Gradle below the Spring Boot 2.3 compatibility boundary",
+      "matchDatasources": ["gradle-version"],
+      "matchPackageNames": ["gradle"],
+      "allowedVersions": "<7.0.0"
+    },
+    {
+      "description": "Keep Keycloak on the Java 11 compatible 20.x line",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["quay.io/keycloak/keycloak"],
+      "allowedVersions": "<21.0.0"
+    },
+    {
+      "description": "Keep RabbitMQ below the 4.x compatibility boundary",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["rabbitmq"],
+      "allowedVersions": "<4.0.0"
+    }
+  ]
 }
