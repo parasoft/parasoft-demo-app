@@ -18,7 +18,9 @@ services:
       # Uncomment if application.properties needs to be customized. Create a config folder and put customized application.properties file in it.
       # - "./config/application.properties:/usr/local/tomcat/data/config/application.properties:ro"
     environment:
+      # Work around the OpenJDK 11.0.16 cgroup-v2 metrics defect; the base-image upgrade belongs to PDA-1542.
       JAVA_OPTS: >-
+        -XX:-UseContainerSupport
         -Dspring.kafka.bootstrap-servers=kafka:9092
         -Dspring.rabbitmq.host=rabbitmq -Dspring.rabbitmq.username=admin -Dspring.rabbitmq.password=admin
         -Dspring.security.oauth2.client.provider.keycloak.realm-uri=http://${EXTERNAL_HOSTNAME:-host.docker.internal}:${KEYCLOAK_HOST_PORT:-8081}/realms/demo-app-realm
@@ -66,8 +68,8 @@ services:
     profiles:
       - rabbitmq
   keycloak:
-    # https://github.com/keycloak/keycloak/blob/447364076adb84b62d0d5db38502a02774b0254d/docs/guides/src/main/server/containers.adoc
-    image: quay.io/keycloak/keycloak:20.0.3
+    # https://github.com/keycloak/keycloak/blob/20.0.5/docs/guides/src/main/server/containers.adoc
+    image: quay.io/keycloak/keycloak:20.0.5
     ports:
       - "${KEYCLOAK_HOST_PORT:-8081}:8080"
     volumes:

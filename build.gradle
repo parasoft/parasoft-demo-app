@@ -52,7 +52,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-zuul'
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
-	implementation 'com.graphql-java:graphql-java:19.2'
+	implementation 'com.graphql-java:graphql-java:19.11'
 	implementation 'com.graphql-java:graphql-java-spring-boot-starter-webmvc:2.0'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -67,7 +67,7 @@ dependencies {
 	testAnnotationProcessor 'org.projectlombok:lombok'
 
 	// To support higher version of keycloak
-	implementation 'com.nimbusds:oauth2-oidc-sdk:9.4'
+	implementation 'com.nimbusds:oauth2-oidc-sdk:9.43.6'
 
 	implementation 'org.apache.activemq:activemq-stomp'
 	// Exclude `jetty-all` dependency, but keep other necessary jetty dependencies.
@@ -88,7 +88,7 @@ dependencies {
 	implementation 'org.springdoc:springdoc-openapi-data-rest:1.6.13'
 
 	//gRPC
-	implementation 'net.devh:grpc-spring-boot-starter:2.13.1.RELEASE'
+	implementation 'net.devh:grpc-spring-boot-starter:2.15.0.RELEASE'
 	implementation "io.grpc:grpc-protobuf:${grpcVersion}"
 	implementation "io.grpc:grpc-stub:${grpcVersion}"
 
@@ -97,8 +97,8 @@ dependencies {
 
 	// Jtest
 	testImplementation 'org.apiguardian:apiguardian-api:1.1.2'
-	testImplementation 'net.bytebuddy:byte-buddy:1.12.8'
-	testImplementation 'net.bytebuddy:byte-buddy-agent:1.12.8'
+	testImplementation 'net.bytebuddy:byte-buddy-agent:1.18.13'
+	testImplementation 'net.bytebuddy:byte-buddy:1.18.13'
 	testImplementation 'org.hamcrest:hamcrest:2.2'
 	testImplementation 'junit:junit:4.13.2'
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
@@ -115,11 +115,11 @@ dependencies {
 	testImplementation 'org.mockito:mockito-core:4.4.0'
 	testImplementation 'org.mockito:mockito-junit-jupiter:4.4.0'
 	testImplementation 'org.mockito:mockito-inline:4.4.0'
-	testImplementation 'org.objenesis:objenesis:3.2'
-	testImplementation 'org.opentest4j:opentest4j:1.2.0'
-	testImplementation 'org.javassist:javassist:3.24.0-GA'
+	testImplementation 'org.objenesis:objenesis:3.6'
+	testImplementation 'org.opentest4j:opentest4j:1.3.0'
+	testImplementation 'org.javassist:javassist:3.33.0-GA'
 
-	testImplementation 'org.springframework.kafka:spring-kafka-test:2.9.1'
+	testImplementation 'org.springframework.kafka:spring-kafka-test:2.9.13'
 	testImplementation 'org.apache.kafka:kafka-clients:3.2.3:test'
 	testImplementation 'org.apache.kafka:kafka_2.13:3.2.3:test'
 
