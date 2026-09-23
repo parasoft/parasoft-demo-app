@@ -31,7 +31,6 @@ out/
 .vscode/
 
 ### PDA ###
-/docs/superpowers/plans/
 /bin/**
 application.pid
 /config/
