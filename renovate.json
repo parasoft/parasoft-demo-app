@@ -52,12 +52,6 @@
       "matchDatasources": ["gradle-version"],
       "matchPackageNames": ["gradle"],
       "allowedVersions": "<7.0.0"
-    },
-    {
-      "description": "Keep RabbitMQ below the 4.x compatibility boundary",
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["rabbitmq"],
-      "allowedVersions": "<4.0.0"
     }
   ]
 }
