@@ -54,12 +54,6 @@
       "allowedVersions": "<7.0.0"
     },
     {
-      "description": "Keep Keycloak on the Java 11 compatible 20.x line",
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["quay.io/keycloak/keycloak"],
-      "allowedVersions": "<21.0.0"
-    },
-    {
       "description": "Keep RabbitMQ below the 4.x compatibility boundary",
       "matchDatasources": ["docker"],
       "matchPackageNames": ["rabbitmq"],
