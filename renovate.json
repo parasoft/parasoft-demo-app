@@ -2,9 +2,9 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "packageRules": [
     {
-      "description": "Keep Spring Boot on the Java 11 compatible 2.x line",
+      "description": "Keep Spring Boot on the project 2.3.x baseline",
       "matchPackageNames": ["org.springframework.boot"],
-      "allowedVersions": "<3.0.0"
+      "allowedVersions": "<2.4.0"
     },
     {
       "description": "Keep Spring Cloud on the Hoxton release train",
@@ -18,6 +18,19 @@
         "org.springframework.kafka:spring-kafka-test"
       ],
       "allowedVersions": "<3.0.0"
+    },
+    {
+      "description": "Keep embedded Kafka aligned with the Spring Kafka 2.9 test runtime",
+      "matchPackageNames": [
+        "org.apache.kafka:kafka-clients",
+        "org.apache.kafka:kafka_2.13"
+      ],
+      "allowedVersions": "<3.3.0"
+    },
+    {
+      "description": "Keep protoc aligned with the resolved Protobuf Java runtime",
+      "matchPackageNames": ["com.google.protobuf:protoc"],
+      "allowedVersions": "3.14.0"
     },
     {
       "description": "Keep JUnit on the Java 11 compatible 5.x line",
