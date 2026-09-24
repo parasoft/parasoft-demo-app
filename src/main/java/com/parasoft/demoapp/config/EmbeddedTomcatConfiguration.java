@@ -2,7 +2,7 @@ package com.parasoft.demoapp.config;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.webresources.ExtractingRoot;
-import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.boot.tomcat.servlet.TomcatServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

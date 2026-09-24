@@ -311,7 +311,7 @@ public class GlobalPreferencesService {
         } else if(MqType.KAFKA == currentPreferences.getMqType()) {
             MQConfig.currentMQType = MqType.KAFKA;
             KafkaConfig.setOrderServiceSendToTopic(currentPreferences.getOrderServiceKafkaRequestTopic());
-            kafkaInventoryRequestTopicListener.refreshDestination(KafkaConfig.DEFAULT_ORDER_SERVICE_REQUEST_TOPIC);
+            kafkaInventoryRequestTopicListener.refreshDestination(currentPreferences.getOrderServiceKafkaRequestTopic());
             kafkaInventoryResponseTopicListener.refreshDestination(currentPreferences.getOrderServiceKafkaResponseTopic());
         } else if(MqType.RABBIT_MQ == currentPreferences.getMqType()) {
             MQConfig.currentMQType = MqType.RABBIT_MQ;
@@ -319,7 +319,7 @@ public class GlobalPreferencesService {
             // Need to unbind the existing queue in exchange and replace it with new queue.
             rabbitMQConfig.replaceQueueForOrderServiceSendToQueueBinding(currentPreferences.getOrderServiceRabbitMqRequestQueue());
 
-            rabbitMQInventoryRequestQueueListener.refreshDestination(RabbitMQConfig.DEFAULT_ORDER_SERVICE_REQUEST_QUEUE);
+            rabbitMQInventoryRequestQueueListener.refreshDestination(currentPreferences.getOrderServiceRabbitMqRequestQueue());
             // Need to add the queue in RabbitMQ before listen on it.
             rabbitMQConfig.declareQueue(currentPreferences.getOrderServiceRabbitMqResponseQueue());
             rabbitMQInventoryResponseQueueListener.refreshDestination(currentPreferences.getOrderServiceRabbitMqResponseQueue());
@@ -358,6 +358,8 @@ public class GlobalPreferencesService {
             RabbitMQConfig.setOrderServiceSendToQueue(globalPreferences.getOrderServiceRabbitMqRequestQueue());
             RabbitMQConfig.setOrderServiceListenToQueue(globalPreferences.getOrderServiceRabbitMqResponseQueue());
         }
+
+        refreshInventoryDestinations(globalPreferences);
     }
 
     private void handleParasoftJDBCProxy(GlobalPreferencesEntity currentPreferences,

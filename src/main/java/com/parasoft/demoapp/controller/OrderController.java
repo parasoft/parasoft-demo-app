@@ -114,7 +114,8 @@ public class OrderController {
 
         response.setData(orderService.updateOrderByOrderNumberSynchronized(
                 orderNumber, AuthenticationUtil.getUserRoleNameInAuthentication(auth), newStatus.getStatus(),
-                newStatus.isReviewedByPRCH(), newStatus.isReviewedByAPV(), AuthenticationUtil.getUsernameInAuthentication(auth),
+                Boolean.TRUE.equals(newStatus.getReviewedByPRCH()), Boolean.TRUE.equals(newStatus.getReviewedByAPV()),
+                AuthenticationUtil.getUsernameInAuthentication(auth),
                 newStatus.getComments(), true));
 
         return response;

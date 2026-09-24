@@ -10,7 +10,7 @@ import org.apache.activemq.command.ActiveMQQueue;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.jms.DefaultJmsListenerContainerFactoryConfigurer;
+import org.springframework.boot.jms.autoconfigure.DefaultJmsListenerContainerFactoryConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
@@ -40,7 +40,7 @@ public class ActiveMQConfig {
     @Getter @Setter private static String orderServiceListenToQueue = DEFAULT_QUEUE_INVENTORY_RESPONSE;
     @Getter @Setter private static ActiveMQQueue orderServiceSendToQueue = new ActiveMQQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
 
-    @Value("${spring.activemq.embedded-broker-url}")
+    @Value("${spring.activemq.broker-url}")
     private String embeddedBrokerUrl;
 
     @Value("${spring.activemq.embedded-broker-name}")

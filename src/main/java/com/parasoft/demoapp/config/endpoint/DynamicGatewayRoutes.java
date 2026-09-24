@@ -10,20 +10,25 @@ import org.springframework.cloud.gateway.server.mvc.handler.HandlerFunctions;
 import org.springframework.cloud.gateway.server.mvc.handler.GatewayRouterFunctions;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.function.HandlerFunction;
+import org.springframework.web.servlet.function.RouterFunctions;
 import org.springframework.web.servlet.function.RouterFunction;
 import org.springframework.web.servlet.function.ServerRequest;
 import org.springframework.web.servlet.function.ServerResponse;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.*;
-import static org.springframework.cloud.gateway.server.mvc.filter.BeforeFilterFunctions.stripPrefix;
+import static org.springframework.cloud.gateway.server.mvc.filter.LoadBalancerFilterFunctions.lb;
 import static org.springframework.cloud.gateway.server.mvc.filter.BeforeFilterFunctions.uri;
+import static org.springframework.cloud.gateway.server.mvc.filter.RetryFilterFunctions.retry;
 import static org.springframework.web.servlet.function.RequestPredicates.path;
 
 /**
@@ -37,7 +42,9 @@ public class DynamicGatewayRoutes implements RouterFunction<ServerResponse> {
     private final GlobalPreferencesDefaultSettingsService defaultSettingsService;
     private final GlobalPreferencesService globalPreferencesService;
     private final AtomicReference<List<RouterFunction<ServerResponse>>> routes =
-            new AtomicReference<>(new ArrayList<>());
+            new AtomicReference<>(List.of());
+    private final AtomicReference<List<RouteDescription>> routeDescriptions =
+            new AtomicReference<>(List.of());
 
     public DynamicGatewayRoutes(RestEndpointService restEndpointService,
                                 GlobalPreferencesDefaultSettingsService defaultSettingsService,
@@ -61,33 +68,60 @@ public class DynamicGatewayRoutes implements RouterFunction<ServerResponse> {
     public synchronized void refresh() {
         Map<String, RestEndpointEntity> effectiveRoutes = getEffectiveRoutes();
         List<RouterFunction<ServerResponse>> refreshedRoutes = new ArrayList<>();
+        List<RouteDescription> refreshedRouteDescriptions = new ArrayList<>();
         Map<String, String> endpointSnapshot = new LinkedHashMap<>();
 
         for (RestEndpointEntity endpoint : effectiveRoutes.values()) {
             String routePath = normalizePath(endpoint.getPath());
-            if (!StringUtils.hasText(routePath) || !StringUtils.hasText(endpoint.getUrl())) {
+            if (!StringUtils.hasText(routePath)
+                    || (!StringUtils.hasText(endpoint.getUrl()) && !StringUtils.hasText(endpoint.getServiceId()))) {
                 continue;
             }
-            refreshedRoutes.add(GatewayRouterFunctions.route(endpoint.getRouteId())
+
+            int segmentsToStrip = endpoint.isStripPrefix() ? stripPrefixSegments(routePath) : 0;
+            String targetUri = StringUtils.hasText(endpoint.getUrl())
+                    ? endpoint.getUrl()
+                    : "lb://" + endpoint.getServiceId();
+            RouterFunctions.Builder routeBuilder = GatewayRouterFunctions.route(endpoint.getRouteId())
                     .route(path(routePath), HandlerFunctions.http())
-                    .before(uri(endpoint.getUrl()))
-                    .before(stripPrefix(endpoint.isStripPrefix() ? stripPrefixSegments(routePath) : 0))
-                    .build());
+                    .filter(GatewayErrorResponseFilter.wrapErrors(endpoint.getRouteId(), targetUri));
+            if (StringUtils.hasText(endpoint.getUrl())) {
+                routeBuilder.before(uri(endpoint.getUrl()));
+                routeBuilder.before(request -> rewriteRequestPath(request, endpoint.getUrl(), segmentsToStrip));
+                refreshedRouteDescriptions.add(new RouteDescription(endpoint.getRouteId(), routePath,
+                        endpoint.getUrl(), endpoint.isStripPrefix(), Boolean.TRUE.equals(endpoint.getRetryable())));
+            } else {
+                routeBuilder.before(request -> rewriteRequestPath(request, null, segmentsToStrip));
+                routeBuilder.filter(lb(endpoint.getServiceId()));
+                refreshedRouteDescriptions.add(new RouteDescription(endpoint.getRouteId(), routePath,
+                        "lb://" + endpoint.getServiceId(), endpoint.isStripPrefix(),
+                        Boolean.TRUE.equals(endpoint.getRetryable())));
+            }
+            if (Boolean.TRUE.equals(endpoint.getRetryable())) {
+                routeBuilder.filter(retry(3));
+            }
+            refreshedRoutes.add(routeBuilder.build());
             if (REST_ENDPOINT_IDS.contains(endpoint.getRouteId())) {
                 endpointSnapshot.put(endpoint.getRouteId(), endpoint.getUrl());
             }
         }
 
-        routes.set(refreshedRoutes);
+        routes.set(List.copyOf(refreshedRoutes));
+        routeDescriptions.set(List.copyOf(refreshedRouteDescriptions));
         restEndpointService.refreshRouteRestEndpointsSnapshot(endpointSnapshot);
-        log.info("Refreshed {} Gateway MVC endpoint routes", refreshedRoutes.size());
+        String routeMappings = refreshedRouteDescriptions.stream()
+                .map(route -> route.path() + " ---> " + route.uri())
+                .collect(Collectors.joining(System.lineSeparator()));
+        log.info("Refreshed {} Gateway MVC endpoint routes:{}{}", refreshedRoutes.size(),
+                System.lineSeparator(), routeMappings);
     }
 
     @SneakyThrows
     private Map<String, RestEndpointEntity> getEffectiveRoutes() {
         Map<String, RestEndpointEntity> effectiveRoutes = new LinkedHashMap<>();
         for (RestEndpointEntity endpoint : restEndpointService.getAllEndpoints()) {
-            if (StringUtils.hasText(endpoint.getPath()) && StringUtils.hasText(endpoint.getUrl())) {
+            if (StringUtils.hasText(endpoint.getPath())
+                    && (StringUtils.hasText(endpoint.getUrl()) || StringUtils.hasText(endpoint.getServiceId()))) {
                 effectiveRoutes.put(normalizePath(endpoint.getPath()), endpoint);
             }
         }
@@ -121,5 +155,55 @@ public class DynamicGatewayRoutes implements RouterFunction<ServerResponse> {
             segments++;
         }
         return segments;
+    }
+
+    /**
+     * Gateway MVC uses a route URI only for its scheme, host, and port. Rebuild
+     * the request path to include the configured target URL's path before the
+     * request is proxied.
+     */
+    private static ServerRequest rewriteRequestPath(ServerRequest request, String endpointUrl, int segmentsToStrip) {
+        URI requestUri = request.uri();
+        String targetPath = targetRequestPath(endpointUrl, requestUri.getRawPath(), segmentsToStrip);
+        URI rewrittenUri = UriComponentsBuilder.fromUri(requestUri)
+                .replacePath(targetPath)
+                .build(true)
+                .toUri();
+        return ServerRequest.from(request).uri(rewrittenUri).build();
+    }
+
+    static String targetRequestPath(String endpointUrl, String requestPath, int segmentsToStrip) {
+        String strippedPath = stripPath(requestPath, segmentsToStrip);
+        if (!StringUtils.hasText(endpointUrl)) {
+            return strippedPath;
+        }
+
+        String basePath = URI.create(endpointUrl).getRawPath();
+        if (!StringUtils.hasText(basePath) || "/".equals(basePath) || "/".equals(strippedPath)) {
+            return StringUtils.hasText(basePath) && !"/".equals(basePath) ? basePath : strippedPath;
+        }
+
+        return basePath.endsWith("/")
+                ? basePath + strippedPath.substring(1)
+                : basePath + strippedPath;
+    }
+
+    private static String stripPath(String requestPath, int segmentsToStrip) {
+        String[] segments = StringUtils.tokenizeToStringArray(requestPath, "/");
+        StringBuilder strippedPath = new StringBuilder("/");
+        for (int index = segmentsToStrip; index < segments.length; index++) {
+            if (strippedPath.length() > 1) {
+                strippedPath.append('/');
+            }
+            strippedPath.append(segments[index]);
+        }
+        return strippedPath.toString();
+    }
+
+    public List<RouteDescription> getRouteDescriptions() {
+        return routeDescriptions.get();
+    }
+
+    public record RouteDescription(String id, String path, String uri, boolean stripPrefix, boolean retryable) {
     }
 }

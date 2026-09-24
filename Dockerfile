@@ -1,4 +1,4 @@
-FROM tomcat:10.1.48-jre17-temurin
+FROM tomcat:11.0-jre17-temurin
 
 ARG TOMCAT_HOME=/usr/local/tomcat
 ARG WAR_FILE=build/libs/parasoft-demo-app-*.war

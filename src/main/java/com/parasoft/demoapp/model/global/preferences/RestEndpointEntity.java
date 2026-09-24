@@ -37,6 +37,14 @@ public class RestEndpointEntity {
     private String path;
 
     /**
+     * The service ID (if any) to map to. Gateway MVC resolves this through
+     * Spring Cloud LoadBalancer when no physical URL is configured.
+     */
+    @Column(name = "service_id")
+    @JsonIgnore
+    private String serviceId;
+
+    /**
      * A full physical URL to map to the route. An alternative is to use a service ID
      * and service discovery to find the physical address.
      */
@@ -50,6 +58,12 @@ public class RestEndpointEntity {
     @Column(name = "strip_prefix")
     @JsonIgnore
     private boolean stripPrefix = true; // parasoft-suppress OPT.CTLV "expected"
+
+    /**
+     * Whether Gateway MVC should retry eligible failed requests for this route.
+     */
+    @JsonIgnore
+    private Boolean retryable = false;
 
     @ManyToOne
     @JoinColumn(name = "global_preferences_id")
