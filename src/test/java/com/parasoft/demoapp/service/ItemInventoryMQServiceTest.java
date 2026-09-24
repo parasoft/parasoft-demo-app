@@ -38,7 +38,7 @@ public class ItemInventoryMQServiceTest {
     JmsMessagingTemplate jmsMessagingTemplate;
 
     @Mock
-    KafkaTemplate operationResultKafkaTemplate;
+    KafkaTemplate<String, InventoryOperationResultMessageDTO> operationResultKafkaTemplate;
 
     @Mock
     RabbitTemplate rabbitTemplate;

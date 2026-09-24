@@ -4,7 +4,6 @@ import com.parasoft.demoapp.model.global.UserEntity;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.SpringSecurityCoreVersion;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
@@ -15,7 +14,7 @@ import java.util.Map;
 @EqualsAndHashCode(callSuper = true)
 @ToString
 public class CustomOAuth2User extends UserEntity implements OAuth2User, Serializable {
-    private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
+    private static final long serialVersionUID = 1L;
     private final DefaultOAuth2User defaultOAuth2User;
 
     public CustomOAuth2User(Collection<? extends GrantedAuthority> authorities, Map<String, Object> attributes,

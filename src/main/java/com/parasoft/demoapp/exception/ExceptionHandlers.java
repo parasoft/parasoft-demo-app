@@ -7,12 +7,25 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.parasoft.demoapp.controller.ResponseResult;
 
 @ControllerAdvice
 @Slf4j
 public class ExceptionHandlers {
+
+    /**
+     * Spring MVC 7 raises this exception when no static resource matches the
+     * request. Keep it out of the generic JSON exception response so browser
+     * navigation retains the application's 404 page.
+     */
+    @Hidden
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ModelAndView noResourceFoundExceptionHandler(NoResourceFoundException exception) {
+        return new ModelAndView("error/404", HttpStatus.NOT_FOUND);
+    }
 
     @Hidden
     @ExceptionHandler(value = Exception.class)

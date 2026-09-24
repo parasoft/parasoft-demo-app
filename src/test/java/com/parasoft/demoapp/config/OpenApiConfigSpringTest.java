@@ -2,6 +2,9 @@ package com.parasoft.demoapp.config;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -12,15 +15,18 @@ import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.parasoft.demoapp.dto.OrderStatusDTO;
+import com.parasoft.demoapp.model.industry.OrderStatus;
+
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(properties = "grpc.server.port=0")
@@ -50,6 +56,35 @@ public class OpenApiConfigSpringTest {
         JsonNode schema = requestParameterSchema("/v1/assets/items", "regions");
 
         assertEquals(OUTDOOR_REGIONS, enumValues(schema.get("items").get("enum")));
+    }
+
+    @Test
+    public void apiDocs_usesAnOpenApiVersionSupportedByTheBundledSwaggerUi() throws Exception {
+        String apiDocs = mockMvc.perform(get("/api-docs/v1"))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        assertTrue(objectMapper.readTree(apiDocs).path("openapi").asText().startsWith("3.0."));
+    }
+
+    @Test
+    public void orderStatusDto_allowsNullReviewFlags() throws Exception {
+        OrderStatusDTO orderStatus = objectMapper.readValue(
+                "{\"status\":\"APPROVED\",\"reviewedByPRCH\":null,\"reviewedByAPV\":null}",
+                OrderStatusDTO.class);
+
+        assertEquals(OrderStatus.APPROVED, orderStatus.getStatus());
+        assertNull(orderStatus.getReviewedByPRCH());
+        assertNull(orderStatus.getReviewedByAPV());
+    }
+
+    @Test
+    public void routesActuatorEndpoint_exposesTheGatewayRouteDescriptions() throws Exception {
+        mockMvc.perform(get("/actuator/routes").with(user("actuator-user")))
+                .andExpect(status().isOk())
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$").isArray());
     }
 
     private JsonNode requestParameterSchema(String path, String parameterName) throws Exception {

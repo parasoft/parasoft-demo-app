@@ -56,8 +56,6 @@ public abstract class ActiveMQRefreshableMessageListener extends RefreshableMess
         } else {
             targetMessageListenerContainer.start();
         }
-
-        cachingConnectionFactory.resetConnection();
     }
 
     public abstract void onMessage(Message message);

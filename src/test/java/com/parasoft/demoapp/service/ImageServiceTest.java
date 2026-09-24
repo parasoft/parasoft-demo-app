@@ -26,6 +26,8 @@ import com.parasoft.demoapp.config.WebConfig;
 import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
 import com.parasoft.demoapp.messages.ImageMessages;
 import com.parasoft.demoapp.model.global.preferences.IndustryType;
+import com.parasoft.demoapp.repository.industry.CategoryRepository;
+import com.parasoft.demoapp.repository.industry.ItemRepository;
 
 /**
  * Test class for ImageService
@@ -42,10 +44,10 @@ public class ImageServiceTest {
 	WebConfig webConfig;
 
 	@Mock
-	private ItemService itemService;
+	private ItemRepository itemRepository;
 
 	@Mock
-	private CategoryService categoryService;
+	private CategoryRepository categoryRepository;
 
 	@Before
 	public void setupMocks() {
@@ -479,8 +481,8 @@ public class ImageServiceTest {
 	@Test
 	public void testNumberOfImageUsed_normal() throws Throwable {
 		// Given
-		when(itemService.numberOfImageUsedInItems(anyString())).thenReturn(1L);
-		when(categoryService.numberOfImageUsedInCategories(anyString())).thenReturn(1L);
+		when(itemRepository.countByImage(anyString())).thenReturn(1L);
+		when(categoryRepository.countByImage(anyString())).thenReturn(1L);
 
 		// When
 		String imagePath = "/uploaded_images/defense/123.jpg";

@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.data.util.CastUtils;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -34,7 +33,7 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 
 import jakarta.annotation.Nullable;
@@ -73,8 +72,7 @@ public class SecurityConfig {
 
     @Bean
     DaoAuthenticationProvider daoAuthenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(customUserDetailsService);
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(customUserDetailsService);
         provider.setPasswordEncoder(passwordEncoder);
         return provider;
     }
@@ -133,7 +131,7 @@ public class SecurityConfig {
                         .failureHandler(customAuthenticationFailureHandler)
                         .successHandler(customAuthenticationSuccessHandler))
                 .logout(logout -> logout
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/v1/logout", "GET"))
+                        .logoutRequestMatcher(PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/v1/logout"))
                         .logoutSuccessHandler(customLogoutSuccessHandler))
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/loginPage")
@@ -213,7 +211,10 @@ public class SecurityConfig {
         Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
         Object realmRoleClaim = claims.get(USER_REALM_ROLE_MAPPER_NAME);
         if (realmRoleClaim instanceof List<?>) {
-            List<String> realmRoles = CastUtils.cast(realmRoleClaim);
+            List<String> realmRoles = ((List<?>) realmRoleClaim).stream()
+                    .filter(String.class::isInstance)
+                    .map(String.class::cast)
+                    .toList();
             userEntity.getAuthorities().forEach(grantedAuthority -> {
                 // Role matching related
                 String grantedRoleType = grantedAuthority.getAuthority();

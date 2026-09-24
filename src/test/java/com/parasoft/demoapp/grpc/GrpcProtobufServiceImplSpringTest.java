@@ -88,7 +88,7 @@ public class GrpcProtobufServiceImplSpringTest {
         
         Throwable error = responseObserver.getError();
         assertNotNull(error);
-        assertEquals(Status.INTERNAL.getCode().toString(), error.getMessage());
+        assertTrue(error.getMessage().startsWith(Status.INTERNAL.getCode().toString()));
     }
     
     @Test
@@ -183,7 +183,7 @@ public class GrpcProtobufServiceImplSpringTest {
         
         Throwable error = responseObserver.getError();
         assertNotNull(error);
-        assertEquals(Status.INTERNAL.getCode().toString(), error.getMessage());
+        assertTrue(error.getMessage().startsWith(Status.INTERNAL.getCode().toString()));
     }
     
     @Test

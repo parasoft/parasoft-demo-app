@@ -1,15 +1,16 @@
 package com.parasoft.demoapp.graphql;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 import com.parasoft.demoapp.model.global.preferences.IndustryType;
 import graphql.language.EnumTypeDefinition;
 import graphql.schema.idl.SchemaParser;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -110,15 +112,20 @@ public class GraphQLSchemaSpringTest {
     }
 
     private JsonNode executeGraphQL(String query) throws Exception {
-        MvcResult asyncResult = mockMvc.perform(get("/graphql")
-                        .queryParam("query", query))
-                .andExpect(request().asyncStarted())
+        MvcResult result = mockMvc.perform(post("/graphql")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.createObjectNode().put("query", query).toString()))
                 .andReturn();
-        String response = mockMvc.perform(asyncDispatch(asyncResult))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
+        String response;
+        if (result.getRequest().isAsyncStarted()) {
+            response = mockMvc.perform(asyncDispatch(result))
+                    .andExpect(status().isOk())
+                    .andReturn()
+                    .getResponse()
+                    .getContentAsString();
+        } else {
+            response = result.getResponse().getContentAsString();
+        }
         return objectMapper.readTree(response);
     }
 }
