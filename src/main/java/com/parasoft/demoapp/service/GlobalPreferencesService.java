@@ -30,6 +30,7 @@ import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.ListTopicsOptions;
 import org.springframework.amqp.rabbit.connection.Connection;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,63 +45,83 @@ import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsServi
 @Service
 public class GlobalPreferencesService {
     @Autowired
+    @Lazy
     private OpenApiConfig.SchemaPropertyCustomizer schemaPropertyCustomizer;
 
     @Autowired
+    @Lazy
     private GraphQLProvider graphQLProvider;
 
     @Autowired
+    @Lazy
     private GlobalPreferencesRepository globalPreferencesRepository;
 
     @Autowired
+    @Lazy
     private DemoBugService demoBugService;
 
     @Autowired
+    @Lazy
     private ResetEntrance resetEntrance;
 
     @Autowired
+    @Lazy
     private ClearEntrance clearEntrance;
 
     @Autowired
+    @Lazy
     private RestEndpointService restEndpointService;
 
     @Autowired
+    @Lazy
     private EndpointService endpointService;
 
     @Autowired
+    @Lazy
     private ImageService imageService;
 
     @Autowired
+    @Lazy
     private ParasoftJDBCProxyService parasoftJDBCProxyService;
 
     @Autowired
+    @Lazy
     private ActiveMQInventoryResponseQueueListener activeMQInventoryResponseQueueListener;
 
     @Autowired
+    @Lazy
     private ActiveMQInventoryRequestQueueListener activeMQInventoryRequestQueueListener;
 
     @Autowired
+    @Lazy
     private KafkaInventoryRequestTopicListener kafkaInventoryRequestTopicListener;
 
     @Autowired
+    @Lazy
     private KafkaInventoryResponseTopicListener kafkaInventoryResponseTopicListener;
 
     @Autowired
+    @Lazy
     private RabbitMQInventoryRequestQueueListener rabbitMQInventoryRequestQueueListener;
 
     @Autowired
+    @Lazy
     private RabbitMQInventoryResponseQueueListener rabbitMQInventoryResponseQueueListener;
 
     @Autowired
+    @Lazy
     private GlobalPreferencesDefaultSettingsService defaultGlobalPreferencesSettingsService;
 
     @Autowired
+    @Lazy
     private ActiveMQConfig activeMQConfig;
 
     @Autowired
+    @Lazy
     private KafkaConfig kafkaConfig;
 
     @Autowired
+    @Lazy
     private RabbitMQConfig rabbitMQConfig;
 
     /**

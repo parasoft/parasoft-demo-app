@@ -12,6 +12,8 @@ import com.parasoft.demoapp.exception.UploadedImageCanNotDeleteException;
 import com.parasoft.demoapp.messages.GlobalPreferencesMessages;
 import com.parasoft.demoapp.messages.ImageMessages;
 import com.parasoft.demoapp.model.global.preferences.IndustryType;
+import com.parasoft.demoapp.repository.industry.CategoryRepository;
+import com.parasoft.demoapp.repository.industry.ItemRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,10 +33,10 @@ public class ImageService {
 	private WebConfig webConfig;
 
 	@Autowired
-    private ItemService itemService;
+	private ItemRepository itemRepository;
 
 	@Autowired
-    private CategoryService categoryService;
+	private CategoryRepository categoryRepository;
 
     /**
      * Handle MultipartFile object. <br/>
@@ -203,7 +205,6 @@ public class ImageService {
             return 0;
         }
 
-        return itemService.numberOfImageUsedInItems(imagePath) +
-                categoryService.numberOfImageUsedInCategories(imagePath);
+        return itemRepository.countByImage(imagePath) + categoryRepository.countByImage(imagePath);
     }
 }

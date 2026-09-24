@@ -2,41 +2,40 @@ package com.parasoft.demoapp.graphql;
 
 import graphql.ExecutionInput;
 import graphql.ExecutionResult;
-import graphql.spring.web.servlet.ExecutionInputCustomizer;
-import graphql.spring.web.servlet.GraphQLInvocation;
-import graphql.spring.web.servlet.GraphQLInvocationData;
 import lombok.RequiredArgsConstructor;
 import org.dataloader.DataLoaderRegistry;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.WebRequest;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-@Component
-@Primary
+@RestController
 @RequiredArgsConstructor
-public class DynamicGraphQLInvocation implements GraphQLInvocation {
+public class DynamicGraphQLInvocation {
 
     private final GraphQLProvider graphQLProvider;
 
-    private final ExecutionInputCustomizer executionInputCustomizer;
+    private final ObjectProvider<DataLoaderRegistry> dataLoaderRegistryProvider;
 
-    @Autowired(required = false)
-    private DataLoaderRegistry dataLoaderRegistry;
-
-    @Override
-    public CompletableFuture<ExecutionResult> invoke(GraphQLInvocationData invocationData, WebRequest webRequest) {
+    @PostMapping(value = "/graphql", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public CompletableFuture<ExecutionResult> invoke(@RequestBody GraphQLRequest request) {
         ExecutionInput.Builder executionInputBuilder = ExecutionInput.newExecutionInput()
-                .query(invocationData.getQuery())
-                .operationName(invocationData.getOperationName())
-                .variables(invocationData.getVariables());
+                .query(request.query())
+                .operationName(request.operationName())
+                .variables(request.variables() == null ? Map.of() : request.variables());
+
+        DataLoaderRegistry dataLoaderRegistry = dataLoaderRegistryProvider.getIfAvailable();
         if (dataLoaderRegistry != null) {
             executionInputBuilder.dataLoaderRegistry(dataLoaderRegistry);
         }
 
-        return executionInputCustomizer.customizeExecutionInput(executionInputBuilder.build(), webRequest)
-                .thenCompose(executionInput -> graphQLProvider.getGraphQL().executeAsync(executionInput));
+        return graphQLProvider.getGraphQL().executeAsync(executionInputBuilder.build());
+    }
+
+    public record GraphQLRequest(String query, String operationName, Map<String, Object> variables) {
     }
 }

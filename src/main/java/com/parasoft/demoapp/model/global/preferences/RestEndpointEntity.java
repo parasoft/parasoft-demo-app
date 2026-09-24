@@ -5,17 +5,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.springframework.cloud.netflix.zuul.filters.ZuulProperties;
 
-import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import jakarta.persistence.*;
 
 /**
- * A copy of {@link ZuulProperties.ZuulRoute}.<br/>
- *
- * We can't save {@link ZuulProperties.ZuulRoute},
- * so we save {@RestEndpointEntity} into database, when they are needed, transfer them to {@link ZuulProperties.ZuulRoute}
+ * A persisted Gateway MVC route definition.
  */
 @Data
 @Entity
@@ -43,14 +37,6 @@ public class RestEndpointEntity {
     private String path;
 
     /**
-     * The service ID (if any) to map to this route. You can specify a physical URL or
-     * a service, but not both.
-     */
-    @Column(name = "service_id")
-    @JsonIgnore
-    private String serviceId = null;
-
-    /**
      * A full physical URL to map to the route. An alternative is to use a service ID
      * and service discovery to find the physical address.
      */
@@ -64,13 +50,6 @@ public class RestEndpointEntity {
     @Column(name = "strip_prefix")
     @JsonIgnore
     private boolean stripPrefix = true; // parasoft-suppress OPT.CTLV "expected"
-
-    /**
-     * Flag to indicate that this route should be retryable (if supported). Generally
-     * retry requires a service ID and ribbon.
-     */
-    @JsonIgnore
-    private Boolean retryable = false;
 
     @ManyToOne
     @JoinColumn(name = "global_preferences_id")
@@ -91,9 +70,4 @@ public class RestEndpointEntity {
         this.url = url;
     }
 
-    public ZuulProperties.ZuulRoute toRealZuulRoute(){
-        Set<String> sensitiveHeaders = new HashSet<>();
-        return new ZuulProperties.ZuulRoute(
-                this.routeId, this.path, this.serviceId, this.url, this.stripPrefix, this.retryable, sensitiveHeaders);
-    }
 }

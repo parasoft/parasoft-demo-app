@@ -10,8 +10,8 @@ import org.springframework.jms.connection.CachingConnectionFactory;
 import org.springframework.jms.listener.MessageListenerContainer;
 import org.springframework.jms.support.converter.MessageConverter;
 
-import javax.jms.Message;
-import javax.jms.MessageListener;
+import jakarta.jms.Message;
+import jakarta.jms.MessageListener;
 
 public abstract class ActiveMQRefreshableMessageListener extends RefreshableMessageListener<MessageListenerContainer> implements MessageListener {
 

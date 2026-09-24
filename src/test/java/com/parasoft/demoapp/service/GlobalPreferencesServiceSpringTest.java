@@ -18,8 +18,6 @@ import org.mockito.MockedStatic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.cloud.netflix.zuul.filters.Route;
-import org.springframework.cloud.netflix.zuul.filters.RouteLocator;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -67,7 +65,7 @@ public class GlobalPreferencesServiceSpringTest {
 	LocationRepository locationRepository;
 
 	@Autowired
-	RouteLocator routeLocator;
+	RestEndpointService restEndpointService;
 
 	@MockBean
 	ParasoftJDBCProxyService parasoftJDBCProxyService;
@@ -190,62 +188,11 @@ public class GlobalPreferencesServiceSpringTest {
 		assertEquals(GlobalPreferencesDefaultSettingsService.LOCATIONS_ENDPOINT_ID, locationsRestEndpoint.getRouteId());
 		assertEquals(GlobalPreferencesDefaultSettingsService.LOCATIONS_ENDPOINT_PATH, locationsRestEndpoint.getPath());
 
-		List<Route> routes = routeLocator.getRoutes();
-		assertNotNull(routes);
-
-		Map<String, Route> routeMap = new HashMap<>();
-		for (Route route : routes) {
-			routeMap.put(route.getId(), route);
-		}
-
-		Route locationsRoute = routeMap.get(LOCATIONS_ENDPOINT_ID);
-		assertNotNull(locationsRoute);
-		assertEquals(LOCATIONS_ENDPOINT_PATH, locationsRoute.getFullPath());
-		assertEquals(LOCATIONS_ENDPOINT_PATH, locationsRoute.getFullPath());
-		assertEquals(locationsRestEndpointUrl, locationsRoute.getLocation());
-		assertEquals(0, locationsRoute.getSensitiveHeaders().size());
-		assertFalse(locationsRoute.getRetryable());
-		assertTrue(locationsRoute.isCustomSensitiveHeaders());
-		assertTrue(locationsRoute.isPrefixStripped());
-
-		Route ordersRoute = routeMap.get(ORDERS_ENDPOINT_ID);
-		assertNotNull(ordersRoute);
-		assertEquals(ORDERS_ENDPOINT_PATH, ordersRoute.getFullPath());
-		assertEquals(ORDERS_ENDPOINT_PATH, ordersRoute.getFullPath());
-		assertEquals(ordersRestEndpointUrl, ordersRoute.getLocation());
-		assertEquals(0, ordersRoute.getSensitiveHeaders().size());
-		assertFalse(ordersRoute.getRetryable());
-		assertTrue(ordersRoute.isCustomSensitiveHeaders());
-		assertTrue(ordersRoute.isPrefixStripped());
-
-		Route cartItemsRoute = routeMap.get(CART_ENDPOINT_ID);
-		assertNotNull(cartItemsRoute);
-		assertEquals(CART_ENDPOINT_PATH, cartItemsRoute.getFullPath());
-		assertEquals(CART_ENDPOINT_PATH, cartItemsRoute.getFullPath());
-		assertEquals(cartItemsRestEndpointUrl, cartItemsRoute.getLocation());
-		assertEquals(0, cartItemsRoute.getSensitiveHeaders().size());
-		assertFalse(cartItemsRoute.getRetryable());
-		assertTrue(cartItemsRoute.isCustomSensitiveHeaders());
-		assertTrue(cartItemsRoute.isPrefixStripped());
-
-		Route categoriesRoute = routeMap.get(CATEGORIES_ENDPOINT_ID);
-		assertNotNull(categoriesRoute);
-		assertEquals(CATEGORIES_ENDPOINT_PATH, categoriesRoute.getFullPath());
-		assertEquals(CATEGORIES_ENDPOINT_PATH, categoriesRoute.getFullPath());
-		assertEquals(categoriesRestEndpointUrl, categoriesRoute.getLocation());
-		assertEquals(0, categoriesRoute.getSensitiveHeaders().size());
-		assertFalse(categoriesRoute.getRetryable());
-		assertTrue(categoriesRoute.isCustomSensitiveHeaders());
-		assertTrue(categoriesRoute.isPrefixStripped());
-
-		Route itemsRoute = routeMap.get(ITEMS_ENDPOINT_ID);
-		assertNotNull(itemsRoute);
-		assertEquals(ITEMS_ENDPOINT_PATH, itemsRoute.getFullPath());
-		assertEquals(itemsRestEndpointUrl, itemsRoute.getLocation());
-		assertEquals(0, itemsRoute.getSensitiveHeaders().size());
-		assertFalse(itemsRoute.getRetryable());
-		assertTrue(itemsRoute.isCustomSensitiveHeaders());
-		assertTrue(itemsRoute.isPrefixStripped());
+		assertEquals(categoriesRestEndpointUrl, restEndpointService.getCategoriesBaseUrl());
+		assertEquals(itemsRestEndpointUrl, restEndpointService.getItemsBaseUrl());
+		assertEquals(cartItemsRestEndpointUrl, restEndpointService.getCartBaseUrl());
+		assertEquals(ordersRestEndpointUrl, restEndpointService.getOrdersBaseUrl());
+		assertEquals(locationsRestEndpointUrl, restEndpointService.getLocationsBaseUrl());
 	}
 
 	/**
@@ -278,72 +225,19 @@ public class GlobalPreferencesServiceSpringTest {
 		globalPreferencesDto.setWebServiceMode(WebServiceMode.REST_API);
 
 		// When
-		// After updating the preferences, project will apply default endpoint routes to Zuul
+		// After updating the preferences, Gateway MVC applies default endpoint routes.
 		GlobalPreferencesEntity result = service.updateGlobalPreferences(globalPreferencesDto);
 
 		// Then
 		// No rest endpoints in db
 		assertEquals(0, result.getRestEndPoints().size());
 
-		// Get all routes and do assertion
-		List<Route> routes = routeLocator.getRoutes();
-		assertNotNull(routes);
-
-		Map<String, Route> routeMap = new HashMap<>();
-		for (Route route : routes) {
-			routeMap.put(route.getId(), route);
-		}
-
 		String host = HOST + webConfig.getServerPort();
-
-		Route locationsRoute = routeMap.get(LOCATIONS_ENDPOINT_ID);
-		assertNotNull(locationsRoute);
-		assertEquals(LOCATIONS_ENDPOINT_PATH, locationsRoute.getFullPath());
-		assertEquals(LOCATIONS_ENDPOINT_PATH, locationsRoute.getFullPath());
-		assertEquals(host + LOCATIONS_ENDPOINT_REAL_PATH, locationsRoute.getLocation());
-		assertEquals(0, locationsRoute.getSensitiveHeaders().size());
-		assertFalse(locationsRoute.getRetryable());
-		assertTrue(locationsRoute.isCustomSensitiveHeaders());
-		assertTrue(locationsRoute.isPrefixStripped());
-
-		Route ordersRoute = routeMap.get(ORDERS_ENDPOINT_ID);
-		assertNotNull(ordersRoute);
-		assertEquals(ORDERS_ENDPOINT_PATH, ordersRoute.getFullPath());
-		assertEquals(ORDERS_ENDPOINT_PATH, ordersRoute.getFullPath());
-		assertEquals(host + ORDERS_ENDPOINT_REAL_PATH, ordersRoute.getLocation());
-		assertEquals(0, ordersRoute.getSensitiveHeaders().size());
-		assertFalse(ordersRoute.getRetryable());
-		assertTrue(ordersRoute.isCustomSensitiveHeaders());
-		assertTrue(ordersRoute.isPrefixStripped());
-
-		Route cartItemsRoute = routeMap.get(CART_ENDPOINT_ID);
-		assertNotNull(cartItemsRoute);
-		assertEquals(CART_ENDPOINT_PATH, cartItemsRoute.getFullPath());
-		assertEquals(CART_ENDPOINT_PATH, cartItemsRoute.getFullPath());
-		assertEquals(host + CART_ENDPOINT_REAL_PATH, cartItemsRoute.getLocation());
-		assertEquals(0, cartItemsRoute.getSensitiveHeaders().size());
-		assertFalse(cartItemsRoute.getRetryable());
-		assertTrue(cartItemsRoute.isCustomSensitiveHeaders());
-		assertTrue(cartItemsRoute.isPrefixStripped());
-
-		Route categoriesRoute = routeMap.get(CATEGORIES_ENDPOINT_ID);
-		assertNotNull(categoriesRoute);
-		assertEquals(CATEGORIES_ENDPOINT_PATH, categoriesRoute.getFullPath());
-		assertEquals(CATEGORIES_ENDPOINT_PATH, categoriesRoute.getFullPath());
-		assertEquals(host + CATEGORIES_ENDPOINT_REAL_PATH, categoriesRoute.getLocation());
-		assertEquals(0, categoriesRoute.getSensitiveHeaders().size());
-		assertFalse(categoriesRoute.getRetryable());
-		assertTrue(categoriesRoute.isCustomSensitiveHeaders());
-		assertTrue(categoriesRoute.isPrefixStripped());
-
-		Route itemsRoute = routeMap.get(ITEMS_ENDPOINT_ID);
-		assertNotNull(itemsRoute);
-		assertEquals(ITEMS_ENDPOINT_PATH, itemsRoute.getFullPath());
-		assertEquals(host + ITEMS_ENDPOINT_REAL_PATH, itemsRoute.getLocation());
-		assertEquals(0, itemsRoute.getSensitiveHeaders().size());
-		assertFalse(itemsRoute.getRetryable());
-		assertTrue(itemsRoute.isCustomSensitiveHeaders());
-		assertTrue(itemsRoute.isPrefixStripped());
+		assertEquals(host + CATEGORIES_ENDPOINT_REAL_PATH, restEndpointService.getCategoriesBaseUrl());
+		assertEquals(host + ITEMS_ENDPOINT_REAL_PATH, restEndpointService.getItemsBaseUrl());
+		assertEquals(host + CART_ENDPOINT_REAL_PATH, restEndpointService.getCartBaseUrl());
+		assertEquals(host + ORDERS_ENDPOINT_REAL_PATH, restEndpointService.getOrdersBaseUrl());
+		assertEquals(host + LOCATIONS_ENDPOINT_REAL_PATH, restEndpointService.getLocationsBaseUrl());
 	}
 
 	/**
@@ -542,23 +436,7 @@ public class GlobalPreferencesServiceSpringTest {
 
         String endpointUrl = result.getGraphQLEndpoint();
 
-        List<Route> routes = routeLocator.getRoutes();
-        assertNotNull(routes);
-
-        Map<String, Route> routeMap = new HashMap<>();
-        for (Route route : routes) {
-            routeMap.put(route.getId(), route);
-        }
-
-        Route graphQLRoute = routeMap.get(GRAPHQL_ENDPOINT_ID);
-        assertNotNull(graphQLRoute);
-        assertEquals(GRAPHQL_ENDPOINT_PATH, graphQLRoute.getFullPath());
         assertEquals(endpointUrl, graphQLEndPointUrl);
-        assertEquals(endpointUrl, graphQLRoute.getLocation());
-        assertEquals(0, graphQLRoute.getSensitiveHeaders().size());
-        assertFalse(graphQLRoute.getRetryable());
-        assertTrue(graphQLRoute.isCustomSensitiveHeaders());
-        assertTrue(graphQLRoute.isPrefixStripped());
     }
 
     /**
@@ -593,25 +471,7 @@ public class GlobalPreferencesServiceSpringTest {
 
         String endpointUrl = result.getGraphQLEndpoint();
 
-        List<Route> routes = routeLocator.getRoutes();
-        assertNotNull(routes);
-
-        Map<String, Route> routeMap = new HashMap<>();
-        for (Route route : routes) {
-            routeMap.put(route.getId(), route);
-        }
-
-        String host = HOST + webConfig.getServerPort();
-
-        Route graphQLRoute = routeMap.get(GRAPHQL_ENDPOINT_ID);
-        assertNotNull(graphQLRoute);
-        assertEquals(GRAPHQL_ENDPOINT_PATH, graphQLRoute.getFullPath());
         assertEquals(endpointUrl, graphQLEndPointUrl);
-        assertEquals(host + GRAPHQL_ENDPOINT_REAL_PATH, graphQLRoute.getLocation());
-        assertEquals(0, graphQLRoute.getSensitiveHeaders().size());
-        assertFalse(graphQLRoute.getRetryable());
-        assertTrue(graphQLRoute.isCustomSensitiveHeaders());
-        assertTrue(graphQLRoute.isPrefixStripped());
     }
 
 	private void mockUrlUtil() {

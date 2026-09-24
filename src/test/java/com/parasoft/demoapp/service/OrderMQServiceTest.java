@@ -23,7 +23,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.util.concurrent.ListenableFuture;
 
-import javax.jms.Destination;
+import jakarta.jms.Destination;
 import java.util.ArrayList;
 import java.util.List;
 

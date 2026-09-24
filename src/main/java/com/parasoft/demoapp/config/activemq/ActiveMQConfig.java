@@ -13,13 +13,14 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jms.DefaultJmsListenerContainerFactoryConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
 import org.springframework.jms.support.converter.MessageConverter;
 import org.springframework.jms.support.converter.MessageType;
 
-import javax.jms.ConnectionFactory;
+import jakarta.jms.ConnectionFactory;
 import java.net.URI;
 
 @Configuration
@@ -39,7 +40,7 @@ public class ActiveMQConfig {
     @Getter @Setter private static String orderServiceListenToQueue = DEFAULT_QUEUE_INVENTORY_RESPONSE;
     @Getter @Setter private static ActiveMQQueue orderServiceSendToQueue = new ActiveMQQueue(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
 
-    @Value("${spring.activemq.broker-url}")
+    @Value("${spring.activemq.embedded-broker-url}")
     private String embeddedBrokerUrl;
 
     @Value("${spring.activemq.embedded-broker-name}")
@@ -70,6 +71,7 @@ public class ActiveMQConfig {
 
     @Bean
     @Qualifier("jmsQueueListenerContainerFactory")
+    @DependsOn("brokerService")
     public DefaultJmsListenerContainerFactory jmsQueueListenerContainerFactory(DefaultJmsListenerContainerFactoryConfigurer configurer,
                                                                                ConnectionFactory connectionFactory) {
         DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();

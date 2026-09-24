@@ -16,7 +16,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
 
-import javax.jms.Destination;
+import jakarta.jms.Destination;
 
 import static com.parasoft.demoapp.model.global.preferences.MqType.*;
 import static org.mockito.ArgumentMatchers.any;
