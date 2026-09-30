@@ -62,7 +62,10 @@ dependencies {
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	implementation 'org.hsqldb:hsqldb'
 	annotationProcessor 'org.projectlombok:lombok'
-	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+	// Spring Boot 4 separates the embedded Tomcat runtime from the full starter.
+	// Marking the full starter as provided also moves Spring Framework into
+	// WEB-INF/lib-provided, which an external Tomcat must not load.
+	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat-runtime'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
 	testImplementation 'org.springframework.boot:spring-boot-resttestclient'
