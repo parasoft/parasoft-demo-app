@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * Keeps the legacy routes actuator endpoint available after the Zuul to
- * Gateway MVC migration.
+ * Gateway MVC migration. Use /actuator/routes REST API to view the current route descriptions.
  */
 @Component
 @Endpoint(id = "routes")
