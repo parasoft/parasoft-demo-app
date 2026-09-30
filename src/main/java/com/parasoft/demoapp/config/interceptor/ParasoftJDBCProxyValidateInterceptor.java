@@ -9,14 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.HandlerInterceptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 @DependsOn("industryDataSource")
-public class ParasoftJDBCProxyValidateInterceptor extends HandlerInterceptorAdapter {
+public class ParasoftJDBCProxyValidateInterceptor implements HandlerInterceptor {
 
     @Autowired
     private IndustryDataSourceConfig industryDataSourceConfig;

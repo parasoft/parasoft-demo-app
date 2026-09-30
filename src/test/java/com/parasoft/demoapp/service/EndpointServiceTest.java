@@ -1,15 +1,18 @@
 package com.parasoft.demoapp.service;
 
+import com.parasoft.demoapp.config.endpoint.DynamicGatewayRoutes;
 import com.parasoft.demoapp.messages.GlobalPreferencesMessages;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.text.MessageFormat;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
 
 
 /**
@@ -20,6 +23,9 @@ import static org.junit.Assert.assertTrue;
 public class EndpointServiceTest {
     @InjectMocks
     EndpointService underTest;
+
+    @Mock
+    DynamicGatewayRoutes gatewayRoutes;
 
     @Before
     public void setupMocks() {
@@ -38,6 +44,13 @@ public class EndpointServiceTest {
 
         // When
         underTest.validateUrl(url, GlobalPreferencesMessages.INVALID_URL);
+    }
+
+    @Test
+    public void refreshEndpointRefreshesGatewayRoutesAndEndpointSnapshot() {
+        underTest.refreshEndpoint();
+
+        verify(gatewayRoutes).refresh();
     }
 
     /**

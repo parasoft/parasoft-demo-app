@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 @Data
 @NoArgsConstructor
@@ -18,10 +18,8 @@ public class OrderStatusDTO {
     @NotNull
     private OrderStatus status;
     private String comments;
-    @NotNull
     @Schema(description = "Any changes for review status only work when role is purchaser and order status is not changed.")
-    private boolean reviewedByPRCH;
-    @NotNull
+    private Boolean reviewedByPRCH = false;
     @Schema(description = "Any changes for review status only work when role is approver and order status is not changed.")
-    private boolean reviewedByAPV;
+    private Boolean reviewedByAPV = false;
 }

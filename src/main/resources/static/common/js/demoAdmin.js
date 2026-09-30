@@ -862,8 +862,15 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
             }
         }
 
+        function serializeItemFormData(){
+            let itemFormData = angular.element('#item_form').serializeJSON();
+            itemFormData.categoryId = Number(itemFormData.categoryId);
+            itemFormData.inStock = Number(itemFormData.inStock);
+            return itemFormData;
+        }
+
         function addNewItem(){
-            let params = angular.element('#item_form').serializeJSON();
+            let params = serializeItemFormData();
             let success = (data) => {
                 toastr.success($filter('translate')("ADD_ITEM_SUCCESS"));
                 demo.itemModal.showErrorBox = false;
@@ -900,7 +907,7 @@ mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $fil
                 handleErrorMessageForItemEdit(data);
             }
 
-            let updateItemFormData = angular.element('#item_form').serializeJSON();
+            let updateItemFormData = serializeItemFormData();
             let updateItemParams = {"itemId": itemId, "itemsDTO": updateItemFormData};
             if (CURRENT_WEB_SERVICE_MODE === "GraphQL") {
                 graphQLService.updateItemByItemId(updateItemParams, updateItemSuccess, (data) => {updateItemError(data)}, "{id}");

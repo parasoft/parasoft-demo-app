@@ -9,6 +9,7 @@ import com.parasoft.demoapp.exception.ParameterException;
 import com.parasoft.demoapp.messages.GlobalPreferencesMessages;
 import com.parasoft.demoapp.model.global.LocalizationLanguageType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.parasoft.demoapp.model.industry.LabelEntity;
@@ -22,6 +23,7 @@ public class LabelService {
 	private LabelRepository labelRepository;
 
 	@Autowired
+	@Lazy
 	private LocalizationService localizationService;
 	
 	public List<LabelEntity> getAllLabelsFromDBByLanguageType(LocalizationLanguageType languageType){

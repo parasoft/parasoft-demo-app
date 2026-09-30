@@ -10,8 +10,7 @@ import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFacto
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.stereotype.Component;
 
-import static org.springframework.amqp.core.Address.AMQ_RABBITMQ_REPLY_TO;
-import static org.springframework.kafka.support.mapping.AbstractJavaTypeMapper.DEFAULT_CLASSID_FIELD_NAME;
+import static org.springframework.amqp.support.converter.AbstractJavaTypeMapper.DEFAULT_CLASSID_FIELD_NAME;
 
 @Slf4j
 @Component

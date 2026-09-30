@@ -1,6 +1,5 @@
 package com.parasoft.demoapp.service;
 
-import com.parasoft.demoapp.config.WebConfig;
 import com.parasoft.demoapp.config.activemq.ActiveMQConfig;
 import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
 import com.parasoft.demoapp.config.kafka.KafkaConfig;
@@ -9,7 +8,7 @@ import com.parasoft.demoapp.model.global.preferences.*;
 import com.parasoft.demoapp.model.industry.RegionType;
 import com.parasoft.demoapp.util.BugsTypeSortOfDemoBugs;
 import com.parasoft.demoapp.util.RouteIdSortOfRestEndpoint;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -48,8 +47,8 @@ public class GlobalPreferencesDefaultSettingsService {
     public static final Set<String> REST_ENDPOINT_IDS = new HashSet<>(Arrays.asList(
             CATEGORIES_ENDPOINT_ID, ITEMS_ENDPOINT_ID, CART_ENDPOINT_ID, ORDERS_ENDPOINT_ID, LOCATIONS_ENDPOINT_ID));
 
-    @Autowired
-    private WebConfig webConfig;
+    @Value("${server.port}")
+    private int serverPort;
 
     public GlobalPreferencesEntity defaultPreferences(){
 
@@ -121,27 +120,27 @@ public class GlobalPreferencesDefaultSettingsService {
 
     public RestEndpointEntity defaultCategoriesEndpoint(){
         return new RestEndpointEntity(CATEGORIES_ENDPOINT_ID, CATEGORIES_ENDPOINT_PATH,
-                HOST + webConfig.getServerPort() + CATEGORIES_ENDPOINT_REAL_PATH);
+                HOST + serverPort + CATEGORIES_ENDPOINT_REAL_PATH);
     }
 
     public RestEndpointEntity defaultItemsEndpoint(){
         return new RestEndpointEntity(ITEMS_ENDPOINT_ID, ITEMS_ENDPOINT_PATH,
-                HOST + webConfig.getServerPort() + ITEMS_ENDPOINT_REAL_PATH);
+                HOST + serverPort + ITEMS_ENDPOINT_REAL_PATH);
     }
 
     public RestEndpointEntity defaultCartItemsEndpoint(){
         return new RestEndpointEntity(CART_ENDPOINT_ID, CART_ENDPOINT_PATH,
-                HOST + webConfig.getServerPort() + CART_ENDPOINT_REAL_PATH);
+                HOST + serverPort + CART_ENDPOINT_REAL_PATH);
     }
 
     public RestEndpointEntity defaultOrdersEndpoint(){
         return new RestEndpointEntity(ORDERS_ENDPOINT_ID, ORDERS_ENDPOINT_PATH,
-                HOST + webConfig.getServerPort() + ORDERS_ENDPOINT_REAL_PATH);
+                HOST + serverPort + ORDERS_ENDPOINT_REAL_PATH);
     }
 
     public RestEndpointEntity defaultLocationsEndpoint(){
         return new RestEndpointEntity(LOCATIONS_ENDPOINT_ID, LOCATIONS_ENDPOINT_PATH,
-                HOST + webConfig.getServerPort() + LOCATIONS_ENDPOINT_REAL_PATH);
+                HOST + serverPort + LOCATIONS_ENDPOINT_REAL_PATH);
     }
 
     public Set<RestEndpointEntity> defaultEndpoints(){
@@ -165,7 +164,7 @@ public class GlobalPreferencesDefaultSettingsService {
     }
 
     public String defaultGraphQLEndpoint() {
-        return HOST + webConfig.getServerPort() + GRAPHQL_ENDPOINT_REAL_PATH;
+        return HOST + serverPort + GRAPHQL_ENDPOINT_REAL_PATH;
     }
 
     public boolean defaultAdvertisingEnabled(){

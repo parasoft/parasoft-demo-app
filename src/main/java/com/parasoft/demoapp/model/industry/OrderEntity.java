@@ -3,7 +3,7 @@ package com.parasoft.demoapp.model.industry;
 import lombok.*;
 import org.hibernate.annotations.Cascade;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.Date;
 import java.util.List;
 

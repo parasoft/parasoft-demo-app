@@ -13,14 +13,15 @@ import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.parameters.Parameter;
 import io.swagger.v3.oas.models.security.*;
 import io.swagger.v3.oas.models.servers.Server;
-import org.springdoc.core.GroupedOpenApi;
-import org.springdoc.core.SpringDocConfigProperties;
-import org.springdoc.core.customizers.OpenApiCustomiser;
+import org.springdoc.core.models.GroupedOpenApi;
+import org.springdoc.core.properties.SpringDocConfigProperties;
+import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springdoc.core.customizers.ParameterCustomizer;
 import org.springdoc.core.customizers.PropertyCustomizer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.MethodParameter;
 
 import com.parasoft.demoapp.messages.ConfigMessages;
@@ -73,7 +74,7 @@ public class OpenApiConfig {
         return GroupedOpenApi.builder()
                 .pathsToMatch("/v1/**")
                 .group("v1")
-                .addOpenApiCustomiser(new OpenApiCustomiser() {
+                .addOpenApiCustomizer(new OpenApiCustomizer() {
 
 					@Override
 					public void customise(OpenAPI openApi) {
@@ -91,7 +92,7 @@ public class OpenApiConfig {
         return GroupedOpenApi.builder()
                 .pathsToMatch("/proxy/v1/**")
                 .group("v1-proxy")
-                .addOpenApiCustomiser(new OpenApiCustomiser() {
+                .addOpenApiCustomizer(new OpenApiCustomizer() {
 
 					@Override
 					public void customise(OpenAPI openApi) {
@@ -105,7 +106,8 @@ public class OpenApiConfig {
     }
 
     @Bean
-    public SchemaPropertyCustomizer schemaPropertyCustomizer(GlobalPreferencesService globalPreferencesService, SpringDocConfigProperties springDocConfigProperties) {
+    public SchemaPropertyCustomizer schemaPropertyCustomizer(@Lazy GlobalPreferencesService globalPreferencesService,
+                                                             SpringDocConfigProperties springDocConfigProperties) {
         return new SchemaPropertyCustomizer(globalPreferencesService, springDocConfigProperties);
     }
 

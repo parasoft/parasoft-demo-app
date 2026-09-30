@@ -9,6 +9,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.parasoft.demoapp.controller.ResponseResult;
 
@@ -25,6 +29,17 @@ public class ExceptionHandlersTest {
 	@Before
 	public void setupMocks() {
 		MockitoAnnotations.initMocks(this);
+	}
+
+	@Test
+	public void noResourceFoundExceptionHandlerReturnsThe404Page() {
+		NoResourceFoundException exception = new NoResourceFoundException(HttpMethod.GET, "/missing.html",
+				"No static resource missing.html.");
+
+		ModelAndView result = underTest.noResourceFoundExceptionHandler(exception);
+
+		assertEquals("error/404", result.getViewName());
+		assertEquals(HttpStatus.NOT_FOUND, result.getStatus());
 	}
 
 	/**
