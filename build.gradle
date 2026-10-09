@@ -193,7 +193,7 @@ bootWar {
 
 protobuf {
 	protoc {
-		artifact = "com.google.protobuf:protoc:3.14.0"
+		artifact = "com.google.protobuf:protoc:4.36.2"
 	}
 	plugins {
 		grpc {
