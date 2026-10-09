@@ -27,6 +27,8 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import static com.parasoft.demoapp.config.ParasoftJDBCProxyConfig.PARASOFT_JDBC_PROXY_VIRTUALIZE_SERVER_URL_DEFAULT_VALUE;
 import static com.parasoft.demoapp.service.GlobalPreferencesDefaultSettingsService.*;
@@ -48,6 +50,15 @@ public class GlobalPreferencesServiceSpringTest {
 	// Component under test
 	@Autowired
 	GlobalPreferencesService service;
+
+    @Autowired
+    DemoBugService demoBugService;
+
+    @Autowired
+    GlobalPreferencesDefaultSettingsService defaultPreferencesService;
+
+    @PersistenceContext(unitName = "global_PU")
+    EntityManager globalEntityManager;
 
 	@Autowired
 	CategoryRepository categoryRepository;
@@ -79,6 +90,36 @@ public class GlobalPreferencesServiceSpringTest {
 	public void tearDown() {
 		mockedUrlUtilStatic.close();
 	}
+
+    @Test
+    @Transactional(value = "globalTransactionManager")
+    public void testUpdateGlobalPreferences_immediateProcessingPersistence() throws Throwable {
+        GlobalPreferencesDTO preferences = new GlobalPreferencesDTO();
+        preferences.setIndustryType(service.getCurrentGlobalPreferences().getIndustryType());
+        preferences.setMqType(MqType.ACTIVE_MQ);
+        preferences.setOrderServiceSendTo(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
+        preferences.setOrderServiceListenOn(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE);
+        preferences.setWebServiceMode(WebServiceMode.REST_API);
+        preferences.setDemoBugs(new DemoBugsType[] {
+                DemoBugsType.PROCESS_ORDERS_IMMEDIATELY, DemoBugsType.REVERSE_ORDER_OF_ORDERS });
+
+        service.updateGlobalPreferences(preferences);
+        // Reload from the database, rather than accepting the service's in-memory result as persistence evidence.
+        globalEntityManager.flush();
+        globalEntityManager.clear();
+        assertTrue(demoBugService.shouldProcessOrdersImmediately());
+        assertEquals(2, service.getCurrentGlobalPreferences().getDemoBugs().size());
+
+        preferences.setDemoBugs(new DemoBugsType[] { DemoBugsType.REVERSE_ORDER_OF_ORDERS });
+        service.updateGlobalPreferences(preferences);
+        globalEntityManager.flush();
+        globalEntityManager.clear();
+        assertFalse(demoBugService.shouldProcessOrdersImmediately());
+        assertEquals(DemoBugsType.REVERSE_ORDER_OF_ORDERS,
+                service.getCurrentGlobalPreferences().getDemoBugs().iterator().next().getDemoBugsType());
+        assertTrue(defaultPreferencesService.defaultDemoBugs().stream().noneMatch(
+                bug -> bug.getDemoBugsType() == DemoBugsType.PROCESS_ORDERS_IMMEDIATELY));
+    }
 	/**
 	 * Test for industry change
 	 *

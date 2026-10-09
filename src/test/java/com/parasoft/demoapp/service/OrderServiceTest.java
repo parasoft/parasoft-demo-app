@@ -23,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -63,11 +64,117 @@ public class OrderServiceTest {
     OrderMQService orderMQService;
 
     @Mock
+    DemoBugService demoBugService;
+
+    @Mock
     ItemInventoryMQService itemInventoryMQService;
 
     @Before
     public void setupMocks() {
         MockitoAnnotations.initMocks(this);
+    }
+
+    @Test
+    public void testAddNewOrder_immediateProcessingEnabled() throws Exception {
+        List<OrderStatus> savedStatuses = prepareNewOrder();
+        when(demoBugService.shouldProcessOrdersImmediately()).thenReturn(true);
+
+        OrderEntity result = underTest.addNewOrder(1L, "purchaser", RegionType.LOCATION_1,
+                "Test location", "receiver", "event", "event-number");
+
+        assertEquals(OrderStatus.PROCESSED, result.getStatus());
+        assertEquals(Arrays.asList(OrderStatus.PROCESSED, OrderStatus.PROCESSED), savedStatuses);
+        assertEquals(2, result.getOrderItems().size());
+        verify(shoppingCartService).clearShoppingCart(1L);
+        verify(orderMQService).sendToInventoryRequestDestination(
+                InventoryOperation.DECREASE, "23-456-010", result.getOrderItems());
+    }
+
+    @Test
+    public void testAddNewOrder_immediateProcessingDisabled() throws Exception {
+        List<OrderStatus> savedStatuses = prepareNewOrder();
+
+        OrderEntity result = underTest.addNewOrder(1L, "purchaser", RegionType.LOCATION_1,
+                "Test location", "receiver", "event", "event-number");
+
+        assertEquals(OrderStatus.SUBMITTED, result.getStatus());
+        assertEquals(Arrays.asList(OrderStatus.SUBMITTED, OrderStatus.SUBMITTED), savedStatuses);
+        verify(shoppingCartService).clearShoppingCart(1L);
+        verify(orderMQService).sendToInventoryRequestDestination(
+                InventoryOperation.DECREASE, "23-456-010", result.getOrderItems());
+    }
+
+    private List<OrderStatus> prepareNewOrder() throws Exception {
+        LocationEntity location = new LocationEntity();
+        location.setLocationImage("location.png");
+        when(locationService.getLocationByRegion(RegionType.LOCATION_1)).thenReturn(location);
+        ItemEntity firstItem = new ItemEntity("First item", "Description", null, 20,
+                "first.png", RegionType.LOCATION_1, new Date());
+        firstItem.setId(2L);
+        ItemEntity secondItem = new ItemEntity("Second item", "Description", null, 20,
+                "second.png", RegionType.LOCATION_1, new Date());
+        secondItem.setId(3L);
+        when(itemService.getItemById(2L)).thenReturn(firstItem);
+        when(itemService.getItemById(3L)).thenReturn(secondItem);
+        when(shoppingCartService.getCartItemsByUserId(1L)).thenReturn(Arrays.asList(
+                new CartItemEntity(1L, firstItem, 2), new CartItemEntity(1L, secondItem, 3)));
+        List<OrderStatus> savedStatuses = new ArrayList<>();
+        // Return the incoming entity so a fixed mock status cannot hide the service's initial-state choice.
+        when(orderRepository.save(any(OrderEntity.class))).thenAnswer(invocation -> {
+            OrderEntity saved = invocation.getArgument(0);
+            savedStatuses.add(saved.getStatus());
+            saved.setId(10L);
+            return saved;
+        });
+        return savedStatuses;
+    }
+
+    @Test
+    public void testHandleMessageFromResponse_alreadyProcessed() {
+        String orderNumber = "123-456-789";
+        OrderEntity order = new OrderEntity();
+        order.setOrderNumber(orderNumber);
+        order.setRequestedBy("purchaser");
+        order.setStatus(OrderStatus.PROCESSED);
+        order.setComments("Existing comment");
+        when(orderRepository.findOrderByOrderNumber(orderNumber)).thenReturn(order);
+
+        InventoryOperationRequestMessageDTO result = underTest.handleMessageFromResponse(
+                new InventoryOperationResultMessageDTO(InventoryOperation.DECREASE, orderNumber,
+                        InventoryOperationStatus.SUCCESS, null));
+
+        assertNull(result);
+        assertEquals(OrderStatus.PROCESSED, order.getStatus());
+        assertEquals("Existing comment", order.getComments());
+        verify(orderRepository, never()).save(any(OrderEntity.class));
+        verify(orderMQService).sendToApprover(argThat(message ->
+                orderNumber.equals(message.getOrderNumber())
+                        && "purchaser".equals(message.getRequestedBy())
+                        && message.getStatus() == OrderStatus.PROCESSED
+                        && OrderMessages.THE_ORDER_IS_PROCESSED.equals(message.getInformation())));
+    }
+
+    @Test
+    public void testHandleMessageFromResponse_processedOrderInventoryNotEnough() {
+        String orderNumber = "123-456-789";
+        String cancellationReason = "Inventory item with id 1 is out of stock.";
+        OrderEntity order = new OrderEntity();
+        order.setOrderNumber(orderNumber);
+        order.setStatus(OrderStatus.PROCESSED);
+        when(orderRepository.findOrderByOrderNumber(orderNumber)).thenReturn(order);
+        when(orderRepository.save(any(OrderEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        InventoryOperationRequestMessageDTO result = underTest.handleMessageFromResponse(
+                new InventoryOperationResultMessageDTO(InventoryOperation.DECREASE, orderNumber,
+                        InventoryOperationStatus.FAIL, cancellationReason));
+
+        assertNull(result);
+        assertEquals(OrderStatus.CANCELED, order.getStatus());
+        assertEquals(cancellationReason, order.getComments());
+        verify(orderMQService).sendToApprover(argThat(message ->
+                orderNumber.equals(message.getOrderNumber())
+                        && message.getStatus() == OrderStatus.CANCELED
+                        && cancellationReason.equals(message.getInformation())));
     }
 
     /**

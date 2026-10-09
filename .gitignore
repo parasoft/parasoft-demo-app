@@ -38,3 +38,6 @@ application.pid
 /pda-files/
 /src/main/resources/META-INF/
 /lib/*.jar
+
+# Local implementation plans are not part of the shipped documentation.
+/docs/superpowers/plans/

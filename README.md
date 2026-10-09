@@ -69,6 +69,14 @@ Login with one of these users:
 - Username `purchaser` password `password`
 - Username `approver` password `password`
 
+### Immediately processing new orders
+
+To make order-status assertions consistent in test scenarios, open **Demo Administration > Demo Bugs**, enable **Immediately put new orders into PROCESSED state**, and save the settings. The option is disabled by default and applies to newly placed orders.
+
+When enabled, new orders start in `PROCESSED` state. Inventory is still checked asynchronously: successful inventory processing keeps that status, while insufficient inventory may later change the order to `CANCELED`. Use items with sufficient inventory when asserting `PROCESSED` in a scenario. Disabling the option restores the initial `SUBMITTED` state and the existing asynchronous processing behavior.
+
+The option is stored with the other Demo Bugs preferences and remains enabled after restarting the application. Resetting industry data preserves global preferences, including this option.
+
 ## Using OAuth 2.0 Authentication
 This application supports both Http Basic authentication and OAuth 2.0 authentication.
 To use OAuth 2.0 authentication, you will need to set up a Keycloak server as the OAuth 2.0 provider.

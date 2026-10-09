@@ -168,6 +168,10 @@ public class DemoBugService {
         }
     }
 
+    public boolean shouldProcessOrdersImmediately() {
+        return needBug(DemoBugsType.PROCESS_ORDERS_IMMEDIATELY);
+    }
+
     private boolean needBug(DemoBugsType bugType) {
         boolean needBug = false;
         try {

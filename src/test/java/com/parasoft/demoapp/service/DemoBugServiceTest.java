@@ -66,6 +66,28 @@ public class DemoBugServiceTest {
         MockitoAnnotations.initMocks(this);
     }
 
+    @Test
+    public void testShouldProcessOrdersImmediately_enabled() throws Exception {
+        GlobalPreferencesEntity preferences = new GlobalPreferencesEntity();
+        preferences.setDemoBugs(new HashSet<>(Arrays.asList(
+                new DemoBugEntity(DemoBugsType.REVERSE_ORDER_OF_ORDERS),
+                new DemoBugEntity(DemoBugsType.PROCESS_ORDERS_IMMEDIATELY))));
+        when(globalPreferencesService.getCurrentGlobalPreferences()).thenReturn(preferences);
+
+        assertTrue(underTest.shouldProcessOrdersImmediately());
+    }
+
+    @Test
+    public void testShouldProcessOrdersImmediately_disabled() throws Exception {
+        GlobalPreferencesEntity preferences = new GlobalPreferencesEntity();
+        when(globalPreferencesService.getCurrentGlobalPreferences()).thenReturn(preferences);
+
+        assertFalse(underTest.shouldProcessOrdersImmediately());
+        preferences.setDemoBugs(Collections.singleton(
+                new DemoBugEntity(DemoBugsType.INCORRECT_LOCATION_FOR_APPROVED_ORDERS)));
+        assertFalse(underTest.shouldProcessOrdersImmediately());
+    }
+
     /**
      * test for removeByGlobalPreferencesId(Long)
      *

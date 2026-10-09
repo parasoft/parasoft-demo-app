@@ -17,6 +17,7 @@ var bug_Incorrect_location_value = "INCORRECT_LOCATION_FOR_APPROVED_ORDERS";
 var bug_Incorrect_number_value = "INCORRECT_NUMBER_OF_ITEMS_IN_SUMMARY_OF_PENDING_ORDER";
 var bug_Reverse_orders_value = "REVERSE_ORDER_OF_ORDERS";
 var bug_Reinitialize_datasource_for_each_http_request_value = "REINITIALIZE_DATASOURCE_FOR_EACH_HTTP_REQUEST";
+var bug_Process_orders_immediately_value = "PROCESS_ORDERS_IMMEDIATELY";
 
 mod.controller('demo_admin_controller', function($rootScope, $scope, $http, $filter, $window, $timeout, graphQLService) {
     var demo = this;
@@ -1707,6 +1708,9 @@ function handleDemoBugsFromServer(demoBugs){
                     break;
                 case bug_Reinitialize_datasource_for_each_http_request_value:
                     checkedBugs.reinitialize_datasource_for_each_http_request = true;
+                    break;
+                case bug_Process_orders_immediately_value:
+                    checkedBugs.process_orders_immediately = true;
                     break;
                 default:
                     checkedBugs.unkonwn = true;

@@ -12,6 +12,7 @@ import com.parasoft.demoapp.model.industry.*;
 import com.parasoft.demoapp.repository.industry.OrderRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -42,6 +43,11 @@ public class OrderService {
     @Autowired
     private LocationService locationService;
 
+    @Autowired
+    // Defer preferences lookup until order creation to avoid the inventory-listener startup dependency cycle.
+    @Lazy
+    private DemoBugService demoBugService;
+
     @Transactional
     public InventoryOperationRequestMessageDTO handleMessageFromResponse(InventoryOperationResultMessageDTO operationResult) {
         OrderEntity order = null;
@@ -51,7 +57,12 @@ public class OrderService {
                 order = getOrderByOrderNumber(orderNumber);
                 switch (operationResult.getStatus()) {
                     case SUCCESS:
-                        order = updateOrderStatus(orderNumber, OrderStatus.PROCESSED, null);
+                        if (order.getStatus() != OrderStatus.PROCESSED) {
+                            order = updateOrderStatus(orderNumber, OrderStatus.PROCESSED, null);
+                        } else {
+                            // Immediate processing has already set the status; inventory success confirms it.
+                            log.debug("Inventory confirmed already processed order {}", orderNumber);
+                        }
                         OrderMQMessageDTO message =
                                 new OrderMQMessageDTO(orderNumber, order.getRequestedBy(), order.getStatus(), OrderMessages.THE_ORDER_IS_PROCESSED);
                         orderMQService.sendToApprover(message);
@@ -78,7 +89,9 @@ public class OrderService {
     private OrderEntity updateOrderStatus(String orderNumber, OrderStatus status, String comments)
                                             throws OrderNotFoundException, ParameterException, OrderStatusException {
         OrderEntity order = getOrderByOrderNumber(orderNumber);
-        if(order.getStatus().getPriority() < status.getPriority()) {
+        // Inventory failure must still cancel immediately processed orders, despite equal status priorities.
+        boolean cancelProcessedOrder = order.getStatus() == OrderStatus.PROCESSED && status == OrderStatus.CANCELED;
+        if(order.getStatus().getPriority() < status.getPriority() || cancelProcessedOrder) {
             order.setStatus(status);
             order.setComments(comments);
             return orderRepository.save(order);
@@ -117,7 +130,8 @@ public class OrderService {
 
         OrderEntity order = new OrderEntity();
         order.setRequestedBy(username);
-        order.setStatus(OrderStatus.SUBMITTED);
+        // This option changes the initial status only; inventory validation and cancellation stay asynchronous.
+        order.setStatus(demoBugService.shouldProcessOrdersImmediately() ? OrderStatus.PROCESSED : OrderStatus.SUBMITTED);
         order.setRegion(region);
         order.setLocation(location);
         order.setOrderImage(locationEntity.getLocationImage());
@@ -139,6 +153,7 @@ public class OrderService {
         String orderNumber = generateOrderNumberAccordingToId(order.getId());
         order.setOrderNumber(orderNumber);
         order = orderRepository.save(order);
+        log.debug("Created order {} with initial status {}", orderNumber, order.getStatus());
         shoppingCartService.clearShoppingCart(userId);
         orderMQService.sendToInventoryRequestDestination(InventoryOperation.DECREASE, orderNumber, order.getOrderItems());
 
