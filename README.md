@@ -71,11 +71,11 @@ Login with one of these users:
 
 ### Immediately processing new orders
 
-To make order-status assertions consistent in test scenarios, open **Demo Administration > Demo Bugs**, enable **Immediately put new orders into PROCESSED state**, and save the settings. The option is disabled by default and applies to newly placed orders.
+To make order-status assertions consistent in test scenarios, open **Demo Administration > Additional Settings** (between Demo Bugs and Industry Site Design), enable **Immediately put new orders into PROCESSED state**, and save the settings. The option is disabled by default and applies to newly placed orders.
 
 When enabled, new orders start in `PROCESSED` state. Inventory is still checked asynchronously: successful inventory processing keeps that status, while insufficient inventory may later change the order to `CANCELED`. Use items with sufficient inventory when asserting `PROCESSED` in a scenario. Disabling the option restores the initial `SUBMITTED` state and the existing asynchronous processing behavior.
 
-The option is stored with the other Demo Bugs preferences and remains enabled after restarting the application. Resetting industry data preserves global preferences, including this option.
+The option is stored with the application settings and remains enabled after restarting the application. Resetting industry data preserves global preferences, including this option.
 
 ## Using OAuth 2.0 Authentication
 This application supports both Http Basic authentication and OAuth 2.0 authentication.
