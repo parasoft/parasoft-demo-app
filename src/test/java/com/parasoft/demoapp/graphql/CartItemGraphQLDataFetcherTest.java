@@ -1,9 +1,8 @@
 package com.parasoft.demoapp.graphql;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 import com.graphql.spring.boot.test.GraphQLResponse;
-import com.graphql.spring.boot.test.GraphQLTestTemplate;
 import com.parasoft.demoapp.dto.ShoppingCartDTO;
 import com.parasoft.demoapp.dto.UpdateShoppingCartItemDTO;
 import com.parasoft.demoapp.exception.InventoryNotFoundException;

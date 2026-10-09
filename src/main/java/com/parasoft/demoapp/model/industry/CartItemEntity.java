@@ -1,8 +1,9 @@
 package com.parasoft.demoapp.model.industry;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Getter
 @Entity
@@ -39,6 +40,7 @@ public class CartItemEntity {
     @Setter
     private Integer quantity;
 
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     public CartItemEntity(Long userId, ItemEntity item, Integer quantity) {
         this.userId = userId;
         this.itemId = item.getId();

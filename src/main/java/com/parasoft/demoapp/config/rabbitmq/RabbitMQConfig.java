@@ -57,7 +57,7 @@ public class RabbitMQConfig {
 
     @Bean
     public MessageConverter messageConverter() {
-        return new Jackson2JsonMessageConverter();
+        return new Jackson2JsonMessageConverter("com.parasoft.demoapp.dto");
     }
 
     @Bean

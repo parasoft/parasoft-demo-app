@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.List;
 import java.util.Objects;
@@ -32,7 +32,7 @@ public class LocationGraphQLDataFetcher {
     public DataFetcher<LocationEntity> getLocation() {
         return environment -> {
             try {
-                UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(restEndpointService.getLocationsBaseUrl() + "/location");
+                UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(restEndpointService.getLocationsBaseUrl() + "/location");
                 Object regionType = environment.getArgument("region");
                 if (regionType != null) {
                     builder.queryParam("region", regionType);

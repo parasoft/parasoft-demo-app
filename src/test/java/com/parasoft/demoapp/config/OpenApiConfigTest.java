@@ -14,7 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-import org.springdoc.core.SpringDocConfigProperties;
+import org.springdoc.core.properties.SpringDocConfigProperties;
 import org.springdoc.core.customizers.ParameterCustomizer;
 import org.springframework.core.MethodParameter;
 import org.springframework.data.domain.Pageable;

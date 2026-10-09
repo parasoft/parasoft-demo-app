@@ -1,10 +1,9 @@
 package com.parasoft.demoapp.graphql;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ArrayNode;
+import tools.jackson.databind.node.ObjectNode;
 import com.graphql.spring.boot.test.GraphQLResponse;
-import com.graphql.spring.boot.test.GraphQLTestTemplate;
 import com.parasoft.demoapp.controller.PageInfo;
 import com.parasoft.demoapp.dto.CategoryDTO;
 import com.parasoft.demoapp.messages.AssetMessages;
@@ -124,7 +123,7 @@ public class CategoryGraphQLDataFetcherTest {
                 .withBasicAuth(USERNAME_PURCHASER, PASSWORD)
                 .perform(CATEGORIES_GRAPHQL_RESOURCE, variables);
 
-        assertError_getCategories(response, HttpStatus.INTERNAL_SERVER_ERROR, "No property invalid found for type CategoryEntity!");
+        assertError_getCategories(response, HttpStatus.INTERNAL_SERVER_ERROR, "No property 'invalid' found for type 'CategoryEntity'");
     }
 
     @Test

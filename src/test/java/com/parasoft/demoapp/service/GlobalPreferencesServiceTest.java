@@ -1,6 +1,7 @@
 package com.parasoft.demoapp.service;
 
 import com.parasoft.demoapp.config.OpenApiConfig;
+import com.parasoft.demoapp.config.MQConfig;
 import com.parasoft.demoapp.config.WebConfig;
 import com.parasoft.demoapp.config.activemq.ActiveMQConfig;
 import com.parasoft.demoapp.config.activemq.ActiveMQInventoryRequestQueueListener;
@@ -100,10 +101,45 @@ public class GlobalPreferencesServiceTest {
 
 	@After
 	public void tearDown() {
+		MQConfig.currentMQType = MqType.ACTIVE_MQ;
 		ActiveMQConfig.setOrderServiceListenToQueue(DEFAULT_QUEUE_INVENTORY_RESPONSE);
 		ActiveMQConfig.setOrderServiceSendToQueue(new ActiveMQQueue(DEFAULT_QUEUE_INVENTORY_REQUEST));
 		KafkaConfig.setOrderServiceSendToTopic(KafkaConfig.DEFAULT_ORDER_SERVICE_REQUEST_TOPIC);
 		KafkaConfig.setOrderServiceListenToTopic(KafkaConfig.DEFAULT_ORDER_SERVICE_RESPONSE_TOPIC);
+		RabbitMQConfig.setOrderServiceSendToQueue(RabbitMQConfig.DEFAULT_ORDER_SERVICE_REQUEST_QUEUE);
+		RabbitMQConfig.setOrderServiceListenToQueue(RabbitMQConfig.DEFAULT_ORDER_SERVICE_RESPONSE_QUEUE);
+	}
+
+	@Test
+	public void initializeMqOnStartup_registersRabbitMqListeners() throws Throwable {
+		GlobalPreferencesEntity preferences = new GlobalPreferencesEntity();
+		preferences.setMqType(MqType.RABBIT_MQ);
+		preferences.setOrderServiceRabbitMqRequestQueue("orders.request");
+		preferences.setOrderServiceRabbitMqResponseQueue("orders.response");
+
+		underTest.initializeMqOnStartup(preferences);
+
+		assertEquals(MqType.RABBIT_MQ, MQConfig.currentMQType);
+		verify(rabbitMQConfig).replaceQueueForOrderServiceSendToQueueBinding("orders.request");
+		verify(rabbitMQInventoryRequestQueueListener).refreshDestination(RabbitMQConfig.DEFAULT_ORDER_SERVICE_REQUEST_QUEUE);
+		verify(rabbitMQConfig).declareQueue("orders.response");
+		verify(rabbitMQInventoryResponseQueueListener).refreshDestination("orders.response");
+	}
+
+	@Test
+	public void initializeMqOnStartup_registersKafkaListenersForConfiguredTopics() throws Throwable {
+		GlobalPreferencesEntity preferences = new GlobalPreferencesEntity();
+		preferences.setMqType(MqType.KAFKA);
+		preferences.setOrderServiceKafkaRequestTopic("orders.request");
+		preferences.setOrderServiceKafkaResponseTopic("orders.response");
+
+		underTest.initializeMqOnStartup(preferences);
+
+		assertEquals(MqType.KAFKA, MQConfig.currentMQType);
+		assertEquals("orders.request", KafkaConfig.getOrderServiceSendToTopic());
+		assertEquals("orders.response", KafkaConfig.getOrderServiceListenToTopic());
+		verify(kafkaInventoryRequestTopicListener).refreshDestination(KafkaConfig.DEFAULT_ORDER_SERVICE_REQUEST_TOPIC);
+		verify(kafkaInventoryResponseTopicListener).refreshDestination("orders.response");
 	}
 
 	/**

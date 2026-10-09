@@ -22,7 +22,7 @@ angular
                     },
                     data: requestBody
                 }).then(function(response) {
-                    if (response.data.errors) {
+                    if (response.data.errors && response.data.errors.length > 0) {
                         error(formatError(response));
                     } else {
                         success(response);

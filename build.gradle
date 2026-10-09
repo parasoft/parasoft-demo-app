@@ -1,16 +1,16 @@
 plugins {
-	id 'org.springframework.boot' version '2.3.12.RELEASE'
-	id 'io.spring.dependency-management' version '1.0.12.RELEASE'
+	id 'org.springframework.boot' version '4.1.1'
+	id 'io.spring.dependency-management' version '1.1.7'
 	id 'java'
 	id 'war'
-	id 'com.google.protobuf' version '0.8.18'
+	id 'com.google.protobuf' version '0.9.6'
 }
 
 group = 'com.parasoft.demoapp'
 version = '1.1.0'
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 def buildMetadata = ''
@@ -39,27 +39,36 @@ repositories {
 	mavenCentral()
 }
 
-def grpcVersion = '1.49.0' // GRPC_VERSION
+def grpcVersion = '1.63.0'
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-activemq'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-zuul'
-	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
-	implementation 'com.graphql-java:graphql-java:19.2'
-	implementation 'com.graphql-java:graphql-java-spring-boot-starter-webmvc:2.0'
+	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+	implementation 'org.springframework.cloud:spring-cloud-starter-gateway-server-webmvc'
+	implementation 'org.springframework.cloud:spring-cloud-starter-loadbalancer'
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+	implementation 'com.graphql-java:graphql-java'
 	compileOnly 'org.projectlombok:lombok'
+	// gRPC's generated sources still use javax.annotation.Generated. This does not
+	// include the legacy Servlet API and is required only at compilation time.
+	compileOnly 'javax.annotation:javax.annotation-api:1.3.2'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	implementation 'org.hsqldb:hsqldb'
 	annotationProcessor 'org.projectlombok:lombok'
-	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+	// Spring Boot 4 separates the embedded Tomcat runtime from the full starter.
+	// Marking the full starter as provided also moves Spring Framework into
+	// WEB-INF/lib-provided, which an external Tomcat must not load.
+	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat-runtime'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+	testImplementation 'org.springframework.boot:spring-boot-resttestclient'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testImplementation 'com.graphql-java-kickstart:graphql-spring-boot-test:14.0.0'
 	testImplementation 'com.graphql-java-kickstart:graphql-java-kickstart:14.0.0'
@@ -69,26 +78,21 @@ dependencies {
 	// To support higher version of keycloak
 	implementation 'com.nimbusds:oauth2-oidc-sdk:9.4'
 
-	implementation 'org.apache.activemq:activemq-stomp'
-	// Exclude `jetty-all` dependency, but keep other necessary jetty dependencies.
-	// See the following URLs for details:
-	// https://stackoverflow.com/questions/59286348/spring-boot-2-2-activemq-jetty-conflict
-	// https://issues.apache.org/jira/browse/AMQ-7364
-	implementation 'org.springframework.boot:spring-boot-starter-jetty'
-	implementation ('org.apache.activemq:activemq-http') {
-		exclude group: "org.eclipse.jetty.aggregate", module:"jetty-all"
-	}
-	implementation 'org.springframework.kafka:spring-kafka:2.9.1'
+	// ActiveMQ Classic 6.3 uses Spring 7, Jetty 12 and Servlet 6.1.
+	implementation 'org.apache.activemq:activemq-stomp:6.3.2'
+	implementation 'org.apache.activemq:activemq-http:6.3.2'
+	// activemq-http declares this Jetty WebSocket server integration as optional,
+	// but the embedded broker enables the ws:// connector at runtime.
+	implementation 'org.eclipse.jetty.ee11.websocket:jetty-ee11-websocket-jetty-server:12.1.12'
+	implementation 'org.springframework.kafka:spring-kafka'
 	implementation 'org.apache.activemq:activemq-spring'
 	implementation 'org.springframework.boot:spring-boot-starter-amqp'
 	implementation 'com.google.code.gson:gson'
 
-	implementation 'org.springdoc:springdoc-openapi-webmvc-core:1.6.13'
-	implementation 'org.springdoc:springdoc-openapi-ui:1.6.13'
-	implementation 'org.springdoc:springdoc-openapi-data-rest:1.6.13'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.1'
 
 	//gRPC
-	implementation 'net.devh:grpc-spring-boot-starter:2.13.1.RELEASE'
+	implementation 'net.devh:grpc-spring-boot-starter:3.1.0.RELEASE'
 	implementation "io.grpc:grpc-protobuf:${grpcVersion}"
 	implementation "io.grpc:grpc-stub:${grpcVersion}"
 
@@ -97,8 +101,6 @@ dependencies {
 
 	// Jtest
 	testImplementation 'org.apiguardian:apiguardian-api:1.1.2'
-	testImplementation 'net.bytebuddy:byte-buddy:1.12.8'
-	testImplementation 'net.bytebuddy:byte-buddy-agent:1.12.8'
 	testImplementation 'org.hamcrest:hamcrest:2.2'
 	testImplementation 'junit:junit:4.13.2'
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
@@ -112,16 +114,11 @@ dependencies {
 	testImplementation 'org.junit.platform:junit-platform-runner:1.9.2'
 	testImplementation 'org.junit.platform:junit-platform-suite-api:1.9.2'
 	testImplementation 'org.junit.vintage:junit-vintage-engine:5.9.2'
-	testImplementation 'org.mockito:mockito-core:4.4.0'
-	testImplementation 'org.mockito:mockito-junit-jupiter:4.4.0'
-	testImplementation 'org.mockito:mockito-inline:4.4.0'
 	testImplementation 'org.objenesis:objenesis:3.2'
 	testImplementation 'org.opentest4j:opentest4j:1.2.0'
 	testImplementation 'org.javassist:javassist:3.24.0-GA'
 
-	testImplementation 'org.springframework.kafka:spring-kafka-test:2.9.1'
-	testImplementation 'org.apache.kafka:kafka-clients:3.2.3:test'
-	testImplementation 'org.apache.kafka:kafka_2.13:3.2.3:test'
+	testImplementation 'org.springframework.kafka:spring-kafka-test'
 
 	testImplementation 'org.springframework.amqp:spring-rabbit-test:'
 
@@ -133,14 +130,24 @@ test {
 }
 
 ext {
-	set('spring-framework.version', "5.2.22.RELEASE")
-	set('log4j2.version', '2.17.1')
-	set('springCloudVersion', "Hoxton.SR12")
+	set('springCloudVersion', "2025.1.2")
 }
 
 dependencyManagement {
+	// Spring Cloud's BOM exclusions must not become global Gradle exclusions.
+	// Otherwise Spring Framework's spring-web is removed from the runtime classpath.
+	applyMavenExclusions = false
 	imports {
 		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+configurations.configureEach {
+	resolutionStrategy.eachDependency { details ->
+		if (details.requested.group == 'org.apache.activemq') {
+			details.useVersion('6.3.2')
+			because('ActiveMQ Classic modules must use one consistent Jetty 12-compatible version')
+		}
 	}
 }
 
@@ -168,23 +175,19 @@ springBoot {
 	}
 }
 
+tasks.named('processResources') {
+	dependsOn tasks.named('bootBuildInfo')
+	// bootBuildInfo writes to src/main/resources for IDE launches. Gradle 8.14
+	// rejects the identical generated and source resource without this policy.
+	duplicatesStrategy = org.gradle.api.file.DuplicatesStrategy.EXCLUDE
+}
+
 bootWar {
 	manifest {
 		attributes(
-				'Main-Class': 'org.springframework.boot.loader.PropertiesLauncher',
+				'Main-Class': 'org.springframework.boot.loader.launch.PropertiesLauncher',
 				'Loader-Path': 'WEB-INF/lib-provided,WEB-INF/lib,WEB-INF/classes,file:lib/'
 		)
-	}
-}
-
-sourceSets{
-	src {
-		main {
-			java {
-				srcDir 'build/generated/source/proto/main/grpc'
-				srcDir 'build/generated/source/proto/main/java'
-			}
-		}
 	}
 }
 

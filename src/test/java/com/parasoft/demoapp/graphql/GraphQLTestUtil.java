@@ -37,7 +37,7 @@ public class GraphQLTestUtil {
         response.assertThatErrorsField().isNotNull()
                 .asListOf(GraphQLTestError.class)
                 .hasOnlyOneElementSatisfying(error -> assertThat(error.getMessage())
-                        .contains("Invalid input for Enum 'RegionType'")
+                        .contains("Invalid input for enum 'RegionType'")
                         .contains(regionType.name()))
                 .and();
         assertThat(response.readTree().has("data")).isFalse();
