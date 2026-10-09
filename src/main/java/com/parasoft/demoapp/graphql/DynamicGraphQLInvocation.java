@@ -28,12 +28,12 @@ public class DynamicGraphQLInvocation {
     private final ObjectMapper objectMapper;
 
     @PostMapping(value = "/graphql", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public CompletableFuture<ExecutionResult> invoke(@RequestBody GraphQLRequest request) {
+    public CompletableFuture<Map<String, Object>> invoke(@RequestBody GraphQLRequest request) {
         return execute(request);
     }
 
     @PostMapping(value = "/graphql", consumes = "application/graphql", produces = MediaType.APPLICATION_JSON_VALUE)
-    public CompletableFuture<ExecutionResult> invokeGraphQLDocument(
+    public CompletableFuture<Map<String, Object>> invokeGraphQLDocument(
             @RequestBody String query,
             @RequestParam(name = "operationName", required = false) String operationName,
             @RequestParam(name = "variables", required = false) String variables) {
@@ -41,14 +41,14 @@ public class DynamicGraphQLInvocation {
     }
 
     @GetMapping(value = "/graphql", produces = MediaType.APPLICATION_JSON_VALUE)
-    public CompletableFuture<ExecutionResult> invokeQuery(
+    public CompletableFuture<Map<String, Object>> invokeQuery(
             @RequestParam(name = "query") String query,
             @RequestParam(name = "operationName", required = false) String operationName,
             @RequestParam(name = "variables", required = false) String variables) {
         return execute(new GraphQLRequest(query, operationName, parseVariables(variables)));
     }
 
-    private CompletableFuture<ExecutionResult> execute(GraphQLRequest request) {
+    private CompletableFuture<Map<String, Object>> execute(GraphQLRequest request) {
         ExecutionInput.Builder executionInputBuilder = ExecutionInput.newExecutionInput()
                 .query(request.query())
                 .operationName(request.operationName())
@@ -59,7 +59,8 @@ public class DynamicGraphQLInvocation {
             executionInputBuilder.dataLoaderRegistry(dataLoaderRegistry);
         }
 
-        return graphQLProvider.getGraphQL().executeAsync(executionInputBuilder.build());
+        return graphQLProvider.getGraphQL().executeAsync(executionInputBuilder.build())
+                .thenApply(ExecutionResult::toSpecification);
     }
 
     @SuppressWarnings("unchecked")

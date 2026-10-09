@@ -121,7 +121,7 @@ public class GlobalPreferencesServiceTest {
 
 		assertEquals(MqType.RABBIT_MQ, MQConfig.currentMQType);
 		verify(rabbitMQConfig).replaceQueueForOrderServiceSendToQueueBinding("orders.request");
-		verify(rabbitMQInventoryRequestQueueListener).refreshDestination("orders.request");
+		verify(rabbitMQInventoryRequestQueueListener).refreshDestination(RabbitMQConfig.DEFAULT_ORDER_SERVICE_REQUEST_QUEUE);
 		verify(rabbitMQConfig).declareQueue("orders.response");
 		verify(rabbitMQInventoryResponseQueueListener).refreshDestination("orders.response");
 	}
@@ -138,7 +138,7 @@ public class GlobalPreferencesServiceTest {
 		assertEquals(MqType.KAFKA, MQConfig.currentMQType);
 		assertEquals("orders.request", KafkaConfig.getOrderServiceSendToTopic());
 		assertEquals("orders.response", KafkaConfig.getOrderServiceListenToTopic());
-		verify(kafkaInventoryRequestTopicListener).refreshDestination("orders.request");
+		verify(kafkaInventoryRequestTopicListener).refreshDestination(KafkaConfig.DEFAULT_ORDER_SERVICE_REQUEST_TOPIC);
 		verify(kafkaInventoryResponseTopicListener).refreshDestination("orders.response");
 	}
 

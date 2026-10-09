@@ -40,7 +40,6 @@ public class GraphQLTestUtil {
                         .contains("Invalid input for enum 'RegionType'")
                         .contains(regionType.name()))
                 .and();
-        assertThat(response.readTree().has("data")).isTrue();
-        assertThat(response.readTree().get("data").isNull()).isTrue();
+        assertThat(response.readTree().has("data")).isFalse();
     }
 }

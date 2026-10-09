@@ -191,17 +191,6 @@ bootWar {
 	}
 }
 
-sourceSets{
-	src {
-		main {
-			java {
-				srcDir 'build/generated/source/proto/main/grpc'
-				srcDir 'build/generated/source/proto/main/java'
-			}
-		}
-	}
-}
-
 protobuf {
 	protoc {
 		artifact = "com.google.protobuf:protoc:3.14.0"
