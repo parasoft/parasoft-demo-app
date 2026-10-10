@@ -69,18 +69,6 @@ Login with one of these users:
 - Username `purchaser` password `password`
 - Username `approver` password `password`
 
-### Initial status of new orders
-
-To make order-status assertions consistent in test scenarios, open **Demo Administration > Additional Settings** (between Demo Bugs and Industry Site Design), enable **Immediately put new orders into PROCESSED state**, and save the settings. The option is disabled by default and applies to newly placed orders.
-
-When enabled, new orders start in `PROCESSED` state. Inventory is still checked asynchronously: successful inventory processing keeps that status, while insufficient inventory may later change the order to `CANCELED`. Use items with sufficient inventory when asserting `PROCESSED` in a scenario. Disabling the option restores the initial `SUBMITTED` state and the existing asynchronous processing behavior.
-
-Known limitation: an approver can decline an immediately processed order before inventory processing finishes. If the inventory decrease fails, declining the order can incorrectly increase stock that was never reserved. The late failure also cannot change the declined order to `CANCELED`. For scenarios involving approval or decline, disable this option or wait for inventory processing to finish before taking those actions.
-
-The separate `newOrdersInitiallyProcessed` preference sets only the initial order status. REST clients can set it to `true` to enable the option; an omitted or false request value disables it. Preferences responses omit this field when disabled, preserving the default response shape.
-
-The option is stored with the application settings and remains enabled after restarting the application. Resetting industry data preserves global preferences, including this option.
-
 ## Using OAuth 2.0 Authentication
 This application supports both Http Basic authentication and OAuth 2.0 authentication.
 To use OAuth 2.0 authentication, you will need to set up a Keycloak server as the OAuth 2.0 provider.

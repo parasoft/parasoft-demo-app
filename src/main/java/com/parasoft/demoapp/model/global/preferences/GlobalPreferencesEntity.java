@@ -1,7 +1,6 @@
 package com.parasoft.demoapp.model.global.preferences;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -52,8 +51,6 @@ public class GlobalPreferencesEntity {
 
     @Setter
     @Column(name = "new_orders_initially_processed")
-    // Preserve the existing REST response shape when this optional setting is disabled.
-    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     private Boolean newOrdersInitiallyProcessed = false;
 
     @Setter

@@ -1,7 +1,6 @@
 package com.parasoft.demoapp.dto;
 
 import com.parasoft.demoapp.model.global.preferences.*;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,8 +20,6 @@ public class GlobalPreferencesResponseDTO {
 
     private Boolean advertisingEnabled;
 
-    // Older API clients receive the previous response shape for the disabled default.
-    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     private Boolean newOrdersInitiallyProcessed;
 
     private Set<DemoBugEntity> demoBugs;

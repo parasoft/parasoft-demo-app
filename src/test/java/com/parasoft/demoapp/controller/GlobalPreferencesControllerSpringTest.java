@@ -68,13 +68,13 @@ public class GlobalPreferencesControllerSpringTest {
 
     @Test
     @Transactional(value = "globalTransactionManager")
-    public void testNewOrdersInitiallyProcessed_responseCompatibility() throws Exception {
+    public void testNewOrdersInitiallyProcessed_responseValues() throws Exception {
         mockMvc.perform(get("/v1/demoAdmin/currentPreferences"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.newOrdersInitiallyProcessed").doesNotExist());
+                .andExpect(jsonPath("$.data.newOrdersInitiallyProcessed").value(false));
         mockMvc.perform(get("/v1/demoAdmin/defaultPreferences"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.newOrdersInitiallyProcessed").doesNotExist());
+                .andExpect(jsonPath("$.data.newOrdersInitiallyProcessed").value(false));
 
         String preferences = "{\"industryType\":\"OUTDOOR\",\"webServiceMode\":\"REST_API\","
                 + "\"advertisingEnabled\":true,\"mqType\":\"ACTIVE_MQ\","
@@ -89,18 +89,20 @@ public class GlobalPreferencesControllerSpringTest {
         mockMvc.perform(get("/v1/demoAdmin/currentPreferences"))
                 .andExpect(jsonPath("$.data.newOrdersInitiallyProcessed").value(true));
 
-        // An older client can omit the new field and still receive the previous response shape.
+        // Omitting the request field disables the preference and returns its false value.
         MvcResult disabled = mockMvc.perform(put("/v1/demoAdmin/preferences")
                         .with(httpBasic(GlobalUsersCreator.USERNAME_PURCHASER, GlobalUsersCreator.PASSWORD))
                         .contentType(MediaType.APPLICATION_JSON).content(preferences + "}"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.newOrdersInitiallyProcessed").doesNotExist())
+                .andExpect(jsonPath("$.data.newOrdersInitiallyProcessed").value(false))
                 .andReturn();
         assertFalse(globalPreferencesService.getCurrentGlobalPreferences().getNewOrdersInitiallyProcessed());
         var response = objectMapper.readTree(disabled.getResponse().getContentAsString()).get("data");
         assertTrue(response.has("advertisingEnabled"));
         assertTrue(response.has("demoBugs"));
         assertTrue(response.has("useParasoftJDBCProxy"));
+        mockMvc.perform(get("/v1/demoAdmin/currentPreferences"))
+                .andExpect(jsonPath("$.data.newOrdersInitiallyProcessed").value(false));
     }
 
     @Test
