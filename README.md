@@ -75,6 +75,8 @@ To make order-status assertions consistent in test scenarios, open **Demo Admini
 
 When enabled, new orders start in `PROCESSED` state. Inventory is still checked asynchronously: successful inventory processing keeps that status, while insufficient inventory may later change the order to `CANCELED`. Use items with sufficient inventory when asserting `PROCESSED` in a scenario. Disabling the option restores the initial `SUBMITTED` state and the existing asynchronous processing behavior.
 
+Known limitation: an approver can decline an immediately processed order before inventory processing finishes. If the inventory decrease fails, declining the order can incorrectly increase stock that was never reserved. The late failure also cannot change the declined order to `CANCELED`. For scenarios involving approval or decline, disable this option or wait for inventory processing to finish before taking those actions.
+
 The separate `newOrdersInitiallyProcessed` preference sets only the initial order status. REST clients can set it to `true` to enable the option; an omitted or false request value disables it. Preferences responses omit this field when disabled, preserving the default response shape.
 
 The option is stored with the application settings and remains enabled after restarting the application. Resetting industry data preserves global preferences, including this option.
