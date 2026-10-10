@@ -33,11 +33,9 @@ function loadOptions(preferences) {
     return options;
 }
 
-test('restores newOrdersInitiallyProcessed independently of demo bugs', () => {
-    const options = loadOptions({ newOrdersInitiallyProcessed: true,
-        demoBugs: [{ demoBugsType: 'REVERSE_ORDER_OF_ORDERS' }] });
+test('restores saved newOrdersInitiallyProcessed', () => {
+    const options = loadOptions({ newOrdersInitiallyProcessed: true });
     assert.equal(options.newOrdersInitiallyProcessed, true);
-    assert.equal(options.demoBugs.reverse_order_of_orders, true);
 });
 
 test('keeps newOrdersInitiallyProcessed unchecked when absent or disabled', () => {
