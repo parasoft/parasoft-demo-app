@@ -23,6 +23,9 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -48,6 +51,12 @@ public class GlobalPreferencesServiceSpringTest {
 	// Component under test
 	@Autowired
 	GlobalPreferencesService service;
+
+	@Autowired
+	GlobalPreferencesDefaultSettingsService defaultPreferencesService;
+
+	@PersistenceContext(unitName = "global_PU")
+	EntityManager globalEntityManager;
 
 	@Autowired
 	CategoryRepository categoryRepository;
@@ -78,6 +87,44 @@ public class GlobalPreferencesServiceSpringTest {
 	@After
 	public void tearDown() {
 		mockedUrlUtilStatic.close();
+	}
+
+	@Test
+	@Transactional(value = "globalTransactionManager")
+	public void testUpdateGlobalPreferences_newOrdersInitiallyProcessedPersistence() throws Throwable {
+		GlobalPreferencesDTO preferences = new GlobalPreferencesDTO();
+		preferences.setIndustryType(service.getCurrentGlobalPreferences().getIndustryType());
+		preferences.setMqType(MqType.ACTIVE_MQ);
+		preferences.setOrderServiceSendTo(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
+		preferences.setOrderServiceListenOn(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE);
+		preferences.setWebServiceMode(WebServiceMode.REST_API);
+		preferences.setDemoBugs(new DemoBugsType[] { DemoBugsType.REVERSE_ORDER_OF_ORDERS });
+		preferences.setNewOrdersInitiallyProcessed(true);
+
+		service.updateGlobalPreferences(preferences);
+		// Reload from the database, rather than accepting the service's in-memory result as persistence evidence.
+		globalEntityManager.flush();
+		globalEntityManager.clear();
+		assertTrue(service.shouldNewOrdersInitiallyBeProcessed());
+		assertEquals(1, service.getCurrentGlobalPreferences().getDemoBugs().size());
+
+		preferences.setNewOrdersInitiallyProcessed(false);
+		service.updateGlobalPreferences(preferences);
+		globalEntityManager.flush();
+		globalEntityManager.clear();
+		assertFalse(service.shouldNewOrdersInitiallyBeProcessed());
+		assertEquals(DemoBugsType.REVERSE_ORDER_OF_ORDERS,
+				service.getCurrentGlobalPreferences().getDemoBugs().iterator().next().getDemoBugsType());
+		assertFalse(defaultPreferencesService.defaultPreferences().getNewOrdersInitiallyProcessed());
+
+		preferences.setNewOrdersInitiallyProcessed(true);
+		service.updateGlobalPreferences(preferences);
+		preferences.setNewOrdersInitiallyProcessed(null);
+		service.updateGlobalPreferences(preferences);
+		globalEntityManager.flush();
+		globalEntityManager.clear();
+		assertFalse(service.shouldNewOrdersInitiallyBeProcessed());
+		assertEquals(1, service.getCurrentGlobalPreferences().getDemoBugs().size());
 	}
 	/**
 	 * Test for industry change

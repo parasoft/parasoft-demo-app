@@ -1426,6 +1426,7 @@ mod.controller('optionsForm', function($scope, $rootScope, $http, $filter) {
 
         options.industryType = data.industryType;
         options.advertisingEnabled = data.advertisingEnabled;
+        options.newOrdersInitiallyProcessed = data.newOrdersInitiallyProcessed === true;
 
         options.useParasoftJDBCProxy = data.useParasoftJDBCProxy;
         options.parasoftVirtualizeServerUrl = data.parasoftVirtualizeServerUrl;

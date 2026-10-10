@@ -35,6 +35,9 @@ public class GlobalPreferencesDTO {
     @NotNull
     private Boolean advertisingEnabled;
 
+    @Schema(description = "Set new orders initially to PROCESSED. Defaults to false when omitted.", defaultValue = "false")
+    private Boolean newOrdersInitiallyProcessed;
+
     private DemoBugsType[] demoBugs;
 
     private String categoriesRestEndpoint;
