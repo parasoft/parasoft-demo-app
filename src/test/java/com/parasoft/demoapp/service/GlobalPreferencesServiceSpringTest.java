@@ -91,7 +91,7 @@ public class GlobalPreferencesServiceSpringTest {
 
 	@Test
 	@Transactional(value = "globalTransactionManager")
-	public void testUpdateGlobalPreferences_immediateProcessingPersistence() throws Throwable {
+	public void testUpdateGlobalPreferences_newOrdersInitiallyProcessedPersistence() throws Throwable {
 		GlobalPreferencesDTO preferences = new GlobalPreferencesDTO();
 		preferences.setIndustryType(service.getCurrentGlobalPreferences().getIndustryType());
 		preferences.setMqType(MqType.ACTIVE_MQ);

@@ -72,7 +72,7 @@ public class OrderServiceTest {
     }
 
     @Test
-    public void testAddNewOrder_immediateProcessingEnabled() throws Exception {
+    public void testAddNewOrder_newOrdersInitiallyProcessedEnabled() throws Exception {
         List<OrderStatus> savedStatuses = prepareNewOrder();
         when(globalPreferencesService.shouldNewOrdersInitiallyBeProcessed()).thenReturn(true);
 
@@ -82,20 +82,6 @@ public class OrderServiceTest {
         assertEquals(OrderStatus.PROCESSED, result.getStatus());
         assertEquals(Arrays.asList(OrderStatus.PROCESSED, OrderStatus.PROCESSED), savedStatuses);
         assertEquals(2, result.getOrderItems().size());
-        verify(shoppingCartService).clearShoppingCart(1L);
-        verify(orderMQService).sendToInventoryRequestDestination(
-                InventoryOperation.DECREASE, "23-456-010", result.getOrderItems());
-    }
-
-    @Test
-    public void testAddNewOrder_immediateProcessingDisabled() throws Exception {
-        List<OrderStatus> savedStatuses = prepareNewOrder();
-
-        OrderEntity result = underTest.addNewOrder(1L, "purchaser", RegionType.LOCATION_1,
-                "Test location", "receiver", "event", "event-number");
-
-        assertEquals(OrderStatus.SUBMITTED, result.getStatus());
-        assertEquals(Arrays.asList(OrderStatus.SUBMITTED, OrderStatus.SUBMITTED), savedStatuses);
         verify(shoppingCartService).clearShoppingCart(1L);
         verify(orderMQService).sendToInventoryRequestDestination(
                 InventoryOperation.DECREASE, "23-456-010", result.getOrderItems());
@@ -127,7 +113,7 @@ public class OrderServiceTest {
     }
 
     @Test
-    public void testHandleMessageFromResponse_alreadyProcessed() {
+    public void testHandleMessageFromResponse_newOrdersInitiallyProcessedInventorySuccess() {
         String orderNumber = "123-456-789";
         OrderEntity order = new OrderEntity();
         order.setOrderNumber(orderNumber);
@@ -152,7 +138,7 @@ public class OrderServiceTest {
     }
 
     @Test
-    public void testHandleMessageFromResponse_processedOrderInventoryNotEnough() {
+    public void testHandleMessageFromResponse_newOrdersInitiallyProcessedInventoryFailure() {
         String orderNumber = "123-456-789";
         String cancellationReason = "Inventory item with id 1 is out of stock.";
         OrderEntity order = new OrderEntity();
@@ -283,7 +269,7 @@ public class OrderServiceTest {
      * @see OrderService#addNewOrder(Long, String, RegionType, String, String, String, String)
      */
     @Test
-    public void testAddNewOrder_normal() throws Throwable {
+    public void testAddNewOrder_newOrdersInitiallyProcessedDisabled() throws Throwable {
         // Given
         Long orderId = 10L;
         Long userId = 1L;
@@ -329,7 +315,14 @@ public class OrderServiceTest {
 
         when(shoppingCartService.getCartItemsByUserId(anyLong())).thenReturn(cartItems);
         when(itemService.getItemById(anyLong())).thenReturn(item);
-        when(orderRepository.save((OrderEntity) any())).thenReturn(saveResult);
+        when(globalPreferencesService.shouldNewOrdersInitiallyBeProcessed()).thenReturn(false);
+        List<OrderStatus> savedStatuses = new ArrayList<>();
+        // Capture each save's status before the fixture replaces the incoming entity.
+        when(orderRepository.save(any(OrderEntity.class))).thenAnswer(invocation -> {
+            OrderEntity saved = invocation.getArgument(0);
+            savedStatuses.add(saved.getStatus());
+            return saveResult;
+        });
 
         // When
         OrderEntity result = underTest.addNewOrder(userId, requestedBy, region, location, receiverId, eventId, eventNumber);
@@ -337,8 +330,8 @@ public class OrderServiceTest {
         // Then
         assertNotNull(result);
         assertEquals(requestedBy, result.getRequestedBy());
-        assertEquals(OrderStatus.SUBMITTED.getStatus(), result.getStatus().getStatus());
-        assertEquals(OrderStatus.SUBMITTED.getPriority(), result.getStatus().getPriority());
+        assertEquals(OrderStatus.SUBMITTED, result.getStatus());
+        assertEquals(Arrays.asList(OrderStatus.SUBMITTED, OrderStatus.SUBMITTED), savedStatuses);
         assertEquals(1, result.getOrderItems().size());
         assertEquals(RegionType.JAPAN, result.getRegion());
         assertEquals(receiverId, result.getReceiverId());
@@ -348,6 +341,7 @@ public class OrderServiceTest {
         assertEquals(eventNumber, result.getEventNumber());
         assertEquals("23-456-010", result.getOrderNumber());
         assertEquals(submissionDate, result.getSubmissionDate());
+        verify(shoppingCartService).clearShoppingCart(userId);
         Mockito.verify(orderMQService).sendToInventoryRequestDestination(InventoryOperation.DECREASE, "23-456-010", orderItems);
     }
 

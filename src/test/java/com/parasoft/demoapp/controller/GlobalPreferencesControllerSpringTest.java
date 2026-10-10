@@ -68,7 +68,7 @@ public class GlobalPreferencesControllerSpringTest {
 
     @Test
     @Transactional(value = "globalTransactionManager")
-    public void testInitialOrderStatusPreference_responseCompatibility() throws Exception {
+    public void testNewOrdersInitiallyProcessed_responseCompatibility() throws Exception {
         mockMvc.perform(get("/v1/demoAdmin/currentPreferences"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.newOrdersInitiallyProcessed").doesNotExist());
