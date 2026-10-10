@@ -39,5 +39,7 @@ application.pid
 /src/main/resources/META-INF/
 /lib/*.jar
 
-# Local implementation plans are not part of the shipped documentation.
-/docs/superpowers/plans/
+### SOAVirt
+/.metadata/
+/TestAssets/test_templates/tst_creation.properties
+/VirtualAssets/VirtualAssets.xml
