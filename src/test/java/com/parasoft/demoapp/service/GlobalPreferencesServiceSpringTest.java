@@ -53,9 +53,6 @@ public class GlobalPreferencesServiceSpringTest {
 	GlobalPreferencesService service;
 
 	@Autowired
-	DemoBugService demoBugService;
-
-	@Autowired
 	GlobalPreferencesDefaultSettingsService defaultPreferencesService;
 
 	@PersistenceContext(unitName = "global_PU")
@@ -101,25 +98,33 @@ public class GlobalPreferencesServiceSpringTest {
 		preferences.setOrderServiceSendTo(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_REQUEST);
 		preferences.setOrderServiceListenOn(ActiveMQConfig.DEFAULT_QUEUE_INVENTORY_RESPONSE);
 		preferences.setWebServiceMode(WebServiceMode.REST_API);
-		preferences.setDemoBugs(new DemoBugsType[] {
-				DemoBugsType.PROCESS_ORDERS_IMMEDIATELY, DemoBugsType.REVERSE_ORDER_OF_ORDERS });
+		preferences.setDemoBugs(new DemoBugsType[] { DemoBugsType.REVERSE_ORDER_OF_ORDERS });
+		preferences.setNewOrdersInitiallyProcessed(true);
 
 		service.updateGlobalPreferences(preferences);
 		// Reload from the database, rather than accepting the service's in-memory result as persistence evidence.
 		globalEntityManager.flush();
 		globalEntityManager.clear();
-		assertTrue(demoBugService.shouldProcessOrdersImmediately());
-		assertEquals(2, service.getCurrentGlobalPreferences().getDemoBugs().size());
+		assertTrue(service.shouldNewOrdersInitiallyBeProcessed());
+		assertEquals(1, service.getCurrentGlobalPreferences().getDemoBugs().size());
 
-		preferences.setDemoBugs(new DemoBugsType[] { DemoBugsType.REVERSE_ORDER_OF_ORDERS });
+		preferences.setNewOrdersInitiallyProcessed(false);
 		service.updateGlobalPreferences(preferences);
 		globalEntityManager.flush();
 		globalEntityManager.clear();
-		assertFalse(demoBugService.shouldProcessOrdersImmediately());
+		assertFalse(service.shouldNewOrdersInitiallyBeProcessed());
 		assertEquals(DemoBugsType.REVERSE_ORDER_OF_ORDERS,
 				service.getCurrentGlobalPreferences().getDemoBugs().iterator().next().getDemoBugsType());
-		assertTrue(defaultPreferencesService.defaultDemoBugs().stream().noneMatch(
-				bug -> bug.getDemoBugsType() == DemoBugsType.PROCESS_ORDERS_IMMEDIATELY));
+		assertFalse(defaultPreferencesService.defaultPreferences().getNewOrdersInitiallyProcessed());
+
+		preferences.setNewOrdersInitiallyProcessed(true);
+		service.updateGlobalPreferences(preferences);
+		preferences.setNewOrdersInitiallyProcessed(null);
+		service.updateGlobalPreferences(preferences);
+		globalEntityManager.flush();
+		globalEntityManager.clear();
+		assertFalse(service.shouldNewOrdersInitiallyBeProcessed());
+		assertEquals(1, service.getCurrentGlobalPreferences().getDemoBugs().size());
 	}
 	/**
 	 * Test for industry change

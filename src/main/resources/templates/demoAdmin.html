@@ -523,11 +523,10 @@
                                 <span translate="ADDITIONAL_SETTINGS"></span>
                             </div>
                             <div class="section_body">
-                                <!-- Keep the existing preference field so previously saved settings remain compatible. -->
                                 <div>
                                     <label>
-                                        <input type="checkbox" name="demoBugs[]" value="PROCESS_ORDERS_IMMEDIATELY"
-                                               ng-checked="options.demoBugs.process_orders_immediately">
+                                        <input type="checkbox" name="newOrdersInitiallyProcessed" value="true"
+                                               ng-checked="options.newOrdersInitiallyProcessed">
                                         <span class="input-label" translate="PROCESS_ORDERS_IMMEDIATELY"></span>
                                     </label>
                                 </div>

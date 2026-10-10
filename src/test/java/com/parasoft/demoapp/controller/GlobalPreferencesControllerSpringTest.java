@@ -16,13 +16,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.MessageFormat;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -58,6 +65,43 @@ public class GlobalPreferencesControllerSpringTest {
 
     @Autowired
     GRPCConfig gRPConfig;
+
+    @Test
+    @Transactional(value = "globalTransactionManager")
+    public void testInitialOrderStatusPreference_responseCompatibility() throws Exception {
+        mockMvc.perform(get("/v1/demoAdmin/currentPreferences"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.newOrdersInitiallyProcessed").doesNotExist());
+        mockMvc.perform(get("/v1/demoAdmin/defaultPreferences"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.newOrdersInitiallyProcessed").doesNotExist());
+
+        String preferences = "{\"industryType\":\"OUTDOOR\",\"webServiceMode\":\"REST_API\","
+                + "\"advertisingEnabled\":true,\"mqType\":\"ACTIVE_MQ\","
+                + "\"orderServiceSendTo\":\"inventory.request\",\"orderServiceListenOn\":\"inventory.response\"";
+        // MockMvc shares this transaction; rollback preserves the original settings for later test classes.
+        mockMvc.perform(put("/v1/demoAdmin/preferences")
+                        .with(httpBasic(GlobalUsersCreator.USERNAME_PURCHASER, GlobalUsersCreator.PASSWORD))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(preferences + ",\"newOrdersInitiallyProcessed\":true}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.newOrdersInitiallyProcessed").value(true));
+        mockMvc.perform(get("/v1/demoAdmin/currentPreferences"))
+                .andExpect(jsonPath("$.data.newOrdersInitiallyProcessed").value(true));
+
+        // An older client can omit the new field and still receive the previous response shape.
+        MvcResult disabled = mockMvc.perform(put("/v1/demoAdmin/preferences")
+                        .with(httpBasic(GlobalUsersCreator.USERNAME_PURCHASER, GlobalUsersCreator.PASSWORD))
+                        .contentType(MediaType.APPLICATION_JSON).content(preferences + "}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.newOrdersInitiallyProcessed").doesNotExist())
+                .andReturn();
+        assertFalse(globalPreferencesService.getCurrentGlobalPreferences().getNewOrdersInitiallyProcessed());
+        var response = objectMapper.readTree(disabled.getResponse().getContentAsString()).get("data");
+        assertTrue(response.has("advertisingEnabled"));
+        assertTrue(response.has("demoBugs"));
+        assertTrue(response.has("useParasoftJDBCProxy"));
+    }
 
     @Test
     public void test_getMQProperties_normal() throws Exception {

@@ -46,7 +46,7 @@ public class OrderService {
     @Autowired
     // Defer preferences lookup until order creation to avoid the inventory-listener startup dependency cycle.
     @Lazy
-    private DemoBugService demoBugService;
+    private GlobalPreferencesService globalPreferencesService;
 
     @Transactional
     public InventoryOperationRequestMessageDTO handleMessageFromResponse(InventoryOperationResultMessageDTO operationResult) {
@@ -131,7 +131,7 @@ public class OrderService {
         OrderEntity order = new OrderEntity();
         order.setRequestedBy(username);
         // This option changes the initial status only; inventory validation and cancellation stay asynchronous.
-        order.setStatus(demoBugService.shouldProcessOrdersImmediately() ? OrderStatus.PROCESSED : OrderStatus.SUBMITTED);
+        order.setStatus(globalPreferencesService.shouldNewOrdersInitiallyBeProcessed() ? OrderStatus.PROCESSED : OrderStatus.SUBMITTED);
         order.setRegion(region);
         order.setLocation(location);
         order.setOrderImage(locationEntity.getLocationImage());

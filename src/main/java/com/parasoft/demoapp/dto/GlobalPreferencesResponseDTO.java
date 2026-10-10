@@ -1,6 +1,7 @@
 package com.parasoft.demoapp.dto;
 
 import com.parasoft.demoapp.model.global.preferences.*;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,10 @@ public class GlobalPreferencesResponseDTO {
     private String graphQLEndpoint;
 
     private Boolean advertisingEnabled;
+
+    // Older API clients receive the previous response shape for the disabled default.
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+    private Boolean newOrdersInitiallyProcessed;
 
     private Set<DemoBugEntity> demoBugs;
 
@@ -45,6 +50,7 @@ public class GlobalPreferencesResponseDTO {
         this.setWebServiceMode(globalPreferencesEntity.getWebServiceMode());
         this.setGraphQLEndpoint(globalPreferencesEntity.getGraphQLEndpoint());
         this.setAdvertisingEnabled(globalPreferencesEntity.getAdvertisingEnabled());
+        this.setNewOrdersInitiallyProcessed(globalPreferencesEntity.getNewOrdersInitiallyProcessed());
         this.setDemoBugs(globalPreferencesEntity.getDemoBugs());
         this.setRestEndPoints(globalPreferencesEntity.getRestEndPoints());
         this.setUseParasoftJDBCProxy(globalPreferencesEntity.getUseParasoftJDBCProxy());

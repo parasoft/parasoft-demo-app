@@ -69,11 +69,13 @@ Login with one of these users:
 - Username `purchaser` password `password`
 - Username `approver` password `password`
 
-### Immediately processing new orders
+### Initial status of new orders
 
 To make order-status assertions consistent in test scenarios, open **Demo Administration > Additional Settings** (between Demo Bugs and Industry Site Design), enable **Immediately put new orders into PROCESSED state**, and save the settings. The option is disabled by default and applies to newly placed orders.
 
 When enabled, new orders start in `PROCESSED` state. Inventory is still checked asynchronously: successful inventory processing keeps that status, while insufficient inventory may later change the order to `CANCELED`. Use items with sufficient inventory when asserting `PROCESSED` in a scenario. Disabling the option restores the initial `SUBMITTED` state and the existing asynchronous processing behavior.
+
+The separate `newOrdersInitiallyProcessed` preference sets only the initial order status. REST clients can set it to `true` to enable the option; an omitted or false request value disables it. Preferences responses omit this field when disabled, preserving the default response shape.
 
 The option is stored with the application settings and remains enabled after restarting the application. Resetting industry data preserves global preferences, including this option.
 

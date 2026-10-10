@@ -83,6 +83,7 @@ public class GlobalPreferencesDefaultSettingsService {
         defaultPreferences.setWebServiceMode(webServiceMode);
         defaultPreferences.setDemoBugs(demoBugs);
         defaultPreferences.setAdvertisingEnabled(advertisingEnabled);
+        defaultPreferences.setNewOrdersInitiallyProcessed(false);
         defaultPreferences.setUseParasoftJDBCProxy(useParasoftJDBCProxy);
         defaultPreferences.setParasoftVirtualizeServerUrl(parasoftVirtualizeServerUrl);
         defaultPreferences.setParasoftVirtualizeServerPath(parasoftVirtualizeServerPath);

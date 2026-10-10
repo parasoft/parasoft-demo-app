@@ -64,9 +64,6 @@ public class OrderServiceTest {
     OrderMQService orderMQService;
 
     @Mock
-    DemoBugService demoBugService;
-
-    @Mock
     ItemInventoryMQService itemInventoryMQService;
 
     @Before
@@ -77,7 +74,7 @@ public class OrderServiceTest {
     @Test
     public void testAddNewOrder_immediateProcessingEnabled() throws Exception {
         List<OrderStatus> savedStatuses = prepareNewOrder();
-        when(demoBugService.shouldProcessOrdersImmediately()).thenReturn(true);
+        when(globalPreferencesService.shouldNewOrdersInitiallyBeProcessed()).thenReturn(true);
 
         OrderEntity result = underTest.addNewOrder(1L, "purchaser", RegionType.LOCATION_1,
                 "Test location", "receiver", "event", "event-number");
