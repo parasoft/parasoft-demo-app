@@ -1,20 +1,35 @@
 package com.parasoft.demoapp.service;
 
+import com.parasoft.demoapp.controller.ResponseResult;
 import com.parasoft.demoapp.exception.CartItemNotFoundException;
 import com.parasoft.demoapp.exception.InventoryNotFoundException;
 import com.parasoft.demoapp.exception.ItemNotFoundException;
 import com.parasoft.demoapp.exception.ParameterException;
+import com.parasoft.demoapp.graphql.RestTemplateUtil;
 import com.parasoft.demoapp.messages.AssetMessages;
 import com.parasoft.demoapp.model.industry.CartItemEntity;
 import com.parasoft.demoapp.model.industry.ItemEntity;
 import com.parasoft.demoapp.repository.industry.ShoppingCartRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestTemplate;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
+@Slf4j
 @Service
 public class ShoppingCartService {
 
@@ -22,10 +37,16 @@ public class ShoppingCartService {
     private ShoppingCartRepository shoppingCartRepository;
 
     @Autowired
-    private ItemService itemService;
+    private ItemInventoryService itemInventoryService;
 
     @Autowired
-    private ItemInventoryService itemInventoryService;
+    private RestTemplate restTemplate;
+
+    @Autowired
+    private RestEndpointService restEndpointService;
+
+    @Autowired
+    private HttpServletRequest httpRequest;
 
     public CartItemEntity addCartItemInShoppingCart(Long userId, Long itemId, Integer quantity)
             throws ParameterException, ItemNotFoundException, InventoryNotFoundException {
@@ -37,7 +58,7 @@ public class ShoppingCartService {
         ParameterValidator.requireNonNegative(quantity, AssetMessages.QUANTITY_CANNOT_BE_A_NEGATIVE_NUMBER_OR_ZERO);
 
         synchronized (this){
-            ItemEntity item = itemService.getItemById(itemId);
+            ItemEntity item = getItemById(itemId);
             if(item.getInStock() == null) {
                 throw new InventoryNotFoundException(MessageFormat.format(AssetMessages.INVENTORY_NOT_FOUND_WITH_ITEM_ID, itemId));
             }
@@ -63,7 +84,7 @@ public class ShoppingCartService {
             }
 
             cartItem = shoppingCartRepository.save(cartItem);
-            cartItem.setRealInStock(itemInventoryService.getInStockByItemId(itemId));
+            cartItem.setRealInStock(getInStockByItemId(itemId));
 
             return cartItem;
         }
@@ -102,7 +123,7 @@ public class ShoppingCartService {
         ParameterValidator.requireNonNegative(newQuantity, AssetMessages.QUANTITY_CANNOT_BE_A_NEGATIVE_NUMBER_OR_ZERO);
         ParameterValidator.requireNonZero(newQuantity, AssetMessages.QUANTITY_CANNOT_BE_A_NEGATIVE_NUMBER_OR_ZERO);
 
-        ItemEntity item = itemService.getItemById(itemId);
+        ItemEntity item = getItemById(itemId);
         CartItemEntity cartItem = shoppingCartRepository.findByUserIdAndItemId(userId, itemId);
         if (cartItem == null) {
             throw new CartItemNotFoundException(MessageFormat.format(
@@ -116,9 +137,29 @@ public class ShoppingCartService {
         cartItem.setQuantity(newQuantity);
         cartItem = shoppingCartRepository.save(cartItem);
 
-        cartItem.setRealInStock(itemInventoryService.getInStockByItemId(itemId));
+        cartItem.setRealInStock(getInStockByItemId(itemId));
 
         return cartItem;
+    }
+
+    private ItemEntity getItemById(Long itemId) throws ItemNotFoundException {
+        try {
+            Map<String, Long> uriVariables = new HashMap<>();
+            uriVariables.put("itemId", itemId);
+            ResponseEntity<ResponseResult<ItemEntity>> entity =
+                    restTemplate.exchange(restEndpointService.getItemsBaseUrl() + "/{itemId}",
+                            HttpMethod.GET,
+                            new HttpEntity<Void>(RestTemplateUtil.createHeaders(httpRequest)),
+                            new ParameterizedTypeReference<ResponseResult<ItemEntity>>() {},
+                            uriVariables);
+            return Objects.requireNonNull(entity.getBody()).getData();
+        } catch (HttpStatusCodeException e) {
+            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+                throw new ItemNotFoundException(
+                        MessageFormat.format(AssetMessages.ITEM_ID_NOT_FOUND, itemId));
+            }
+            throw e;
+        }
     }
 
     public List<CartItemEntity> getCartItemsByUserId(Long userId) throws ParameterException {
@@ -126,7 +167,11 @@ public class ShoppingCartService {
 
         List<CartItemEntity> cartItemEntities = shoppingCartRepository.findAllByUserId(userId);
         for(CartItemEntity cartItemEntity : cartItemEntities){
-            cartItemEntity.setRealInStock(itemInventoryService.getInStockByItemId(cartItemEntity.getItemId()));
+            try {
+                cartItemEntity.setRealInStock(getInStockByItemId(cartItemEntity.getItemId()));
+            } catch (ItemNotFoundException e) {
+                log.error("Failed to obtain real in-stock for item id {} from the items REST API.", cartItemEntity.getItemId(), e);
+            }
         }
 
         return cartItemEntities;
@@ -137,15 +182,19 @@ public class ShoppingCartService {
         ParameterValidator.requireNonNull(userId, AssetMessages.USER_ID_CANNOT_BE_NULL);
         ParameterValidator.requireNonNull(itemId, AssetMessages.ITEM_ID_CANNOT_BE_NULL);
 
-        ItemEntity item = itemService.getItemById(itemId);
+        ItemEntity item = getItemById(itemId);
         CartItemEntity cartItem = shoppingCartRepository.findByUserIdAndItemId(userId, itemId);
 
         if (null == cartItem) {
             cartItem = new CartItemEntity(userId, item, 0);
         }
-        cartItem.setRealInStock(itemInventoryService.getInStockByItemId(itemId));
+        cartItem.setRealInStock(getInStockByItemId(itemId));
 
         return cartItem;
+    }
+
+    private Integer getInStockByItemId(Long itemId) throws ItemNotFoundException {
+        return itemInventoryService.getInStockByItemIdFromRestApi(itemId);
     }
 
 }
