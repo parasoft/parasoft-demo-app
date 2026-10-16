@@ -8,6 +8,11 @@ import java.util.concurrent.Executors;
 import com.parasoft.demoapp.utilfortest.OrderUtilForTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.Before;
+import org.junit.After;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
@@ -30,7 +35,7 @@ import com.parasoft.demoapp.repository.industry.OrderRepository;
  * @see com.parasoft.demoapp.service.OrderService
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestPropertySource("file:./src/test/java/com/parasoft/demoapp/application.properties")
 @DirtiesContext
 public class OrderServiceSpringTest4 {
@@ -57,6 +62,16 @@ public class OrderServiceSpringTest4 {
 
     @Autowired
     ItemInventoryService itemInventoryService;
+
+    @Before
+    public void bindRequestContext() {
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(new MockHttpServletRequest()), true);
+    }
+
+    @After
+    public void unbindRequestContext() {
+        RequestContextHolder.resetRequestAttributes();
+    }
 
     /**
      * Test for updateOrderByOrderNumberSynchronized(String, String, OrderStatus, Boolean, Boolean, String, String, boolean) under concurrency condition.

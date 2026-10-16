@@ -15,6 +15,11 @@ import com.parasoft.demoapp.service.*;
 import com.parasoft.demoapp.utilfortest.OrderUtilForTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.Before;
+import org.junit.After;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.test.context.EmbeddedKafka;
@@ -34,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @EmbeddedKafka(
         partitions = 1,
         ports = 9092)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestPropertySource("file:./src/test/java/com/parasoft/demoapp/application.properties")
 public class MQIntegrationTest {
 
@@ -64,6 +69,16 @@ public class MQIntegrationTest {
 
     @Autowired
     private ItemInventoryRepository itemInventoryRepository;
+
+    @Before
+    public void bindRequestContext() {
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(new MockHttpServletRequest()), true);
+    }
+
+    @After
+    public void unbindRequestContext() {
+        RequestContextHolder.resetRequestAttributes();
+    }
 
     /**
     *  Use the work flow of placing an order to test MQs.
