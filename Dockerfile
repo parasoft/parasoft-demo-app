@@ -5,6 +5,7 @@ ARG WAR_FILE=build/libs/parasoft-demo-app-*.war
 
 USER root:root
 
+COPY docker/context.xml ${TOMCAT_HOME}/conf/context.xml
 COPY ${WAR_FILE} ${TOMCAT_HOME}/webapps/ROOT.war
 
 # To enable injecting Virtualize JDBC driver into PDA.
