@@ -10,9 +10,11 @@ COPY ${WAR_FILE} ${TOMCAT_HOME}/webapps/ROOT.war
 
 # To enable injecting Virtualize JDBC driver into PDA.
 RUN apt-get update \
+    && apt-get dist-upgrade -y \
     && apt-get install -y --no-install-recommends unzip \
     && unzip ${TOMCAT_HOME}/webapps/ROOT.war -d ${TOMCAT_HOME}/webapps/ROOT \
-    && apt-get purge -y --auto-remove unzip \
+    && apt-get autoremove -y \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 RUN rm ${TOMCAT_HOME}/webapps/ROOT.war
 
