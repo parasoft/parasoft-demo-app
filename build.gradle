@@ -80,7 +80,7 @@ dependencies {
 
 	// ActiveMQ Classic 6.3 uses Spring 7, Jetty 12 and Servlet 6.1.
 	implementation 'org.apache.activemq:activemq-stomp:6.3.2'
-	implementation 'org.apache.activemq:activemq-http:6.3.2'
+	implementation 'org.apache.activemq:activemq-http:6.4.0'
 	// activemq-http declares this Jetty WebSocket server integration as optional,
 	// but the embedded broker enables the ws:// connector at runtime.
 	implementation 'org.eclipse.jetty.ee11.websocket:jetty-ee11-websocket-jetty-server:12.1.12'
