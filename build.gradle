@@ -1,5 +1,5 @@
 plugins {
-	id 'org.springframework.boot' version '4.1.1'
+	id 'org.springframework.boot' version '4.1.2'
 	id 'io.spring.dependency-management' version '1.1.7'
 	id 'java'
 	id 'war'
@@ -130,7 +130,11 @@ test {
 }
 
 ext {
-	set('springCloudVersion', "2025.1.2")
+	set('jackson-2-bom.version', '2.21.8')
+	set('jackson-bom.version', '3.1.8')
+	// TODO: The above dependencies should be checked whether they have been updated to the override version after updating the Spring Boot version
+
+	set('springCloudVersion', "2025.1.4")
 }
 
 dependencyManagement {
