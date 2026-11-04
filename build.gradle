@@ -83,7 +83,7 @@ dependencies {
 	implementation 'org.apache.activemq:activemq-http:6.3.2'
 	// activemq-http declares this Jetty WebSocket server integration as optional,
 	// but the embedded broker enables the ws:// connector at runtime.
-	implementation 'org.eclipse.jetty.ee11.websocket:jetty-ee11-websocket-jetty-server:12.1.12'
+	implementation 'org.eclipse.jetty.ee11.websocket:jetty-ee11-websocket-jetty-server:12.1.14'
 	implementation 'org.springframework.kafka:spring-kafka'
 	implementation 'org.apache.activemq:activemq-spring'
 	implementation 'org.springframework.boot:spring-boot-starter-amqp'
