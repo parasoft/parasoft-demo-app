@@ -89,7 +89,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-amqp'
 	implementation 'com.google.code.gson:gson'
 
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.1'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.2.0'
 
 	//gRPC
 	implementation 'net.devh:grpc-spring-boot-starter:3.1.0.RELEASE'
