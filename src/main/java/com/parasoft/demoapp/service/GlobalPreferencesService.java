@@ -199,6 +199,8 @@ public class GlobalPreferencesService {
         GlobalPreferencesEntity currentPreferences = getCurrentGlobalPreferences();
         currentPreferences.setIndustryType(industry);
         currentPreferences.setAdvertisingEnabled(advertisingEnabled);
+        // Unchecked checkboxes and older REST clients omit the field; both use the disabled default.
+        currentPreferences.setNewOrdersInitiallyProcessed(Boolean.TRUE.equals(globalPreferencesDto.getNewOrdersInitiallyProcessed()));
 
         handleDemoBugs(currentPreferences, globalPreferencesDto);
 
@@ -537,6 +539,15 @@ public class GlobalPreferencesService {
                     MessageFormat.format(GlobalPreferencesMessages.THERE_ARE_MORE_THAN_ONE_PREFERENCES, size));
         }
         return currentIndustries.get(0);
+    }
+
+    public boolean shouldNewOrdersInitiallyBeProcessed() {
+        try {
+            return Boolean.TRUE.equals(getCurrentGlobalPreferences().getNewOrdersInitiallyProcessed());
+        } catch (GlobalPreferencesNotFoundException | GlobalPreferencesMoreThanOneException e) {
+            // Successful initialization guarantees exactly one global preferences record.
+            throw new RuntimeException(e);
+        }
     }
 
     public IndustryType getCurrentIndustry()

@@ -6,12 +6,14 @@ import com.parasoft.demoapp.messages.ConfigMessages;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import tools.jackson.databind.util.StdDateFormat;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,6 +41,11 @@ public class WebConfig implements WebMvcConfigurer {
 	@Bean
 	public PasswordEncoder gerEncoder() {
 		return PlainTextPasswordEncoder.getInstance();
+	}
+
+	@Bean
+	public JsonMapperBuilderCustomizer jsonMapperBuilderCustomizer() {
+		return builder -> builder.defaultDateFormat(new StdDateFormat().withZeroOffsetAsZ(false));
 	}
 
 	@Override

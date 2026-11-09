@@ -4,6 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 import java.text.MessageFormat;
@@ -11,7 +14,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.Before;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
+import com.parasoft.demoapp.controller.ResponseResult;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.mockito.InjectMocks;
@@ -38,7 +48,13 @@ public class ShoppingCartServiceTest {
 	ShoppingCartRepository shoppingCartRepository;
 
 	@Mock
-	ItemService itemService;
+	RestTemplate restTemplate;
+
+	@Mock
+	RestEndpointService restEndpointService;
+
+	@Mock
+	HttpServletRequest httpRequest;
 
 	@Mock
     ItemInventoryService itemInventoryService;
@@ -46,6 +62,15 @@ public class ShoppingCartServiceTest {
 	@Before
 	public void setupMocks() {
 		MockitoAnnotations.initMocks(this);
+		doReturn("http://localhost:8081/v1/assets/items").when(restEndpointService).getItemsBaseUrl();
+		stubItem(null);
+	}
+
+	@SuppressWarnings("unchecked")
+	private void stubItem(ItemEntity item) {
+		ResponseResult<ItemEntity> body = ResponseResult.getInstance(ResponseResult.STATUS_OK, ResponseResult.MESSAGE_OK, item);
+		doReturn(ResponseEntity.ok(body)).when(restTemplate).exchange(anyString(), eq(HttpMethod.GET), any(HttpEntity.class),
+				any(ParameterizedTypeReference.class), anyMap());
 	}
 
 	/**
@@ -64,7 +89,7 @@ public class ShoppingCartServiceTest {
 		Integer inStock = 20;
 		Integer quantity = 10;
 		ItemEntity item = mock(ItemEntity.class);
-		doReturn(item).when(itemService).getItemById(anyLong());
+		stubItem(item);
 		doReturn(itemId).when(item).getId();
 		doReturn(image).when(item).getImage();
 		doReturn(name).when(item).getName();
@@ -104,7 +129,7 @@ public class ShoppingCartServiceTest {
 		Integer inStock = 20;
 		Integer quantity = 10;
 		ItemEntity item = mock(ItemEntity.class);
-		doReturn(item).when(itemService).getItemById(anyLong());
+		stubItem(item);
 		doReturn(itemId).when(item).getId();
 		doReturn(image).when(item).getImage();
 		doReturn(name).when(item).getName();
@@ -114,7 +139,7 @@ public class ShoppingCartServiceTest {
 		CartItemEntity saveResult = new CartItemEntity(userId, item, quantity);
 		doReturn(false).when(shoppingCartRepository).existsByItemIdAndUserId(anyLong(), anyLong());
 		doReturn(saveResult).when(shoppingCartRepository).save((CartItemEntity) any());
-		doReturn(inStock).when(itemInventoryService).getInStockByItemId(anyLong());
+		doReturn(inStock).when(itemInventoryService).getInStockByItemIdFromRestApi(anyLong());
 
 		// When
 		CartItemEntity result = underTest.addCartItemInShoppingCart(userId, itemId, quantity);
@@ -142,7 +167,7 @@ public class ShoppingCartServiceTest {
 		String description = "description";
 		String image = "imagePath";
 		ItemEntity item = mock(ItemEntity.class);
-		doReturn(item).when(itemService).getItemById(anyLong());
+		stubItem(item);
 		doReturn(itemId).when(item).getId();
 		doReturn(image).when(item).getImage();
 		doReturn(name).when(item).getName();
@@ -153,7 +178,7 @@ public class ShoppingCartServiceTest {
 		CartItemEntity newCartItem = new CartItemEntity(userId, item, quantity+newQuantity);
 		doReturn(true).when(shoppingCartRepository).existsByItemIdAndUserId(anyLong(), anyLong());
 		doReturn(cartItem).when(shoppingCartRepository).findByUserIdAndItemId(anyLong(), anyLong());
-		doReturn(item).when(itemService).getItemById(anyLong());
+		stubItem(item);
 		doReturn(inStock).when(item).getInStock();
 		doReturn(itemId).when(item).getId();
 		doReturn(newCartItem).when(shoppingCartRepository).save((CartItemEntity) any());
@@ -232,7 +257,7 @@ public class ShoppingCartServiceTest {
 		ItemEntity item = new ItemEntity();
 		item.setId(itemId);
 		item.setInStock(null); // test point
-		when(itemService.getItemById(itemId)).thenReturn(item);
+		stubItem(item);
 
 		// When
 		String message = "";
@@ -331,7 +356,7 @@ public class ShoppingCartServiceTest {
 		Long itemId = 1L;
 		Integer inStock = 10;
 		Integer quantity = 20;
-		doReturn(item).when(itemService).getItemById(itemId);
+		stubItem(item);
 		doReturn(inStock).when(item).getInStock();
 
 		// When
@@ -363,7 +388,7 @@ public class ShoppingCartServiceTest {
 		CartItemEntity CartItem = new CartItemEntity(userId, item, quantity);
 		doReturn(true).when(shoppingCartRepository).existsByItemIdAndUserId(anyLong(), anyLong());
 		doReturn(CartItem).when(shoppingCartRepository).findByUserIdAndItemId(anyLong(), anyLong());
-		doReturn(item).when(itemService).getItemById(anyLong());
+		stubItem(item);
 		doReturn(inStock).when(item).getInStock();
 		doReturn(itemId).when(item).getId();
 
@@ -555,7 +580,7 @@ public class ShoppingCartServiceTest {
 		CartItemEntity newCartItem = new CartItemEntity(userId, item, newQuantity);
 		doReturn(cartItem).when(shoppingCartRepository).findByUserIdAndItemId(anyLong(), anyLong());
 		doReturn(newCartItem).when(shoppingCartRepository).save((CartItemEntity) any());
-		doReturn(item).when(itemService).getItemById(anyLong());
+		stubItem(item);
 
 		// When
 		CartItemEntity result = underTest.updateCartItemQuantity(userId, itemId, newQuantity);
@@ -592,8 +617,8 @@ public class ShoppingCartServiceTest {
 		CartItemEntity newCartItem = new CartItemEntity(userId, item, newQuantity);
 		doReturn(cartItem).when(shoppingCartRepository).findByUserIdAndItemId(anyLong(), anyLong());
 		doReturn(newCartItem).when(shoppingCartRepository).save((CartItemEntity) any());
-		doReturn(item).when(itemService).getItemById(anyLong());
-		doReturn(newQuantity).when(itemInventoryService).getInStockByItemId(anyLong());
+		stubItem(item);
+		doReturn(newQuantity).when(itemInventoryService).getInStockByItemIdFromRestApi(anyLong());
 
 		// When
 		CartItemEntity result = underTest.updateCartItemQuantity(userId, itemId, newQuantity);
@@ -774,7 +799,7 @@ public class ShoppingCartServiceTest {
 
 		CartItemEntity cartItem = new CartItemEntity(userId, item, quantity);
 		doReturn(cartItem).when(shoppingCartRepository).findByUserIdAndItemId(anyLong(), anyLong());
-		doReturn(item).when(itemService).getItemById(anyLong());
+		stubItem(item);
 
 		// When
 		String message = "";
@@ -830,7 +855,7 @@ public class ShoppingCartServiceTest {
 		findResult.add(shoppingCart);
 
 		doReturn(findResult).when(shoppingCartRepository).findAllByUserId(anyLong());
-		doReturn(quantity).when(itemInventoryService).getInStockByItemId(anyLong());
+		doReturn(quantity).when(itemInventoryService).getInStockByItemIdFromRestApi(anyLong());
 
 		// When
 		List<CartItemEntity> result = underTest.getCartItemsByUserId(userId);
@@ -899,7 +924,7 @@ public class ShoppingCartServiceTest {
 		Integer quantity = 10;
 		CartItemEntity cartItem = new CartItemEntity(userId, mock(ItemEntity.class), quantity);
 		doReturn(cartItem).when(shoppingCartRepository).findByUserIdAndItemId(anyLong(), anyLong());
-		doReturn(quantity).when(itemInventoryService).getInStockByItemId(anyLong());
+		doReturn(quantity).when(itemInventoryService).getInStockByItemIdFromRestApi(anyLong());
 
 		// When
 		CartItemEntity result = underTest.getCartItemByUserIdAndItemId(userId, itemId);
@@ -923,9 +948,9 @@ public class ShoppingCartServiceTest {
 		Integer realInStock = 10;
 		ItemEntity item = mock(ItemEntity.class);
 		doReturn(itemId).when(item).getId();
-		doReturn(item).when(itemService).getItemById(itemId);
+		stubItem(item);
 		doReturn(null).when(shoppingCartRepository).findByUserIdAndItemId(anyLong(), anyLong());
-		doReturn(realInStock).when(itemInventoryService).getInStockByItemId(anyLong());
+		doReturn(realInStock).when(itemInventoryService).getInStockByItemIdFromRestApi(anyLong());
 
 		// When
 		CartItemEntity result = underTest.getCartItemByUserIdAndItemId(userId, itemId);

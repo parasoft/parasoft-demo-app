@@ -22,6 +22,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -73,6 +76,16 @@ public class OrderGraphQLDataFetcherTest {
     public TestName testName = new TestName();
     private UserEntity purchaser;
     private UserEntity approver;
+
+    @Before
+    public void bindRequestContext() {
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(new MockHttpServletRequest()), true);
+    }
+
+    @After
+    public void unbindRequestContext() {
+        RequestContextHolder.resetRequestAttributes();
+    }
 
     @Before
     public void setup() {

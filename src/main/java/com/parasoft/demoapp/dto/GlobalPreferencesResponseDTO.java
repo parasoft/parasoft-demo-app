@@ -20,6 +20,8 @@ public class GlobalPreferencesResponseDTO {
 
     private Boolean advertisingEnabled;
 
+    private Boolean newOrdersInitiallyProcessed;
+
     private Set<DemoBugEntity> demoBugs;
 
     private Set<RestEndpointEntity> restEndPoints;
@@ -45,6 +47,7 @@ public class GlobalPreferencesResponseDTO {
         this.setWebServiceMode(globalPreferencesEntity.getWebServiceMode());
         this.setGraphQLEndpoint(globalPreferencesEntity.getGraphQLEndpoint());
         this.setAdvertisingEnabled(globalPreferencesEntity.getAdvertisingEnabled());
+        this.setNewOrdersInitiallyProcessed(globalPreferencesEntity.getNewOrdersInitiallyProcessed());
         this.setDemoBugs(globalPreferencesEntity.getDemoBugs());
         this.setRestEndPoints(globalPreferencesEntity.getRestEndPoints());
         this.setUseParasoftJDBCProxy(globalPreferencesEntity.getUseParasoftJDBCProxy());

@@ -4,6 +4,8 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.parasoft.demoapp.config.datasource.IndustryRoutingDataSource;
 import com.parasoft.demoapp.defaultdata.global.GlobalPreferencesCreator;
@@ -37,7 +42,7 @@ import com.parasoft.demoapp.service.UserService;
  * @see GlobalPreferencesCreator
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestPropertySource("file:./src/test/java/com/parasoft/demoapp/application.properties")
 @DirtiesContext
 public class ClearEntranceSpringTest {
@@ -67,6 +72,16 @@ public class ClearEntranceSpringTest {
 
     @Autowired
     GlobalPreferencesService globalPreferencesService;
+
+    @Before
+    public void bindRequest() {
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(new MockHttpServletRequest()));
+    }
+
+    @After
+    public void unbindRequest() {
+        RequestContextHolder.resetRequestAttributes();
+    }
 
     @Test
     public void testRun() throws Exception {

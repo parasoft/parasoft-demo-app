@@ -16,6 +16,11 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.Before;
+import org.junit.After;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
@@ -34,7 +39,7 @@ import com.parasoft.demoapp.model.industry.RegionType;
  * @see com.parasoft.demoapp.service.ShoppingCartService
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestPropertySource("file:./src/test/java/com/parasoft/demoapp/application.properties")
 @DirtiesContext
 public class ShoppingCartServiceSpringTest {
@@ -53,6 +58,16 @@ public class ShoppingCartServiceSpringTest {
 
 	@Autowired
 	GlobalPreferencesService globalPreferencesService;
+
+	@Before
+	public void bindRequestContext() {
+		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(new MockHttpServletRequest()), true);
+	}
+
+	@After
+	public void unbindRequestContext() {
+		RequestContextHolder.resetRequestAttributes();
+	}
 
 	/**
 	 * Test for addCartItemInShoppingCart(Long, Long, Integer) under concurrency condition.

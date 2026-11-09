@@ -50,6 +50,10 @@ public class GlobalPreferencesEntity {
     private Boolean advertisingEnabled;
 
     @Setter
+    @Column(name = "new_orders_initially_processed")
+    private Boolean newOrdersInitiallyProcessed = false;
+
+    @Setter
     @Column(name = "use_parasoft_jdbc_proxy")
     private Boolean useParasoftJDBCProxy;
 
