@@ -16,8 +16,18 @@
   },
   {
     "package": "angular-cookies",
+    "source": "angular-cookies.js",
+    "destination": "angularjs/angular-cookies.js"
+  },
+  {
+    "package": "angular-cookies",
     "source": "angular-cookies.min.js",
     "destination": "angularjs/angular-cookies.min.js"
+  },
+  {
+    "package": "angular-cookies",
+    "source": "angular-cookies.min.js.map",
+    "destination": "angularjs/angular-cookies.min.js.map"
   },
   {
     "package": "angular-translate",
@@ -131,6 +141,11 @@
   },
   {
     "package": "font-awesome",
+    "source": "fonts/fontawesome-webfont.svg",
+    "destination": "fonts/fontawesome-webfont.svg"
+  },
+  {
+    "package": "font-awesome",
     "source": "fonts/fontawesome-webfont.ttf",
     "destination": "fonts/fontawesome-webfont.ttf"
   },
@@ -160,6 +175,11 @@
     "destination": "sockjs/sockjs.min.js"
   },
   {
+    "package": "sockjs-client",
+    "source": "dist/sockjs.min.js.map",
+    "destination": "sockjs/sockjs.min.js.map"
+  },
+  {
     "package": "stomp-websocket",
     "source": "lib/stomp.min.js",
     "destination": "stomp/stomp.min.js"
@@ -168,6 +188,11 @@
     "package": "swagger-ui-dist",
     "source": "swagger-ui.css",
     "destination": "swaggerui/css/swagger-ui.css"
+  },
+  {
+    "package": "swagger-ui-dist",
+    "source": "swagger-ui.css.map",
+    "destination": "swaggerui/css/swagger-ui.css.map"
   },
   {
     "package": "swagger-ui-dist",
@@ -223,6 +248,16 @@
     "package": "swiper",
     "source": "js/swiper.min.js.map",
     "destination": "swiper/swiper.min.js.map"
+  },
+  {
+    "package": "swiper",
+    "source": "js/swiper.js",
+    "destination": "swiper/0"
+  },
+  {
+    "package": "swiper",
+    "source": "js/swiper.js.map",
+    "destination": "swiper/swiper.js.map"
   },
   {
     "package": "toastr",

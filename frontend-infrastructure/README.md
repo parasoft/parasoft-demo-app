@@ -46,7 +46,7 @@ node frontend-infrastructure/scripts/sync-libs.js --check
 
 All direct npm versions are exact in `package.json`; the lockfile pins the
 transitive dependencies and npm distribution integrity hashes. The explicit source
-and destination allowlist is `scripts/lib-files.json`. It covers 49 npm-backed
+and destination allowlist is `scripts/lib-files.json`. It covers 56 npm-backed
 files; two more files are declared in `package.json` under `upstreamAssets`.
 
 | Library | Package | Version |
@@ -74,6 +74,12 @@ vulnerabilities. npm may report deprecations or vulnerabilities during installat
 - AngularJS core and cookies retain their existing different versions.
 - jQuery's distribution file is copied to the existing `jquery-3.3.1.min.js` URL.
 - Font Awesome's font files remain in `lib/fonts/`, matching its CSS references.
+- Source maps are shipped with their distributions. Angular Cookies' map needs
+  the original `angular-cookies.js` because it does not embed its source text.
+- Swiper 5.4.5's minified map names its original source `0`. The upstream
+  `js/swiper.js` is copied to `lib/swiper/0` to honor that URL without changing
+  vendor contents. Its own `swiper.js.map` is included too. Text normalization
+  uses the upstream filename, including for this extensionless alias.
 - STOMP's existing file comes from `stomp-websocket@2.3.4-next`; the similarly named
   `stompjs` package contains different code.
 - Both URL-loader files come directly from npm. The application-owned `setLocale`
@@ -84,6 +90,15 @@ vulnerabilities. npm may report deprecations or vulnerabilities during installat
   preserves the backend response contract; no vendor override is needed.
 - `swaggerui/images/swagger-bg.svg` is application branding rather than an upstream
   Swagger UI distribution file. Synchronization leaves it in place.
+- `static/favicon.ico` is an application-owned copy of
+  `static/common/images/favicon.ico` for browsers that request the default icon
+  URL. Keep both copies identical when updating the branding.
+
+`npm test` checks local references in vendor CSS and source maps, including
+original sources that are not embedded in a map and their own map references.
+It also checks the default favicon against the application icon. These checks
+complement dependency integrity checks; they do not replace browser checks of
+application behavior, console errors, and resource delivery after an upgrade.
 
 ### Source-pinned assets
 

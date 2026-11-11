@@ -63,11 +63,13 @@ async function syncLibraries({
   const packages = new Set();
   const destinations = new Set();
 
-  function prepare(destination, data) {
+  function prepare(destination, data, source = destination) {
     const filename = inside(targetDir, destination);
     if (destinations.has(filename)) throw new Error(`Duplicate asset destination: ${destination}`);
     destinations.add(filename);
-    prepared.push({ filename, destination, data: normalize(data, destination) });
+    // Published source maps may use extensionless aliases (Swiper's "0").
+    // Classify text by the upstream filename so autocrlf still works for these aliases.
+    prepared.push({ filename, destination, source, data: normalize(data, source) });
   }
 
   // Resolve every package and download before touching the served libraries.
@@ -86,7 +88,7 @@ async function syncLibraries({
       packages.add(entry.package);
     }
     const data = await requiredFile(inside(packageDir, entry.source));
-    prepare(entry.destination, data);
+    prepare(entry.destination, data, entry.source);
   }
 
   for (const asset of manifest.upstreamAssets ?? []) {
@@ -120,7 +122,7 @@ async function syncLibraries({
   const changed = [];
   for (const entry of prepared) {
     const current = await optionalFile(entry.filename);
-    if (current === null || !normalize(current, entry.destination).equals(entry.data)) changed.push(entry);
+    if (current === null || !normalize(current, entry.source).equals(entry.data)) changed.push(entry);
   }
   if (check && changed.length) {
     throw new Error(`Library drift in ${changed.length} file(s):\n${changed.map(entry => `  ${entry.destination}`).join('\n')}\nRun npm run sync-libs in frontend-infrastructure.`);

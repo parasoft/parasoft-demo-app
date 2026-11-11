@@ -58,6 +58,15 @@ test('normalizes text line endings without rewriting equivalent checkout files',
   assert.equal(await readFile(path.join(f.targetDir, 'example.js'), 'utf8'), 'window.example = true;\r\n');
 });
 
+test('recognizes text by its upstream filename when a source map uses an extensionless alias', async t => {
+  const f = await fixture(t);
+  f.mapping[0].destination = '0';
+  await synchronize(f.options);
+  await writeFile(path.join(f.targetDir, '0'), 'window.example = true;\r\n');
+  assert.equal((await synchronize({ ...f.options, check: true })).changed, 0);
+  assert.equal(await readFile(path.join(f.targetDir, '0'), 'utf8'), 'window.example = true;\r\n');
+});
+
 test('preflights every package source before writing any target', async t => {
   const f = await fixture(t);
   f.mapping.push({ package: 'example', source: 'missing.css', destination: 'missing.css' });
