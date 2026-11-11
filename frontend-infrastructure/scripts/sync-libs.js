@@ -85,17 +85,7 @@ async function syncLibraries({
       }
       packages.add(entry.package);
     }
-    let data = await requiredFile(inside(packageDir, entry.source));
-    if (entry.preservedOverride) {
-      // The minified URL loader adapts the application's nested response:
-      // $.parseJSON(response.data.data), rather than upstream's response.data.
-      // Keep this adapter and its layout; require review when upstream changes
-      // so the preserved implementation cannot silently mask a library upgrade.
-      if (sha256(normalize(data, entry.destination)) !== entry.preservedOverride.upstreamSha256) {
-        throw new Error(`Preserved override requires review for ${entry.destination}: upstream SHA-256 changed.`);
-      }
-      data = Buffer.from(JSON.parse(await requiredFile(inside(infrastructureDir, entry.preservedOverride.file))));
-    }
+    const data = await requiredFile(inside(packageDir, entry.source));
     prepare(entry.destination, data);
   }
 

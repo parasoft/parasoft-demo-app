@@ -4,7 +4,6 @@ const { mkdtemp, mkdir, readFile, writeFile, readdir, rm, stat } = require('node
 const { tmpdir } = require('node:os');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
-const vm = require('node:vm');
 const { test } = require('node:test');
 
 const script = path.resolve(__dirname, '../scripts/sync-libs.js');
@@ -133,36 +132,10 @@ test('rejects mappings that escape the managed directories', async t => {
   assert.deepEqual(await readdir(f.targetDir), []);
 });
 
-test('applies a preserved override only to the original upstream content', async t => {
-  const f = await fixture(t);
-  await mkdir(path.join(f.infrastructureDir, 'preserved'));
-  await writeFile(path.join(f.infrastructureDir, 'preserved/example.js.json'), JSON.stringify('window.example =\n true;\n'));
-  f.mapping[0].preservedOverride = { file: 'preserved/example.js.json', upstreamSha256: digest('window.example = true;\n') };
-  await synchronize(f.options);
-  assert.equal(await readFile(path.join(f.targetDir, 'example.js'), 'utf8'), 'window.example =\n true;\n');
-  await writeFile(path.join(f.packageDir, 'example.js'), 'window.example = false;\n');
-  await assert.rejects(synchronize(f.options), /override|SHA-256/i);
-  assert.equal(await readFile(path.join(f.targetDir, 'example.js'), 'utf8'), 'window.example =\n true;\n');
-});
-
 test('CLI rejects unrecognized options', () => {
   const result = spawnSync(process.execPath, [script, '--unknown'], { encoding: 'utf8' });
   assert.equal(result.status, 1);
   assert.match(result.stderr, /unknown.*--unknown/i);
-});
-
-test('preserved URL loader unwraps the application translation response', async () => {
-  const code = JSON.parse(await readFile(path.resolve(__dirname, '../preserved/angular-translate-loader-url.min.js.json'), 'utf8'));
-  let factory;
-  vm.runInNewContext(code, {
-    angular: {
-      extend: Object.assign,
-      module: () => ({ factory: (name, implementation) => { factory = implementation; } })
-    },
-    $: { parseJSON: JSON.parse }
-  });
-  const loader = factory({ reject: key => Promise.reject(key) }, async () => ({ data: { data: '{"WELCOME":"Welcome"}' } }));
-  assert.deepEqual(await loader({ url: '/translations', key: 'en' }), { WELCOME: 'Welcome' });
 });
 
 test('every shipped library file has a source or is the application-owned Swagger background', async () => {

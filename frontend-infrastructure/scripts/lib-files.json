@@ -37,11 +37,7 @@
   {
     "package": "angular-translate-loader-url",
     "source": "angular-translate-loader-url.min.js",
-    "destination": "angularjs/angular-translate-loader-url.min.js",
-    "preservedOverride": {
-      "file": "preserved/angular-translate-loader-url.min.js.json",
-      "upstreamSha256": "df1f877a9883c97c8336cd821a266885eaae3984d7b4b77ff09cbaf87afb6ad2"
-    }
+    "destination": "angularjs/angular-translate-loader-url.min.js"
   },
   {
     "package": "bootstrap",

@@ -76,13 +76,12 @@ vulnerabilities. npm may report deprecations or vulnerabilities during installat
 - Font Awesome's font files remain in `lib/fonts/`, matching its CSS references.
 - STOMP's existing file comes from `stomp-websocket@2.3.4-next`; the similarly named
   `stompjs` package contains different code.
-- The URL loader's existing minified file includes an application-specific adapter:
-  it parses the nested JSON string with `$.parseJSON(response.data.data)`, whereas
-  the upstream loader returns `response.data`. Its code and expanded layout are
-  retained as an escaped JSON string in
-  `preserved/angular-translate-loader-url.min.js.json`. The sync script
-  checks the upstream file's SHA-256 before using this preserved copy, so a package
-  upgrade cannot silently retain the old implementation.
+- Both URL-loader files come directly from npm. The application-owned `setLocale`
+  configuration in `static/common/js/common.js` adapts `/localize` responses through
+  the loader's `$http.transformResponse` option. It retains Angular's default JSON
+  parsing and then uses `angular.fromJson(body.data)` to unwrap the serialized
+  translation map. This transformation applies only to localization requests and
+  preserves the backend response contract; no vendor override is needed.
 - `swaggerui/images/swagger-bg.svg` is application branding rather than an upstream
   Swagger UI distribution file. Synchronization leaves it in place.
 
@@ -118,11 +117,9 @@ merely to make an unexpected download pass.
 
 3. Review `scripts/lib-files.json` against the new distribution. Keep existing
    destination names and URLs unless an application change is explicitly intended.
-   Include matching CSS, fonts, images, and source maps. For the URL loader, review
-   the preserved adapter and port it to the new upstream implementation, retaining
-   the nested translation-response behavior. Update its guard hash and preserved
-   contents together. Remove the override only alongside a deliberate change to
-   the translation API contract and its callers.
+   Include matching CSS, fonts, images, and source maps. For the URL loader, verify
+   that its `$http` options continue to support the application's request-scoped
+   translation-response transform. Keep the npm distribution files unmodified.
 4. For a source-pinned asset, update its original version, full upstream commit
    URL, license reference, and SHA-256 together. Compute the checksum from the
    reviewed upstream bytes; for example, `Get-FileHash -Algorithm SHA256 <file>`
@@ -149,9 +146,8 @@ support or its custom scanner hook. Generate those records from this metadata so
 versions and hashes have one source of truth. Record their actual upstream
 identities rather than invented local npm package identities.
 
-The URL loader is based on its declared npm version with an application-specific
-modification. A future SBOM should also record that modification rather than
-presenting the served minified file as an untouched npm distribution artifact.
+The URL loader can use its unmodified upstream npm identity. Its response adapter
+is ordinary application code in `common.js`.
 
 `sbom-updater` only enriches components that already exist. Its
 `license-mapping.json` fills licenses; `sbom-injection.json` supplies missing
