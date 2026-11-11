@@ -1,0 +1,251 @@
+[
+  {
+    "package": "angular",
+    "source": "angular.js",
+    "destination": "angularjs/angular.js"
+  },
+  {
+    "package": "angular",
+    "source": "angular.min.js",
+    "destination": "angularjs/angular.min.js"
+  },
+  {
+    "package": "angular",
+    "source": "angular.min.js.map",
+    "destination": "angularjs/angular.min.js.map"
+  },
+  {
+    "package": "angular-cookies",
+    "source": "angular-cookies.min.js",
+    "destination": "angularjs/angular-cookies.min.js"
+  },
+  {
+    "package": "angular-translate",
+    "source": "dist/angular-translate.js",
+    "destination": "angularjs/angular-translate.js"
+  },
+  {
+    "package": "angular-translate",
+    "source": "dist/angular-translate.min.js",
+    "destination": "angularjs/angular-translate.min.js"
+  },
+  {
+    "package": "angular-translate-loader-url",
+    "source": "angular-translate-loader-url.js",
+    "destination": "angularjs/angular-translate-loader-url.js"
+  },
+  {
+    "package": "angular-translate-loader-url",
+    "source": "angular-translate-loader-url.min.js",
+    "destination": "angularjs/angular-translate-loader-url.min.js",
+    "preservedOverride": {
+      "file": "preserved/angular-translate-loader-url.min.js.json",
+      "upstreamSha256": "df1f877a9883c97c8336cd821a266885eaae3984d7b4b77ff09cbaf87afb6ad2"
+    }
+  },
+  {
+    "package": "bootstrap",
+    "source": "dist/css/bootstrap-theme.css",
+    "destination": "bootstrap/css/bootstrap-theme.css"
+  },
+  {
+    "package": "bootstrap",
+    "source": "dist/css/bootstrap-theme.css.map",
+    "destination": "bootstrap/css/bootstrap-theme.css.map"
+  },
+  {
+    "package": "bootstrap",
+    "source": "dist/css/bootstrap-theme.min.css",
+    "destination": "bootstrap/css/bootstrap-theme.min.css"
+  },
+  {
+    "package": "bootstrap",
+    "source": "dist/css/bootstrap-theme.min.css.map",
+    "destination": "bootstrap/css/bootstrap-theme.min.css.map"
+  },
+  {
+    "package": "bootstrap",
+    "source": "dist/css/bootstrap.css",
+    "destination": "bootstrap/css/bootstrap.css"
+  },
+  {
+    "package": "bootstrap",
+    "source": "dist/css/bootstrap.css.map",
+    "destination": "bootstrap/css/bootstrap.css.map"
+  },
+  {
+    "package": "bootstrap",
+    "source": "dist/css/bootstrap.min.css",
+    "destination": "bootstrap/css/bootstrap.min.css"
+  },
+  {
+    "package": "bootstrap",
+    "source": "dist/css/bootstrap.min.css.map",
+    "destination": "bootstrap/css/bootstrap.min.css.map"
+  },
+  {
+    "package": "bootstrap",
+    "source": "dist/fonts/glyphicons-halflings-regular.eot",
+    "destination": "bootstrap/fonts/glyphicons-halflings-regular.eot"
+  },
+  {
+    "package": "bootstrap",
+    "source": "dist/fonts/glyphicons-halflings-regular.svg",
+    "destination": "bootstrap/fonts/glyphicons-halflings-regular.svg"
+  },
+  {
+    "package": "bootstrap",
+    "source": "dist/fonts/glyphicons-halflings-regular.ttf",
+    "destination": "bootstrap/fonts/glyphicons-halflings-regular.ttf"
+  },
+  {
+    "package": "bootstrap",
+    "source": "dist/fonts/glyphicons-halflings-regular.woff",
+    "destination": "bootstrap/fonts/glyphicons-halflings-regular.woff"
+  },
+  {
+    "package": "bootstrap",
+    "source": "dist/fonts/glyphicons-halflings-regular.woff2",
+    "destination": "bootstrap/fonts/glyphicons-halflings-regular.woff2"
+  },
+  {
+    "package": "bootstrap",
+    "source": "dist/js/bootstrap.js",
+    "destination": "bootstrap/js/bootstrap.js"
+  },
+  {
+    "package": "bootstrap",
+    "source": "dist/js/bootstrap.min.js",
+    "destination": "bootstrap/js/bootstrap.min.js"
+  },
+  {
+    "package": "bootstrap",
+    "source": "dist/js/npm.js",
+    "destination": "bootstrap/js/npm.js"
+  },
+  {
+    "package": "font-awesome",
+    "source": "css/font-awesome.min.css",
+    "destination": "fontawesome/font-awesome.min.css"
+  },
+  {
+    "package": "font-awesome",
+    "source": "fonts/fontawesome-webfont.eot",
+    "destination": "fonts/fontawesome-webfont.eot"
+  },
+  {
+    "package": "font-awesome",
+    "source": "fonts/fontawesome-webfont.ttf",
+    "destination": "fonts/fontawesome-webfont.ttf"
+  },
+  {
+    "package": "font-awesome",
+    "source": "fonts/fontawesome-webfont.woff",
+    "destination": "fonts/fontawesome-webfont.woff"
+  },
+  {
+    "package": "font-awesome",
+    "source": "fonts/fontawesome-webfont.woff2",
+    "destination": "fonts/fontawesome-webfont.woff2"
+  },
+  {
+    "package": "jquery",
+    "source": "dist/jquery.min.js",
+    "destination": "jquery/jquery-3.3.1.min.js"
+  },
+  {
+    "package": "moment",
+    "source": "min/moment.min.js",
+    "destination": "moment/moment.min.js"
+  },
+  {
+    "package": "sockjs-client",
+    "source": "dist/sockjs.min.js",
+    "destination": "sockjs/sockjs.min.js"
+  },
+  {
+    "package": "stomp-websocket",
+    "source": "lib/stomp.min.js",
+    "destination": "stomp/stomp.min.js"
+  },
+  {
+    "package": "swagger-ui-dist",
+    "source": "swagger-ui.css",
+    "destination": "swaggerui/css/swagger-ui.css"
+  },
+  {
+    "package": "swagger-ui-dist",
+    "source": "favicon-16x16.png",
+    "destination": "swaggerui/images/favicon-16x16.png"
+  },
+  {
+    "package": "swagger-ui-dist",
+    "source": "favicon-32x32.png",
+    "destination": "swaggerui/images/favicon-32x32.png"
+  },
+  {
+    "package": "swagger-ui-dist",
+    "source": "swagger-ui-bundle.js",
+    "destination": "swaggerui/js/swagger-ui-bundle.js"
+  },
+  {
+    "package": "swagger-ui-dist",
+    "source": "swagger-ui-bundle.js.map",
+    "destination": "swaggerui/js/swagger-ui-bundle.js.map"
+  },
+  {
+    "package": "swagger-ui-dist",
+    "source": "swagger-ui-standalone-preset.js",
+    "destination": "swaggerui/js/swagger-ui-standalone-preset.js"
+  },
+  {
+    "package": "swagger-ui-dist",
+    "source": "swagger-ui-standalone-preset.js.map",
+    "destination": "swaggerui/js/swagger-ui-standalone-preset.js.map"
+  },
+  {
+    "package": "swagger-ui-dist",
+    "source": "swagger-ui.js",
+    "destination": "swaggerui/js/swagger-ui.js"
+  },
+  {
+    "package": "swagger-ui-dist",
+    "source": "swagger-ui.js.map",
+    "destination": "swaggerui/js/swagger-ui.js.map"
+  },
+  {
+    "package": "swiper",
+    "source": "css/swiper.min.css",
+    "destination": "swiper/swiper.min.css"
+  },
+  {
+    "package": "swiper",
+    "source": "js/swiper.min.js",
+    "destination": "swiper/swiper.min.js"
+  },
+  {
+    "package": "swiper",
+    "source": "js/swiper.min.js.map",
+    "destination": "swiper/swiper.min.js.map"
+  },
+  {
+    "package": "toastr",
+    "source": "build/toastr.css",
+    "destination": "toastr/toastr.css"
+  },
+  {
+    "package": "toastr",
+    "source": "build/toastr.min.css",
+    "destination": "toastr/toastr.min.css"
+  },
+  {
+    "package": "toastr",
+    "source": "build/toastr.min.js",
+    "destination": "toastr/toastr.min.js"
+  },
+  {
+    "package": "toastr",
+    "source": "build/toastr.js.map",
+    "destination": "toastr/toastr.js.map"
+  }
+]
