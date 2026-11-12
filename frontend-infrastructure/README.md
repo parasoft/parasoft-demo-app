@@ -68,11 +68,10 @@ third-party files come from npm packages.
 | Swiper | `swiper` | 5.4.5 |
 | Toastr | `toastr` | 2.1.4 |
 
-These versions reproduce the application's selected dependencies. SerializeJSON
-and Orbitron were upgraded when migrating their historical source-pinned assets
-to npm; other library versions were retained. This workflow does not resolve all
-existing vulnerabilities. npm may report deprecations or vulnerabilities during
-installation. `jsdom` is a pinned development dependency used only for form tests.
+These exact versions describe the application's shipped dependencies. This
+workflow does not resolve all existing vulnerabilities. npm may report
+deprecations or vulnerabilities during installation. `jsdom` is a pinned
+development dependency used only for form tests.
 
 ### Special handling
 
@@ -84,10 +83,10 @@ installation. `jsdom` is a pinned development dependency used only for form test
 - Orbitron's regular 400 and bold 700 normal WOFF2 fonts, with WOFF fallbacks,
   come from the same `@fontsource/orbitron` release. Aerospace's application-owned
   CSS keeps the `Orbitron Regular` and `Orbitron Bold` aliases, but references only
-  these local files. The former Google-hosted bold URL and obsolete regular TTF
-  are removed. Local installed fonts are not selected ahead of the pinned files.
+  these local files. Local installed fonts are not selected ahead of the pinned files.
   `700` identifies bold; `normal` identifies the upright style. The OFL-1.1 notice
-  is shipped as `fonts/Orbitron-LICENSE.txt`.
+  is shipped as `fonts/Orbitron-LICENSE.txt`. The npm package version is distinct
+  from the upstream font revision recorded in the package's metadata.
 - Source maps are shipped with their distributions. Angular Cookies' map needs
   the original `angular-cookies.js` because it does not embed its source text.
 - Swiper 5.4.5's minified map names its original source `0`. The upstream
@@ -102,8 +101,9 @@ installation. `jsdom` is a pinned development dependency used only for form test
   parsing and then uses `angular.fromJson(body.data)` to unwrap the serialized
   translation map. This transformation applies only to localization requests and
   preserves the backend response contract; no vendor override is needed.
-- `swaggerui/images/swagger-bg.svg` is application branding rather than an upstream
-  Swagger UI distribution file. Synchronization leaves it in place.
+- `swaggerui/images/swagger-bg.svg` is a project-maintained, edited copy of the
+  Swagger logo used by `common/css/pda-swagger-ui.css`. It is outside the npm file
+  mapping, so synchronization leaves the existing logo in place.
 - `static/favicon.ico` is an application-owned copy of
   `static/common/images/favicon.ico` for browsers that request the default icon
   URL. Keep both copies identical when updating the branding.
@@ -115,21 +115,6 @@ complement dependency integrity checks; they do not replace browser checks of
 application behavior, console errors, and resource delivery after an upgrade.
 Form tests use the shipped jQuery and SerializeJSON in jsdom to check nested
 labels, Chinese text, empty values, checkbox arrays, and approval responses.
-
-### Migration from source-pinned assets
-
-SerializeJSON 2.3.1 and Orbitron Regular 1.000 were previously retrieved from
-immutable upstream URLs. The npm migration intentionally replaces those bytes:
-
-| Asset | Selected npm package | Compatibility consideration |
-|---|---|---|
-| SerializeJSON | `jquery-serializejson@3.2.1` | Version 3 removed older parsing options. Application call sites use default `.serializeJSON()` without those options; preserve their string and array payloads. |
-| Orbitron | `@fontsource/orbitron@5.3.0` | New font binaries can change glyph widths and text wrapping; compare Aerospace pages and the regular text in Kafka/RabbitMQ configuration dialogs. |
-
-npm and `package-lock.json` handle package retrieval and distribution integrity.
-The sync script performs no network requests and has no separate download cache
-or source-pin metadata. The Fontsource package version identifies the npm
-distribution; it is distinct from the upstream font revision in its metadata.
 
 ## Upgrading a dependency
 
