@@ -156,32 +156,3 @@ distribution; it is distinct from the upstream font revision in its metadata.
 6. Commit `package.json`, `package-lock.json`, mapping/formatting changes, this
    documentation, and the resulting files under `src/main/resources/static/lib/`.
    Keep `node_modules/` untracked.
-
-## Future SBOM and Dependency-Track integration
-
-The existing shared Jenkins infrastructure used by JavaScript Coverage generates
-Java and npm CycloneDX inventories separately, merges them, applies metadata
-corrections, validates the result, and optionally uploads to Dependency-Track.
-PDA can reuse that flow when CI integration is added.
-
-The shared npm scanner can consume this `package.json` and lockfile. SerializeJSON
-and Orbitron now have ordinary npm package identities and do not need supplemental
-component injection. Generate the runtime inventory from production dependencies;
-`jsdom` belongs to the test tooling and is not shipped with the application.
-
-The URL loader can use its unmodified upstream npm identity. Its response adapter
-is ordinary application code in `common.js`.
-
-`sbom-updater` only enriches components that already exist. Its
-`license-mapping.json` fills licenses; `sbom-injection.json` supplies missing
-references of type `other` and uses exact PURL matches. Neither creates missing
-components or changes their identifiers. Use exact mappings for special versions
-such as STOMP's prerelease. Adding a source URL and hash establishes provenance;
-vulnerability matching still requires identifiers recognized by the analyzers.
-
-When merging an inventory of the built WAR with the frontend inventory, account
-for assets discovered in both: the shared processor deduplicates by `bom-ref`,
-not package identity.
-
-This directory does not generate or upload an SBOM. Pipeline configuration and
-Dependency-Track integration remain separate work.
