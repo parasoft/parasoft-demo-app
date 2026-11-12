@@ -12,6 +12,7 @@
     "test": "node --test"
   },
   "dependencies": {
+    "@fontsource/orbitron": "5.3.0",
     "angular": "1.8.0",
     "angular-cookies": "1.8.2",
     "angular-translate": "2.18.3",
@@ -19,6 +20,7 @@
     "bootstrap": "3.3.7",
     "font-awesome": "4.7.0",
     "jquery": "3.3.1",
+    "jquery-serializejson": "3.2.1",
     "moment": "2.24.0",
     "sockjs-client": "1.5.0",
     "stomp-websocket": "2.3.4-next",
@@ -26,24 +28,7 @@
     "swiper": "5.4.5",
     "toastr": "2.1.4"
   },
-  "upstreamAssets": [
-    {
-      "name": "jquery.serializeJSON",
-      "version": "2.3.1",
-      "license": "MIT",
-      "licenseUrl": "https://github.com/marioizquierdo/jquery.serializeJSON/blob/8a92d110e087305b4ec30b0bfdd92c871efa31f9/jquery.serializejson.js",
-      "url": "https://raw.githubusercontent.com/marioizquierdo/jquery.serializeJSON/8a92d110e087305b4ec30b0bfdd92c871efa31f9/jquery.serializejson.min.js",
-      "sha256": "d761c710b1aa40630c1b064a4c50045cc2b3310449f1e38337134544aa2a3d15",
-      "destination": "jquery/jquery.serializejson.min.js"
-    },
-    {
-      "name": "Orbitron Regular",
-      "version": "1.000",
-      "license": "OFL-1.1",
-      "licenseUrl": "https://github.com/google/fonts/blob/90abd17b4f97671435798b6147b698aa9087612f/ofl/orbitron/OFL.txt",
-      "url": "https://raw.githubusercontent.com/google/fonts/90abd17b4f97671435798b6147b698aa9087612f/ofl/orbitron/Orbitron-Regular.ttf",
-      "sha256": "4cb12bb3c0370be391c90b7322116f41c4276db5730a36ae6ef27eec844124a3",
-      "destination": "fonts/Orbitron-Regular.ttf"
-    }
-  ]
+  "devDependencies": {
+    "jsdom": "26.1.0"
+  }
 }

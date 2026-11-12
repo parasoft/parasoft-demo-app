@@ -1,19 +1,15 @@
-const { createHash } = require('node:crypto');
 const { readFile, writeFile, mkdir } = require('node:fs/promises');
 const path = require('node:path');
 
 const infrastructure = path.resolve(__dirname, '..');
 const defaultTarget = path.resolve(infrastructure, '../src/main/resources/static/lib');
-const textExtensions = new Set(['.js', '.css', '.map', '.svg']);
-
-function sha256(data) {
-  return createHash('sha256').update(data).digest('hex');
-}
+const textExtensions = new Set(['.js', '.css', '.map', '.svg', '.txt']);
 
 function normalize(data, filename) {
   // Git's autocrlf changes checkout text on Windows. Fonts and images must
   // always retain their exact bytes, even when they contain CR/LF sequences.
-  return textExtensions.has(path.extname(filename))
+  // npm packages also ship text license notices without a filename extension.
+  return (textExtensions.has(path.extname(filename)) || /^LICEN[CS]E$/i.test(path.basename(filename)))
     ? Buffer.from(data.toString('utf8').replace(/\r\n/g, '\n'))
     : data;
 }
@@ -53,17 +49,15 @@ async function syncLibraries({
   manifest,
   mapping,
   check = false,
-  fetcher = globalThis.fetch,
   log = console.log
 } = {}) {
   manifest ??= JSON.parse(await requiredFile(path.join(infrastructureDir, 'package.json')));
   mapping ??= JSON.parse(await requiredFile(path.join(infrastructureDir, 'scripts/lib-files.json')));
   const prepared = [];
-  const cacheWrites = [];
   const packages = new Set();
   const destinations = new Set();
 
-  function prepare(destination, data, source = destination) {
+  function prepare(destination, data, source) {
     const filename = inside(targetDir, destination);
     if (destinations.has(filename)) throw new Error(`Duplicate asset destination: ${destination}`);
     destinations.add(filename);
@@ -72,8 +66,8 @@ async function syncLibraries({
     prepared.push({ filename, destination, source, data: normalize(data, source) });
   }
 
-  // Resolve every package and download before touching the served libraries.
-  // A late missing file or checksum failure must not leave a partly synced tree.
+  // Resolve every npm package source before touching the served libraries.
+  // A late missing file must not leave a partly synchronized tree.
   for (const entry of mapping) {
     const packageDir = inside(path.join(infrastructureDir, 'node_modules'), entry.package);
     if (!packages.has(entry.package)) {
@@ -91,34 +85,6 @@ async function syncLibraries({
     prepare(entry.destination, data, entry.source);
   }
 
-  for (const asset of manifest.upstreamAssets ?? []) {
-    if (!/^[a-f0-9]{64}$/.test(asset.sha256)) {
-      throw new Error(`Invalid SHA-256 for ${asset.name}.`);
-    }
-    const url = new URL(asset.url);
-    if (url.protocol !== 'https:') throw new Error(`An HTTPS source is required for ${asset.name}.`);
-    // Cache keys are content hashes, so versions sharing a filename never
-    // collide. Check mode may fetch, but it never writes targets or cache files.
-    const cacheFile = path.join(infrastructureDir, '.cache', asset.sha256);
-    let data = await optionalFile(cacheFile);
-    if (data === null) {
-      log(`Fetching ${asset.name} ${asset.version} from ${url.href}`);
-      let response;
-      try {
-        response = await fetcher(url.href, { signal: AbortSignal.timeout(30000) });
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        data = Buffer.from(await response.arrayBuffer());
-      } catch (error) {
-        throw new Error(`Download failed (${error.message}) for ${asset.name} ${asset.version}.`, { cause: error });
-      }
-      cacheWrites.push({ filename: cacheFile, data });
-    }
-    if (sha256(data) !== asset.sha256) {
-      throw new Error(`SHA-256 mismatch for ${asset.name} ${asset.version}. Remove its cached file, if present, and verify the pinned source.`);
-    }
-    prepare(asset.destination, data);
-  }
-
   const changed = [];
   for (const entry of prepared) {
     const current = await optionalFile(entry.filename);
@@ -128,7 +94,7 @@ async function syncLibraries({
     throw new Error(`Library drift in ${changed.length} file(s):\n${changed.map(entry => `  ${entry.destination}`).join('\n')}\nRun npm run sync-libs in frontend-infrastructure.`);
   }
   if (!check) {
-    for (const entry of [...cacheWrites, ...changed]) {
+    for (const entry of changed) {
       await mkdir(path.dirname(entry.filename), { recursive: true });
       await writeFile(entry.filename, entry.data);
     }

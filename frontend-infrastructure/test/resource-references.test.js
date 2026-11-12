@@ -72,3 +72,23 @@ test('the browser-default favicon uses the application branding', async () => {
   }, 'Browsers must find the default /favicon.ico resource');
   assert.deepEqual(favicon, await readFile(path.join(staticDir, 'common/images/favicon.ico')));
 });
+
+test('Aerospace resolves both Orbitron weights to local npm font files', async () => {
+  const stylesheet = path.join(staticDir, 'aerospace/css/common.css');
+  const css = await readFile(stylesheet, 'utf8');
+  const faces = [...css.matchAll(/@font-face\s*\{([^}]+)\}/g)].map(match => match[1]);
+  for (const [family, weight] of [['Orbitron Regular', '400'], ['Orbitron Bold', '700']]) {
+    const face = faces.find(body => body.includes(`'${family}'`));
+    assert.ok(face, `${family} must keep its application CSS alias`);
+    assert.match(face, new RegExp(`font-weight:\\s*${weight}\\s*;`));
+    assert.doesNotMatch(face, /local\(|https?:/, 'Installed fonts and CDNs must not mask the pinned font');
+    const urls = [...face.matchAll(/url\(\s*([^)]+?)\s*\)/g)].map(match => match[1]);
+    assert.equal(urls.length, 2, 'Ship WOFF2 with a WOFF fallback');
+    for (const url of urls) {
+      const target = localReference(stylesheet, url);
+      assert.ok(target, `Font must be local: ${url}`);
+      const bytes = await readFile(target);
+      assert.ok(['wOF2', 'wOFF'].includes(bytes.subarray(0, 4).toString()), 'URL must serve real webfont bytes');
+    }
+  }
+});

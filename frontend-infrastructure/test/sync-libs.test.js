@@ -1,5 +1,4 @@
 const assert = require('node:assert/strict');
-const { createHash } = require('node:crypto');
 const { mkdtemp, mkdir, readFile, writeFile, readdir, rm, stat } = require('node:fs/promises');
 const { tmpdir } = require('node:os');
 const path = require('node:path');
@@ -7,7 +6,6 @@ const { spawnSync } = require('node:child_process');
 const { test } = require('node:test');
 
 const script = path.resolve(__dirname, '../scripts/sync-libs.js');
-const digest = data => createHash('sha256').update(data).digest('hex');
 
 async function fixture(t) {
   const root = await mkdtemp(path.join(tmpdir(), 'pda-libs-'));
@@ -19,7 +17,7 @@ async function fixture(t) {
   await mkdir(targetDir, { recursive: true });
   await writeFile(path.join(packageDir, 'package.json'), '{"version":"1.2.3"}');
   await writeFile(path.join(packageDir, 'example.js'), 'window.example = true;\n');
-  const manifest = { dependencies: { example: '1.2.3' }, upstreamAssets: [] };
+  const manifest = { dependencies: { example: '1.2.3' } };
   const mapping = [{ package: 'example', source: 'example.js', destination: 'example.js' }];
   const options = { infrastructureDir, targetDir, manifest, mapping, log() {} };
   return { ...options, options, packageDir };
@@ -67,6 +65,30 @@ test('recognizes text by its upstream filename when a source map uses an extensi
   assert.equal(await readFile(path.join(f.targetDir, '0'), 'utf8'), 'window.example = true;\r\n');
 });
 
+test('mapped npm fonts preserve binary CR/LF bytes and detect binary drift', async t => {
+  const f = await fixture(t);
+  const bytes = Buffer.from([119, 79, 70, 50, 0, 13, 10, 255]);
+  await writeFile(path.join(f.packageDir, 'font.woff2'), bytes);
+  f.mapping.push({ package: 'example', source: 'font.woff2', destination: 'fonts/font.woff2' });
+  await synchronize(f.options);
+  assert.deepEqual(await readFile(path.join(f.targetDir, 'fonts/font.woff2')), bytes);
+  await writeFile(path.join(f.targetDir, 'fonts/font.woff2'), bytes.subarray(0, 6));
+  await assert.rejects(synchronize({ ...f.options, check: true }), /drift.*font.woff2/is);
+});
+
+test('license notices tolerate checkout line endings including extensionless upstream LICENSE files', async t => {
+  const f = await fixture(t);
+  for (const source of ['LICENSE', 'LICENSE.txt']) {
+    await writeFile(path.join(f.packageDir, source), 'Permission granted.\n');
+    f.mapping.push({ package: 'example', source, destination: `notices/${source}.txt` });
+  }
+  await synchronize(f.options);
+  for (const source of ['LICENSE', 'LICENSE.txt']) {
+    await writeFile(path.join(f.targetDir, `notices/${source}.txt`), 'Permission granted.\r\n');
+  }
+  assert.equal((await synchronize({ ...f.options, check: true })).changed, 0);
+});
+
 test('preflights every package source before writing any target', async t => {
   const f = await fixture(t);
   f.mapping.push({ package: 'example', source: 'missing.css', destination: 'missing.css' });
@@ -79,59 +101,6 @@ test('rejects an installed package with a different version', async t => {
   await writeFile(path.join(f.packageDir, 'package.json'), '{"version":"9.9.9"}');
   await assert.rejects(synchronize(f.options), /example.*1.2.3.*9.9.9/s);
   assert.deepEqual(await readdir(f.targetDir), []);
-});
-
-function upstream(f) {
-  // Literal bytes include CR/LF to catch accidental text normalization of fonts.
-  const bytes = Buffer.from([0, 13, 10, 255, 17]);
-  f.manifest.upstreamAssets.push({
-    name: 'Example font', version: '1.000', license: 'OFL-1.1',
-    url: 'https://example.invalid/immutable/font.ttf',
-    sha256: digest(bytes), destination: 'fonts/font.ttf'
-  });
-  return bytes;
-}
-
-test('downloads verified binary bytes and reuses the verified cache offline', async t => {
-  const f = await fixture(t);
-  const bytes = upstream(f);
-  await synchronize({ ...f.options, fetcher: async () => new Response(bytes) });
-  assert.deepEqual(await readFile(path.join(f.targetDir, 'fonts/font.ttf')), bytes);
-  assert.equal((await synchronize({ ...f.options, check: true, fetcher: async () => {
-    throw new Error('network must not be used for cached artifacts');
-  } })).changed, 0);
-  await writeFile(path.join(f.targetDir, 'fonts/font.ttf'), Buffer.from([0, 10, 255, 17]));
-  await assert.rejects(synchronize({ ...f.options, check: true }), /drift.*font.ttf/is);
-});
-
-test('rejects unverified downloads before any target writes', async t => {
-  const f = await fixture(t);
-  upstream(f);
-  await assert.rejects(synchronize({ ...f.options, fetcher: async () => new Response('wrong') }), /SHA-256.*Example font/is);
-  assert.deepEqual(await readdir(f.targetDir), []);
-});
-
-test('reports failed upstream HTTP requests before target writes', async t => {
-  const f = await fixture(t);
-  upstream(f);
-  await assert.rejects(synchronize({ ...f.options, fetcher: async () => new Response('missing', { status: 404 }) }), /404.*Example font/is);
-  assert.deepEqual(await readdir(f.targetDir), []);
-});
-
-test('check neither creates a download cache nor replaces a corrupt cache', async t => {
-  const f = await fixture(t);
-  const bytes = upstream(f);
-  await writeFile(path.join(f.targetDir, 'example.js'), 'window.example = true;\n');
-  await mkdir(path.join(f.targetDir, 'fonts'));
-  await writeFile(path.join(f.targetDir, 'fonts/font.ttf'), bytes);
-  const cacheDir = path.join(f.infrastructureDir, '.cache');
-  await synchronize({ ...f.options, check: true, fetcher: async () => new Response(bytes) });
-  await assert.rejects(stat(cacheDir), { code: 'ENOENT' });
-  await synchronize({ ...f.options, fetcher: async () => new Response(bytes) });
-  const cached = (await readdir(cacheDir))[0];
-  await writeFile(path.join(cacheDir, cached), 'corrupt');
-  await assert.rejects(synchronize({ ...f.options, check: true }), /SHA-256.*Example font/is);
-  assert.equal(await readFile(path.join(cacheDir, cached), 'utf8'), 'corrupt');
 });
 
 test('rejects mappings that escape the managed directories', async t => {
@@ -149,7 +118,6 @@ test('CLI rejects unrecognized options', () => {
 
 test('every shipped library file has a source or is the application-owned Swagger background', async () => {
   const infrastructureDir = path.resolve(__dirname, '..');
-  const manifest = JSON.parse(await readFile(path.join(infrastructureDir, 'package.json'), 'utf8'));
   const mapping = JSON.parse(await readFile(path.join(infrastructureDir, 'scripts/lib-files.json'), 'utf8'));
   const targetDir = path.resolve(infrastructureDir, '../src/main/resources/static/lib');
   async function files(directory, prefix = '') {
@@ -161,7 +129,7 @@ test('every shipped library file has a source or is the application-owned Swagge
     }
     return result;
   }
-  const destinations = [...mapping, ...manifest.upstreamAssets].map(entry => entry.destination);
+  const destinations = mapping.map(entry => entry.destination);
   assert.equal(new Set(destinations).size, destinations.length, 'each destination must have one source');
   assert.deepEqual((await files(targetDir)).sort(), [...destinations, 'swaggerui/images/swagger-bg.svg'].sort());
 });

@@ -28,10 +28,10 @@ npm run check-libs
 npm test
 ```
 
-`check-libs` exits with a nonzero status and lists files that differ. It writes
-neither the library tree nor the download cache. The first check may use the
-network for source-pinned assets. `sync-libs` verifies every source before writing
-the library tree and only writes files whose contents differ. It does not delete
+`check-libs` exits with a nonzero status and lists files that differ without
+writing any files. Both commands work offline after `npm ci` has installed the
+locked packages. `sync-libs` validates every source before writing the library
+tree and only writes files whose contents differ. It does not delete
 files outside its explicit mapping. Text comparisons account for LF/CRLF checkout
 line endings; fonts and images are compared byte-for-byte.
 
@@ -46,8 +46,9 @@ node frontend-infrastructure/scripts/sync-libs.js --check
 
 All direct npm versions are exact in `package.json`; the lockfile pins the
 transitive dependencies and npm distribution integrity hashes. The explicit source
-and destination allowlist is `scripts/lib-files.json`. It covers 56 npm-backed
-files; two more files are declared in `package.json` under `upstreamAssets`.
+and destination allowlist is `scripts/lib-files.json`. It covers 63 npm-backed
+files, including the SerializeJSON and Orbitron license notices. All managed
+third-party files come from npm packages.
 
 | Library | Package | Version |
 |---|---|---|
@@ -58,6 +59,8 @@ files; two more files are declared in `package.json` under `upstreamAssets`.
 | Bootstrap | `bootstrap` | 3.3.7 |
 | Font Awesome | `font-awesome` | 4.7.0 |
 | jQuery | `jquery` | 3.3.1 |
+| SerializeJSON | `jquery-serializejson` | 3.2.1 |
+| Orbitron (400 and 700 normal) | `@fontsource/orbitron` | 5.3.0 |
 | Moment.js | `moment` | 2.24.0 |
 | SockJS | `sockjs-client` | 1.5.0 |
 | STOMP | `stomp-websocket` | 2.3.4-next |
@@ -65,15 +68,26 @@ files; two more files are declared in `package.json` under `upstreamAssets`.
 | Swiper | `swiper` | 5.4.5 |
 | Toastr | `toastr` | 2.1.4 |
 
-These versions intentionally reproduce the current application. This workflow
-records dependencies; it does not upgrade them or resolve their existing
-vulnerabilities. npm may report deprecations or vulnerabilities during installation.
+These versions reproduce the application's selected dependencies. SerializeJSON
+and Orbitron were upgraded when migrating their historical source-pinned assets
+to npm; other library versions were retained. This workflow does not resolve all
+existing vulnerabilities. npm may report deprecations or vulnerabilities during
+installation. `jsdom` is a pinned development dependency used only for form tests.
 
 ### Special handling
 
 - AngularJS core and cookies retain their existing different versions.
 - jQuery's distribution file is copied to the existing `jquery-3.3.1.min.js` URL.
 - Font Awesome's font files remain in `lib/fonts/`, matching its CSS references.
+- SerializeJSON's npm distribution keeps the existing
+  `jquery/jquery.serializejson.min.js` URL. Its MIT notice is shipped alongside it.
+- Orbitron's regular 400 and bold 700 normal WOFF2 fonts, with WOFF fallbacks,
+  come from the same `@fontsource/orbitron` release. Aerospace's application-owned
+  CSS keeps the `Orbitron Regular` and `Orbitron Bold` aliases, but references only
+  these local files. The former Google-hosted bold URL and obsolete regular TTF
+  are removed. Local installed fonts are not selected ahead of the pinned files.
+  `700` identifies bold; `normal` identifies the upright style. The OFL-1.1 notice
+  is shipped as `fonts/Orbitron-LICENSE.txt`.
 - Source maps are shipped with their distributions. Angular Cookies' map needs
   the original `angular-cookies.js` because it does not embed its source text.
 - Swiper 5.4.5's minified map names its original source `0`. The upstream
@@ -99,25 +113,23 @@ original sources that are not embedded in a map and their own map references.
 It also checks the default favicon against the application icon. These checks
 complement dependency integrity checks; they do not replace browser checks of
 application behavior, console errors, and resource delivery after an upgrade.
+Form tests use the shipped jQuery and SerializeJSON in jsdom to check nested
+labels, Chinese text, empty values, checkbox arrays, and approval responses.
 
-### Source-pinned assets
+### Migration from source-pinned assets
 
-The original SerializeJSON version is not published on npm, and the historical
-Orbitron font differs from modern npm font packages. Their original versions,
-licenses, immutable URLs, destination paths, and SHA-256 values are recorded under
-`upstreamAssets` in `package.json`:
+SerializeJSON 2.3.1 and Orbitron Regular 1.000 were previously retrieved from
+immutable upstream URLs. The npm migration intentionally replaces those bytes:
 
-| Asset | Version | Immutable upstream source | License |
-|---|---|---|---|
-| SerializeJSON | 2.3.1 | [jquery.serializeJSON at 8a92d110](https://github.com/marioizquierdo/jquery.serializeJSON/blob/8a92d110e087305b4ec30b0bfdd92c871efa31f9/jquery.serializejson.min.js) | MIT option from the original dual license |
-| Orbitron Regular | 1.000 | [Google Fonts at 90abd17b](https://github.com/google/fonts/blob/90abd17b4f97671435798b6147b698aa9087612f/ofl/orbitron/Orbitron-Regular.ttf) | SIL Open Font License 1.1 |
+| Asset | Selected npm package | Compatibility consideration |
+|---|---|---|
+| SerializeJSON | `jquery-serializejson@3.2.1` | Version 3 removed older parsing options. Application call sites use default `.serializeJSON()` without those options; preserve their string and array payloads. |
+| Orbitron | `@fontsource/orbitron@5.3.0` | New font binaries can change glyph widths and text wrapping; compare Aerospace pages and the regular text in Kafka/RabbitMQ configuration dialogs. |
 
-Downloads use HTTPS, have a 30-second timeout, and must match the declared SHA-256
-before any served file is written. A successful synchronization stores verified
-downloads in the ignored `.cache/` directory, keyed by hash. Subsequent runs can
-reuse them offline. A checksum mismatch fails the command; remove the affected
-cache file and verify the declared source before retrying. Never replace a hash
-merely to make an unexpected download pass.
+npm and `package-lock.json` handle package retrieval and distribution integrity.
+The sync script performs no network requests and has no separate download cache
+or source-pin metadata. The Fontsource package version identifies the npm
+distribution; it is distinct from the upstream font revision in its metadata.
 
 ## Upgrading a dependency
 
@@ -135,17 +147,15 @@ merely to make an unexpected download pass.
    Include matching CSS, fonts, images, and source maps. For the URL loader, verify
    that its `$http` options continue to support the application's request-scoped
    translation-response transform. Keep the npm distribution files unmodified.
-4. For a source-pinned asset, update its original version, full upstream commit
-   URL, license reference, and SHA-256 together. Compute the checksum from the
-   reviewed upstream bytes; for example, `Get-FileHash -Algorithm SHA256 <file>`
-   in PowerShell or `sha256sum <file>` on Linux. npm's lockfile covers npm packages;
-   these source pins are maintained explicitly in `upstreamAssets`.
+4. Keep the bundled license notices with their distributions. For Orbitron,
+   update both weights together and retain correct font extensions and CSS
+   format declarations; never rename WOFF/WOFF2 bytes to a TTF filename.
 5. Run `npm run sync-libs`, `npm run check-libs`, and `npm test`. Review the Git diff
    and exercise login, purchaser and approver pages, ordering, Demo Administration,
    translations, messaging, and Swagger UI. Update this version table.
 6. Commit `package.json`, `package-lock.json`, mapping/formatting changes, this
    documentation, and the resulting files under `src/main/resources/static/lib/`.
-   Keep `node_modules/` and `.cache/` untracked.
+   Keep `node_modules/` untracked.
 
 ## Future SBOM and Dependency-Track integration
 
@@ -154,12 +164,10 @@ Java and npm CycloneDX inventories separately, merges them, applies metadata
 corrections, validates the result, and optionally uploads to Dependency-Track.
 PDA can reuse that flow when CI integration is added.
 
-The shared npm scanner can consume this `package.json` and lockfile. Source-pinned
-downloads are not npm dependencies, so their components must be added explicitly
-from `upstreamAssets`, using the shared processor's `sbom-injection-extra.json`
-support or its custom scanner hook. Generate those records from this metadata so
-versions and hashes have one source of truth. Record their actual upstream
-identities rather than invented local npm package identities.
+The shared npm scanner can consume this `package.json` and lockfile. SerializeJSON
+and Orbitron now have ordinary npm package identities and do not need supplemental
+component injection. Generate the runtime inventory from production dependencies;
+`jsdom` belongs to the test tooling and is not shipped with the application.
 
 The URL loader can use its unmodified upstream npm identity. Its response adapter
 is ordinary application code in `common.js`.
@@ -171,10 +179,9 @@ components or changes their identifiers. Use exact mappings for special versions
 such as STOMP's prerelease. Adding a source URL and hash establishes provenance;
 vulnerability matching still requires identifiers recognized by the analyzers.
 
-The extra-component merge copies only `components`. Use the custom scanner hook
-or a normal input SBOM if dependency edges are required. When merging an inventory
-of the built WAR with the frontend inventory, account for assets discovered in
-both: the shared processor deduplicates by `bom-ref`, not package identity.
+When merging an inventory of the built WAR with the frontend inventory, account
+for assets discovered in both: the shared processor deduplicates by `bom-ref`,
+not package identity.
 
 This directory does not generate or upload an SBOM. Pipeline configuration and
 Dependency-Track integration remain separate work.

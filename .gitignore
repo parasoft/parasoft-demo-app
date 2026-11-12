@@ -46,4 +46,3 @@ application.pid
 
 ### Frontend dependency tooling ###
 /frontend-infrastructure/node_modules/
-/frontend-infrastructure/.cache/

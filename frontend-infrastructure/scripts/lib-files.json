@@ -1,5 +1,30 @@
 [
   {
+    "package": "@fontsource/orbitron",
+    "source": "files/orbitron-latin-400-normal.woff2",
+    "destination": "fonts/orbitron-latin-400-normal.woff2"
+  },
+  {
+    "package": "@fontsource/orbitron",
+    "source": "files/orbitron-latin-400-normal.woff",
+    "destination": "fonts/orbitron-latin-400-normal.woff"
+  },
+  {
+    "package": "@fontsource/orbitron",
+    "source": "files/orbitron-latin-700-normal.woff2",
+    "destination": "fonts/orbitron-latin-700-normal.woff2"
+  },
+  {
+    "package": "@fontsource/orbitron",
+    "source": "files/orbitron-latin-700-normal.woff",
+    "destination": "fonts/orbitron-latin-700-normal.woff"
+  },
+  {
+    "package": "@fontsource/orbitron",
+    "source": "LICENSE",
+    "destination": "fonts/Orbitron-LICENSE.txt"
+  },
+  {
     "package": "angular",
     "source": "angular.js",
     "destination": "angularjs/angular.js"
@@ -163,6 +188,16 @@
     "package": "jquery",
     "source": "dist/jquery.min.js",
     "destination": "jquery/jquery-3.3.1.min.js"
+  },
+  {
+    "package": "jquery-serializejson",
+    "source": "jquery.serializejson.min.js",
+    "destination": "jquery/jquery.serializejson.min.js"
+  },
+  {
+    "package": "jquery-serializejson",
+    "source": "LICENSE.txt",
+    "destination": "jquery/serializejson-LICENSE.txt"
   },
   {
     "package": "moment",
