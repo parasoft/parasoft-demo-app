@@ -23,12 +23,23 @@ function getDefaultLang() {
 
 function setLocale(appName) {
 
-    appName.config(function($translateProvider) {
+    appName.config(function($translateProvider, $httpProvider) {
         var lang;
         //to configure sanitization strategy. This can have serious security implications if without this configuration.
         $translateProvider.useSanitizeValueStrategy(['escapeParameters']);
 
-        $translateProvider.useUrlLoader("/localize");
+        $translateProvider.useUrlLoader("/localize", {
+            $http: {
+                // /localize wraps a serialized translation map in ResponseResult.
+                // Keep Angular's JSON parsing, then adapt only loader responses.
+                transformResponse: [].concat(
+                    $httpProvider.defaults.transformResponse,
+                    function(body) {
+                        return angular.fromJson(body.data);
+                    }
+                )
+            }
+        });
         $translateProvider.preferredLanguage(getDefaultLang()); //Angular-translate will then make a call to /localize?lang=lang
     });
 }

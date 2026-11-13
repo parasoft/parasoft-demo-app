@@ -3,6 +3,11 @@ The Parasoft Demo Application is an example Spring Boot project. The application
 
 The following instructions are for building and running the Parasoft Demo Application locally.<br/> 
 There is also a docker image available here: [DockerHub](https://hub.docker.com/r/parasoft/demo-app)
+
+Frontend library versions and synchronization instructions are maintained in
+[frontend-infrastructure](frontend-infrastructure/README.md). The checked-in browser
+assets are included in normal builds; Node/npm are only needed to maintain them.
+
 ## Getting Started
 ### Building .war from sources
 Once you download the sources, build the project as a .war file using the Gradle wrapper.
