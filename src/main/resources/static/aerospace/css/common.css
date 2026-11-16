@@ -17,18 +17,19 @@ body {
 @font-face {
     font-family: 'Orbitron Regular';
     font-style: normal;
-    src: local('Orbitron Regular'), local('Orbitron-Regular'),
-        url(../../lib/fonts/Orbitron-Regular.ttf)
-        format('truetype');
+    font-weight: 400;
+    /* Retain the application alias while loading the pinned npm font locally. */
+    src: url(../../lib/fonts/orbitron-latin-400-normal.woff2) format('woff2'),
+        url(../../lib/fonts/orbitron-latin-400-normal.woff) format('woff');
 }
 
 @font-face {
     font-family: 'Orbitron Bold';
     font-style: normal;
     font-weight: 700;
-    src: local('Orbitron Bold'), local('Orbitron-Bold'),
-        url(https://fonts.gstatic.com/s/orbitron/v11/yMJWMIlzdpvBhQQL_QIAUjh2qtU.ttf)
-        format('truetype');
+    /* Both weights use the same npm release; installed fonts cannot mask it. */
+    src: url(../../lib/fonts/orbitron-latin-700-normal.woff2) format('woff2'),
+        url(../../lib/fonts/orbitron-latin-700-normal.woff) format('woff');
 }
 
 @font-face {
