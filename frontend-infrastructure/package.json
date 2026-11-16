@@ -29,6 +29,6 @@
     "toastr": "2.1.4"
   },
   "devDependencies": {
-    "jsdom": "26.1.0"
+    "jsdom": "31.0.1"
   }
 }
