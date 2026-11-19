@@ -134,7 +134,7 @@ ext {
 	set('jackson-bom.version', '3.1.8')
 	// TODO: The above dependencies should be checked whether they have been updated to the override version after updating the Spring Boot version
 
-	set('springCloudVersion', "2025.1.4")
+	set('springCloudVersion', "2025.1.5")
 }
 
 dependencyManagement {
