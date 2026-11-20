@@ -271,27 +271,27 @@
   },
   {
     "package": "swiper",
-    "source": "css/swiper.min.css",
+    "source": "swiper-bundle.min.css",
     "destination": "swiper/swiper.min.css"
   },
   {
     "package": "swiper",
-    "source": "js/swiper.min.js",
+    "source": "swiper-bundle.min.js",
     "destination": "swiper/swiper.min.js"
   },
   {
     "package": "swiper",
-    "source": "js/swiper.min.js.map",
+    "source": "swiper-bundle.min.js.map",
     "destination": "swiper/swiper.min.js.map"
   },
   {
     "package": "swiper",
-    "source": "js/swiper.js",
+    "source": "swiper-bundle.js",
     "destination": "swiper/0"
   },
   {
     "package": "swiper",
-    "source": "js/swiper.js.map",
+    "source": "swiper-bundle.min.js.map",
     "destination": "swiper/swiper.js.map"
   },
   {

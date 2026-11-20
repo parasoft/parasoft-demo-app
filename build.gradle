@@ -78,14 +78,13 @@ dependencies {
 	// To support higher version of keycloak
 	implementation 'com.nimbusds:oauth2-oidc-sdk:9.4'
 
-	// ActiveMQ Classic 6.3 uses Spring 7, Jetty 12 and Servlet 6.1.
-	implementation 'org.apache.activemq:activemq-stomp:6.3.2'
-	implementation 'org.apache.activemq:activemq-http:6.3.2'
+	implementation 'org.apache.activemq:activemq-stomp'
+	implementation 'org.apache.activemq:activemq-http'
+	implementation 'org.apache.activemq:activemq-spring'
 	// activemq-http declares this Jetty WebSocket server integration as optional,
 	// but the embedded broker enables the ws:// connector at runtime.
 	implementation 'org.eclipse.jetty.ee11.websocket:jetty-ee11-websocket-jetty-server:12.1.12'
 	implementation 'org.springframework.kafka:spring-kafka'
-	implementation 'org.apache.activemq:activemq-spring'
 	implementation 'org.springframework.boot:spring-boot-starter-amqp'
 	implementation 'com.google.code.gson:gson'
 
@@ -132,6 +131,11 @@ test {
 ext {
 	set('jackson-2-bom.version', '2.21.8')
 	set('jackson-bom.version', '3.1.8')
+
+	set('activemq.version', '6.4.0')
+	set('graphql-java.version', '26.2')
+	set('commons-codec.version', '1.23.0')
+	set('rabbit-amqp-client.version', '5.38.0')
 	// TODO: The above dependencies should be checked whether they have been updated to the override version after updating the Spring Boot version
 
 	set('springCloudVersion', "2025.1.4")
@@ -144,14 +148,17 @@ dependencyManagement {
 	imports {
 		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
 	}
-}
-
-configurations.configureEach {
-	resolutionStrategy.eachDependency { details ->
-		if (details.requested.group == 'org.apache.activemq') {
-			details.useVersion('6.3.2')
-			because('ActiveMQ Classic modules must use one consistent Jetty 12-compatible version')
-		}
+	dependencies {
+		// Temporary Guava pin: gRPC still transitively pulls guava:33.6.0-jre.
+		// Remove once upstream upgrades to Guava >=33.7.2 and dependencyInsight
+		// confirms the resolved version is fixed.
+		//
+		// Dependency path:
+		//   net.devh:grpc-spring-boot-starter:3.1.0.RELEASE
+		//   └─ grpc-server-spring-boot-starter
+		//      └─ grpc-services:1.84.1
+		//         └─ guava:33.6.0-jre
+		dependency 'com.google.guava:guava:33.8.0-jre'
 	}
 }
 
