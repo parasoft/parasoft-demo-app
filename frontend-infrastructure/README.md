@@ -61,11 +61,11 @@ third-party files come from npm packages.
 | jQuery | `jquery` | 3.3.1 |
 | SerializeJSON | `jquery-serializejson` | 3.2.1 |
 | Orbitron (400 and 700 normal) | `@fontsource/orbitron` | 5.3.0 |
-| Moment.js | `moment` | 2.24.0 |
+| Moment.js | `moment` | 2.31.0 |
 | SockJS | `sockjs-client` | 1.5.0 |
 | STOMP | `stomp-websocket` | 2.3.4-next |
 | Swagger UI | `swagger-ui-dist` | 3.28.0 |
-| Swiper | `swiper` | 5.4.5 |
+| Swiper | `swiper` | 14.4.0 |
 | Toastr | `toastr` | 2.1.4 |
 
 These exact versions describe the application's shipped dependencies. This
@@ -89,10 +89,18 @@ development dependency used only for form tests.
   from the upstream font revision recorded in the package's metadata.
 - Source maps are shipped with their distributions. Angular Cookies' map needs
   the original `angular-cookies.js` because it does not embed its source text.
-- Swiper 5.4.5's minified map names its original source `0`. The upstream
-  `js/swiper.js` is copied to `lib/swiper/0` to honor that URL without changing
-  vendor contents. Its own `swiper.js.map` is included too. Text normalization
-  uses the upstream filename, including for this extensionless alias.
+- Moment keeps only the existing `moment/moment.min.js` destination.
+- Swiper's browser bundle and CSS keep the existing `swiper.min.js` and
+  `swiper.min.css` URLs. The current minified map is copied to the existing
+  `swiper.min.js.map` and `swiper.js.map` destinations. The latter is a compatibility
+  alias, not a separate map of the unminified bundle. The upstream
+  `swiper-bundle.js` is copied to the existing `lib/swiper/0` destination.
+  Text normalization uses the upstream filename for this extensionless alias.
+- The new Moment and Swiper bundles reference `moment.min.js.map` and
+  `swiper-bundle.min.js.map`, respectively. Those filenames were not shipped
+  before the upgrade. Keeping the existing served file set and unmodified npm
+  distribution contents leaves these optional debugging references unresolved;
+  the resource-reference test reports them.
 - STOMP's existing file comes from `stomp-websocket@2.3.4-next`; the similarly named
   `stompjs` package contains different code.
 - Both URL-loader files come directly from npm. The application-owned `setLocale`
@@ -127,11 +135,11 @@ labels, Chinese text, empty values, checkbox arrays, and approval responses.
    npm ci --ignore-scripts
    ```
 
-3. Review `scripts/lib-files.json` against the new distribution. Keep existing
-   destination names and URLs unless an application change is explicitly intended.
-   Include matching CSS, fonts, images, and source maps. For the URL loader, verify
-   that its `$http` options continue to support the application's request-scoped
-   translation-response transform. Keep the npm distribution files unmodified.
+3. Review `scripts/lib-files.json` against the new distribution. Keep the existing
+   destination file set and URLs; adjust `source` when an upstream path changes.
+   For the URL loader, verify that its `$http` options continue to support the
+   application's request-scoped translation-response transform. Keep the npm
+   distribution files unmodified.
 4. Keep the bundled license notices with their distributions. For Orbitron,
    update both weights together and retain correct font extensions and CSS
    format declarations; never rename WOFF/WOFF2 bytes to a TTF filename.
