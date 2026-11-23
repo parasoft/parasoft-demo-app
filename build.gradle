@@ -138,7 +138,7 @@ ext {
 	set('rabbit-amqp-client.version', '5.38.0')
 	// TODO: The above dependencies should be checked whether they have been updated to the override version after updating the Spring Boot version
 
-	set('springCloudVersion', "2025.1.4")
+	set('springCloudVersion', "2025.1.5")
 }
 
 dependencyManagement {
